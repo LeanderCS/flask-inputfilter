@@ -1,4 +1,4 @@
-from ..Filter.BaseFilter import BaseFilter
+from ..Filter import BaseFilter
 
 
 class StringTrimFilter(BaseFilter):

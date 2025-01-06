@@ -1,9 +1,9 @@
 from typing import Any, Optional
 
-from ..Filter.BaseFilter import BaseFilter
+from ..Filter import BaseFilter
 
 
-class ToIntFilter(BaseFilter):
+class ToIntegerFilter(BaseFilter):
     """
     Filter, that transforms the value to an Integer.
     """

@@ -1,7 +1,7 @@
 from typing import Any
 
-from src.flask_inputfilter.Exception import ValidationError
-from ..Validator.BaseValidator import BaseValidator
+from ..Exception import ValidationError
+from ..Validator import BaseValidator
 
 
 class IsIntegerValidator(BaseValidator):
