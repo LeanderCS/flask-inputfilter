@@ -1,11 +1,11 @@
 from typing import Any, TYPE_CHECKING
 
-from ..Exception.ValidationError import ValidationError
+from src.flask_inputfilter.Exception import ValidationError
 from ..Validator.BaseValidator import BaseValidator
 
 
 if TYPE_CHECKING:
-    from ..InputFilter import InputFilter
+    from src.flask_inputfilter.InputFilter import InputFilter
 
 
 class ArrayElementValidator(BaseValidator):

@@ -1,7 +1,7 @@
 import base64
 from typing import Any
 
-from ..Exception.ValidationError import ValidationError
+from src.flask_inputfilter.Exception import ValidationError
 from ..Validator.BaseValidator import BaseValidator
 
 

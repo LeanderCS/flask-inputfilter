@@ -1,16 +1,19 @@
 import unittest
 from enum import Enum
 
-from src.Exception import ValidationError
-from src.Filter import (StringTrimFilter, ToFloatFilter, ToIntFilter,
-                        ToLowerFilter, ToNullFilter, ToUpperFilter)
-from src.InputFilter import InputFilter
-from src.Validator import (ArrayElementValidator, InArrayValidator,
-                           InEnumValidator, IsArrayValidator,
-                           IsBase64ImageCorrectSizeValidator,
-                           IsBoolValidator, IsFloatValidator,
-                           IsInstanceValidator, IsIntegerValidator,
-                           LengthValidator, RegexValidator)
+from src.flask_inputfilter.Exception import ValidationError
+from src.flask_inputfilter.Filter import (StringTrimFilter, ToFloatFilter,
+                                          ToIntFilter, ToLowerFilter,
+                                          ToNullFilter, ToUpperFilter)
+from src.flask_inputfilter.InputFilter import InputFilter
+from src.flask_inputfilter.Validator import (ArrayElementValidator,
+                                             InArrayValidator,
+                                             InEnumValidator, IsArrayValidator,
+                                             IsBase64ImageCorrectSizeValidator,
+                                             IsBoolValidator, IsFloatValidator,
+                                             IsInstanceValidator,
+                                             IsIntegerValidator,
+                                             LengthValidator, RegexValidator)
 
 
 class TestInputFilter(unittest.TestCase):
