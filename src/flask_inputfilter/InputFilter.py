@@ -2,9 +2,9 @@ from typing import Dict, Any, Optional, List
 
 from flask import request, Response, g
 
-from src.flask_inputfilter.Exception import ValidationError
-from src.flask_inputfilter.Filter import BaseFilter
-from src.flask_inputfilter.Validator.BaseValidator import BaseValidator
+from .Exception import ValidationError
+from .Filter import BaseFilter
+from .Validator import BaseValidator
 
 
 class InputFilter:

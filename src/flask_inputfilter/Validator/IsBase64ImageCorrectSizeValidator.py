@@ -1,16 +1,18 @@
 import base64
 from typing import Any
 
-from src.flask_inputfilter.Exception import ValidationError
-from ..Validator.BaseValidator import BaseValidator
+from ..Exception import ValidationError
+from ..Validator import BaseValidator
 
 
 class IsBase64ImageCorrectSizeValidator(BaseValidator):
     """
     Validator that checks if a Base64 string has a valid image size.
+    By default, the image size must be between 1 and 4MB.
     """
 
-    def __init__(self, minSize: int, maxSize: int) -> None:
+    def __init__(self, minSize: int = 1,
+                 maxSize: int = 4 * 1024 * 1024) -> None:
 
         self.minSize = minSize
         self.maxSize = maxSize

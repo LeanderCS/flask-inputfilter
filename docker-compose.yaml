@@ -6,7 +6,5 @@ services:
     container_name: flask-inputfilter
     volumes:
       - .:/app
-    environment:
-      - PYTHONPATH=/app/src
     stdin_open: true
     tty: true

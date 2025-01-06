@@ -1,8 +1,8 @@
 from enum import Enum
 from typing import Type, Any
 
-from src.flask_inputfilter.Exception import ValidationError
-from ..Validator.BaseValidator import BaseValidator
+from ..Exception import ValidationError
+from ..Validator import BaseValidator
 
 
 class InEnumValidator(BaseValidator):

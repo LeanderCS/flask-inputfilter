@@ -19,8 +19,9 @@ There are lots of different filters and validators available to use, and you can
 ```python
 from flask_inputfilter import InputFilter
 from flask_inputfilter.Enum import RegexEnum
-from flask_inputfilter.Filters import ToIntFilter, ToNullFilter, StringTrimFilter
-from flask_inputfilter.Validators import RegexValidator
+from flask_inputfilter.Filter import ToIntegerFilter, ToNullFilter, StringTrimFilter
+from flask_inputfilter.Validator import RegexValidator
+
 
 class UpdateZipcodeInputFilter(InputFilter):
     def __init__(self):
@@ -30,7 +31,7 @@ class UpdateZipcodeInputFilter(InputFilter):
         self.add(
             'id',
             required=True,
-            filters=[ToIntFilter(), ToNullFilter()]
+            filters=[ToIntegerFilter(), ToNullFilter()]
         )
 
         self.add(
@@ -54,6 +55,7 @@ If the data is not valid, the `validate` method will return a 400 response with 
 
 ```python
 from flask import Flask, g
+from your-path import UpdateZipcodeInputFilter
 
 app = Flask(__name__)
 

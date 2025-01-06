@@ -2,7 +2,7 @@ from .BaseFilter import BaseFilter
 from .StringTrimFilter import StringTrimFilter
 from .ToBoolFilter import ToBoolFilter
 from .ToFloatFilter import ToFloatFilter
-from .ToIntFilter import ToIntFilter
+from .ToIntegerFilter import ToIntegerFilter
 from .ToLowerFilter import ToLowerFilter
 from .ToNullFilter import ToNullFilter
 from .ToStringFilter import ToStringFilter

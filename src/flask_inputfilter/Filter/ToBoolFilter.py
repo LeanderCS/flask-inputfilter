@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from ..Filter.BaseFilter import BaseFilter
+from ..Filter import BaseFilter
 
 
 class ToBoolFilter(BaseFilter):

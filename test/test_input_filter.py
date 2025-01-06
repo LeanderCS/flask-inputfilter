@@ -2,18 +2,13 @@ import unittest
 from enum import Enum
 
 from src.flask_inputfilter.Exception import ValidationError
-from src.flask_inputfilter.Filter import (StringTrimFilter, ToFloatFilter,
-                                          ToIntFilter, ToLowerFilter,
-                                          ToNullFilter, ToUpperFilter)
+from src.flask_inputfilter.Filter import ToIntegerFilter, ToNullFilter, \
+    StringTrimFilter, ToFloatFilter, ToLowerFilter, ToUpperFilter
 from src.flask_inputfilter.InputFilter import InputFilter
-from src.flask_inputfilter.Validator import (ArrayElementValidator,
-                                             InArrayValidator,
-                                             InEnumValidator, IsArrayValidator,
-                                             IsBase64ImageCorrectSizeValidator,
-                                             IsBoolValidator, IsFloatValidator,
-                                             IsInstanceValidator,
-                                             IsIntegerValidator,
-                                             LengthValidator, RegexValidator)
+from src.flask_inputfilter.Validator import IsIntegerValidator, \
+    LengthValidator, InArrayValidator, RegexValidator, IsArrayValidator, \
+    IsFloatValidator, ArrayElementValidator, InEnumValidator, \
+    IsBase64ImageCorrectSizeValidator, IsBoolValidator, IsInstanceValidator
 
 
 class TestInputFilter(unittest.TestCase):
@@ -27,7 +22,7 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.add(
             'age',
             required=True,
-            filters=[ToIntFilter()],
+            filters=[ToIntegerFilter()],
             validators=[IsIntegerValidator()]
         )
 
@@ -250,7 +245,7 @@ class TestInputFilter(unittest.TestCase):
         elementFilter = InputFilter()
         elementFilter.add(
             'id', required=True, filters=[
-                ToIntFilter()], validators=[
+                ToIntegerFilter()], validators=[
                 IsIntegerValidator()])
 
         self.inputFilter.add(
