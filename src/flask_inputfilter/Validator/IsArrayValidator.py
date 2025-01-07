@@ -9,7 +9,14 @@ class IsArrayValidator(BaseValidator):
     Validator that checks if a value is an array.
     """
 
+    def __init__(self, error_message: str = "Value '{}' is not an array.") -> None:
+
+        self.error_message = error_message
+
     def validate(self, value: Any) -> None:
 
         if not isinstance(value, list):
-            raise ValidationError(f"Value '{value}' is not an array.")
+            if "{}" in self.error_message:
+                raise ValidationError(self.error_message.format(value))
+
+            raise ValidationError(self.error_message)

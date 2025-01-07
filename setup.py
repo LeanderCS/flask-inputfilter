@@ -5,8 +5,7 @@ setup(
     version="0.0.3",
     author="Leander Cain Slotosch",
     author_email="slotosch.leander@outlook.de",
-    description="A library to filter and validate input data in"
-                "Flask applications",
+    description="A library to filter and validate input data in" "Flask applications",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/LeanderCS/flask-inputfilter",

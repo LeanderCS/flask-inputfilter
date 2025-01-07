@@ -16,19 +16,25 @@ class InputFilter:
 
         self.fields = {}
 
-    def add(self,
-            name: str,
-            required: bool = True,
-            filters: Optional[List[BaseFilter]] = None,
-            validators: Optional[List[BaseValidator]] = None):
+    def add(
+        self,
+        name: str,
+        required: bool = True,
+        default: Any = None,
+        fallback: Any = None,
+        filters: Optional[List[BaseFilter]] = None,
+        validators: Optional[List[BaseValidator]] = None,
+    ):
         """
         Add the field to the input filter.
         """
 
         self.fields[name] = {
-            'required': required,
-            'filters': filters or [],
-            'validators': validators or []
+            "required": required,
+            "default": default,
+            "fallback": fallback,
+            "filters": filters or [],
+            "validators": validators or [],
         }
 
     def applyFilters(self, field_name: str, value: Any) -> Any:
@@ -41,7 +47,7 @@ class InputFilter:
         if not field:
             return value
 
-        for filter_ in field['filters']:
+        for filter_ in field["filters"]:
             value = filter_.apply(value)
 
         return value
@@ -56,11 +62,12 @@ class InputFilter:
         if not field:
             return
 
-        for validator in field['validators']:
+        for validator in field["validators"]:
             validator.validate(value)
 
-    def validateData(self, data: Dict[str, Any],
-                     kwargs: Dict[str, Any] = None) -> Dict[str, Any]:
+    def validateData(
+        self, data: Dict[str, Any], kwargs: Dict[str, Any] = None
+    ) -> Dict[str, Any]:
         """
         Validate the input data, considering both request data and
         URL parameters (kwargs).
@@ -70,18 +77,30 @@ class InputFilter:
             kwargs = {}
 
         validatedData = {}
-
         combinedData = {**data, **kwargs}
 
         for fieldName, fieldInfo in self.fields.items():
             value = combinedData.get(fieldName)
+
             value = self.applyFilters(fieldName, value)
 
-            if fieldInfo['required'] and value is None:
-                raise ValidationError(f"Field '{fieldName}' is required.")
+            if value is None and fieldInfo["required"]:
+                if fieldInfo["fallback"] is None:
+                    raise ValidationError(f"Field '{fieldName}' is required.")
+
+                value = fieldInfo["fallback"]
+
+            if value is None and fieldInfo["default"] is not None:
+                value = fieldInfo["default"]
 
             if value is not None:
-                self.validateField(fieldName, value)
+                try:
+                    self.validateField(fieldName, value)
+                except ValidationError:
+                    if fieldInfo["fallback"] is not None:
+                        value = fieldInfo["fallback"]
+                    else:
+                        raise
 
             validatedData[fieldName] = value
 
@@ -95,10 +114,10 @@ class InputFilter:
 
         def decorator(f):
             def wrapper(*args, **kwargs):
-                if request.method == 'GET':
+                if request.method == "GET":
                     data = request.args
 
-                elif request.method in ['POST', 'PUT', 'DELETE']:
+                elif request.method in ["POST", "PUT", "DELETE"]:
                     if not request.is_json:
                         data = request.args
 
@@ -106,8 +125,7 @@ class InputFilter:
                         data = request.json
 
                 else:
-                    return Response(
-                        status=415, response="Unsupported method Type")
+                    return Response(status=415, response="Unsupported method Type")
 
                 inputFilter = cls()
 
@@ -120,4 +138,5 @@ class InputFilter:
                 return f(*args, **kwargs)
 
             return wrapper
+
         return decorator

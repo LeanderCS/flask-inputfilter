@@ -2,7 +2,7 @@
 
 ### Build docker image
 ```bash
-docker build -t jtrfaker .
+docker build -t flask-inputfilter .
 ```
 
 ### Run docker container in interactive mode
@@ -11,15 +11,15 @@ docker compose up -d
 ```
 
 ```bash
-docker exec -it jtrfaker bash
+docker exec -it flask-inputfilter /bin/bash
 ```
 
 ### Run tests
 ```bash
-docker exec -it jtrfaker pytest
+docker exec -it flask-inputfilter pytest
 ```
 
 ### Run linting
 ```bash
-docker exec -it jtrfaker flake8
+docker exec -it flask-inputfilter black .
 ```
