@@ -1,7 +1,18 @@
+from enum import Enum
 from typing import Any
 
 from ..Exception import ValidationError
 from ..Validator import BaseValidator
+
+
+class LengthEnum(Enum):
+    """
+    Enum that defines the possible length types.
+    """
+
+    LEAST = "least"
+
+    MOST = "most"
 
 
 class LengthValidator(BaseValidator):
@@ -9,17 +20,35 @@ class LengthValidator(BaseValidator):
     Validator that checks the length of a string value.
     """
 
-    def __init__(self, minLength: int = 0, maxLength: int = None) -> None:
+    def __init__(
+        self,
+        min_length: int = 0,
+        max_length: int = None,
+        error_message: str = "Value '{}' must be at {} '{}' characters long.",
+    ) -> None:
 
-        self.minLength = minLength
-        self.maxLength = maxLength
+        self.min_length = min_length
+        self.max_length = max_length
+        self.error_message = error_message
 
     def validate(self, value: Any) -> None:
 
-        if len(value) < self.minLength:
-            raise ValidationError(
-                f"Value must be at least {self.minLength} characters long.")
+        if len(value) < self.min_length:
+            if "{}" in self.error_message:
+                raise ValidationError(
+                    self.error_message.format(
+                        value, LengthEnum.LEAST.value, self.min_length
+                    )
+                )
 
-        if self.maxLength is not None and len(value) > self.maxLength:
-            raise ValidationError(
-                f"Value must be at most {self.maxLength} characters long.")
+            raise ValidationError(self.error_message)
+
+        if self.max_length is not None and len(value) > self.max_length:
+            if "{}" in self.error_message:
+                raise ValidationError(
+                    self.error_message.format(
+                        value, LengthEnum.MOST.value, self.max_length
+                    )
+                )
+
+            raise ValidationError(self.error_message)

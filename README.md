@@ -9,7 +9,7 @@ It provides a modular way to clean and ensure that incoming data meets expected 
 pip install flask-inputfilter
 ```
 
-## Usage
+## Quickstart
 
 To use the `InputFilter` class, you need to create a new class that inherits from it and define the fields you want to validate and filter.
 There are lots of different filters and validators available to use, and you can also create your own custom filters and validators.
@@ -19,8 +19,8 @@ There are lots of different filters and validators available to use, and you can
 ```python
 from flask_inputfilter import InputFilter
 from flask_inputfilter.Enum import RegexEnum
-from flask_inputfilter.Filter import ToIntegerFilter, ToNullFilter, StringTrimFilter
-from flask_inputfilter.Validator import RegexValidator
+from flask_inputfilter.Filter import StringTrimFilter, ToIntegerFilter, ToNullFilter
+from flask_inputfilter.Validator import IsIntegerValidator, RegexValidator 
 
 
 class UpdateZipcodeInputFilter(InputFilter):
@@ -31,7 +31,10 @@ class UpdateZipcodeInputFilter(InputFilter):
         self.add(
             'id',
             required=True,
-            filters=[ToIntegerFilter(), ToNullFilter()]
+            filters=[ToIntegerFilter(), ToNullFilter()],
+            validators=[
+                IsIntegerValidator()
+            ]
         )
 
         self.add(
@@ -41,7 +44,7 @@ class UpdateZipcodeInputFilter(InputFilter):
             validators=[
                 RegexValidator(
                     RegexEnum.POSTAL_CODE.value,
-                    'The email is not in the format of an email.'
+                    'The zipcode is not in the correct format.'
                 )
             ]
         )
@@ -69,3 +72,25 @@ def updateZipcode():
     zipcode = data.get('zipcode')
 ```
 
+## Options
+
+The `add` method takes the following options:
+
+- [`Required`](#required)
+- [`Filter`](src/flask_inputfilter/Filter/README.md)
+- [`Validator`](src/flask_inputfilter/Validator/README.md)
+- [`Default`](#default)
+- [`Fallback`](#fallback)
+
+### Required
+
+The `required` option is used to specify if the field is required or not.
+If the field is required and not present in the input data, the `validate` method will return a 400 response with the error message.
+
+### Default
+
+The `default` option is used to specify a default value to use if the field is not present in the input data.
+
+### Fallback
+
+The `fallback` option is used to specify a fallback value to use if the field is not present in the input data, although it is required or the validation fails.

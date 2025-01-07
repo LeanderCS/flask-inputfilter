@@ -3,7 +3,7 @@ from typing import Any, Optional
 from ..Filter import BaseFilter
 
 
-class ToBoolFilter(BaseFilter):
+class ToBooleanFilter(BaseFilter):
     """
     Filter, that transforms the value to a boolean.
     """
