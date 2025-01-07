@@ -9,7 +9,14 @@ class IsStringValidator(BaseValidator):
     Validator that checks if a value is a string.
     """
 
+    def __init__(self, error_message: str = "Value '{}' is not a string.") -> None:
+
+        self.error_message = error_message
+
     def validate(self, value: Any) -> None:
 
         if not isinstance(value, str):
-            raise ValidationError(f"Value '{value}' is not a string.")
+            if "{}" in self.error_message:
+                raise ValidationError(self.error_message.format(value))
+
+            raise ValidationError(self.error_message)

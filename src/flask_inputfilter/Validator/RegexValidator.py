@@ -10,17 +10,19 @@ class RegexValidator(BaseValidator):
     expression pattern.
     """
 
-    def __init__(self, pattern: str, errorMessage: str = None) -> None:
+    def __init__(
+        self,
+        pattern: str,
+        error_message: str = "Value '{}' does not match the required pattern '{}'.",
+    ) -> None:
 
         self.pattern = pattern
-        self.errorMessage = errorMessage
+        self.error_message = error_message
 
     def validate(self, value: str) -> None:
 
         if not re.match(self.pattern, value):
-            if self.errorMessage:
-                raise ValidationError(self.errorMessage)
+            if "{}" in self.error_message:
+                raise ValidationError(self.error_message.format(value, self.pattern))
 
-            raise ValidationError(
-                f"Value '{value}' does not match the required pattern "
-                f"'{self.pattern}'.")
+            raise ValidationError(self.error_message)

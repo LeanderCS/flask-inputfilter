@@ -12,6 +12,13 @@ class IsBase64ImageValidator(BaseValidator):
     Validator that checks if a Base64 string is a valid image.
     """
 
+    def __init__(
+        self,
+        error_message: str = "The image is invalid or does not have an allowed size.",
+    ) -> None:
+
+        self.error_message = error_message
+
     def validate(self, value: Any) -> None:
 
         try:
@@ -20,4 +27,4 @@ class IsBase64ImageValidator(BaseValidator):
             image.verify()
 
         except Exception:
-            raise ValidationError("Das Bild ist ungültig oder beschädigt.")
+            raise ValidationError(self.error_message)

@@ -13,9 +13,14 @@ class ArrayElementValidator(BaseValidator):
     Validator to validate each element in an array.
     """
 
-    def __init__(self, elementFilter: 'InputFilter') -> None:
+    def __init__(
+        self,
+        elementFilter: "InputFilter",
+        error_message: str = "Value '{}' is not in '{}'",
+    ) -> None:
 
         self.elementFilter = elementFilter
+        self.error_message = error_message
 
     def validate(self, value: Any) -> None:
 
@@ -28,4 +33,9 @@ class ArrayElementValidator(BaseValidator):
                 value[i] = validated_element
 
             except ValidationError:
-                raise ValidationError(f"Invalid element '{element}' in array")
+                if "{}" in self.error_message:
+                    raise ValidationError(
+                        self.error_message.format(element, self.elementFilter)
+                    )
+
+                raise ValidationError(self.error_message)
