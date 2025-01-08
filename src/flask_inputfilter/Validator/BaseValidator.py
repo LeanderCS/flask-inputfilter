@@ -8,4 +8,6 @@ class BaseValidator:
 
     def validate(self, value: Any) -> None:
 
-        raise NotImplementedError("Validator validate method must be implemented")
+        raise NotImplementedError(
+            "Validator validate method must be implemented"
+        )

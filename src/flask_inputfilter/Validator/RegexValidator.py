@@ -1,7 +1,7 @@
 import re
 
 from ..Exception import ValidationError
-from ..Validator import BaseValidator
+from ..Validator.BaseValidator import BaseValidator
 
 
 class RegexValidator(BaseValidator):
@@ -23,6 +23,8 @@ class RegexValidator(BaseValidator):
 
         if not re.match(self.pattern, value):
             if "{}" in self.error_message:
-                raise ValidationError(self.error_message.format(value, self.pattern))
+                raise ValidationError(
+                    self.error_message.format(value, self.pattern)
+                )
 
             raise ValidationError(self.error_message)

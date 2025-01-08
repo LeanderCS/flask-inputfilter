@@ -1,15 +1,17 @@
 from typing import Any
 
 from ..Exception import ValidationError
-from ..Validator import BaseValidator
+from ..Validator.BaseValidator import BaseValidator
 
 
-class IsBoolValidator(BaseValidator):
+class IsBooleanValidator(BaseValidator):
     """
     Validator that checks if a value is a bool.
     """
 
-    def __init__(self, error_message: str = "Value '{}' is not a bool.") -> None:
+    def __init__(
+        self, error_message: str = "Value '{}' is not a bool."
+    ) -> None:
 
         self.error_message = error_message
 

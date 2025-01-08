@@ -4,24 +4,27 @@ from enum import Enum
 from src.flask_inputfilter.Exception import ValidationError
 from src.flask_inputfilter.InputFilter import InputFilter
 from src.flask_inputfilter.Validator import (
-    IsIntegerValidator,
-    LengthValidator,
-    InArrayValidator,
-    RegexValidator,
-    IsArrayValidator,
-    IsFloatValidator,
     ArrayElementValidator,
-    InEnumValidator,
-    IsBase64ImageCorrectSizeValidator,
-    IsBoolValidator,
-    IsInstanceValidator,
-    RangeValidator,
-    IsStringValidator,
-    IsBase64ImageValidator,
     ArrayLengthValidator,
-    IsJsonValidator,
+    InArrayValidator,
+    InEnumValidator,
+    IsArrayValidator,
+    IsBase64ImageCorrectSizeValidator,
+    IsBase64ImageValidator,
+    IsBooleanValidator,
+    IsFloatValidator,
     IsHexadecimalValidator,
+    IsInstanceValidator,
+    IsIntegerValidator,
+    IsJsonValidator,
+    IsStringValidator,
     IsUUIDValidator,
+    LengthValidator,
+    RangeValidator,
+    RegexValidator,
+)
+from src.flask_inputfilter.Validator.FloatPrecisionValidator import (
+    FloatPrecisionValidator,
 )
 
 
@@ -46,15 +49,21 @@ class TestInputFilter(unittest.TestCase):
         )
 
         self.inputFilter.add(
-            "items", required=True, validators=[ArrayElementValidator(elementFilter)]
+            "items",
+            required=True,
+            validators=[ArrayElementValidator(elementFilter)],
         )
 
-        validated_data = self.inputFilter.validateData({"items": [{"id": 1}, {"id": 2}]})
+        validated_data = self.inputFilter.validateData(
+            {"items": [{"id": 1}, {"id": 2}]}
+        )
 
         self.assertEqual(validated_data["items"], [{"id": 1}, {"id": 2}])
 
         with self.assertRaises(ValidationError):
-            self.inputFilter.validateData({"items": [{"id": 1}, {"id": "invalid"}]})
+            self.inputFilter.validateData(
+                {"items": [{"id": 1}, {"id": "invalid"}]}
+            )
 
     def test_array_length_validator(self) -> None:
         """
@@ -74,6 +83,22 @@ class TestInputFilter(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"items": [1, 2, 3, 4, 5, 6]})
+
+    def test_float_precision_validator(self) -> None:
+        """
+        Test FloatPrecisionValidator.
+        """
+
+        self.inputFilter.add(
+            "price",
+            required=True,
+            validators=[FloatPrecisionValidator(precision=5, scale=2)],
+        )
+
+        self.inputFilter.validateData({"price": 19.99})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"price": 19.999})
 
     def test_in_array_validator(self) -> None:
         """
@@ -101,7 +126,9 @@ class TestInputFilter(unittest.TestCase):
             GREEN = "green"
             BLUE = "blue"
 
-        self.inputFilter.add("color", required=True, validators=[InEnumValidator(Color)])
+        self.inputFilter.add(
+            "color", required=True, validators=[InEnumValidator(Color)]
+        )
 
         self.inputFilter.validateData({"color": "red"})
 
@@ -113,7 +140,9 @@ class TestInputFilter(unittest.TestCase):
         Test that IsArrayValidator validates array type.
         """
 
-        self.inputFilter.add("tags", required=False, validators=[IsArrayValidator()])
+        self.inputFilter.add(
+            "tags", required=False, validators=[IsArrayValidator()]
+        )
 
         self.inputFilter.validateData({"tags": ["tag1", "tag2"]})
 
@@ -128,13 +157,19 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.add(
             "image",
             required=True,
-            validators=[IsBase64ImageCorrectSizeValidator(minSize=10, maxSize=50)],
+            validators=[
+                IsBase64ImageCorrectSizeValidator(minSize=10, maxSize=50)
+            ],
         )
 
-        self.inputFilter.validateData({"image": "iVBORw0KGgoAAAANSUhEUgAAAAUA"})
+        self.inputFilter.validateData(
+            {"image": "iVBORw0KGgoAAAANSUhEUgAAAAUA"}
+        )
 
         with self.assertRaises(ValidationError):
-            self.inputFilter.validateData({"image": "iVBORw0KGgoAAAANSUhEUgAAAAU"})
+            self.inputFilter.validateData(
+                {"image": "iVBORw0KGgoAAAANSUhEUgAAAAU"}
+            )
 
     def test_is_base64_image_validator(self) -> None:
         """
@@ -145,18 +180,20 @@ class TestInputFilter(unittest.TestCase):
             "image", required=True, validators=[IsBase64ImageValidator()]
         )
 
-        with open("test/data/base64_image.txt", "r") as file:
+        with open("tests_package/data/base64_image.txt", "r") as file:
             self.inputFilter.validateData({"image": file.read()})
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"image": "not_a_base64_image"})
 
-    def test_is_bool_validator(self) -> None:
+    def test_is_boolean_validator(self) -> None:
         """
-        Test IsBoolValidator.
+        Test IsBooleanValidator.
         """
 
-        self.inputFilter.add("is_active", required=True, validators=[IsBoolValidator()])
+        self.inputFilter.add(
+            "is_active", required=True, validators=[IsBooleanValidator()]
+        )
 
         self.inputFilter.validateData({"is_active": True})
 
@@ -168,7 +205,9 @@ class TestInputFilter(unittest.TestCase):
         Test that IsFloatValidator validates float type.
         """
 
-        self.inputFilter.add("price", required=True, validators=[IsFloatValidator()])
+        self.inputFilter.add(
+            "price", required=True, validators=[IsFloatValidator()]
+        )
 
         self.inputFilter.validateData({"price": 19.99})
 
@@ -180,7 +219,9 @@ class TestInputFilter(unittest.TestCase):
         Test that HexadecimalValidator validates hexadecimal format.
         """
 
-        self.inputFilter.add("hex", required=True, validators=[IsHexadecimalValidator()])
+        self.inputFilter.add(
+            "hex", required=True, validators=[IsHexadecimalValidator()]
+        )
 
         self.inputFilter.validateData({"hex": "0x1234"})
 
@@ -206,7 +247,9 @@ class TestInputFilter(unittest.TestCase):
         Test that IsIntegerValidator validates integer type.
         """
 
-        self.inputFilter.add("age", required=True, validators=[IsIntegerValidator()])
+        self.inputFilter.add(
+            "age", required=True, validators=[IsIntegerValidator()]
+        )
 
         self.inputFilter.validateData({"age": 25})
 
@@ -218,7 +261,9 @@ class TestInputFilter(unittest.TestCase):
         Test that IsJsonValidator validates JSON format.
         """
 
-        self.inputFilter.add("data", required=True, validators=[IsJsonValidator()])
+        self.inputFilter.add(
+            "data", required=True, validators=[IsJsonValidator()]
+        )
 
         self.inputFilter.validateData({"data": '{"name": "Alice"}'})
 
@@ -230,7 +275,9 @@ class TestInputFilter(unittest.TestCase):
         Test that IsStringValidator validates string type.
         """
 
-        self.inputFilter.add("name", required=True, validators=[IsStringValidator()])
+        self.inputFilter.add(
+            "name", required=True, validators=[IsStringValidator()]
+        )
 
         self.inputFilter.validateData({"name": "obviously an string"})
 
@@ -242,9 +289,13 @@ class TestInputFilter(unittest.TestCase):
         Test that IsUuidValidator validates UUID format.
         """
 
-        self.inputFilter.add("uuid", required=True, validators=[IsUUIDValidator()])
+        self.inputFilter.add(
+            "uuid", required=True, validators=[IsUUIDValidator()]
+        )
 
-        self.inputFilter.validateData({"uuid": "550e8400-e29b-41d4-a716-446655440000"})
+        self.inputFilter.validateData(
+            {"uuid": "550e8400-e29b-41d4-a716-446655440000"}
+        )
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"uuid": "not_a_uuid"})
@@ -280,10 +331,14 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.validateData({"name": "test", "range_field": 3.76})
 
         with self.assertRaises(ValidationError):
-            self.inputFilter.validateData({"name": "test", "range_field": 1.22})
+            self.inputFilter.validateData(
+                {"name": "test", "range_field": 1.22}
+            )
 
         with self.assertRaises(ValidationError):
-            self.inputFilter.validateData({"name": "test", "range_field": 7.89})
+            self.inputFilter.validateData(
+                {"name": "test", "range_field": 7.89}
+            )
 
     def test_regex_validator(self) -> None:
         """
@@ -296,7 +351,9 @@ class TestInputFilter(unittest.TestCase):
             validators=[RegexValidator(pattern=r"^[\w\.-]+@[\w\.-]+\.\w+$")],
         )
 
-        validated_data = self.inputFilter.validateData({"email": "alice@example.com"})
+        validated_data = self.inputFilter.validateData(
+            {"email": "alice@example.com"}
+        )
 
         self.assertEqual(validated_data["email"], "alice@example.com")
 

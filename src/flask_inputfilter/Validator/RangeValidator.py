@@ -27,7 +27,9 @@ class RangeValidator(BaseValidator):
         ):
             if "{}" in self.error_message:
                 raise ValidationError(
-                    self.error_message.format(value, self.min_value, self.max_value)
+                    self.error_message.format(
+                        value, self.min_value, self.max_value
+                    )
                 )
 
             raise ValidationError(self.error_message)

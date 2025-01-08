@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Any
 
 from ..Exception import ValidationError
-from ..Validator import BaseValidator
+from ..Validator.BaseValidator import BaseValidator
 
 
 class LengthEnum(Enum):

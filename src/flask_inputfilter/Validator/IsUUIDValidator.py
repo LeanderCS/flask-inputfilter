@@ -10,7 +10,9 @@ class IsUUIDValidator(BaseValidator):
     Validator that checks if a value is a valid UUID string.
     """
 
-    def __init__(self, error_message: str = "Value '{}' is not a valid UUID.") -> None:
+    def __init__(
+        self, error_message: str = "Value '{}' is not a valid UUID."
+    ) -> None:
 
         self.error_message = error_message
 

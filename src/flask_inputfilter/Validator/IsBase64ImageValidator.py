@@ -1,10 +1,11 @@
 import base64
 import io
-from PIL import Image
 from typing import Any
 
+from PIL import Image
+
 from ..Exception import ValidationError
-from ..Validator import BaseValidator
+from ..Validator.BaseValidator import BaseValidator
 
 
 class IsBase64ImageValidator(BaseValidator):

@@ -1,8 +1,8 @@
 from enum import Enum
-from typing import Type, Any
+from typing import Any, Type
 
 from ..Exception import ValidationError
-from ..Validator import BaseValidator
+from ..Validator.BaseValidator import BaseValidator
 
 
 class InEnumValidator(BaseValidator):
@@ -21,8 +21,12 @@ class InEnumValidator(BaseValidator):
 
     def validate(self, value: Any) -> None:
 
-        if not any(value.lower() == item.name.lower() for item in self.enumClass):
+        if not any(
+            value.lower() == item.name.lower() for item in self.enumClass
+        ):
             if "{}" in self.error_message:
-                raise ValidationError(self.error_message.format(value, self.enumClass))
+                raise ValidationError(
+                    self.error_message.format(value, self.enumClass)
+                )
 
             raise ValidationError(self.error_message)

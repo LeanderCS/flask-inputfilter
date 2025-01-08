@@ -3,11 +3,15 @@
 The `InputFilter` class is used to validate and filter input data in Flask applications.
 It provides a modular way to clean and ensure that incoming data meets expected format and type requirements before being processed.
 
+---
+
 ## Installation
 
 ```bash
 pip install flask-inputfilter
 ```
+
+---
 
 ## Quickstart
 
@@ -72,6 +76,8 @@ def updateZipcode():
     zipcode = data.get('zipcode')
 ```
 
+---
+
 ## Options
 
 The `add` method takes the following options:
@@ -81,11 +87,12 @@ The `add` method takes the following options:
 - [`Validator`](src/flask_inputfilter/Validator/README.md)
 - [`Default`](#default)
 - [`Fallback`](#fallback)
+- [`ExternalApi`](EXTERNAL_API.md)
 
 ### Required
 
 The `required` option is used to specify if the field is required or not.
-If the field is required and not present in the input data, the `validate` method will return a 400 response with the error message.
+If the field is required and not present in the input data, the `validate` method will return the `ValidationError` with an error message.
 
 ### Default
 
@@ -93,4 +100,8 @@ The `default` option is used to specify a default value to use if the field is n
 
 ### Fallback
 
-The `fallback` option is used to specify a fallback value to use if the field is not present in the input data, although it is required or the validation fails.
+The `fallback` option is used to specify a fallback value to use if something unexpected happens, for example if the field is required but no value where provides 
+ or the validation fails.
+
+This means that if the field is not required and no value is present, the fallback value will not be used.
+In this case you have to use the `default` option.
