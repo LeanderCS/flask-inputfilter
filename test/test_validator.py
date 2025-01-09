@@ -180,7 +180,7 @@ class TestInputFilter(unittest.TestCase):
             "image", required=True, validators=[IsBase64ImageValidator()]
         )
 
-        with open("tests_package/data/base64_image.txt", "r") as file:
+        with open("test/data/base64_image.txt", "r") as file:
             self.inputFilter.validateData({"image": file.read()})
 
         with self.assertRaises(ValidationError):
