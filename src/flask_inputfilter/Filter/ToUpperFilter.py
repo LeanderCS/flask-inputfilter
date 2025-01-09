@@ -1,4 +1,4 @@
-from ..Filter import BaseFilter
+from ..Filter.BaseFilter import BaseFilter
 
 
 class ToUpperFilter(BaseFilter):

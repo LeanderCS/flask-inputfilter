@@ -1,7 +1,7 @@
 from typing import Any
 
 from ..Exception import ValidationError
-from ..Validator import BaseValidator
+from ..Validator.BaseValidator import BaseValidator
 
 
 class IsArrayValidator(BaseValidator):
@@ -9,7 +9,9 @@ class IsArrayValidator(BaseValidator):
     Validator that checks if a value is an array.
     """
 
-    def __init__(self, error_message: str = "Value '{}' is not an array.") -> None:
+    def __init__(
+        self, error_message: str = "Value '{}' is not an array."
+    ) -> None:
 
         self.error_message = error_message
 

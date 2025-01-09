@@ -1,8 +1,7 @@
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from ..Exception import ValidationError
 from ..Validator.BaseValidator import BaseValidator
-
 
 if TYPE_CHECKING:
     from ..InputFilter import InputFilter

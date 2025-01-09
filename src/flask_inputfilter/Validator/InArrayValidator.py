@@ -1,7 +1,7 @@
 from typing import Any, List
 
 from ..Exception import ValidationError
-from ..Validator import BaseValidator
+from ..Validator.BaseValidator import BaseValidator
 
 
 class InArrayValidator(BaseValidator):
@@ -35,6 +35,8 @@ class InArrayValidator(BaseValidator):
 
         except Exception:
             if "{}" in self.error_message:
-                raise ValidationError(self.error_message.format(value, self.haystack))
+                raise ValidationError(
+                    self.error_message.format(value, self.haystack)
+                )
 
             raise ValidationError(self.error_message)

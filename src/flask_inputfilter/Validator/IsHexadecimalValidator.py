@@ -10,7 +10,8 @@ class IsHexadecimalValidator(BaseValidator):
     """
 
     def __init__(
-        self, error_message: str = "Value '{}' is not a valid hexadecimal string."
+        self,
+        error_message: str = "Value '{}' is not a valid hexadecimal string.",
     ) -> None:
 
         self.error_message = error_message

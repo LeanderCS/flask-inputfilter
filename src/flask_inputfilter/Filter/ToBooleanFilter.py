@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from ..Filter import BaseFilter
+from ..Filter.BaseFilter import BaseFilter
 
 
 class ToBooleanFilter(BaseFilter):

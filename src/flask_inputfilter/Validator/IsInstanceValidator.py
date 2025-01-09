@@ -1,7 +1,7 @@
-from typing import Type, Any
+from typing import Any, Type
 
 from ..Exception import ValidationError
-from ..Validator import BaseValidator
+from ..Validator.BaseValidator import BaseValidator
 
 
 class IsInstanceValidator(BaseValidator):
@@ -22,6 +22,8 @@ class IsInstanceValidator(BaseValidator):
 
         if not isinstance(value, self.classType):
             if "{}" in self.error_message:
-                raise ValidationError(self.error_message.format(value, self.classType))
+                raise ValidationError(
+                    self.error_message.format(value, self.classType)
+                )
 
             raise ValidationError(self.error_message)

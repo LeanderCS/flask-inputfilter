@@ -1,14 +1,16 @@
 from .ArrayElementValidator import ArrayElementValidator
 from .ArrayLengthValidator import ArrayLengthValidator
 from .BaseValidator import BaseValidator
-from .IsHexadecimalValidator import IsHexadecimalValidator
 from .InArrayValidator import InArrayValidator
 from .InEnumValidator import InEnumValidator
 from .IsArrayValidator import IsArrayValidator
-from .IsBase64ImageCorrectSizeValidator import IsBase64ImageCorrectSizeValidator
+from .IsBase64ImageCorrectSizeValidator import (
+    IsBase64ImageCorrectSizeValidator,
+)
 from .IsBase64ImageValidator import IsBase64ImageValidator
-from .IsBoolValidator import IsBoolValidator
+from .IsBooleanValidator import IsBooleanValidator
 from .IsFloatValidator import IsFloatValidator
+from .IsHexadecimalValidator import IsHexadecimalValidator
 from .IsInstanceValidator import IsInstanceValidator
 from .IsIntegerValidator import IsIntegerValidator
 from .IsJsonValidator import IsJsonValidator
