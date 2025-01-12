@@ -1,7 +1,7 @@
 import re
 
 from ..Exception import ValidationError
-from ..Validator.BaseValidator import BaseValidator
+from .BaseValidator import BaseValidator
 
 
 class RegexValidator(BaseValidator):
@@ -13,7 +13,8 @@ class RegexValidator(BaseValidator):
     def __init__(
         self,
         pattern: str,
-        error_message: str = "Value '{}' does not match the required pattern '{}'.",
+        error_message: str = "Value '{}' does not match the "
+        "required pattern '{}'.",
     ) -> None:
 
         self.pattern = pattern

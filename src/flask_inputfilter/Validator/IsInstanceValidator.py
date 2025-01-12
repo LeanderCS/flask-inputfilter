@@ -1,7 +1,7 @@
 from typing import Any, Type
 
 from ..Exception import ValidationError
-from ..Validator.BaseValidator import BaseValidator
+from .BaseValidator import BaseValidator
 
 
 class IsInstanceValidator(BaseValidator):

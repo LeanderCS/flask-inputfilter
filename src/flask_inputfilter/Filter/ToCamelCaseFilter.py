@@ -1,7 +1,7 @@
 import re
 from typing import Any, Optional
 
-from ..Filter.BaseFilter import BaseFilter
+from .BaseFilter import BaseFilter
 
 
 class ToCamelCaseFilter(BaseFilter):
@@ -14,7 +14,7 @@ class ToCamelCaseFilter(BaseFilter):
         if not isinstance(value, str):
             return None
 
-        value = re.sub(r"[\s-_]+", " ", value).strip()
+        value = re.sub(r"[\s_-]+", " ", value).strip()
 
         value = "".join(word.capitalize() for word in value.split())
 

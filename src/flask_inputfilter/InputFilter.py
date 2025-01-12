@@ -3,28 +3,12 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import requests
 from flask import Response, g, request
-from typing_extensions import TypedDict
 
+from .Condition.BaseCondition import BaseCondition
 from .Exception import ValidationError
 from .Filter.BaseFilter import BaseFilter
+from .Model import ExternalApiConfig
 from .Validator.BaseValidator import BaseValidator
-
-
-class ExternalApiConfig(TypedDict):
-    """
-    Configuration for an external API call.
-
-    :param url: The URL of the external API.
-    :param method: The HTTP method to use.
-    :param params: The parameters to send to the API.
-    :param data_key: The key in the response JSON to use
-    """
-
-    url: str
-    method: str
-    params: Optional[Dict[str, str]]
-    data_key: Optional[str]
-    api_key: Optional[str]
 
 
 class InputFilter:
@@ -35,6 +19,7 @@ class InputFilter:
     def __init__(self) -> None:
 
         self.fields = {}
+        self.conditions = []
 
     def add(
         self,
@@ -44,7 +29,7 @@ class InputFilter:
         fallback: Any = None,
         filters: Optional[List[BaseFilter]] = None,
         validators: Optional[List[BaseValidator]] = None,
-        external_api: Optional[Dict[str, Union[str, Dict[str, str]]]] = None,
+        external_api: Optional[ExternalApiConfig] = None,
     ) -> None:
         """
         Add the field to the input filter.
@@ -66,6 +51,12 @@ class InputFilter:
             "validators": validators or [],
             "external_api": external_api,
         }
+
+    def addCondition(self, condition: BaseCondition) -> None:
+        """
+        Add a condition to the input filter.
+        """
+        self.conditions.append(condition)
 
     def _applyFilters(self, field_name: str, value: Any) -> Any:
         """
@@ -96,7 +87,7 @@ class InputFilter:
             validator.validate(value)
 
     def _callExternalApi(
-        self, config: dict, validated_data: dict
+        self, config: ExternalApiConfig, validated_data: dict
     ) -> Optional[Any]:
         """
         Führt den API-Aufruf durch und gibt den Wert zurück,
@@ -105,34 +96,35 @@ class InputFilter:
 
         requestData = {}
 
-        if "api_key" in config:
+        if config.api_key:
             requestData["headers"][
                 "Authorization"
-            ] = f"Bearer {config['api_key']}"
+            ] = f"Bearer {config.api_key}"
 
-        if "headers" in config:
-            requestData["headers"].update(config["headers"])
+        if config.headers:
+            requestData["headers"].update(config.headers)
 
-        if "params" in config:
+        if config.params:
             requestData["params"] = self.__replacePlaceholdersInParams(
-                config["params"], validated_data
+                config.params, validated_data
             )
 
         requestData["url"] = self.__replacePlaceholders(
-            config["url"], validated_data
+            config.url, validated_data
         )
-        requestData["method"] = config["method"]
+        requestData["method"] = config.method
 
         response = requests.request(**requestData)
 
         if response.status_code != 200:
             raise ValidationError(
-                f"External API call failed with status code {response.status_code}"
+                f"External API call failed with status code "
+                f"{response.status_code}"
             )
 
         result = response.json()
 
-        data_key = config.get("data_key", None)
+        data_key = config.data_key
         if data_key:
             return result.get(data_key)
 
@@ -195,60 +187,65 @@ class InputFilter:
             # Check for required field
             if value is None:
                 if (
-                    field_info["required"]
-                    and field_info["external_api"] is None
+                    field_info.get("required")
+                    and field_info.get("external_api") is None
                 ):
-                    if field_info["fallback"] is None:
+                    if field_info.get("fallback") is None:
                         raise ValidationError(
                             f"Field '{field_name}' is required."
                         )
 
-                    value = field_info["fallback"]
+                    value = field_info.get("fallback")
 
-                if field_info["default"] is not None:
-                    value = field_info["default"]
+                if field_info.get("default") is not None:
+                    value = field_info.get("default")
 
             # Validate field
             if value is not None:
                 try:
                     self._validateField(field_name, value)
                 except ValidationError:
-                    if field_info["fallback"] is not None:
-                        value = field_info["fallback"]
+                    if field_info.get("fallback") is not None:
+                        value = field_info.get("fallback")
                     else:
                         raise
 
             # External API call
-            if field_info["external_api"]:
-                external_api_config = field_info["external_api"]
+            if field_info.get("external_api"):
+                external_api_config = field_info.get("external_api")
 
                 try:
                     value = self._callExternalApi(
                         external_api_config, validated_data
                     )
 
-                except ValidationError as e:
-                    if field_info["fallback"] is None:
-                        print(e)
+                except ValidationError:
+                    if field_info.get("fallback") is None:
                         raise ValidationError(
-                            f"External API call failed for field '{field_name}'."
+                            f"External API call failed for field "
+                            f"'{field_name}'."
                         )
 
-                    value = field_info["fallback"]
+                    value = field_info.get("fallback")
 
                 if value is None:
-                    if field_info["required"]:
-                        if field_info["fallback"] is None:
+                    if field_info.get("required"):
+                        if field_info.get("fallback") is None:
                             raise ValidationError(
                                 f"Field '{field_name}' is required."
                             )
 
-                        value = field_info["fallback"]
+                        value = field_info.get("fallback")
 
-                    if field_info["default"] is not None:
-                        value = field_info["default"]
+                    if field_info.get("default") is not None:
+                        value = field_info.get("default")
 
             validated_data[field_name] = value
+
+        # Check conditions
+        for condition in self.conditions:
+            if not condition.check(validated_data):
+                raise ValidationError(f"Condition '{condition}' not met.")
 
         return validated_data
 

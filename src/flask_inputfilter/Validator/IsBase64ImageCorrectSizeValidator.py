@@ -2,7 +2,7 @@ import base64
 from typing import Any
 
 from ..Exception import ValidationError
-from ..Validator.BaseValidator import BaseValidator
+from .BaseValidator import BaseValidator
 
 
 class IsBase64ImageCorrectSizeValidator(BaseValidator):
@@ -15,7 +15,8 @@ class IsBase64ImageCorrectSizeValidator(BaseValidator):
         self,
         minSize: int = 1,
         maxSize: int = 4 * 1024 * 1024,
-        error_message: str = "The image is invalid or does not have an allowed size.",
+        error_message: str = "The image is invalid or does not "
+        "have an allowed size.",
     ) -> None:
 
         self.min_size = minSize

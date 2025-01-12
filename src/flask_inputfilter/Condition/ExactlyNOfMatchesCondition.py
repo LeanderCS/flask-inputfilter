@@ -1,0 +1,22 @@
+from typing import Any, Dict, List
+
+from .BaseCondition import BaseCondition
+
+
+class ExactlyNOfMatchesCondition(BaseCondition):
+    """
+    Condition that checks if exactly n of the given fields
+    match with the value.
+    """
+
+    def __init__(self, fields: List[str], n: int, value: Any) -> None:
+        self.fields = fields
+        self.n = n
+        self.value = value
+
+    def check(self, data: Dict[str, Any]) -> bool:
+
+        return (
+            sum(1 for field in self.fields if data.get(field) == self.value)
+            == self.n
+        )

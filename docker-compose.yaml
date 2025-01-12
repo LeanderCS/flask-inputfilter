@@ -1,5 +1,6 @@
 services:
-  app:
+
+  flask-inputfilter:
     build:
       context: .
       dockerfile: Dockerfile
