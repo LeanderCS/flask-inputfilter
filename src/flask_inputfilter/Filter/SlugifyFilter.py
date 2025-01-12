@@ -1,5 +1,5 @@
 import re
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 from .BaseFilter import BaseFilter
 
@@ -9,10 +9,9 @@ class SlugifyFilter(BaseFilter):
     Filter that converts a string to a slug.
     """
 
-    def apply(self, value: Any) -> Optional[str]:
-
+    def apply(self, value: Any) -> Union[Optional[str], Any]:
         if not isinstance(value, str):
-            return None
+            return value
 
         value = value.lower()
 

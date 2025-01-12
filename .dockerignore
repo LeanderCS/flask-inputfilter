@@ -1,5 +1,7 @@
 **.md
 .gitignore
+.git
 .github
 .idea
 .vscode
+__pycache__

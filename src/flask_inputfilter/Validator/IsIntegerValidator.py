@@ -12,11 +12,9 @@ class IsIntegerValidator(BaseValidator):
     def __init__(
         self, error_message: str = "Value '{}' is not an integer."
     ) -> None:
-
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
-
         if not isinstance(value, int):
             if "{}" in self.error_message:
                 raise ValidationError(self.error_message.format(value))

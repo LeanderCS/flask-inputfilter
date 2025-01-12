@@ -17,6 +17,7 @@ from src.flask_inputfilter.Condition import (
     OneOfMatchesCondition,
     RequiredIfCondition,
     StringLongerThanCondition,
+    TemporalOrderCondition,
 )
 from src.flask_inputfilter.Exception import ValidationError
 
@@ -337,6 +338,35 @@ class TestConditions(unittest.TestCase):
             self.inputFilter.validateData(
                 {"field1": "value", "field2": "value"}
             )
+
+    def test_temporal_order_condition(self) -> None:
+        """
+        Test TemporalOrderCondition.
+        """
+
+        self.inputFilter.add("field1")
+        self.inputFilter.add("field2")
+
+        self.inputFilter.addCondition(
+            TemporalOrderCondition("field1", "field2")
+        )
+
+        self.inputFilter.validateData(
+            {"field1": "2021-01-01", "field2": "2021-01-02"}
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData(
+                {"field1": "2021-01-02", "field2": "2021-01-01"}
+            )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData(
+                {"field1": "2021-01-01", "field2": "2021-01-01"}
+            )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"field1": "2021-01-01"})
 
 
 if __name__ == "__main__":

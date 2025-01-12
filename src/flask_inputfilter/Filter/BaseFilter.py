@@ -7,5 +7,4 @@ class BaseFilter:
     """
 
     def apply(self, value: Any) -> Any:
-
         raise NotImplementedError("Filter apply method must be implemented")

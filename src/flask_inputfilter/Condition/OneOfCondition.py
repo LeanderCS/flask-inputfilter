@@ -9,11 +9,9 @@ class OneOfCondition(BaseCondition):
     """
 
     def __init__(self, fields: List[str]) -> None:
-
         self.fields = fields
 
     def check(self, data: Dict[str, Any]) -> bool:
-
         return any(
             field in data and data.get(field) is not None
             for field in self.fields

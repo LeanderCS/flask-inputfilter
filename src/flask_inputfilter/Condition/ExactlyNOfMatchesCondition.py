@@ -15,7 +15,6 @@ class ExactlyNOfMatchesCondition(BaseCondition):
         self.value = value
 
     def check(self, data: Dict[str, Any]) -> bool:
-
         return (
             sum(1 for field in self.fields if data.get(field) == self.value)
             == self.n

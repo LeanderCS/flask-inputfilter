@@ -1,5 +1,5 @@
 import re
-from typing import Any, Optional
+from typing import Any, Union
 
 from .BaseFilter import BaseFilter
 
@@ -10,10 +10,9 @@ class WhitespaceCollapseFilter(BaseFilter):
     characters into a single space.
     """
 
-    def apply(self, value: Any) -> Optional[str]:
-
+    def apply(self, value: Any) -> Union[str, Any]:
         if not isinstance(value, str):
-            return None
+            return value
 
         value = re.sub(r"\s+", " ", value).strip()
 

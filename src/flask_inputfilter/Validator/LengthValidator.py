@@ -26,13 +26,11 @@ class LengthValidator(BaseValidator):
         max_length: int = None,
         error_message: str = "Value '{}' must be at {} '{}' characters long.",
     ) -> None:
-
         self.min_length = min_length
         self.max_length = max_length
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
-
         if len(value) < self.min_length:
             if "{}" in self.error_message:
                 raise ValidationError(

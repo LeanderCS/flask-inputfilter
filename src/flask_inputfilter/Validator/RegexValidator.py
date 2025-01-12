@@ -16,12 +16,10 @@ class RegexValidator(BaseValidator):
         error_message: str = "Value '{}' does not match the "
         "required pattern '{}'.",
     ) -> None:
-
         self.pattern = pattern
         self.error_message = error_message
 
     def validate(self, value: str) -> None:
-
         if not re.match(self.pattern, value):
             if "{}" in self.error_message:
                 raise ValidationError(

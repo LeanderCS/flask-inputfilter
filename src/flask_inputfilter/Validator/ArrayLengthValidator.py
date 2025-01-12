@@ -16,13 +16,11 @@ class ArrayLengthValidator(BaseValidator):
         max_length: int = float("inf"),
         error_message: str = "Array length must be between {} and {}.",
     ) -> None:
-
         self.min_length = min_length
         self.max_length = max_length
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
-
         if not isinstance(value, list):
             raise ValidationError("Value must be a list.")
 

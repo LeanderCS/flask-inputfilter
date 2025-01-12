@@ -17,13 +17,11 @@ class FloatPrecisionValidator(BaseValidator):
         error_message: str = "Value '{}' has more than {} digits in total or "
         "{} digits after the decimal point.",
     ) -> None:
-
         self.precision = precision
         self.scale = scale
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
-
         if not isinstance(value, (float, int)):
             raise ValidationError("Value must be a float or an integer")
 

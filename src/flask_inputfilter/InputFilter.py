@@ -17,7 +17,6 @@ class InputFilter:
     """
 
     def __init__(self) -> None:
-
         self.fields = {}
         self.conditions = []
 

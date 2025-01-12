@@ -1,4 +1,5 @@
 import unittest
+from datetime import date, datetime
 from enum import Enum
 
 from src.flask_inputfilter.Filter import (
@@ -9,9 +10,12 @@ from src.flask_inputfilter.Filter import (
     ToAlphaNumericFilter,
     ToBooleanFilter,
     ToCamelCaseFilter,
+    ToDateFilter,
+    ToDateTimeFilter,
     ToEnumFilter,
     ToFloatFilter,
     ToIntegerFilter,
+    ToIsoFilter,
     ToLowerFilter,
     ToNormalizedUnicodeFilter,
     ToNullFilter,
@@ -154,6 +158,35 @@ class TestInputFilter(unittest.TestCase):
 
         self.assertEqual(validated_data["username"], "testUser")
 
+    def test_to_date_filter(self) -> None:
+        """
+        Test that ToDateFilter converts string to date.
+        """
+
+        self.inputFilter.add("dob", required=True, filters=[ToDateFilter()])
+
+        validated_data = self.inputFilter.validateData({"dob": "1996-12-01"})
+
+        self.assertEqual(validated_data["dob"], date(1996, 12, 1))
+
+    def test_to_datetime_filter(self) -> None:
+        """
+        Test that ToDateTimeFilter converts string to datetime.
+        """
+
+        self.inputFilter.add(
+            "created_at", required=True, filters=[ToDateTimeFilter()]
+        )
+
+        validated_data = self.inputFilter.validateData(
+            {"created_at": "2021-01-01T12:00:00"}
+        )
+
+        self.assertEqual(
+            validated_data["created_at"],
+            datetime(2021, 1, 1, 12, 0, 0),
+        )
+
     def test_to_enum_filter(self) -> None:
         """
         Test that EnumFilter validates a string against a list of values.
@@ -195,6 +228,28 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData({"age": "25"})
 
         self.assertEqual(validated_data["age"], 25)
+
+    def test_to_iso_filter(self) -> None:
+        """
+        Test that ToIsoFilter converts date or datetime to
+        ISO 8601 formatted string.
+        """
+
+        self.inputFilter.add("date", filters=[ToIsoFilter()])
+
+        validated_data = self.inputFilter.validateData(
+            {"date": date(2021, 1, 1)}
+        )
+
+        self.assertEqual(validated_data["date"], "2021-01-01")
+
+        self.inputFilter.add("datetime", filters=[ToIsoFilter()])
+
+        validated_data = self.inputFilter.validateData(
+            {"datetime": datetime(2021, 1, 1, 12, 0, 0)}
+        )
+
+        self.assertEqual(validated_data["datetime"], "2021-01-01T12:00:00")
 
     def test_to_lower_filter(self) -> None:
         """

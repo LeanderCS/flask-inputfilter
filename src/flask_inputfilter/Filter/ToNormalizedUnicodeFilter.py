@@ -1,5 +1,5 @@
 import unicodedata
-from typing import Any, Optional
+from typing import Any, Union
 
 from typing_extensions import Literal
 
@@ -14,13 +14,11 @@ class ToNormalizedUnicodeFilter(BaseFilter):
     def __init__(
         self, form: Literal["NFC", "NFD", "NFKC", "NFKD"] = "NFC"
     ) -> None:
-
         self.form = form
 
-    def apply(self, value: Any) -> Optional[str]:
-
+    def apply(self, value: Any) -> Union[str, Any]:
         if not isinstance(value, str):
-            return None
+            return value
 
         value = unicodedata.normalize(self.form, value)
 

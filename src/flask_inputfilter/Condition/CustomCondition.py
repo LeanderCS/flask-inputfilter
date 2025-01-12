@@ -9,9 +9,7 @@ class CustomCondition(BaseCondition):
     """
 
     def __init__(self, condition: Callable[[Dict[str, Any]], bool]) -> None:
-
         self.condition = condition
 
     def check(self, data: Dict[str, Any]) -> bool:
-
         return self.condition(data)

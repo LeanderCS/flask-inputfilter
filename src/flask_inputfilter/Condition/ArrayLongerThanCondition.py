@@ -9,12 +9,10 @@ class ArrayLongerThanCondition(BaseCondition):
     """
 
     def __init__(self, longer_field: str, shorter_field: str) -> None:
-
         self.longer_field = longer_field
         self.shorter_field = shorter_field
 
     def check(self, data: Dict[str, Any]) -> bool:
-
         return len(data.get(self.longer_field) or []) > len(
             data.get(self.shorter_field) or []
         )

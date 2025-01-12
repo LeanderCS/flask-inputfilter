@@ -13,11 +13,9 @@ class IsHexadecimalValidator(BaseValidator):
         self,
         error_message: str = "Value '{}' is not a valid hexadecimal string.",
     ) -> None:
-
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
-
         if not isinstance(value, str):
             raise ValidationError("Value must be a string.")
 

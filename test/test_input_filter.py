@@ -165,7 +165,6 @@ class TestInputFilter(unittest.TestCase):
 
     @patch("requests.request")
     def test_external_api_fallback(self, mock_request: Mock) -> None:
-
         mock_response = Mock()
         mock_response.status_code = 400
         mock_response.json.return_value = {"name": True}

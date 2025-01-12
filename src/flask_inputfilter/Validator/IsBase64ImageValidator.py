@@ -18,11 +18,9 @@ class IsBase64ImageValidator(BaseValidator):
         error_message: str = "The image is invalid or does not "
         "have an allowed size.",
     ) -> None:
-
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
-
         try:
             decodedData = base64.b64decode(value)
             image = Image.open(io.BytesIO(decodedData))

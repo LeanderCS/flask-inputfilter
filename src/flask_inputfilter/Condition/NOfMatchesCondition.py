@@ -1,6 +1,6 @@
 from typing import Any, Dict, List
 
-from src.flask_inputfilter.Condition import BaseCondition
+from .BaseCondition import BaseCondition
 
 
 class NOfMatchesCondition(BaseCondition):
@@ -10,13 +10,11 @@ class NOfMatchesCondition(BaseCondition):
     """
 
     def __init__(self, fields: List[str], n: int, value: Any) -> None:
-
         self.fields = fields
         self.n = n
         self.value = value
 
     def check(self, data: Dict[str, Any]) -> bool:
-
         return (
             sum(1 for field in self.fields if data.get(field) == self.value)
             == self.n

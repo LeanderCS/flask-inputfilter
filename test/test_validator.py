@@ -1,4 +1,5 @@
 import unittest
+from datetime import date, datetime, timedelta
 from enum import Enum
 
 from src.flask_inputfilter.Enum import RegexEnum
@@ -7,6 +8,7 @@ from src.flask_inputfilter.InputFilter import InputFilter
 from src.flask_inputfilter.Validator import (
     ArrayElementValidator,
     ArrayLengthValidator,
+    DateRangeValidator,
     FloatPrecisionValidator,
     InArrayValidator,
     InEnumValidator,
@@ -15,10 +17,12 @@ from src.flask_inputfilter.Validator import (
     IsBase64ImageValidator,
     IsBooleanValidator,
     IsFloatValidator,
+    IsFutureDateValidator,
     IsHexadecimalValidator,
     IsInstanceValidator,
     IsIntegerValidator,
     IsJsonValidator,
+    IsPastDateValidator,
     IsStringValidator,
     IsUUIDValidator,
     LengthValidator,
@@ -82,6 +86,150 @@ class TestInputFilter(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"items": [1, 2, 3, 4, 5, 6]})
+
+    def test_date_after_validator(self) -> None:
+        """
+        Test DateAfterValidator.
+        """
+
+        self.inputFilter.add(
+            "date",
+            validators=[DateRangeValidator(min_date=date(2021, 1, 1))],
+        )
+
+        self.inputFilter.validateData({"date": date(2021, 6, 1)})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"date": date(2020, 6, 1)})
+
+        self.inputFilter.add(
+            "datetime",
+            validators=[
+                DateRangeValidator(
+                    min_date=datetime(2021, 1, 1, 0, 0),
+                )
+            ],
+        )
+
+        self.inputFilter.validateData({"datetime": date(2021, 6, 1)})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"datetime": date(2020, 6, 1)})
+
+        self.inputFilter.add(
+            "iso_date",
+            validators=[
+                DateRangeValidator(
+                    min_date="2021-01-12T22:26:08.542945",
+                    max_date="2021-01-24T22:26:08.542945",
+                )
+            ],
+        )
+
+        self.inputFilter.validateData(
+            {"iso_date": "2021-01-15T22:26:08.542945"}
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData(
+                {"iso_date": "2021-01-10T22:26:08.542945"}
+            )
+
+    def test_date_before_validator(self) -> None:
+        """
+        Test DateBeforeValidator.
+        """
+
+        self.inputFilter.add(
+            "date",
+            validators=[DateRangeValidator(min_date=date(2021, 1, 1))],
+        )
+
+        self.inputFilter.validateData({"date": date(2021, 6, 1)})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"date": date(2020, 6, 1)})
+
+        self.inputFilter.add(
+            "datetime",
+            validators=[
+                DateRangeValidator(
+                    max_date=datetime(2021, 12, 31, 0, 0),
+                )
+            ],
+        )
+
+        self.inputFilter.validateData({"datetime": date(2021, 6, 1)})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"datetime": date(2022, 6, 1)})
+
+        self.inputFilter.add(
+            "iso_date",
+            validators=[
+                DateRangeValidator(
+                    max_date="2021-01-24T22:26:08.542945",
+                    min_date="2021-01-12T22:26:08.542945",
+                )
+            ],
+        )
+
+        self.inputFilter.validateData(
+            {"iso_date": "2021-01-15T22:26:08.542945"}
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData(
+                {"iso_date": "2021-01-25T22:26:08.542945"}
+            )
+
+    def test_date_range_validator(self) -> None:
+        """
+        Test DateRangeValidator.
+        """
+
+        self.inputFilter.add(
+            "date",
+            validators=[DateRangeValidator(max_date=date(2021, 12, 31))],
+        )
+
+        self.inputFilter.validateData({"date": date(2021, 6, 1)})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"date": date(2022, 6, 1)})
+
+        self.inputFilter.add(
+            "datetime",
+            validators=[
+                DateRangeValidator(
+                    min_date=datetime(2021, 1, 1, 0, 0),
+                )
+            ],
+        )
+
+        self.inputFilter.validateData({"datetime": date(2021, 6, 1)})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"datetime": date(2020, 6, 1)})
+
+        self.inputFilter.add(
+            "iso_date",
+            validators=[
+                DateRangeValidator(
+                    min_date="2021-01-12T22:26:08.542945",
+                    max_date="2021-01-24T22:26:08.542945",
+                )
+            ],
+        )
+
+        self.inputFilter.validateData(
+            {"iso_date": "2021-01-15T22:26:08.542945"}
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData(
+                {"iso_date": "2022-01-15T22:26:08.542945"}
+            )
 
     def test_float_precision_validator(self) -> None:
         """
@@ -213,6 +361,26 @@ class TestInputFilter(unittest.TestCase):
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"price": "not_a_float"})
 
+    def test_is_future_date_validator(self) -> None:
+        """
+        Test IsFutureDateValidator.
+        """
+
+        self.inputFilter.add(
+            "date", required=True, validators=[IsFutureDateValidator()]
+        )
+
+        future_date = datetime.now() + timedelta(days=10)
+        self.inputFilter.validateData({"date": future_date})
+        future_date = (datetime.now() + timedelta(days=10)).date()
+        self.inputFilter.validateData({"date": future_date})
+        future_date = (datetime.now() + timedelta(days=10)).isoformat()
+        self.inputFilter.validateData({"date": future_date})
+
+        with self.assertRaises(ValidationError):
+            past_date = date.today() - timedelta(days=10)
+            self.inputFilter.validateData({"date": past_date})
+
     def test_is_hexadecimal_validator(self) -> None:
         """
         Test that HexadecimalValidator validates hexadecimal format.
@@ -269,6 +437,24 @@ class TestInputFilter(unittest.TestCase):
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"data": "not_a_json"})
 
+    def test_is_past_date_validator(self) -> None:
+        """
+        Test IsPastDateValidator.
+        """
+
+        self.inputFilter.add(
+            "date", required=True, validators=[IsPastDateValidator()]
+        )
+
+        self.inputFilter.validateData({"date": date(2021, 1, 1)})
+        self.inputFilter.validateData({"date": datetime(2021, 1, 1, 0, 0)})
+        past_date = (datetime.now() - timedelta(days=10)).isoformat()
+        self.inputFilter.validateData({"date": past_date})
+
+        with self.assertRaises(ValidationError):
+            future_date = date.today() + timedelta(days=10)
+            self.inputFilter.validateData({"date": future_date})
+
     def test_is_string_validator(self) -> None:
         """
         Test that IsStringValidator validates string type.
@@ -298,6 +484,42 @@ class TestInputFilter(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"uuid": "not_a_uuid"})
+
+    def test_is_weekday_validator(self) -> None:
+        """
+        Test IsWeekdayValidator.
+        """
+
+        self.inputFilter.add(
+            "date", required=True, validators=[IsPastDateValidator()]
+        )
+
+        self.inputFilter.validateData({"date": date(2021, 1, 1)})
+        self.inputFilter.validateData({"date": datetime(2021, 1, 1, 0, 0)})
+        past_date = (datetime.now() - timedelta(days=10)).isoformat()
+        self.inputFilter.validateData({"date": past_date})
+
+        with self.assertRaises(ValidationError):
+            future_date = date.today() + timedelta(days=10)
+            self.inputFilter.validateData({"date": future_date})
+
+    def test_is_weekend_validator(self) -> None:
+        """
+        Test IsWeekendValidator.
+        """
+
+        self.inputFilter.add(
+            "date", required=True, validators=[IsPastDateValidator()]
+        )
+
+        self.inputFilter.validateData({"date": date(2021, 1, 1)})
+        self.inputFilter.validateData({"date": datetime(2021, 1, 1, 0, 0)})
+        past_date = (datetime.now() - timedelta(days=10)).isoformat()
+        self.inputFilter.validateData({"date": past_date})
+
+        with self.assertRaises(ValidationError):
+            future_date = date.today() + timedelta(days=10)
+            self.inputFilter.validateData({"date": future_date})
 
     def test_length_validator(self) -> None:
         """

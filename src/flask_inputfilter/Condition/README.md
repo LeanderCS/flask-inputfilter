@@ -51,3 +51,4 @@ The following conditions are available in the `Condition` module:
 12. [`OneOfMatchesCondition`](OneOfMatchesCondition.py) - Validates that at least one of the given matches is true.
 13. [`RequiredIfCondition`](RequiredIfCondition.py) - Validates that the input is required if the given condition is true.
 14. [`StringLongerThanCondition`](StringLongerThanCondition.py) - Validates that the string is longer than the given value.
+15. [`TemporalOrderCondition`](TemporalOrderCondition.py) - Validates that the input is a temporal value.

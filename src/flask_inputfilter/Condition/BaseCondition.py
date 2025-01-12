@@ -8,5 +8,4 @@ class BaseCondition:
     """
 
     def check(self, data: Dict[str, Any]) -> bool:
-
         raise NotImplementedError("Condition must implement 'check' method.")

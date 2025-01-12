@@ -9,11 +9,9 @@ class ExactlyOneOfCondition(BaseCondition):
     """
 
     def __init__(self, fields: List[str]) -> None:
-
         self.fields = fields
 
     def check(self, data: Dict[str, Any]) -> bool:
-
         return (
             sum(1 for field in self.fields if data.get(field) is not None) == 1
         )

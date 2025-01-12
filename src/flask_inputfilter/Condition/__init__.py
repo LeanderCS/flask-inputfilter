@@ -14,3 +14,4 @@ from .OneOfCondition import OneOfCondition
 from .OneOfMatchesCondition import OneOfMatchesCondition
 from .RequiredIfCondition import RequiredIfCondition
 from .StringLongerThanCondition import StringLongerThanCondition
+from .TemporalOrderCondition import TemporalOrderCondition

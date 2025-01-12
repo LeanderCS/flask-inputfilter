@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Union
 
 from .BaseFilter import BaseFilter
 
@@ -9,13 +9,11 @@ class TruncateFilter(BaseFilter):
     """
 
     def __init__(self, max_length: int) -> None:
-
         self.max_length = max_length
 
-    def apply(self, value: Any) -> Optional[str]:
-
+    def apply(self, value: Any) -> Union[str, Any]:
         if not isinstance(value, str):
-            return None
+            return value
 
         if len(value) > self.max_length:
             value = value[: self.max_length]

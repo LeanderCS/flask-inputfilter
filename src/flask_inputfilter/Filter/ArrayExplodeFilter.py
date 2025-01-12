@@ -1,4 +1,4 @@
-from typing import Any, List, Optional
+from typing import Any, List, Union
 
 from .BaseFilter import BaseFilter
 
@@ -9,12 +9,10 @@ class ArrayExplodeFilter(BaseFilter):
     """
 
     def __init__(self, delimiter: str = ",") -> None:
-
         self.delimiter = delimiter
 
-    def apply(self, value: Any) -> Optional[List[str]]:
-
+    def apply(self, value: Any) -> Union[List[str], Any]:
         if not isinstance(value, str):
-            return None
+            return value
 
         return value.split(self.delimiter)

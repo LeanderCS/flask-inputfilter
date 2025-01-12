@@ -13,11 +13,9 @@ class IsJsonValidator(BaseValidator):
     def __init__(
         self, error_message: str = "Value '{}' is not a valid JSON string."
     ) -> None:
-
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
-
         try:
             json.loads(value)
 

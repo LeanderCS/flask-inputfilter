@@ -17,12 +17,10 @@ class ArrayElementValidator(BaseValidator):
         elementFilter: "InputFilter",
         error_message: str = "Value '{}' is not in '{}'",
     ) -> None:
-
         self.elementFilter = elementFilter
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
-
         if not isinstance(value, list):
             raise ValidationError("Value is not an array")
 

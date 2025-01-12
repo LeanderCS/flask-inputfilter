@@ -18,16 +18,13 @@ class IsBase64ImageCorrectSizeValidator(BaseValidator):
         error_message: str = "The image is invalid or does not "
         "have an allowed size.",
     ) -> None:
-
         self.min_size = minSize
         self.max_size = maxSize
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
-
         try:
-            decoded_image = base64.b64decode(value, validate=True)
-            image_size = len(decoded_image)
+            image_size = len(base64.b64decode(value, validate=True))
 
             if not (self.min_size <= image_size <= self.max_size):
                 raise ValidationError

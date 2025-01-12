@@ -15,13 +15,11 @@ class InArrayValidator(BaseValidator):
         strict: bool = False,
         error_message: str = "Value '{}' is not in the allowed values '{}'.",
     ) -> None:
-
         self.haystack = haystack
         self.strict = strict
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
-
         try:
             if self.strict:
                 if value not in self.haystack or not any(
