@@ -1,7 +1,7 @@
 import re
 
 from ..Exception import ValidationError
-from ..Validator.BaseValidator import BaseValidator
+from .BaseValidator import BaseValidator
 
 
 class RegexValidator(BaseValidator):

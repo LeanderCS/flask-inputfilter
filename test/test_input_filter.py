@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from src.flask_inputfilter.Exception import ValidationError
-from src.flask_inputfilter.InputFilter import InputFilter
+from src.flask_inputfilter.InputFilter import ExternalApiConfig, InputFilter
 from src.flask_inputfilter.Validator import InArrayValidator
 
 
@@ -87,11 +87,11 @@ class TestInputFilter(unittest.TestCase):
         # Add a field with external API configuration
         self.inputFilter.add(
             "is_valid",
-            external_api={
-                "url": "https://api.example.com/validate_user/{{name}}",
-                "method": "GET",
-                "data_key": "is_valid",
-            },
+            external_api=ExternalApiConfig(
+                url="https://api.example.com/validate_user/{{name}}",
+                method="GET",
+                data_key="is_valid",
+            ),
         )
 
         # API returns valid result
@@ -129,12 +129,12 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.add(
             "is_valid",
             required=True,
-            external_api={
-                "url": "https://api.example.com/validate_user/{{name}}",
-                "method": "GET",
-                "params": {"hash": "{{hash}}"},
-                "data_key": "is_valid",
-            },
+            external_api=ExternalApiConfig(
+                url="https://api.example.com/validate_user/{{name}}",
+                method="GET",
+                params={"hash": "{{hash}}"},
+                data_key="is_valid",
+            ),
         )
 
         # API returns valid result
@@ -176,12 +176,12 @@ class TestInputFilter(unittest.TestCase):
             "username_with_fallback",
             required=True,
             fallback="fallback_user",
-            external_api={
-                "url": "https://api.example.com/validate_user",
-                "method": "GET",
-                "params": {"user": "{{value}}"},
-                "data_key": "name",
-            },
+            external_api=ExternalApiConfig(
+                url="https://api.example.com/validate_user",
+                method="GET",
+                params={"user": "{{value}}"},
+                data_key="name",
+            ),
         )
 
         validated_data = self.inputFilter.validateData(
@@ -190,3 +190,7 @@ class TestInputFilter(unittest.TestCase):
         self.assertEqual(
             validated_data["username_with_fallback"], "fallback_user"
         )
+
+
+if __name__ == "__main__":
+    unittest.main()

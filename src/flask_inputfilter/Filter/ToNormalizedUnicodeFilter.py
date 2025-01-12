@@ -3,7 +3,7 @@ from typing import Any, Optional
 
 from typing_extensions import Literal
 
-from ..Filter.BaseFilter import BaseFilter
+from .BaseFilter import BaseFilter
 
 
 class ToNormalizedUnicodeFilter(BaseFilter):

@@ -1,1 +1,1 @@
-from . import *
+from .RegexEnum import RegexEnum

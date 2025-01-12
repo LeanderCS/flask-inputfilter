@@ -1,6 +1,6 @@
 from typing import Any, List, Optional
 
-from ..Filter.BaseFilter import BaseFilter
+from .BaseFilter import BaseFilter
 
 
 class ArrayExplodeFilter(BaseFilter):

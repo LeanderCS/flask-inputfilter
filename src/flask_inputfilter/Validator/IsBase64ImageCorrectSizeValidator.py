@@ -2,7 +2,7 @@ import base64
 from typing import Any
 
 from ..Exception import ValidationError
-from ..Validator.BaseValidator import BaseValidator
+from .BaseValidator import BaseValidator
 
 
 class IsBase64ImageCorrectSizeValidator(BaseValidator):

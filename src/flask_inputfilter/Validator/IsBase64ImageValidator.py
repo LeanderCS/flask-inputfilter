@@ -5,7 +5,7 @@ from typing import Any
 from PIL import Image
 
 from ..Exception import ValidationError
-from ..Validator.BaseValidator import BaseValidator
+from .BaseValidator import BaseValidator
 
 
 class IsBase64ImageValidator(BaseValidator):

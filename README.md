@@ -1,3 +1,5 @@
+from src.flask_inputfilter.Validator import IsStringValidator
+
 # flask-inputfilter
 
 The `InputFilter` class is used to validate and filter input data in Flask applications.
@@ -16,15 +18,18 @@ pip install flask-inputfilter
 ## Quickstart
 
 To use the `InputFilter` class, you need to create a new class that inherits from it and define the fields you want to validate and filter.
-There are lots of different filters and validators available to use, and you can also create your own custom filters and validators.
+
+There are lots of different filters and validators available to use, but it is also possible to create your own.
 
 ### Definition
 
 ```python
+
 from flask_inputfilter import InputFilter
+from flask_inputfilter.Condition import ExactlyOneOfCondition
 from flask_inputfilter.Enum import RegexEnum
 from flask_inputfilter.Filter import StringTrimFilter, ToIntegerFilter, ToNullFilter
-from flask_inputfilter.Validator import IsIntegerValidator, RegexValidator 
+from flask_inputfilter.Validator import IsIntegerValidator, IsStringValidator, RegexValidator
 
 
 class UpdateZipcodeInputFilter(InputFilter):
@@ -35,7 +40,7 @@ class UpdateZipcodeInputFilter(InputFilter):
         self.add(
             'id',
             required=True,
-            filters=[ToIntegerFilter(), ToNullFilter()],
+            filters=[ToNullFilter()],
             validators=[
                 IsIntegerValidator()
             ]
@@ -43,7 +48,6 @@ class UpdateZipcodeInputFilter(InputFilter):
 
         self.add(
             'zipcode',
-            required=True,
             filters=[StringTrimFilter()],
             validators=[
                 RegexValidator(
@@ -52,6 +56,19 @@ class UpdateZipcodeInputFilter(InputFilter):
                 )
             ]
         )
+
+        self.add(
+            'city',
+            filters=[StringTrimFilter()],
+            validators=[
+                IsStringValidator()
+            ]
+        )
+
+        self.addCondition(
+            ExactlyOneOfCondition(['zipcode', 'city'])
+        )
+
 ```
 
 ### Usage
@@ -61,6 +78,7 @@ After calling the `validate` method, the validated data will be available in the
 If the data is not valid, the `validate` method will return a 400 response with the error message.
 
 ```python
+
 from flask import Flask, g
 from your-path import UpdateZipcodeInputFilter
 
@@ -74,6 +92,7 @@ def updateZipcode():
     # Do something with validatedData
     id = data.get('id')
     zipcode = data.get('zipcode')
+
 ```
 
 ---

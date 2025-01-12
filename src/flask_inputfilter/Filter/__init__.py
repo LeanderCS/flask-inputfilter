@@ -5,6 +5,7 @@ from .StringTrimFilter import StringTrimFilter
 from .ToAlphaNumericFilter import ToAlphaNumericFilter
 from .ToBooleanFilter import ToBooleanFilter
 from .ToCamelCaseFilter import ToCamelCaseFilter
+from .ToEnumFilter import ToEnumFilter
 from .ToFloatFilter import ToFloatFilter
 from .ToIntegerFilter import ToIntegerFilter
 from .ToLowerFilter import ToLowerFilter

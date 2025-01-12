@@ -1,11 +1,13 @@
 import unittest
 from enum import Enum
 
+from src.flask_inputfilter.Enum import RegexEnum
 from src.flask_inputfilter.Exception import ValidationError
 from src.flask_inputfilter.InputFilter import InputFilter
 from src.flask_inputfilter.Validator import (
     ArrayElementValidator,
     ArrayLengthValidator,
+    FloatPrecisionValidator,
     InArrayValidator,
     InEnumValidator,
     IsArrayValidator,
@@ -22,9 +24,6 @@ from src.flask_inputfilter.Validator import (
     LengthValidator,
     RangeValidator,
     RegexValidator,
-)
-from src.flask_inputfilter.Validator.FloatPrecisionValidator import (
-    FloatPrecisionValidator,
 )
 
 
@@ -348,7 +347,11 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.add(
             "email",
             required=False,
-            validators=[RegexValidator(pattern=r"^[\w\.-]+@[\w\.-]+\.\w+$")],
+            validators=[
+                RegexValidator(
+                    RegexEnum.EMAIL.value,
+                )
+            ],
         )
 
         validated_data = self.inputFilter.validateData(
@@ -359,3 +362,7 @@ class TestInputFilter(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"email": "invalid_email"})
+
+
+if __name__ == "__main__":
+    unittest.main()

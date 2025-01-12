@@ -1,7 +1,7 @@
 from typing import Any
 
 from ..Exception import ValidationError
-from ..Validator.BaseValidator import BaseValidator
+from .BaseValidator import BaseValidator
 
 
 class RangeValidator(BaseValidator):

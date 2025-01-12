@@ -1,7 +1,7 @@
 from typing import Any, List
 
 from ..Exception import ValidationError
-from ..Validator.BaseValidator import BaseValidator
+from .BaseValidator import BaseValidator
 
 
 class InArrayValidator(BaseValidator):

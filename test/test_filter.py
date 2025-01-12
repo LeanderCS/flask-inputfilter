@@ -1,4 +1,5 @@
 import unittest
+from enum import Enum
 
 from src.flask_inputfilter.Filter import (
     ArrayExplodeFilter,
@@ -6,6 +7,8 @@ from src.flask_inputfilter.Filter import (
     StringTrimFilter,
     ToAlphaNumericFilter,
     ToBooleanFilter,
+    ToCamelCaseFilter,
+    ToEnumFilter,
     ToFloatFilter,
     ToIntegerFilter,
     ToLowerFilter,
@@ -117,6 +120,41 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData({"is_active": "true"})
 
         self.assertTrue(validated_data["is_active"])
+
+    def test_to_camel_case_filter(self) -> None:
+        """
+        Test that CamelCaseFilter converts string to camel case.
+        """
+
+        self.inputFilter.add(
+            "username", required=True, filters=[ToCamelCaseFilter()]
+        )
+
+        validated_data = self.inputFilter.validateData(
+            {"username": "test user"}
+        )
+
+        self.assertEqual(validated_data["username"], "testUser")
+
+    def test_to_enum_filter(self) -> None:
+        """
+        Test that EnumFilter validates a string against a list of values.
+        """
+
+        class ColorEnum(Enum):
+            RED = "red"
+            GREEN = "green"
+            BLUE = "blue"
+
+        self.inputFilter.add(
+            "color",
+            required=True,
+            filters=[ToEnumFilter(ColorEnum)],
+        )
+
+        validated_data = self.inputFilter.validateData({"color": "red"})
+
+        self.assertEqual(validated_data["color"], ColorEnum.RED)
 
     def test_to_float_filter(self) -> None:
         """
@@ -272,3 +310,7 @@ class TestInputFilter(unittest.TestCase):
         )
 
         self.assertEqual(validated_data["collapsed_field"], "Hello World")
+
+
+if __name__ == "__main__":
+    unittest.main()

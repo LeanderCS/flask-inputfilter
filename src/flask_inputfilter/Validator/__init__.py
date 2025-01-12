@@ -1,6 +1,7 @@
 from .ArrayElementValidator import ArrayElementValidator
 from .ArrayLengthValidator import ArrayLengthValidator
 from .BaseValidator import BaseValidator
+from .FloatPrecisionValidator import FloatPrecisionValidator
 from .InArrayValidator import InArrayValidator
 from .InEnumValidator import InEnumValidator
 from .IsArrayValidator import IsArrayValidator
