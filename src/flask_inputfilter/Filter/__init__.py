@@ -1,5 +1,6 @@
 from .ArrayExplodeFilter import ArrayExplodeFilter
 from .BaseFilter import BaseFilter
+from .RemoveEmojisFilter import RemoveEmojisFilter
 from .SlugifyFilter import SlugifyFilter
 from .StringTrimFilter import StringTrimFilter
 from .ToAlphaNumericFilter import ToAlphaNumericFilter

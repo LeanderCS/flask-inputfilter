@@ -5,7 +5,8 @@ from .BaseCondition import BaseCondition
 
 class ExactlyNOfMatchesCondition(BaseCondition):
     """
-    Condition that checks if exactly n of the given fields match with the value.
+    Condition that checks if exactly n of the given fields
+    match with the value.
     """
 
     def __init__(self, fields: List[str], n: int, value: Any) -> None:

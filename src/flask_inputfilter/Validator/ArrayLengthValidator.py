@@ -6,7 +6,8 @@ from .BaseValidator import BaseValidator
 
 class ArrayLengthValidator(BaseValidator):
     """
-    Validator that checks if the length of an array is within the specified range.
+    Validator that checks if the length of an array is within
+    the specified range.
     """
 
     def __init__(

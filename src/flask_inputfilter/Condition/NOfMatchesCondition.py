@@ -5,7 +5,8 @@ from src.flask_inputfilter.Condition import BaseCondition
 
 class NOfMatchesCondition(BaseCondition):
     """
-    Condition that ensures at least N of the specified fields matches the value.
+    Condition that ensures at least N of the specified
+    fields matches the value.
     """
 
     def __init__(self, fields: List[str], n: int, value: Any) -> None:

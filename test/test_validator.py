@@ -320,7 +320,8 @@ class TestInputFilter(unittest.TestCase):
 
     def test_range_validator(self) -> None:
         """
-        Test that RangeValidator validates numeric values within a specified range.
+        Test that RangeValidator validates numeric values
+        within a specified range.
         """
 
         self.inputFilter.add(

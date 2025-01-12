@@ -5,7 +5,8 @@ from .BaseCondition import BaseCondition
 
 class OneOfMatchesCondition(BaseCondition):
     """
-    Condition that ensures at least one of the specified fields matches the value.
+    Condition that ensures at least one of the specified
+    fields matches the value.
     """
 
     def __init__(self, fields: List[str], value: Any) -> None:

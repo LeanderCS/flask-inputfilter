@@ -118,7 +118,8 @@ class InputFilter:
 
         if response.status_code != 200:
             raise ValidationError(
-                f"External API call failed with status code {response.status_code}"
+                f"External API call failed with status code "
+                f"{response.status_code}"
             )
 
         result = response.json()
@@ -221,7 +222,8 @@ class InputFilter:
                 except ValidationError:
                     if field_info.get("fallback") is None:
                         raise ValidationError(
-                            f"External API call failed for field '{field_name}'."
+                            f"External API call failed for field "
+                            f"'{field_name}'."
                         )
 
                     value = field_info.get("fallback")

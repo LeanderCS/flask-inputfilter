@@ -7,7 +7,8 @@ The `Filter` module contains the filters that can be used to filter the input da
 The following filters are available in the `Filter` module:
 
 1. [`ArrayExplodeFilter`](ArrayExplodeFilter.py) - Explodes the input string into an array.
-2. [`SlugifyFilter`](SlugifyFilter.py) - Converts the string to a slug.
+2. [`RemoveEmojisFilter`](RemoveEmojisFilter.py) - Removes the emojis from the string.
+3. [`SlugifyFilter`](SlugifyFilter.py) - Converts the string to a slug.
 3. [`StringTrimFilter`](StringTrimFilter.py) - Trims the whitespace from the beginning and end of the string.
 4. [`ToAlphaNumericFilter`](ToAlphaNumericFilter.py) - Converts the string to an alphanumeric string.
 5. [`ToBooleanFilter`](ToBooleanFilter.py) - Converts the string to a boolean value.

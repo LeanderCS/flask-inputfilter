@@ -15,7 +15,8 @@ class IsBase64ImageValidator(BaseValidator):
 
     def __init__(
         self,
-        error_message: str = "The image is invalid or does not have an allowed size.",
+        error_message: str = "The image is invalid or does not "
+        "have an allowed size.",
     ) -> None:
 
         self.error_message = error_message

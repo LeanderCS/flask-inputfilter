@@ -3,6 +3,7 @@ from enum import Enum
 
 from src.flask_inputfilter.Filter import (
     ArrayExplodeFilter,
+    RemoveEmojisFilter,
     SlugifyFilter,
     StringTrimFilter,
     ToAlphaNumericFilter,
@@ -58,6 +59,23 @@ class TestInputFilter(unittest.TestCase):
         )
 
         self.assertEqual(validated_data["items"], ["item1", "item2", "item3"])
+
+    def test_remove_emojis_filter(self) -> None:
+        """
+        Test that RemoveEmojisFilter removes emojis from a string.
+        """
+
+        self.inputFilter.add(
+            "text",
+            required=False,
+            filters=[RemoveEmojisFilter()],
+        )
+
+        validated_data = self.inputFilter.validateData(
+            {"text": "Hello World! 😊"}
+        )
+
+        self.assertEqual(validated_data["text"], "Hello World! ")
 
     def test_slugify_filter(self) -> None:
         """

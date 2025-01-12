@@ -5,7 +5,8 @@ from .BaseCondition import BaseCondition
 
 class RequiredIfCondition(BaseCondition):
     """
-    Condition that ensures a field is required if another field has a specific value.
+    Condition that ensures a field is required if another
+    field has a specific value.
     """
 
     def __init__(
