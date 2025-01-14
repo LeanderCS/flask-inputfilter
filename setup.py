@@ -2,12 +2,12 @@ from setuptools import find_packages, setup
 
 setup(
     name="flask_inputfilter",
-    version="0.0.6",
+    version="0.0.7",
     author="Leander Cain Slotosch",
     author_email="slotosch.leander@outlook.de",
     description="A library to filter and validate input data in"
     "Flask applications",
-    long_description=open("README.md").read(),
+    long_description=open("README.rst").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/LeanderCS/flask-inputfilter",
     packages=find_packages(),
