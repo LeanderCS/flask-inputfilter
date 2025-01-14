@@ -17,18 +17,15 @@ jobs:
       - name: Build Docker image
         run: docker build . -t flask-inputfilter
 
-      - name: Run tests in Docker
+      - name: Run tests in Docker and upload coverage to Coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         run: |
           set -x # Print commands and their arguments as they are executed.
           set -e # Exit immediately if a command exits with a non-zero status.
           set -u # Exit immediately if a variable is not defined.
 
-          docker run flask-inputfilter coverage run --source=flask_inputfilter -m pytest test/
-
-      - name: Upload coverage to Coveralls
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        run: docker run -e COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }} flask-inputfilter coveralls
+          docker run -e COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }} flask-inputfilter sh -c "coverage run --source=flask_inputfilter -m pytest test/ && coveralls"
 
       - name: Run code style checks
         run: |
