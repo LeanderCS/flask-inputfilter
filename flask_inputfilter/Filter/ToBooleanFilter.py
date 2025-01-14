@@ -9,8 +9,4 @@ class ToBooleanFilter(BaseFilter):
     """
 
     def apply(self, value: Any) -> Union[Optional[bool], Any]:
-        try:
-            return bool(value)
-
-        except (ValueError, TypeError):
-            return value
+        return bool(value)

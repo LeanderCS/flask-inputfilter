@@ -7,30 +7,33 @@ The `Condition` module contains the conditions that can be used to validate the 
 The `addCondition` method is used to add a condition between fields.
 
 ```python
+
 from flask_inputfilter import InputFilter
-from flask_inputfilter.Condition import ExactlyOneOfCondition
-from flask_inputfilter.Filter import ToIntegerFilter
-from flask_inputfilter.Validator import IsIntegerValidator
+from flask_inputfilter.Condition import OneOfCondition
+from flask_inputfilter.Filter import StringTrimFilter
+from flask_inputfilter.Validator import IsStringValidator
+
 
 class TestInputFilter(InputFilter):
     def __init__(self):
         super().__init__()
 
         self.add(
-            'id',
-            required=True,
-            filters=[ToIntegerFilter()],
-            validators=[IsIntegerValidator()]
+            'username',
+            filters=[StringTrimFilter()],
+            validators=[IsStringValidator()]
         )
 
         self.add(
             'name',
-            required=True
+            filters=[StringTrimFilter()],
+            validators=[IsStringValidator()]
         )
 
         self.addCondition(
-            ExactlyOneOfCondition('id', 'name')
+            OneOfCondition(['id', 'name'])
         )
+
 ```
 
 ## Available conditions
@@ -51,4 +54,4 @@ The following conditions are available in the `Condition` module:
 12. [`OneOfMatchesCondition`](OneOfMatchesCondition.py) - Validates that at least one of the given matches is true.
 13. [`RequiredIfCondition`](RequiredIfCondition.py) - Validates that the input is required if the given condition is true.
 14. [`StringLongerThanCondition`](StringLongerThanCondition.py) - Validates that the string is longer than the given value.
-15. [`TemporalOrderCondition`](TemporalOrderCondition.py) - Validates that the input is a temporal value.
+15. [`TemporalOrderCondition`](TemporalOrderCondition.py) - Validates that the input is in correct temporal order.

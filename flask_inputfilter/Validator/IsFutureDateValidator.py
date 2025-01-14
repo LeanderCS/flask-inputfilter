@@ -33,6 +33,9 @@ class IsFutureDateValidator(BaseValidator):
         if isinstance(value, datetime):
             return value
 
+        elif isinstance(value, date):
+            return datetime.combine(value, datetime.min.time())
+
         elif isinstance(value, str):
             try:
                 return datetime.fromisoformat(value)
@@ -40,10 +43,6 @@ class IsFutureDateValidator(BaseValidator):
             except ValueError:
                 raise ValidationError(f"Invalid ISO 8601 format: {value}")
 
-        elif isinstance(value, date):
-            return datetime.combine(value, datetime.min.time())
-
-        else:
-            raise ValidationError(
-                f"Unsupported type for past date validation: {type(value)}"
-            )
+        raise ValidationError(
+            f"Unsupported type for past date validation: {type(value)}"
+        )

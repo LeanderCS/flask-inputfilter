@@ -2,8 +2,11 @@ import unittest
 from datetime import date, datetime
 from enum import Enum
 
-from src.flask_inputfilter.Filter import (
+from flask_inputfilter import InputFilter
+from flask_inputfilter.Filter import (
     ArrayExplodeFilter,
+    BaseFilter,
+    BlacklistFilter,
     RemoveEmojisFilter,
     SlugifyFilter,
     StringTrimFilter,
@@ -24,9 +27,9 @@ from src.flask_inputfilter.Filter import (
     ToStringFilter,
     ToUpperFilter,
     TruncateFilter,
+    WhitelistFilter,
     WhitespaceCollapseFilter,
 )
-from src.flask_inputfilter.InputFilter import InputFilter
 
 
 class TestInputFilter(unittest.TestCase):
@@ -51,7 +54,6 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData(
             {"tags": "tag1,tag2,tag3"}
         )
-
         self.assertEqual(validated_data["tags"], ["tag1", "tag2", "tag3"])
 
         self.inputFilter.add(
@@ -61,8 +63,49 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData(
             {"items": "item1;item2;item3"}
         )
-
         self.assertEqual(validated_data["items"], ["item1", "item2", "item3"])
+
+    def test_base_filter(self) -> None:
+        """
+        Test that BaseFilter raises NotImplementedError when apply
+        method is called.
+        """
+
+        with self.assertRaises(NotImplementedError):
+            BaseFilter().apply("test")
+
+    def test_blacklist_filter(self) -> None:
+        """
+        Test that BlacklistFilter filters out values that are in the blacklist.
+        """
+
+        self.inputFilter.add(
+            "blacklisted_field",
+            required=False,
+            filters=[BlacklistFilter(["test", "user"])],
+        )
+
+        validated_data = self.inputFilter.validateData(
+            {"blacklisted_field": "test user"}
+        )
+        self.assertEqual(validated_data["blacklisted_field"], "")
+
+        validated_data = self.inputFilter.validateData(
+            {"blacklisted_field": ["test", "user", "admin"]}
+        )
+        self.assertEqual(validated_data["blacklisted_field"], ["admin"])
+
+        validated_data = self.inputFilter.validateData(
+            {"blacklisted_field": {"test": "user", "admin": "admin"}}
+        )
+        self.assertEqual(
+            validated_data["blacklisted_field"], {"admin": "admin"}
+        )
+
+        validated_data = self.inputFilter.validateData(
+            {"blacklisted_field": 123}
+        )
+        self.assertEqual(validated_data["blacklisted_field"], 123)
 
     def test_remove_emojis_filter(self) -> None:
         """
@@ -78,8 +121,10 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData(
             {"text": "Hello World! 😊"}
         )
-
         self.assertEqual(validated_data["text"], "Hello World! ")
+
+        validated_data = self.inputFilter.validateData({"text": 123})
+        self.assertEqual(validated_data["text"], 123)
 
     def test_slugify_filter(self) -> None:
         """
@@ -95,8 +140,10 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData(
             {"slug": "Hello World!"}
         )
-
         self.assertEqual(validated_data["slug"], "hello-world")
+
+        validated_data = self.inputFilter.validateData({"slug": 123})
+        self.assertEqual(validated_data["slug"], 123)
 
     def test_string_trim_filter(self) -> None:
         """
@@ -110,7 +157,6 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData(
             {"trimmed_field": "   Hello World   "}
         )
-
         self.assertEqual(validated_data["trimmed_field"], "Hello World")
 
     def test_to_alphanumeric_filter(self) -> None:
@@ -127,10 +173,14 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData(
             {"alphanumeric_field": "Hello World!123"}
         )
-
         self.assertEqual(validated_data["alphanumeric_field"], "HelloWorld123")
 
-    def test_to_bool_filter(self) -> None:
+        validated_data = self.inputFilter.validateData(
+            {"alphanumeric_field": 123}
+        )
+        self.assertEqual(validated_data["alphanumeric_field"], 123)
+
+    def test_to_boolean_filter(self) -> None:
         """
         Test that ToBooleanFilter converts string to boolean.
         """
@@ -140,7 +190,6 @@ class TestInputFilter(unittest.TestCase):
         )
 
         validated_data = self.inputFilter.validateData({"is_active": "true"})
-
         self.assertTrue(validated_data["is_active"])
 
     def test_to_camel_case_filter(self) -> None:
@@ -155,8 +204,10 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData(
             {"username": "test user"}
         )
-
         self.assertEqual(validated_data["username"], "testUser")
+
+        validated_data = self.inputFilter.validateData({"username": 123})
+        self.assertEqual(validated_data["username"], 123)
 
     def test_to_date_filter(self) -> None:
         """
@@ -166,8 +217,23 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.add("dob", required=True, filters=[ToDateFilter()])
 
         validated_data = self.inputFilter.validateData({"dob": "1996-12-01"})
-
         self.assertEqual(validated_data["dob"], date(1996, 12, 1))
+
+        validated_data = self.inputFilter.validateData(
+            {"dob": date(1996, 12, 1)}
+        )
+        self.assertEqual(validated_data["dob"], date(1996, 12, 1))
+
+        validated_data = self.inputFilter.validateData(
+            {"dob": datetime(1996, 12, 1, 12, 0, 0)}
+        )
+        self.assertEqual(validated_data["dob"], date(1996, 12, 1))
+
+        validated_data = self.inputFilter.validateData({"dob": "no date"})
+        self.assertEqual(validated_data["dob"], "no date")
+
+        validated_data = self.inputFilter.validateData({"dob": 123})
+        self.assertEqual(validated_data["dob"], 123)
 
     def test_to_datetime_filter(self) -> None:
         """
@@ -181,11 +247,34 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData(
             {"created_at": "2021-01-01T12:00:00"}
         )
-
         self.assertEqual(
             validated_data["created_at"],
             datetime(2021, 1, 1, 12, 0, 0),
         )
+
+        validated_data = self.inputFilter.validateData(
+            {"created_at": date(2021, 1, 1)}
+        )
+        self.assertEqual(
+            validated_data["created_at"],
+            datetime(2021, 1, 1, 0, 0, 0),
+        )
+
+        validated_data = self.inputFilter.validateData(
+            {"created_at": datetime(2021, 1, 1, 12, 0, 0)}
+        )
+        self.assertEqual(
+            validated_data["created_at"],
+            datetime(2021, 1, 1, 12, 0, 0),
+        )
+
+        validated_data = self.inputFilter.validateData(
+            {"created_at": "no date"}
+        )
+        self.assertEqual(validated_data["created_at"], "no date")
+
+        validated_data = self.inputFilter.validateData({"created_at": 123})
+        self.assertEqual(validated_data["created_at"], 123)
 
     def test_to_enum_filter(self) -> None:
         """
@@ -204,7 +293,17 @@ class TestInputFilter(unittest.TestCase):
         )
 
         validated_data = self.inputFilter.validateData({"color": "red"})
+        self.assertEqual(validated_data["color"], ColorEnum.RED)
 
+        validated_data = self.inputFilter.validateData({"color": "yellow"})
+        self.assertEqual(validated_data["color"], "yellow")
+
+        validated_data = self.inputFilter.validateData({"color": 123})
+        self.assertEqual(validated_data["color"], 123)
+
+        validated_data = self.inputFilter.validateData(
+            {"color": ColorEnum.RED}
+        )
         self.assertEqual(validated_data["color"], ColorEnum.RED)
 
     def test_to_float_filter(self) -> None:
@@ -215,8 +314,13 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.add("price", required=True, filters=[ToFloatFilter()])
 
         validated_data = self.inputFilter.validateData({"price": "19.99"})
-
         self.assertEqual(validated_data["price"], 19.99)
+
+        validated_data = self.inputFilter.validateData({"price": False})
+        self.assertEqual(validated_data["price"], False)
+
+        validated_data = self.inputFilter.validateData({"price": "no float"})
+        self.assertEqual(validated_data["price"], "no float")
 
     def test_to_integer_filter(self) -> None:
         """
@@ -226,8 +330,16 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.add("age", required=True, filters=[ToIntegerFilter()])
 
         validated_data = self.inputFilter.validateData({"age": "25"})
-
         self.assertEqual(validated_data["age"], 25)
+
+        validated_data = self.inputFilter.validateData({"age": 25.3})
+        self.assertEqual(validated_data["age"], 25)
+
+        validated_data = self.inputFilter.validateData({"age": False})
+        self.assertEqual(validated_data["age"], False)
+
+        validated_data = self.inputFilter.validateData({"age": "no integer"})
+        self.assertEqual(validated_data["age"], "no integer")
 
     def test_to_iso_filter(self) -> None:
         """
@@ -240,7 +352,6 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData(
             {"date": date(2021, 1, 1)}
         )
-
         self.assertEqual(validated_data["date"], "2021-01-01")
 
         self.inputFilter.add("datetime", filters=[ToIsoFilter()])
@@ -248,7 +359,6 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData(
             {"datetime": datetime(2021, 1, 1, 12, 0, 0)}
         )
-
         self.assertEqual(validated_data["datetime"], "2021-01-01T12:00:00")
 
     def test_to_lower_filter(self) -> None:
@@ -263,8 +373,10 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData(
             {"username": "TESTUSER"}
         )
-
         self.assertEqual(validated_data["username"], "testuser")
+
+        validated_data = self.inputFilter.validateData({"username": 123})
+        self.assertEqual(validated_data["username"], 123)
 
     def test_to_normalized_unicode_filter(self) -> None:
         """
@@ -280,8 +392,10 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData(
             {"unicode_field": "Héllô Wôrld"}
         )
-
         self.assertEqual(validated_data["unicode_field"], "Hello World")
+
+        validated_data = self.inputFilter.validateData({"unicode_field": 123})
+        self.assertEqual(validated_data["unicode_field"], 123)
 
     def test_to_null_filter(self) -> None:
         """
@@ -293,7 +407,6 @@ class TestInputFilter(unittest.TestCase):
         )
 
         validated_data = self.inputFilter.validateData({"optional_field": ""})
-
         self.assertIsNone(validated_data["optional_field"])
 
     def test_to_pascal_case_filter(self) -> None:
@@ -308,8 +421,10 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData(
             {"username": "test user"}
         )
-
         self.assertEqual(validated_data["username"], "TestUser")
+
+        validated_data = self.inputFilter.validateData({"username": 123})
+        self.assertEqual(validated_data["username"], 123)
 
     def test_snake_case_filter(self) -> None:
         """
@@ -323,8 +438,10 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData(
             {"username": "TestUser"}
         )
-
         self.assertEqual(validated_data["username"], "test_user")
+
+        validated_data = self.inputFilter.validateData({"username": 123})
+        self.assertEqual(validated_data["username"], 123)
 
     def test_to_string_filter(self) -> None:
         """
@@ -334,7 +451,6 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.add("age", required=True, filters=[ToStringFilter()])
 
         validated_data = self.inputFilter.validateData({"age": 25})
-
         self.assertEqual(validated_data["age"], "25")
 
     def test_to_upper_filter(self) -> None:
@@ -349,8 +465,10 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData(
             {"username": "testuser"}
         )
-
         self.assertEqual(validated_data["username"], "TESTUSER")
+
+        validated_data = self.inputFilter.validateData({"username": 123})
+        self.assertEqual(validated_data["username"], 123)
 
     def test_truncate_filter(self) -> None:
         """
@@ -364,8 +482,44 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData(
             {"truncated_field": "Hello World"}
         )
-
         self.assertEqual(validated_data["truncated_field"], "Hello")
+
+        validated_data = self.inputFilter.validateData(
+            {"truncated_field": 123}
+        )
+        self.assertEqual(validated_data["truncated_field"], 123)
+
+    def test_whitelist_filter(self) -> None:
+        """
+        Test that WhitelistFilter filters out values that are
+        not in the whitelist.
+        """
+
+        self.inputFilter.add(
+            "whitelisted_field",
+            required=False,
+            filters=[WhitelistFilter(["test", "user"])],
+        )
+
+        validated_data = self.inputFilter.validateData(
+            {"whitelisted_field": "test user admin"}
+        )
+        self.assertEqual(validated_data["whitelisted_field"], "test user")
+
+        validated_data = self.inputFilter.validateData(
+            {"whitelisted_field": ["test", "user", "admin"]}
+        )
+        self.assertEqual(validated_data["whitelisted_field"], ["test", "user"])
+
+        validated_data = self.inputFilter.validateData(
+            {"whitelisted_field": {"test": "user", "admin": "admin"}}
+        )
+        self.assertEqual(validated_data["whitelisted_field"], {"test": "user"})
+
+        validated_data = self.inputFilter.validateData(
+            {"whitelisted_field": 123}
+        )
+        self.assertEqual(validated_data["whitelisted_field"], 123)
 
     def test_whitespace_collapse_filter(self) -> None:
         """
@@ -381,8 +535,12 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData(
             {"collapsed_field": "Hello    World"}
         )
-
         self.assertEqual(validated_data["collapsed_field"], "Hello World")
+
+        validated_data = self.inputFilter.validateData(
+            {"collapsed_field": 123}
+        )
+        self.assertEqual(validated_data["collapsed_field"], 123)
 
 
 if __name__ == "__main__":

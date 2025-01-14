@@ -1,9 +1,11 @@
 import unittest
+from datetime import date, datetime
 
-from src.flask_inputfilter import InputFilter
-from src.flask_inputfilter.Condition import (
+from flask_inputfilter import InputFilter
+from flask_inputfilter.Condition import (
     ArrayLengthEqualCondition,
     ArrayLongerThanCondition,
+    BaseCondition,
     CustomCondition,
     EqualCondition,
     ExactlyNOfCondition,
@@ -19,7 +21,8 @@ from src.flask_inputfilter.Condition import (
     StringLongerThanCondition,
     TemporalOrderCondition,
 )
-from src.flask_inputfilter.Exception import ValidationError
+from flask_inputfilter.Condition.NotEqualCondition import NotEqualCondition
+from flask_inputfilter.Exception import ValidationError
 
 
 class TestConditions(unittest.TestCase):
@@ -44,11 +47,18 @@ class TestConditions(unittest.TestCase):
 
         self.inputFilter.validateData({"field1": [1, 2], "field2": [1, 2]})
 
+        self.inputFilter.validateData({"field1": [], "field2": []})
+
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"field1": [1, 2]})
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"field1": [1, 2], "field2": [1]})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData(
+                {"field1": [1, 2], "field2": [1, 2, 3]}
+            )
 
     def test_array_longer_than_condition(self) -> None:
         """
@@ -66,6 +76,14 @@ class TestConditions(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"field1": [1, 2], "field2": [1, 2]})
+
+    def test_base_condition(self) -> None:
+        """
+        Test BaseCondition.
+        """
+
+        with self.assertRaises(NotImplementedError):
+            BaseCondition().check({})
 
     def test_custom_condition(self) -> None:
         """
@@ -261,6 +279,36 @@ class TestConditions(unittest.TestCase):
                 {"field1": "value", "field2": "value"}
             )
 
+    def test_not_equal_condition(self) -> None:
+        """
+        Test NotEqualCondition.
+        """
+
+        self.inputFilter.add("field1")
+        self.inputFilter.add("field2")
+
+        self.inputFilter.addCondition(NotEqualCondition("field1", "field2"))
+
+        self.inputFilter.validateData(
+            {"field1": "value", "field2": "not value"}
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData(
+                {"field1": "value", "field2": "value"}
+            )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData(
+                {"field1": "value", "field2": "value"}
+            )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"field1": True, "field2": True})
+
     def test_one_of_condition(self) -> None:
         """
         Test OneOfCondition when at least one field is present.
@@ -355,6 +403,13 @@ class TestConditions(unittest.TestCase):
             {"field1": "2021-01-01", "field2": "2021-01-02"}
         )
 
+        self.inputFilter.validateData(
+            {
+                "field1": datetime(2021, 1, 1, 12, 0, 0),
+                "field2": datetime(2021, 1, 2, 12, 0, 0),
+            }
+        )
+
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData(
                 {"field1": "2021-01-02", "field2": "2021-01-01"}
@@ -362,11 +417,22 @@ class TestConditions(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData(
-                {"field1": "2021-01-01", "field2": "2021-01-01"}
+                {"field1": date(2023, 1, 1), "field2": "2021-01-01"}
             )
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"field1": "2021-01-01"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData(
+                {
+                    "field1": datetime(2021, 1, 1, 12, 0, 0),
+                    "field2": datetime(2020, 1, 1, 12, 0, 0),
+                }
+            )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"field1": "not a datetime"})
 
 
 if __name__ == "__main__":

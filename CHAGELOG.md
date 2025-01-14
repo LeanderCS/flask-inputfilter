@@ -18,11 +18,11 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- New condition functionality between fields. [Check it out](src/flask_inputfilter/Condition/README.md)
+- New condition functionality between fields. [Check it out](flask_inputfilter/Condition/README.md)
 
 ### Changed
 
-- Switched external_api config from dict to class. [Check it out](src/flask_inputfilter/Model/ExternalApiConfig.py)
+- Switched external_api config from dict to class. [Check it out](flask_inputfilter/Model/ExternalApiConfig.py)
 
 
 ## [0.0.4] - 2025-01-09

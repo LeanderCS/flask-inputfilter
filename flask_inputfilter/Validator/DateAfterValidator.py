@@ -1,10 +1,11 @@
-from datetime import datetime
-from typing import Any
+from datetime import date, datetime
+from typing import Any, Union
 
 from ..Exception import ValidationError
+from .BaseValidator import BaseValidator
 
 
-class DateAfterValidator:
+class DateAfterValidator(BaseValidator):
     """
     Validator that checks if a date is after a specific date.
     Supports datetime and ISO 8601 formatted strings.
@@ -12,19 +13,20 @@ class DateAfterValidator:
 
     def __init__(
         self,
-        reference_date: str,
+        reference_date: Union[str, date, datetime],
         error_message: str = "Date '{}' is not after '{}'.",
     ) -> None:
-        self.reference_date = datetime.fromisoformat(reference_date)
+        self.reference_date = reference_date
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
+        value_reference_date = self._parse_date(self.reference_date)
         value_datetime = self._parse_date(value)
 
-        if value_datetime <= self.reference_date:
+        if value_datetime <= value_reference_date:
             if "{}" in self.error_message:
                 raise ValidationError(
-                    self.error_message.format(value, self.reference_date)
+                    self.error_message.format(value, value_reference_date)
                 )
 
             raise ValidationError(self.error_message)
@@ -32,6 +34,9 @@ class DateAfterValidator:
     def _parse_date(self, value: Any) -> datetime:
         if isinstance(value, datetime):
             return value
+
+        elif isinstance(value, date):
+            return datetime.combine(value, datetime.min.time())
 
         elif isinstance(value, str):
             try:

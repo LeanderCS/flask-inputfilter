@@ -11,23 +11,20 @@ class TemporalOrderCondition(BaseCondition):
     Supports datetime, date, and ISO 8601 formatted strings.
     """
 
-    def __init__(self, first_field: str, second_field: str) -> None:
-        self.first_field = first_field
-        self.second_field = second_field
+    def __init__(
+        self, smaller_date_field: str, larger_date_field: str
+    ) -> None:
+        self.smaller_date_field = smaller_date_field
+        self.larger_date_field = larger_date_field
 
     def check(self, data: Dict[str, Any]) -> bool:
-        first_date = self._parse_date(data.get(self.first_field))
-        second_date = self._parse_date(data.get(self.second_field))
+        smaller_date = self._parse_date(data.get(self.smaller_date_field))
+        larger_date = self._parse_date(data.get(self.larger_date_field))
 
-        return first_date < second_date
+        return smaller_date < larger_date
 
     @staticmethod
     def _parse_date(value: Any) -> datetime:
-        """
-        Converts a value to a datetime object if possible.
-        Supports datetime, date, and ISO 8601 strings.
-        """
-
         if isinstance(value, datetime):
             return value
 

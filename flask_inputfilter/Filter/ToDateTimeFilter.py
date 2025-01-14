@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any, Union
 
 from .BaseFilter import BaseFilter
@@ -13,6 +13,9 @@ class ToDateTimeFilter(BaseFilter):
     def apply(self, value: Any) -> Union[datetime, Any]:
         if isinstance(value, datetime):
             return value
+
+        elif isinstance(value, date):
+            return datetime.combine(value, datetime.min.time())
 
         elif isinstance(value, str):
             try:

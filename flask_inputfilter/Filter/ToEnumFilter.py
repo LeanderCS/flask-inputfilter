@@ -16,6 +16,9 @@ class ToEnumFilter(BaseFilter):
         if not isinstance(value, (str, int)):
             return value
 
+        if isinstance(value, Enum):
+            return value
+
         try:
             return self.enum_class(value)
 
