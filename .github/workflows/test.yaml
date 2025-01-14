@@ -1,6 +1,6 @@
 name: Run Tests
 
-on: [ push ]
+on: [push]
 
 permissions:
   actions: read
@@ -23,7 +23,12 @@ jobs:
           set -e # Exit immediately if a command exits with a non-zero status.
           set -u # Exit immediately if a variable is not defined.
 
-          docker run flask-inputfilter pytest
+          docker run flask-inputfilter coverage run --source=flask_inputfilter -m pytest test/
+
+      - name: Upload coverage to Coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        run: docker run -e COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }} flask-inputfilter coveralls
 
       - name: Run code style checks
         run: |

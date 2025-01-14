@@ -1,9 +1,10 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from src.flask_inputfilter.Exception import ValidationError
-from src.flask_inputfilter.InputFilter import ExternalApiConfig, InputFilter
-from src.flask_inputfilter.Validator import InArrayValidator
+from flask_inputfilter import InputFilter
+from flask_inputfilter.Exception import ValidationError
+from flask_inputfilter.Model import ExternalApiConfig
+from flask_inputfilter.Validator import InArrayValidator
 
 
 class TestInputFilter(unittest.TestCase):
@@ -100,8 +101,7 @@ class TestInputFilter(unittest.TestCase):
         self.assertEqual(validated_data["is_valid"], True)
         expected_url = "https://api.example.com/validate_user/test_user"
         mock_request.assert_called_with(
-            method="GET",
-            url=expected_url,
+            headers={}, method="GET", url=expected_url, params={}
         )
 
         # API returns invalid result
@@ -134,6 +134,8 @@ class TestInputFilter(unittest.TestCase):
                 method="GET",
                 params={"hash": "{{hash}}"},
                 data_key="is_valid",
+                headers={"custom_header": "value"},
+                api_key="1234",
             ),
         )
 
@@ -145,7 +147,10 @@ class TestInputFilter(unittest.TestCase):
         self.assertEqual(validated_data["is_valid"], True)
         expected_url = "https://api.example.com/validate_user/test_user"
         mock_request.assert_called_with(
-            method="GET", url=expected_url, params={"hash": "1234"}
+            headers={"Authorization": "Bearer 1234", "custom_header": "value"},
+            method="GET",
+            url=expected_url,
+            params={"hash": "1234"},
         )
 
         # API returns invalid status code

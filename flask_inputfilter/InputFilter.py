@@ -93,12 +93,15 @@ class InputFilter:
         der im Antwortkörper zu finden ist.
         """
 
-        requestData = {}
+        requestData = {
+            "headers": {},
+            "params": {},
+        }
 
         if config.api_key:
-            requestData["headers"][
-                "Authorization"
-            ] = f"Bearer {config.api_key}"
+            requestData["headers"]["Authorization"] = (
+                f"Bearer " f"{config.api_key}"
+            )
 
         if config.headers:
             requestData["headers"].update(config.headers)
@@ -117,8 +120,8 @@ class InputFilter:
 
         if response.status_code != 200:
             raise ValidationError(
-                f"External API call failed with status code "
-                f"{response.status_code}"
+                f"External API call failed with "
+                f"status code {response.status_code}"
             )
 
         result = response.json()

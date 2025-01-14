@@ -11,11 +11,11 @@ class ToDateFilter(BaseFilter):
     """
 
     def apply(self, value: Any) -> Union[date, Any]:
-        if isinstance(value, date):
-            return value
-
-        elif isinstance(value, datetime):
+        if isinstance(value, datetime):
             return value.date()
+
+        elif isinstance(value, date):
+            return value
 
         elif isinstance(value, str):
             try:

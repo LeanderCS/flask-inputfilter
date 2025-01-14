@@ -9,8 +9,4 @@ class ToStringFilter(BaseFilter):
     """
 
     def apply(self, value: Any) -> Union[str, Any]:
-        try:
-            return str(value)
-
-        except (ValueError, TypeError):
-            return value
+        return str(value)

@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 from ..Exception import ValidationError
 from .BaseValidator import BaseValidator
@@ -12,8 +12,8 @@ class DateRangeValidator(BaseValidator):
 
     def __init__(
         self,
-        min_date: Optional[date] = None,
-        max_date: Optional[date] = None,
+        min_date: Optional[Union[str, date, datetime]] = None,
+        max_date: Optional[Union[str, date, datetime]] = None,
         error_message="Date '{}' is not in the range from '{}' to '{}'.",
     ) -> None:
         self.min_date = min_date
@@ -56,7 +56,6 @@ class DateRangeValidator(BaseValidator):
         elif isinstance(value, date):
             return datetime.combine(value, datetime.min.time())
 
-        else:
-            raise ValidationError(
-                f"Unsupported type for past date validation: {type(value)}"
-            )
+        raise ValidationError(
+            f"Unsupported type for past date validation: {type(value)}"
+        )

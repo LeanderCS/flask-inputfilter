@@ -6,5 +6,4 @@ isort
 pillow==8.0.0
 pytest
 requests==2.22.0
-setuptools
-twine
+coveralls

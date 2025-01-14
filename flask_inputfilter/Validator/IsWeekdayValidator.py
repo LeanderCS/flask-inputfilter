@@ -1,10 +1,11 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any
 
 from ..Exception import ValidationError
+from .BaseValidator import BaseValidator
 
 
-class IsWeekdayValidator:
+class IsWeekdayValidator(BaseValidator):
     """
     Validator that checks if a date is on a weekday (Monday to Friday).
     Supports datetime and ISO 8601 formatted strings.
@@ -27,6 +28,9 @@ class IsWeekdayValidator:
     def _parse_date(self, value: Any) -> datetime:
         if isinstance(value, datetime):
             return value
+
+        elif isinstance(value, date):
+            return datetime.combine(value, datetime.min.time())
 
         elif isinstance(value, str):
             try:

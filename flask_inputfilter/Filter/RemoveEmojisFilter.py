@@ -21,7 +21,6 @@ class RemoveEmojisFilter(BaseFilter):
     """
 
     def apply(self, value: Any) -> Union[Optional[str], Any]:
-
         if not isinstance(value, str):
             return value
 
