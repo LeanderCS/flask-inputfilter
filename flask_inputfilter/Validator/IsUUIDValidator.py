@@ -1,5 +1,5 @@
 import uuid
-from typing import Any
+from typing import Any, Optional
 
 from ..Exception import ValidationError
 from .BaseValidator import BaseValidator
@@ -10,9 +10,7 @@ class IsUUIDValidator(BaseValidator):
     Validator that checks if a value is a valid UUID string.
     """
 
-    def __init__(
-        self, error_message: str = "Value '{}' is not a valid UUID."
-    ) -> None:
+    def __init__(self, error_message: Optional[str] = None) -> None:
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
@@ -23,4 +21,6 @@ class IsUUIDValidator(BaseValidator):
             uuid.UUID(value)
 
         except ValueError:
-            raise ValidationError(self.error_message.format(value))
+            raise ValidationError(
+                self.error_message or f"Value '{value}' is not a valid UUID."
+            )

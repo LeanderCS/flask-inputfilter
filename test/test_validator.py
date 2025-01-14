@@ -31,6 +31,8 @@ from flask_inputfilter.Validator import (
     IsWeekdayValidator,
     IsWeekendValidator,
     LengthValidator,
+    NotInArrayValidator,
+    NotValidator,
     RangeValidator,
     RegexValidator,
 )
@@ -876,6 +878,75 @@ class TestInputFilter(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"name": "a"})
+
+    def test_not_in_array_validator(self) -> None:
+        """
+        Test NotInArrayValidator.
+        """
+
+        self.inputFilter.add(
+            "color",
+            validators=[NotInArrayValidator(["red", "green", "blue"])],
+        )
+
+        self.inputFilter.validateData({"color": "yellow"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"color": "red"})
+
+        self.inputFilter.add(
+            "color_strict",
+            validators=[NotInArrayValidator(["red", "green", "blue"], True)],
+        )
+
+        self.inputFilter.validateData({"color_strict": "yellow"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"color_strict": "red"})
+
+        self.inputFilter.add(
+            "custom_error",
+            validators=[
+                NotInArrayValidator(
+                    ["red", "green", "blue"],
+                    error_message="Custom error message",
+                )
+            ],
+        )
+
+        self.inputFilter.validateData({"custom_error": "yellow"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"custom_error": "red"})
+
+    def test_not_validator(self) -> None:
+        """
+        Test NotValidator that inverts another validator.
+        """
+
+        self.inputFilter.add(
+            "age",
+            validators=[NotValidator(IsIntegerValidator())],
+        )
+
+        self.inputFilter.validateData({"age": "not an integer"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"age": 25})
+
+        self.inputFilter.add(
+            "age",
+            validators=[
+                NotValidator(
+                    IsIntegerValidator(), error_message="Custom error message"
+                )
+            ],
+        )
+
+        self.inputFilter.validateData({"age": "not an integer"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"age": 25})
 
     def test_range_validator(self) -> None:
         """

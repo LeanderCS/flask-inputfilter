@@ -358,15 +358,49 @@ class TestConditions(unittest.TestCase):
         self.inputFilter.add("field1")
         self.inputFilter.add("field2")
 
+        # Case 1: value is a single value
         self.inputFilter.addCondition(
             RequiredIfCondition("field1", "value", "field2")
         )
 
+        self.inputFilter.validateData({"field1": "not value"})
         self.inputFilter.validateData({"field2": "value"})
-        self.inputFilter.validateData({"field1": "value", "field2": "value"})
+        self.inputFilter.validateData(
+            {"field1": "value", "field2": "other value"}
+        )
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"field1": "value"})
+
+        # Case 2: value is a list
+        self.inputFilter.add("field3")
+        self.inputFilter.add("field4")
+
+        self.inputFilter.addCondition(
+            RequiredIfCondition("field3", ["value1", "value2"], "field4")
+        )
+
+        self.inputFilter.validateData({"field4": "value2"})
+        self.inputFilter.validateData({"field3": "value1", "field4": "value"})
+        self.inputFilter.validateData({"field3": "value2", "field4": "value"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"field3": "value1"})
+
+        # Case 3: value is None
+        self.inputFilter.add("field5")
+        self.inputFilter.add("field6")
+        self.inputFilter.addCondition(
+            RequiredIfCondition("field5", None, "field6")
+        )
+
+        self.inputFilter.validateData({"field6": "value"})
+        self.inputFilter.validateData(
+            {"field5": "any_value", "field6": "value"}
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"field5": "any_value"})
 
     def test_string_longer_than_condition(self) -> None:
         """

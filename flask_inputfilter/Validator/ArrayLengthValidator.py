@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 from ..Exception import ValidationError
 from .BaseValidator import BaseValidator
@@ -14,7 +14,7 @@ class ArrayLengthValidator(BaseValidator):
         self,
         min_length: int = 0,
         max_length: int = float("inf"),
-        error_message: str = "Array length must be between {} and {}.",
+        error_message: Optional[str] = None,
     ) -> None:
         self.min_length = min_length
         self.max_length = max_length
@@ -22,14 +22,13 @@ class ArrayLengthValidator(BaseValidator):
 
     def validate(self, value: Any) -> None:
         if not isinstance(value, list):
-            raise ValidationError("Value must be a list.")
+            raise ValidationError(f"Value '{value}' must be a list.")
 
         array_length = len(value)
 
         if not (self.min_length <= array_length <= self.max_length):
-            if "{}" in self.error_message:
-                raise ValidationError(
-                    self.error_message.format(self.min_length, self.max_length)
-                )
-
-            raise ValidationError(self.error_message)
+            raise ValidationError(
+                self.error_message
+                or f"Array length must be between '{self.min_length}' "
+                f"and '{self.max_length}'."
+            )

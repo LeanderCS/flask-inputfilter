@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Any
+from typing import Any, Optional
 
 from ..Exception import ValidationError
 from .BaseValidator import BaseValidator
@@ -11,19 +11,16 @@ class IsWeekdayValidator(BaseValidator):
     Supports datetime and ISO 8601 formatted strings.
     """
 
-    def __init__(
-        self, error_message: str = "Date '{}' is not a weekday."
-    ) -> None:
+    def __init__(self, error_message: Optional[str] = None) -> None:
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
         value_datetime = self._parse_date(value)
 
         if value_datetime.weekday() in (5, 6):
-            if "{}" in self.error_message:
-                raise ValidationError(self.error_message.format(value))
-
-            raise ValidationError(self.error_message)
+            raise ValidationError(
+                self.error_message or f"Date '{value}' is not a weekday."
+            )
 
     def _parse_date(self, value: Any) -> datetime:
         if isinstance(value, datetime):
@@ -37,9 +34,9 @@ class IsWeekdayValidator(BaseValidator):
                 return datetime.fromisoformat(value)
 
             except ValueError:
-                raise ValidationError(f"Invalid ISO 8601 format: {value}")
+                raise ValidationError(f"Invalid ISO 8601 format '{value}'.")
 
         else:
             raise ValidationError(
-                f"Unsupported type for weekday validation: {type(value)}"
+                f"Unsupported type for weekday validation '{type(value)}'."
             )

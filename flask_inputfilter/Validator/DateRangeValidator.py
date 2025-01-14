@@ -14,7 +14,7 @@ class DateRangeValidator(BaseValidator):
         self,
         min_date: Optional[Union[str, date, datetime]] = None,
         max_date: Optional[Union[str, date, datetime]] = None,
-        error_message="Date '{}' is not in the range from '{}' to '{}'.",
+        error_message: Optional[str] = None,
     ) -> None:
         self.min_date = min_date
         self.max_date = max_date
@@ -28,14 +28,11 @@ class DateRangeValidator(BaseValidator):
         if (min_date and value_date < min_date) or (
             max_date and value_date > max_date
         ):
-            if "{}" in self.error_message:
-                raise ValidationError(
-                    self.error_message.format(
-                        value, self.min_date, self.max_date
-                    )
-                )
-
-            raise ValidationError(self.error_message)
+            raise ValidationError(
+                self.error_message
+                or f"Date '{value}' is not in the range from "
+                f"'{self.min_date}' to '{self.max_date}'."
+            )
 
     def _parse_date(self, value: Any) -> datetime:
         """
@@ -51,11 +48,11 @@ class DateRangeValidator(BaseValidator):
                 return datetime.fromisoformat(value)
 
             except ValueError:
-                raise ValidationError(f"Invalid ISO 8601 format: {value}")
+                raise ValidationError(f"Invalid ISO 8601 format '{value}'.")
 
         elif isinstance(value, date):
             return datetime.combine(value, datetime.min.time())
 
         raise ValidationError(
-            f"Unsupported type for past date validation: {type(value)}"
+            f"Unsupported type for past date validation '{type(value)}'."
         )

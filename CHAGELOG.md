@@ -3,43 +3,44 @@
 All notable changes to this project will be documented in this file.
 
 
-## [0.0.7] - 2025-01-14
+# [0.0.7] - 2025-01-14
 
-### Added
+## Added
 
 - Workflow to run tests on all supported python versions. [Check it out](.github/workflows/test_env.yaml)
 - Added more test coverage for validators and filters.
 - Added tracking of coverage in tests.
 
-### Changed
+### Validator
 
-- Updated root README.md to include badges.
+- New `NotInArrayValidator` to check if a value is not in a list. [Check it out](flask_inputfilter/Validator/NotInArrayValidator.py)
+- New `NotValidator` to invert the result of another validator. [Check it out](flask_inputfilter/Validator/NotValidator.py)
 
 
-## [0.0.6] - 2025-01-12
+# [0.0.6] - 2025-01-12
 
-### Added
+## Added
 
 - New date validators and filters.
 
-### Changed
+## Removed
 
 - Dropped support for Python 3.6.
 
 
-## [0.0.5] - 2025-01-12
+# [0.0.5] - 2025-01-12
 
-### Added
+## Added
 
 - New condition functionality between fields. [Check it out](flask_inputfilter/Condition/README.md)
 
-### Changed
+## Changed
 
 - Switched external_api config from dict to class. [Check it out](flask_inputfilter/Model/ExternalApiConfig.py)
 
 
-## [0.0.4] - 2025-01-09
+# [0.0.4] - 2025-01-09
 
-### Added
+## Added
 
 - New external api functionality. [Check it out](EXTERNAL_API.md)
