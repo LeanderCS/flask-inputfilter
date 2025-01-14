@@ -1,0 +1,26 @@
+name: Run Tests on all environments
+
+on: [push]
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -f env_configs/Dockerfile . -t flask-inputfilter-env
+
+      - name: Run tests in Docker
+        run: |
+          set -x # Print commands and their arguments as they are executed.
+          set -e # Exit immediately if a command exits with a non-zero status.
+          set -u # Exit immediately if a variable is not defined.
+
+          docker run flask-inputfilter-env tox

@@ -3,15 +3,28 @@
 All notable changes to this project will be documented in this file.
 
 
+## [0.0.7] - 2025-01-14
+
+### Added
+
+- Workflow to run tests on all supported python versions. [Check it out](.github/workflows/test_env.yaml)
+- Added more test coverage for validators and filters.
+- Added tracking of coverage in tests.
+
+### Changed
+
+- Updated root README.md to include badges.
+
+
 ## [0.0.6] - 2025-01-12
 
 ### Added
 
-- New date validators and filters
+- New date validators and filters.
 
 ### Changed
 
-- Dropped support for Python 3.6
+- Dropped support for Python 3.6.
 
 
 ## [0.0.5] - 2025-01-12

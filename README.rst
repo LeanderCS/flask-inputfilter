@@ -40,8 +40,7 @@ Quickstart
 To use the `InputFilter` class, create a new class that inherits from it and define the
 fields you want to validate and filter.
 
-There are numerous filters and validators available, but you can also create your own.
-Refer to the [CREATE_OWN.md](CREATE_OWN.md) file for guidance.
+There are numerous filters and validators available, but you can also create your `own <CREATE_OWN.md>`.
 
 Definition
 ----------
