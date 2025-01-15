@@ -141,15 +141,19 @@ class TestInputFilter(unittest.TestCase):
             validators=[DateAfterValidator(reference_date=date(2021, 1, 1))],
         )
         self.inputFilter.validateData({"date": date(2021, 6, 1)})
-        self.inputFilter.validateData({"datetime": datetime(2021, 6, 1, 0, 0)})
-        self.inputFilter.validateData({"isodate": "2021-06-02T10:00:55"})
+        self.inputFilter.validateData({"date": datetime(2021, 6, 1, 0, 0)})
+        self.inputFilter.validateData({"date": "2021-06-02T10:00:55"})
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"date": date(2020, 12, 31)})
+
+        with self.assertRaises(ValidationError):
             self.inputFilter.validateData(
-                {"datetime": datetime(2020, 12, 31, 23, 59)}
+                {"date": datetime(2020, 12, 31, 23, 59)}
             )
-            self.inputFilter.validateData({"isodate": "2020-12-31T23:59:59"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"date": "2020-12-31T23:59:59"})
 
         self.inputFilter.add(
             "datetime",
@@ -162,15 +166,15 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.validateData(
             {"datetime": datetime(2021, 6, 1, 12, 0)}
         )
-        self.inputFilter.validateData({"isodatetime": "2021-06-01T12:00:00"})
+        self.inputFilter.validateData({"datetime": "2021-06-01T12:00:00"})
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData(
                 {"datetime": datetime(2020, 12, 31, 23, 59)}
             )
-            self.inputFilter.validateData(
-                {"isodatetime": "2020-12-31T23:59:59"}
-            )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"datetime": "2020-12-31T23:59:59"})
 
         self.inputFilter.add(
             "isodatetime",
@@ -206,6 +210,9 @@ class TestInputFilter(unittest.TestCase):
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"custom_error": "unparseable date"})
 
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"custom_error": 123})
+
     def test_date_before_validator(self) -> None:
         """
         Test DateBeforeValidator.
@@ -219,15 +226,19 @@ class TestInputFilter(unittest.TestCase):
         )
 
         self.inputFilter.validateData({"date": date(2021, 6, 1)})
-        self.inputFilter.validateData({"datetime": datetime(2021, 6, 1, 0, 0)})
-        self.inputFilter.validateData({"isodate": "2022-06-00T10:00:55"})
+        self.inputFilter.validateData({"date": datetime(2021, 6, 1, 0, 0)})
+        self.inputFilter.validateData({"date": "2021-06-01T10:00:55"})
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"date": date(2022, 6, 1)})
+
+        with self.assertRaises(ValidationError):
             self.inputFilter.validateData(
-                {"datetime": datetime(2022, 6, 1, 0, 54)}
+                {"date": datetime(2022, 6, 1, 0, 54)}
             )
-            self.inputFilter.validateData({"isodatetime": "20"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"date": "20"})
 
         self.inputFilter.add(
             "datetime",
@@ -238,20 +249,22 @@ class TestInputFilter(unittest.TestCase):
             ],
         )
 
-        self.inputFilter.validateData({"date": date(2021, 6, 1)})
+        self.inputFilter.validateData({"datetime": date(2021, 6, 1)})
         self.inputFilter.validateData(
             {"datetime": datetime(2021, 6, 1, 12, 0)}
         )
-        self.inputFilter.validateData({"isodatetime": "2021-06-01T00:00:00"})
+        self.inputFilter.validateData({"datetime": "2021-06-01T00:00:00"})
 
         with self.assertRaises(ValidationError):
-            self.inputFilter.validateData({"date": date(2022, 6, 1)})
+            self.inputFilter.validateData({"datetime": date(2022, 6, 1)})
+
+        with self.assertRaises(ValidationError):
             self.inputFilter.validateData(
                 {"datetime": datetime(2022, 6, 1, 0, 0)}
             )
-            self.inputFilter.validateData(
-                {"isodatetime": "2022-06-01T00:00:00"}
-            )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"datetime": "2022-06-01T00:00:00"})
 
         self.inputFilter.add(
             "isodatetime",
@@ -262,17 +275,21 @@ class TestInputFilter(unittest.TestCase):
             ],
         )
 
-        self.inputFilter.validateData({"date": date(2021, 6, 1)})
+        self.inputFilter.validateData({"isodatetime": date(2021, 6, 1)})
         self.inputFilter.validateData(
-            {"datetime": datetime(2021, 6, 1, 12, 0)}
+            {"isodatetime": datetime(2021, 6, 1, 12, 0)}
         )
         self.inputFilter.validateData({"isodatetime": "2021-06-01T00:00:00"})
 
         with self.assertRaises(ValidationError):
-            self.inputFilter.validateData({"date": date(2022, 6, 1)})
+            self.inputFilter.validateData({"isodatetime": date(2022, 6, 1)})
+
+        with self.assertRaises(ValidationError):
             self.inputFilter.validateData(
-                {"datetime": datetime(2022, 6, 1, 10, 0)}
+                {"isodatetime": datetime(2022, 6, 1, 10, 0)}
             )
+
+        with self.assertRaises(ValidationError):
             self.inputFilter.validateData(
                 {"isodatetime": "2022-06-01T00:00:00"}
             )
@@ -294,6 +311,9 @@ class TestInputFilter(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"custom_error": "unparseable date"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"custom_error": 123})
 
     def test_date_range_validator(self) -> None:
         """
@@ -510,7 +530,7 @@ class TestInputFilter(unittest.TestCase):
             validators=[
                 IsBase64ImageCorrectSizeValidator(
                     minSize=10,
-                    maxSize=50,
+                    maxSize=5,
                     error_message="Custom error message",
                 )
             ],

@@ -23,7 +23,7 @@ class DateAfterValidator(BaseValidator):
         value_reference_date = self._parse_date(self.reference_date)
         value_datetime = self._parse_date(value)
 
-        if value_datetime <= value_reference_date:
+        if value_datetime < value_reference_date:
             raise ValidationError(
                 self.error_message
                 or f"Date '{value}' is not after '{value_reference_date}'."
@@ -43,7 +43,6 @@ class DateAfterValidator(BaseValidator):
             except ValueError:
                 raise ValidationError(f"Invalid ISO 8601 format '{value}'.")
 
-        else:
-            raise ValidationError(
-                f"Unsupported type for date comparison '{type(value)}'."
-            )
+        raise ValidationError(
+            f"Unsupported type for date comparison '{type(value)}'."
+        )
