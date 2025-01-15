@@ -1,6 +1,6 @@
 import base64
 import io
-from typing import Any
+from typing import Any, Optional
 
 from PIL import Image
 
@@ -15,8 +15,7 @@ class IsBase64ImageValidator(BaseValidator):
 
     def __init__(
         self,
-        error_message: str = "The image is invalid or does not "
-        "have an allowed size.",
+        error_message: Optional[str] = None,
     ) -> None:
         self.error_message = error_message
 
@@ -27,4 +26,7 @@ class IsBase64ImageValidator(BaseValidator):
             image.verify()
 
         except Exception:
-            raise ValidationError(self.error_message)
+            raise ValidationError(
+                self.error_message
+                or "The image is invalid or does not have an allowed size."
+            )

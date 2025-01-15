@@ -118,11 +118,11 @@ Options
 The `add` method supports several options:
 
 - `Required`_
-- `Filter` (see `Filter` documentation in :file:`flask_inputfilter/Filter/README.md`)
-- `Validator` (see `Validator` documentation in :file:`flask_inputfilter/Validator/README.md`)
+- `Filter <flask_inputfilter/Filter/README.md>`_
+- `Validator <flask_inputfilter/Validator/README.md>`_
 - `Default`_
 - `Fallback`_
-- `ExternalApi` (see :file:`EXTERNAL_API.md`)
+- `ExternalApi <EXTERNAL_API.md>`_
 
 Required
 --------

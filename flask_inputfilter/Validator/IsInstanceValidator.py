@@ -1,4 +1,4 @@
-from typing import Any, Type
+from typing import Any, Optional, Type
 
 from ..Exception import ValidationError
 from .BaseValidator import BaseValidator
@@ -12,16 +12,14 @@ class IsInstanceValidator(BaseValidator):
     def __init__(
         self,
         classType: Type[Any],
-        error_message: str = "Value '{}' is not an instance of '{}'.",
+        error_message: Optional[str] = None,
     ) -> None:
         self.classType = classType
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
         if not isinstance(value, self.classType):
-            if "{}" in self.error_message:
-                raise ValidationError(
-                    self.error_message.format(value, self.classType)
-                )
-
-            raise ValidationError(self.error_message)
+            raise ValidationError(
+                self.error_message
+                or f"Value '{value}' is not an instance of '{self.classType}'."
+            )

@@ -40,18 +40,20 @@ class TestInputFilter(InputFilter):
 
 The following conditions are available in the `Condition` module:
 
-1. [`CustomCondition`](CustomCondition.py) - A custom condition that can be used to validate the input data.
-2. [`EqualCondition`](EqualCondition.py) - Validates that the input is equal to the given value.
-3. [`ExactlyNOfCondition`](ExactlyNOfCondition.py) - Validates that exactly `n` of the given conditions are true.
-4. [`ExactlyNOfMatchesCondition`](ExactlyNOfMatchesCondition.py) - Validates that exactly `n` of the given matches are true.
-5. [`ExactlyOneOfCondition`](ExactlyOneOfCondition.py) - Validates that exactly one of the given conditions is true.
-6. [`ExactlyOneOfMatchesCondition`](ExactlyOneOfMatchesCondition.py) - Validates that exactly one of the given matches is true.
-7. [`IntegerBiggerThanCondition`](IntegerBiggerThanCondition.py) - Validates that the integer is bigger than the given value.
-8. [`NOfCondition`](NOfCondition.py) - Validates that at least `n` of the given conditions are true.
-9. [`NOfMatchesCondition`](NOfMatchesCondition.py) - Validates that at least `n` of the given matches are true.
-10. [`NotEqualCondition`](NotEqualCondition.py) - Validates that the input is not equal to the given value.
-11. [`OneOfCondition`](OneOfCondition.py) - Validates that at least one of the given conditions is true.
-12. [`OneOfMatchesCondition`](OneOfMatchesCondition.py) - Validates that at least one of the given matches is true.
-13. [`RequiredIfCondition`](RequiredIfCondition.py) - Validates that the input is required if the given condition is true.
-14. [`StringLongerThanCondition`](StringLongerThanCondition.py) - Validates that the string is longer than the given value.
-15. [`TemporalOrderCondition`](TemporalOrderCondition.py) - Validates that the input is in correct temporal order.
+1. [`ArrayLengthEqualCondition`](ArrayLengthEqualCondition.py) - Validates that the length of the array is equal to the given value.
+2. [`ArrayLongerThanCondition`](ArrayLongerThanCondition.py) - Validates that the length of the array is longer than the given value.
+3. [`CustomCondition`](CustomCondition.py) - A custom condition that can be used to validate the input data.
+4. [`EqualCondition`](EqualCondition.py) - Validates that the input is equal to the given value.
+5. [`ExactlyNOfCondition`](ExactlyNOfCondition.py) - Validates that exactly `n` of the given conditions are true.
+6. [`ExactlyNOfMatchesCondition`](ExactlyNOfMatchesCondition.py) - Validates that exactly `n` of the given matches are true.
+7. [`ExactlyOneOfCondition`](ExactlyOneOfCondition.py) - Validates that exactly one of the given conditions is true.
+8. [`ExactlyOneOfMatchesCondition`](ExactlyOneOfMatchesCondition.py) - Validates that exactly one of the given matches is true.
+9. [`IntegerBiggerThanCondition`](IntegerBiggerThanCondition.py) - Validates that the integer is bigger than the given value.
+10. [`NOfCondition`](NOfCondition.py) - Validates that at least `n` of the given conditions are true.
+11. [`NOfMatchesCondition`](NOfMatchesCondition.py) - Validates that at least `n` of the given matches are true.
+12. [`NotEqualCondition`](NotEqualCondition.py) - Validates that the input is not equal to the given value.
+13. [`OneOfCondition`](OneOfCondition.py) - Validates that at least one of the given conditions is true.
+14. [`OneOfMatchesCondition`](OneOfMatchesCondition.py) - Validates that at least one of the given matches is true.
+15. [`RequiredIfCondition`](RequiredIfCondition.py) - Validates that the input is required if the given field has a specific value.
+16. [`StringLongerThanCondition`](StringLongerThanCondition.py) - Validates that the string is longer than the given value.
+17. [`TemporalOrderCondition`](TemporalOrderCondition.py) - Validates that the input is in correct temporal order.

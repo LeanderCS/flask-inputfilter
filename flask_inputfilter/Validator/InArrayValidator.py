@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, List, Optional
 
 from ..Exception import ValidationError
 from .BaseValidator import BaseValidator
@@ -13,7 +13,7 @@ class InArrayValidator(BaseValidator):
         self,
         haystack: List[Any],
         strict: bool = False,
-        error_message: str = "Value '{}' is not in the allowed values '{}'.",
+        error_message: Optional[str] = None,
     ) -> None:
         self.haystack = haystack
         self.strict = strict
@@ -32,9 +32,8 @@ class InArrayValidator(BaseValidator):
                     raise ValidationError
 
         except Exception:
-            if "{}" in self.error_message:
-                raise ValidationError(
-                    self.error_message.format(value, self.haystack)
-                )
-
-            raise ValidationError(self.error_message)
+            raise ValidationError(
+                self.error_message
+                or f"Value '{value}' is not in the allowed "
+                f"values '{self.haystack}'."
+            )

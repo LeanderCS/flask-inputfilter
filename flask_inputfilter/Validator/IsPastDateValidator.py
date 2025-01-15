@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Any
+from typing import Any, Optional
 
 from ..Exception import ValidationError
 from .BaseValidator import BaseValidator
@@ -10,19 +10,16 @@ class IsPastDateValidator(BaseValidator):
     Validator that checks if a date is in the past.
     """
 
-    def __init__(
-        self, error_message: str = "Date '{}' is not in the past."
-    ) -> None:
+    def __init__(self, error_message: Optional[str] = None) -> None:
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
         value_datetime = self._parse_date(value)
 
         if value_datetime >= datetime.now():
-            if "{}" in self.error_message:
-                raise ValidationError(self.error_message.format(value))
-
-            raise ValidationError(self.error_message)
+            raise ValidationError(
+                self.error_message or f"Date '{value}' is not in the past."
+            )
 
     def _parse_date(self, value: Any) -> datetime:
         """
@@ -38,12 +35,12 @@ class IsPastDateValidator(BaseValidator):
                 return datetime.fromisoformat(value)
 
             except ValueError:
-                raise ValidationError(f"Invalid ISO 8601 format: {value}")
+                raise ValidationError(f"Invalid ISO 8601 format '{value}'.")
 
         elif isinstance(value, date):
             return datetime.combine(value, datetime.min.time())
 
         else:
             raise ValidationError(
-                f"Unsupported type for past date validation: {type(value)}"
+                f"Unsupported type for past date validation '{type(value)}'."
             )

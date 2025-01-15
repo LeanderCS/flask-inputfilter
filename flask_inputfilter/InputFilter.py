@@ -16,9 +16,12 @@ class InputFilter:
     Base class for input filters.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, methods: Optional[List[str]] = None) -> None:
+        self.methods = methods or ["GET", "POST", "PATCH", "PUT", "DELETE"]
         self.fields = {}
         self.conditions = []
+        self.global_filters = []
+        self.global_validators = []
 
     def add(
         self,
@@ -36,7 +39,8 @@ class InputFilter:
         :param name: The name of the field.
         :param required: Whether the field is required.
         :param default: The default value of the field.
-        :param fallback: The fallback value of the field.
+        :param fallback: The fallback value of the field, if validations fails
+        or field None, although it is required .
         :param filters: The filters to apply to the field value.
         :param validators: The validators to apply to the field value.
         :param external_api: Configuration for an external API call.
@@ -57,15 +61,27 @@ class InputFilter:
         """
         self.conditions.append(condition)
 
+    def addGlobalFilter(self, filter_: BaseFilter) -> None:
+        """
+        Add a global filter to be applied to all fields.
+        """
+        self.global_filters.append(filter_)
+
+    def addGlobalValidator(self, validator: BaseValidator) -> None:
+        """
+        Add a global validator to be applied to all fields.
+        """
+        self.global_validators.append(validator)
+
     def _applyFilters(self, field_name: str, value: Any) -> Any:
         """
         Apply filters to the field value.
         """
 
-        field = self.fields.get(field_name)
+        for filter_ in self.global_filters:
+            value = filter_.apply(value)
 
-        if not field:
-            return value
+        field = self.fields.get(field_name)
 
         for filter_ in field["filters"]:
             value = filter_.apply(value)
@@ -77,10 +93,10 @@ class InputFilter:
         Validate the field value.
         """
 
-        field = self.fields.get(field_name)
+        for validator in self.global_validators:
+            validator.validate(value)
 
-        if not field:
-            return
+        field = self.fields.get(field_name)
 
         for validator in field["validators"]:
             validator.validate(value)
@@ -133,38 +149,31 @@ class InputFilter:
         return result
 
     @staticmethod
-    def __replacePlaceholders(url: str, validated_data: dict) -> str:
+    def __replacePlaceholders(value: str, validated_data: dict) -> str:
         """
-        Ersetzt alle Platzhalter in der URL, die mit {{}} definiert sind,
-        durch die entsprechenden Werte aus den Parametern.
+        Replace all placeholders, marked with '{{ }}' in value
+        with the corresponding values from validated_data.
         """
 
         return re.sub(
             r"{{(.*?)}}",
             lambda match: str(validated_data.get(match.group(1))),
-            url,
+            value,
         )
 
-    @staticmethod
     def __replacePlaceholdersInParams(
-        params: dict, validated_data: dict
+        self, params: dict, validated_data: dict
     ) -> dict:
         """
         Replace all placeholders in params with the
         corresponding values from validated_data.
         """
-        replaced_params = {}
-        for key, value in params.items():
-            if isinstance(value, str):
-                replaced_value = re.sub(
-                    r"{{(.*?)}}",
-                    lambda match: str(validated_data.get(match.group(1), "")),
-                    value,
-                )
-                replaced_params[key] = replaced_value
-            else:
-                replaced_params[key] = value
-        return replaced_params
+        return {
+            key: self.__replacePlaceholders(value, validated_data)
+            if isinstance(value, str)
+            else value
+            for key, value in params.items()
+        }
 
     def validateData(
         self, data: Dict[str, Any], kwargs: Dict[str, Any] = None
@@ -221,7 +230,7 @@ class InputFilter:
                         external_api_config, validated_data
                     )
 
-                except ValidationError:
+                except Exception:
                     if field_info.get("fallback") is None:
                         raise ValidationError(
                             f"External API call failed for field "
@@ -274,25 +283,13 @@ class InputFilter:
             def wrapper(
                 *args, **kwargs
             ) -> Union[Response, Tuple[Any, Dict[str, Any]]]:
-                if request.method == "GET":
-                    data = request.args
+                if request.method not in cls().methods:
+                    return Response(status=405, response="Method Not Allowed")
 
-                elif request.method in ["POST", "PUT", "DELETE"]:
-                    if not request.is_json:
-                        data = request.args
-
-                    else:
-                        data = request.json
-
-                else:
-                    return Response(
-                        status=415, response="Unsupported method Type"
-                    )
-
-                inputFilter = cls()
+                data = request.json if request.is_json else request.args
 
                 try:
-                    g.validated_data = inputFilter.validateData(data, kwargs)
+                    g.validated_data = cls().validateData(data, kwargs)
 
                 except ValidationError as e:
                     return Response(status=400, response=str(e))

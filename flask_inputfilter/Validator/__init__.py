@@ -25,5 +25,7 @@ from .IsUUIDValidator import IsUUIDValidator
 from .IsWeekdayValidator import IsWeekdayValidator
 from .IsWeekendValidator import IsWeekendValidator
 from .LengthValidator import LengthValidator
+from .NotInArrayValidator import NotInArrayValidator
+from .NotValidator import NotValidator
 from .RangeValidator import RangeValidator
 from .RegexValidator import RegexValidator

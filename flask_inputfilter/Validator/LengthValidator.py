@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any
+from typing import Any, Optional
 
 from ..Exception import ValidationError
 from .BaseValidator import BaseValidator
@@ -11,7 +11,6 @@ class LengthEnum(Enum):
     """
 
     LEAST = "least"
-
     MOST = "most"
 
 
@@ -22,31 +21,20 @@ class LengthValidator(BaseValidator):
 
     def __init__(
         self,
-        min_length: int = 0,
-        max_length: int = None,
-        error_message: str = "Value '{}' must be at {} '{}' characters long.",
+        min_length: Optional[int] = None,
+        max_length: Optional[int] = None,
+        error_message: Optional[str] = None,
     ) -> None:
         self.min_length = min_length
         self.max_length = max_length
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
-        if len(value) < self.min_length:
-            if "{}" in self.error_message:
-                raise ValidationError(
-                    self.error_message.format(
-                        value, LengthEnum.LEAST.value, self.min_length
-                    )
-                )
-
-            raise ValidationError(self.error_message)
-
-        if self.max_length is not None and len(value) > self.max_length:
-            if "{}" in self.error_message:
-                raise ValidationError(
-                    self.error_message.format(
-                        value, LengthEnum.MOST.value, self.max_length
-                    )
-                )
-
-            raise ValidationError(self.error_message)
+        if (self.max_length is not None and len(value) < self.min_length) or (
+            self.max_length is not None and len(value) > self.max_length
+        ):
+            raise ValidationError(
+                self.error_message
+                or f"Value '{value}' is not within the range of "
+                f"'{self.min_length}' to '{self.max_length}'."
+            )

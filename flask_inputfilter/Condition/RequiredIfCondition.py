@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional, Union
 
 from .BaseCondition import BaseCondition
 
@@ -10,14 +10,28 @@ class RequiredIfCondition(BaseCondition):
     """
 
     def __init__(
-        self, condition_field: str, value: Any, required_field: str
+        self,
+        condition_field: str,
+        value: Optional[Union[Any, List[Any]]],
+        required_field: str,
     ) -> None:
         self.condition_field = condition_field
         self.value = value
         self.required_field = required_field
 
     def check(self, data: Dict[str, Any]) -> bool:
-        return (
-            data.get(self.condition_field) != self.value
-            or data.get(self.required_field) is not None
-        )
+        condition_value = data.get(self.condition_field)
+
+        if self.value is not None:
+            if isinstance(self.value, list):
+                if condition_value in self.value:
+                    return data.get(self.required_field) is not None
+            else:
+                if condition_value == self.value:
+                    return data.get(self.required_field) is not None
+
+        else:
+            if condition_value is not None:
+                return data.get(self.required_field) is not None
+
+        return True

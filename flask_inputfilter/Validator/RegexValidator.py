@@ -1,4 +1,5 @@
 import re
+from typing import Optional
 
 from ..Exception import ValidationError
 from .BaseValidator import BaseValidator
@@ -13,17 +14,15 @@ class RegexValidator(BaseValidator):
     def __init__(
         self,
         pattern: str,
-        error_message: str = "Value '{}' does not match the "
-        "required pattern '{}'.",
+        error_message: Optional[str] = None,
     ) -> None:
         self.pattern = pattern
         self.error_message = error_message
 
     def validate(self, value: str) -> None:
         if not re.match(self.pattern, value):
-            if "{}" in self.error_message:
-                raise ValidationError(
-                    self.error_message.format(value, self.pattern)
-                )
-
-            raise ValidationError(self.error_message)
+            raise ValidationError(
+                self.error_message
+                or f"Value '{value}' does not match the required "
+                f"pattern '{self.pattern}'."
+            )

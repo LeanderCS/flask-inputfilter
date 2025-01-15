@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Any, Union
+from typing import Any, Optional, Union
 
 from ..Exception import ValidationError
 from .BaseValidator import BaseValidator
@@ -14,7 +14,7 @@ class DateBeforeValidator(BaseValidator):
     def __init__(
         self,
         reference_date: Union[str, date, datetime],
-        error_message: str = "Date '{}' is not before '{}'.",
+        error_message: Optional[str] = None,
     ) -> None:
         self.reference_date = reference_date
         self.error_message = error_message
@@ -24,12 +24,10 @@ class DateBeforeValidator(BaseValidator):
         value_datetime = self._parse_date(value)
 
         if value_datetime >= value_reference_date:
-            if "{}" in self.error_message:
-                raise ValidationError(
-                    self.error_message.format(value, value_reference_date)
-                )
-
-            raise ValidationError(self.error_message)
+            raise ValidationError(
+                self.error_message
+                or f"Date '{value}' is not before '{value_reference_date}'."
+            )
 
     def _parse_date(self, value: Any) -> datetime:
         if isinstance(value, datetime):
@@ -43,9 +41,9 @@ class DateBeforeValidator(BaseValidator):
                 return datetime.fromisoformat(value)
 
             except ValueError:
-                raise ValidationError(f"Invalid ISO 8601 format: {value}")
+                raise ValidationError(f"Invalid ISO 8601 format '{value}'.")
 
         else:
             raise ValidationError(
-                f"Unsupported type for date comparison: {type(value)}"
+                f"Unsupported type for date comparison '{type(value)}'."
             )

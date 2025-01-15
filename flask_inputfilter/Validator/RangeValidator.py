@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 from ..Exception import ValidationError
 from .BaseValidator import BaseValidator
@@ -11,9 +11,9 @@ class RangeValidator(BaseValidator):
 
     def __init__(
         self,
-        min_value: float = None,
-        max_value: float = None,
-        error_message: str = "Value '{}' is not within the range {} to {}.",
+        min_value: Optional[float] = None,
+        max_value: Optional[float] = None,
+        error_message: Optional[str] = None,
     ) -> None:
         self.min_value = min_value
         self.max_value = max_value
@@ -23,11 +23,8 @@ class RangeValidator(BaseValidator):
         if (self.min_value is not None and value < self.min_value) or (
             self.max_value is not None and value > self.max_value
         ):
-            if "{}" in self.error_message:
-                raise ValidationError(
-                    self.error_message.format(
-                        value, self.min_value, self.max_value
-                    )
-                )
-
-            raise ValidationError(self.error_message)
+            raise ValidationError(
+                self.error_message
+                or f"Value '{value}' is not within the range of "
+                f"'{self.min_value}' to '{self.max_value}'."
+            )
