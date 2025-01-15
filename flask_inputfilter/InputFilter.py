@@ -19,6 +19,8 @@ class InputFilter:
     def __init__(self) -> None:
         self.fields = {}
         self.conditions = []
+        self.global_filters = []
+        self.global_validators = []
 
     def add(
         self,
@@ -36,7 +38,8 @@ class InputFilter:
         :param name: The name of the field.
         :param required: Whether the field is required.
         :param default: The default value of the field.
-        :param fallback: The fallback value of the field.
+        :param fallback: The fallback value of the field, if validations fails
+        or field None, although it is required .
         :param filters: The filters to apply to the field value.
         :param validators: The validators to apply to the field value.
         :param external_api: Configuration for an external API call.
@@ -57,10 +60,25 @@ class InputFilter:
         """
         self.conditions.append(condition)
 
+    def addGlobalFilter(self, filter_: BaseFilter) -> None:
+        """
+        Add a global filter to be applied to all fields.
+        """
+        self.global_filters.append(filter_)
+
+    def addGlobalValidator(self, validator: BaseValidator) -> None:
+        """
+        Add a global validator to be applied to all fields.
+        """
+        self.global_validators.append(validator)
+
     def _applyFilters(self, field_name: str, value: Any) -> Any:
         """
         Apply filters to the field value.
         """
+
+        for filter_ in self.global_filters:
+            value = filter_.apply(value)
 
         field = self.fields.get(field_name)
 
@@ -76,6 +94,9 @@ class InputFilter:
         """
         Validate the field value.
         """
+
+        for validator in self.global_validators:
+            validator.validate(value)
 
         field = self.fields.get(field_name)
 
@@ -221,7 +242,7 @@ class InputFilter:
                         external_api_config, validated_data
                     )
 
-                except ValidationError:
+                except Exception:
                     if field_info.get("fallback") is None:
                         raise ValidationError(
                             f"External API call failed for field "

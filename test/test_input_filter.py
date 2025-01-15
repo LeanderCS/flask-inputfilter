@@ -2,9 +2,17 @@ import unittest
 from unittest.mock import Mock, patch
 
 from flask_inputfilter import InputFilter
+from flask_inputfilter.Condition import BaseCondition
 from flask_inputfilter.Exception import ValidationError
+from flask_inputfilter.Filter import ToUpperFilter
 from flask_inputfilter.Model import ExternalApiConfig
-from flask_inputfilter.Validator import InArrayValidator
+from flask_inputfilter.Validator import (
+    InArrayValidator,
+    IsIntegerValidator,
+    IsStringValidator,
+    LengthValidator,
+    RegexValidator,
+)
 
 
 class TestInputFilter(unittest.TestCase):
@@ -32,7 +40,7 @@ class TestInputFilter(unittest.TestCase):
         Test that default field works.
         """
 
-        self.inputFilter.add("available", required=False, default=True)
+        self.inputFilter.add("available", default=True)
 
         # Default case triggert
         validated_data = self.inputFilter.validateData({})
@@ -52,7 +60,6 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.add("available", required=True, fallback=True)
         self.inputFilter.add(
             "color",
-            required=False,
             fallback="red",
             validators=[InArrayValidator(["red", "green", "blue"])],
         )
@@ -83,7 +90,7 @@ class TestInputFilter(unittest.TestCase):
         mock_request.return_value = mock_response
 
         # Add a field where the external API receives its value
-        self.inputFilter.add("name", required=False, default="test_user")
+        self.inputFilter.add("name", default="test_user")
 
         # Add a field with external API configuration
         self.inputFilter.add(
@@ -121,9 +128,9 @@ class TestInputFilter(unittest.TestCase):
         mock_request.return_value = mock_response
 
         # Add fields where the external API receives its values
-        self.inputFilter.add("name", required=False)
+        self.inputFilter.add("name")
 
-        self.inputFilter.add("hash", required=False)
+        self.inputFilter.add("hash")
 
         # Add a field with external API configuration
         self.inputFilter.add(
@@ -194,6 +201,106 @@ class TestInputFilter(unittest.TestCase):
         self.assertEqual(
             validated_data["username_with_fallback"], "fallback_user"
         )
+
+    def test_multiple_validators(self) -> None:
+        """
+        Test that multiple validators are applied correctly.
+        """
+        self.inputFilter.add(
+            "username",
+            required=True,
+            validators=[
+                RegexValidator(r"^[a-zA-Z0-9_]+$"),
+                LengthValidator(min_length=3, max_length=15),
+            ],
+        )
+
+        validated_data = self.inputFilter.validateData(
+            {"username": "valid_user"}
+        )
+        self.assertEqual(validated_data["username"], "valid_user")
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"username": "no"})
+
+    def test_conditions(self) -> None:
+        """
+        Test that conditions are checked correctly.
+        """
+
+        class MockCondition(BaseCondition):
+            def check(self, data: dict) -> bool:
+                return data.get("age") > 18
+
+        self.inputFilter.add("age", required=True)
+        self.inputFilter.addCondition(MockCondition())
+
+        validated_data = self.inputFilter.validateData({"age": 20})
+        self.assertEqual(validated_data["age"], 20)
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"age": 17})
+
+    @patch("requests.request")
+    def test_invalid_api_response(self, mock_request: Mock) -> None:
+        """
+        Test that a non-JSON API response raises a ValidationError.
+        """
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.side_effect = ValueError("Invalid JSON")
+        mock_request.return_value = mock_response
+
+        self.inputFilter.add(
+            "is_valid",
+            external_api=ExternalApiConfig(
+                url="https://api.example.com/validate",
+                method="GET",
+            ),
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({})
+
+    def test_global_filter_applied_to_all_fields(self) -> None:
+        self.inputFilter.add("field1")
+        self.inputFilter.add("field2")
+
+        self.inputFilter.addGlobalFilter(ToUpperFilter())
+
+        validated_data = self.inputFilter.validateData(
+            {"field1": "test", "field2": "example"}
+        )
+
+        self.assertEqual(validated_data["field1"], "TEST")
+        self.assertEqual(validated_data["field2"], "EXAMPLE")
+
+    def test_global_filter_with_no_fields(self) -> None:
+        self.inputFilter.addGlobalFilter(ToUpperFilter())
+
+        validated_data = self.inputFilter.validateData({})
+        self.assertEqual(validated_data, {})
+
+    def test_global_validator_applied_to_all_fields(self) -> None:
+        self.inputFilter.add("field1")
+        self.inputFilter.add("field2")
+        self.inputFilter.addGlobalValidator(IsStringValidator())
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"field1": 345, "field2": "example"})
+
+        validated_data = self.inputFilter.validateData(
+            {"field1": "test", "field2": "example"}
+        )
+
+        self.assertEqual(validated_data["field1"], "test")
+        self.assertEqual(validated_data["field2"], "example")
+
+    def test_global_validator_with_no_fields(self) -> None:
+        self.inputFilter.addGlobalValidator(IsIntegerValidator())
+
+        validated_data = self.inputFilter.validateData({})
+        self.assertEqual(validated_data, {})
 
 
 if __name__ == "__main__":
