@@ -31,6 +31,7 @@ class InputFilter:
         fallback: Any = None,
         filters: Optional[List[BaseFilter]] = None,
         validators: Optional[List[BaseValidator]] = None,
+        steps: Optional[List[Union[BaseFilter, BaseValidator]]] = None,
         external_api: Optional[ExternalApiConfig] = None,
     ) -> None:
         """
@@ -43,6 +44,7 @@ class InputFilter:
         or field None, although it is required .
         :param filters: The filters to apply to the field value.
         :param validators: The validators to apply to the field value.
+        :param steps:
         :param external_api: Configuration for an external API call.
         """
 
@@ -52,6 +54,7 @@ class InputFilter:
             "fallback": fallback,
             "filters": filters or [],
             "validators": validators or [],
+            "steps": steps or [],
             "external_api": external_api,
         }
 
@@ -73,10 +76,13 @@ class InputFilter:
         """
         self.global_validators.append(validator)
 
-    def _applyFilters(self, field_name: str, value: Any) -> Any:
+    def __applyFilters(self, field_name: str, value: Any) -> Any:
         """
         Apply filters to the field value.
         """
+
+        if value is None:
+            return value
 
         for filter_ in self.global_filters:
             value = filter_.apply(value)
@@ -88,26 +94,37 @@ class InputFilter:
 
         return value
 
-    def _validateField(self, field_name: str, value: Any) -> None:
+    def __validateField(self, field_name: str, field_info, value: Any) -> None:
         """
         Validate the field value.
         """
 
-        for validator in self.global_validators:
-            validator.validate(value)
+        if value is None:
+            return
 
-        field = self.fields.get(field_name)
+        try:
+            for validator in self.global_validators:
+                validator.validate(value)
 
-        for validator in field["validators"]:
-            validator.validate(value)
+            field = self.fields.get(field_name)
 
-    def _callExternalApi(
-        self, config: ExternalApiConfig, validated_data: dict
+            for validator in field["validators"]:
+                validator.validate(value)
+        except ValidationError:
+            if field_info.get("fallback") is None:
+                raise
+
+            return field_info.get("fallback")
+
+    def __callExternalApi(
+        self, field_info, validated_data: dict
     ) -> Optional[Any]:
         """
         Führt den API-Aufruf durch und gibt den Wert zurück,
         der im Antwortkörper zu finden ist.
         """
+
+        config: ExternalApiConfig = field_info.get("external_api")
 
         requestData = {
             "headers": {},
@@ -132,21 +149,30 @@ class InputFilter:
         )
         requestData["method"] = config.method
 
-        response = requests.request(**requestData)
+        try:
+            response = requests.request(**requestData)
 
-        if response.status_code != 200:
-            raise ValidationError(
-                f"External API call failed with "
-                f"status code {response.status_code}"
-            )
+            if response.status_code != 200:
+                raise ValidationError(
+                    f"External API call failed with "
+                    f"status code {response.status_code}"
+                )
 
-        result = response.json()
+            result = response.json()
 
-        data_key = config.data_key
-        if data_key:
-            return result.get(data_key)
+            data_key = config.data_key
+            if data_key:
+                return result.get(data_key)
 
-        return result
+            return result
+        except Exception:
+            if field_info and field_info.get("fallback") is None:
+                raise ValidationError(
+                    f"External API call failed for field "
+                    f"'{config.data_key}'."
+                )
+
+            return field_info.get("fallback")
 
     @staticmethod
     def __replacePlaceholders(value: str, validated_data: dict) -> str:
@@ -175,6 +201,37 @@ class InputFilter:
             for key, value in params.items()
         }
 
+    @staticmethod
+    def __checkForRequired(
+        field_name: str, field_info: dict, value: Any
+    ) -> Any:
+        """
+        Determine the value of the field, considering the required and
+        fallback attributes.
+
+        If the field is not required and no value is provided, the default
+        value is returned.
+        If the field is required and no value is provided, the fallback
+        value is returned.
+        If no of the above conditions are met, a ValidationError is raised.
+        """
+
+        if value is not None:
+            return value
+
+        if not field_info.get("required"):
+            return field_info.get("default")
+
+        if field_info.get("fallback") is not None:
+            return field_info.get("fallback")
+
+        raise ValidationError(f"Field '{field_name}' is required.")
+
+    def __checkConditions(self, validated_data: dict) -> None:
+        for condition in self.conditions:
+            if not condition.check(validated_data):
+                raise ValidationError(f"Condition '{condition}' not met.")
+
     def validateData(
         self, data: Dict[str, Any], kwargs: Dict[str, Any] = None
     ) -> Dict[str, Any]:
@@ -192,71 +249,20 @@ class InputFilter:
         for field_name, field_info in self.fields.items():
             value = combined_data.get(field_name)
 
-            # Apply filters
-            value = self._applyFilters(field_name, value)
+            value = self.__applyFilters(field_name, value)
 
-            # Check for required field
-            if value is None:
-                if (
-                    field_info.get("required")
-                    and field_info.get("external_api") is None
-                ):
-                    if field_info.get("fallback") is None:
-                        raise ValidationError(
-                            f"Field '{field_name}' is required."
-                        )
+            value = (
+                self.__validateField(field_name, field_info, value) or value
+            )
 
-                    value = field_info.get("fallback")
-
-                if field_info.get("default") is not None:
-                    value = field_info.get("default")
-
-            # Validate field
-            if value is not None:
-                try:
-                    self._validateField(field_name, value)
-                except ValidationError:
-                    if field_info.get("fallback") is not None:
-                        value = field_info.get("fallback")
-                    else:
-                        raise
-
-            # External API call
             if field_info.get("external_api"):
-                external_api_config = field_info.get("external_api")
+                value = self.__callExternalApi(field_info, validated_data)
 
-                try:
-                    value = self._callExternalApi(
-                        external_api_config, validated_data
-                    )
-
-                except Exception:
-                    if field_info.get("fallback") is None:
-                        raise ValidationError(
-                            f"External API call failed for field "
-                            f"'{field_name}'."
-                        )
-
-                    value = field_info.get("fallback")
-
-                if value is None:
-                    if field_info.get("required"):
-                        if field_info.get("fallback") is None:
-                            raise ValidationError(
-                                f"Field '{field_name}' is required."
-                            )
-
-                        value = field_info.get("fallback")
-
-                    if field_info.get("default") is not None:
-                        value = field_info.get("default")
+            value = self.__checkForRequired(field_name, field_info, value)
 
             validated_data[field_name] = value
 
-        # Check conditions
-        for condition in self.conditions:
-            if not condition.check(validated_data):
-                raise ValidationError(f"Condition '{condition}' not met.")
+        self.__checkConditions(validated_data)
 
         return validated_data
 

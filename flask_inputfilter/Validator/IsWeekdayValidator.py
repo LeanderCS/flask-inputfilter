@@ -36,7 +36,6 @@ class IsWeekdayValidator(BaseValidator):
             except ValueError:
                 raise ValidationError(f"Invalid ISO 8601 format '{value}'.")
 
-        else:
-            raise ValidationError(
-                f"Unsupported type for weekday validation '{type(value)}'."
-            )
+        raise ValidationError(
+            f"Unsupported type for weekday validation '{type(value)}'."
+        )

@@ -37,14 +37,11 @@ class TestInputFilter(unittest.TestCase):
                 self.add(
                     name="username",
                     required=True,
-                    filters=[],
-                    validators=[],
                 )
                 self.add(
                     name="age",
                     required=False,
                     default=18,
-                    filters=[],
                     validators=[IsIntegerValidator()],
                 )
 
@@ -107,7 +104,6 @@ class TestInputFilter(unittest.TestCase):
                     name="age",
                     required=False,
                     default=18,
-                    filters=[],
                     validators=[IsIntegerValidator()],
                 )
 
@@ -135,14 +131,11 @@ class TestInputFilter(unittest.TestCase):
                 self.add(
                     name="username",
                     required=True,
-                    filters=[],
-                    validators=[],
                 )
                 self.add(
                     name="age",
                     required=False,
                     default=18,
-                    filters=[],
                     validators=[IsIntegerValidator()],
                 )
 
@@ -237,12 +230,17 @@ class TestInputFilter(unittest.TestCase):
 
         validated_data = self.inputFilter.validateData({})
 
-        self.assertEqual(validated_data["available"], True)
+        self.assertEqual(validated_data["available"], False)
         self.assertEqual(validated_data["color"], "red")
 
         validated_data = self.inputFilter.validateData({"available": False})
 
         self.assertEqual(validated_data["available"], False)
+
+        self.inputFilter.add("required_without_fallback", required=True)
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({})
 
     @patch("requests.request")
     def test_external_api(self, mock_request: Mock) -> None:

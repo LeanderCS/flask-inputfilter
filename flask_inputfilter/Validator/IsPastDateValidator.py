@@ -40,7 +40,6 @@ class IsPastDateValidator(BaseValidator):
         elif isinstance(value, date):
             return datetime.combine(value, datetime.min.time())
 
-        else:
-            raise ValidationError(
-                f"Unsupported type for past date validation '{type(value)}'."
-            )
+        raise ValidationError(
+            f"Unsupported type for past date validation '{type(value)}'."
+        )

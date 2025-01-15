@@ -43,7 +43,6 @@ class DateBeforeValidator(BaseValidator):
             except ValueError:
                 raise ValidationError(f"Invalid ISO 8601 format '{value}'.")
 
-        else:
-            raise ValidationError(
-                f"Unsupported type for date comparison '{type(value)}'."
-            )
+        raise ValidationError(
+            f"Unsupported type for date comparison '{type(value)}'."
+        )
