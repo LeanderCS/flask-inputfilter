@@ -9,7 +9,9 @@ All notable changes to this project will be documented in this file.
 
 - Workflow to run tests on all supported python versions. [Check it out](.github/workflows/test_env.yaml)
 - Added more test coverage for validators and filters.
-- Added tracking of coverage in tests.
+- Added tracking of coverage in tests. [Check it out](https://coveralls.io/github/LeanderCS/flask-inputfilter)
+- New functionality for global filters and validators in InputFilters.
+- New functionality to define custom supported methods.
 
 ### Validator
 

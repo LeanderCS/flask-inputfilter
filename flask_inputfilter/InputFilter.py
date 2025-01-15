@@ -16,7 +16,8 @@ class InputFilter:
     Base class for input filters.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, methods: Optional[List[str]] = None) -> None:
+        self.methods = methods or ["GET", "POST", "PATCH", "PUT", "DELETE"]
         self.fields = {}
         self.conditions = []
         self.global_filters = []
@@ -82,9 +83,6 @@ class InputFilter:
 
         field = self.fields.get(field_name)
 
-        if not field:
-            return value
-
         for filter_ in field["filters"]:
             value = filter_.apply(value)
 
@@ -99,9 +97,6 @@ class InputFilter:
             validator.validate(value)
 
         field = self.fields.get(field_name)
-
-        if not field:
-            return
 
         for validator in field["validators"]:
             validator.validate(value)
@@ -154,38 +149,31 @@ class InputFilter:
         return result
 
     @staticmethod
-    def __replacePlaceholders(url: str, validated_data: dict) -> str:
+    def __replacePlaceholders(value: str, validated_data: dict) -> str:
         """
-        Ersetzt alle Platzhalter in der URL, die mit {{}} definiert sind,
-        durch die entsprechenden Werte aus den Parametern.
+        Replace all placeholders, marked with '{{ }}' in value
+        with the corresponding values from validated_data.
         """
 
         return re.sub(
             r"{{(.*?)}}",
             lambda match: str(validated_data.get(match.group(1))),
-            url,
+            value,
         )
 
-    @staticmethod
     def __replacePlaceholdersInParams(
-        params: dict, validated_data: dict
+        self, params: dict, validated_data: dict
     ) -> dict:
         """
         Replace all placeholders in params with the
         corresponding values from validated_data.
         """
-        replaced_params = {}
-        for key, value in params.items():
-            if isinstance(value, str):
-                replaced_value = re.sub(
-                    r"{{(.*?)}}",
-                    lambda match: str(validated_data.get(match.group(1), "")),
-                    value,
-                )
-                replaced_params[key] = replaced_value
-            else:
-                replaced_params[key] = value
-        return replaced_params
+        return {
+            key: self.__replacePlaceholders(value, validated_data)
+            if isinstance(value, str)
+            else value
+            for key, value in params.items()
+        }
 
     def validateData(
         self, data: Dict[str, Any], kwargs: Dict[str, Any] = None
@@ -295,25 +283,13 @@ class InputFilter:
             def wrapper(
                 *args, **kwargs
             ) -> Union[Response, Tuple[Any, Dict[str, Any]]]:
-                if request.method == "GET":
-                    data = request.args
+                if request.method not in cls().methods:
+                    return Response(status=405, response="Method Not Allowed")
 
-                elif request.method in ["POST", "PUT", "DELETE"]:
-                    if not request.is_json:
-                        data = request.args
-
-                    else:
-                        data = request.json
-
-                else:
-                    return Response(
-                        status=415, response="Unsupported method Type"
-                    )
-
-                inputFilter = cls()
+                data = request.json if request.is_json else request.args
 
                 try:
-                    g.validated_data = inputFilter.validateData(data, kwargs)
+                    g.validated_data = cls().validateData(data, kwargs)
 
                 except ValidationError as e:
                     return Response(status=400, response=str(e))
