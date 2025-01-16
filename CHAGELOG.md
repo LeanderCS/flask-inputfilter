@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 
 
+# [0.0.7.1] - 2025-01-16
+
+## Changed
+
+- Updated setup.py to fix the issue with the missing subfolders.
+
+
 # [0.0.7] - 2025-01-14
 
 ## Added
