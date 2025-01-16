@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 
+# [0.0.8] - 2025-01-16
+
+## Added
+
+- New functionality to define steps for a field to have more control over the 
+  order of the validation and filtering process.
+
+
 # [0.0.7.1] - 2025-01-16
 
 ## Changed

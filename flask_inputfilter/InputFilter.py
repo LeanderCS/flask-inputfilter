@@ -44,7 +44,8 @@ class InputFilter:
         or field None, although it is required .
         :param filters: The filters to apply to the field value.
         :param validators: The validators to apply to the field value.
-        :param steps:
+        :param steps: Allows to apply multiple filters and validators
+        in a specific order.
         :param external_api: Configuration for an external API call.
         """
 
@@ -89,12 +90,14 @@ class InputFilter:
 
         field = self.fields.get(field_name)
 
-        for filter_ in field["filters"]:
+        for filter_ in field.get("filters"):
             value = filter_.apply(value)
 
         return value
 
-    def __validateField(self, field_name: str, field_info, value: Any) -> None:
+    def __validateField(
+        self, field_name: str, field_info: Any, value: Any
+    ) -> None:
         """
         Validate the field value.
         """
@@ -108,7 +111,7 @@ class InputFilter:
 
             field = self.fields.get(field_name)
 
-            for validator in field["validators"]:
+            for validator in field.get("validators"):
                 validator.validate(value)
         except ValidationError:
             if field_info.get("fallback") is None:
@@ -116,8 +119,30 @@ class InputFilter:
 
             return field_info.get("fallback")
 
+    def __applySteps(
+        self, field_name: str, field_info: Any, value: Any
+    ) -> Any:
+        """
+        Apply multiple filters and validators in a specific order.
+        """
+
+        field = self.fields.get(field_name)
+
+        try:
+            for step in field.get("steps"):
+                if isinstance(step, BaseFilter):
+                    value = step.apply(value)
+                elif isinstance(step, BaseValidator):
+                    step.validate(value)
+        except ValidationError:
+            if field_info.get("fallback") is None:
+                raise
+            return field_info.get("fallback")
+
+        return value
+
     def __callExternalApi(
-        self, field_info, validated_data: dict
+        self, field_info: Any, validated_data: dict
     ) -> Optional[Any]:
         """
         Führt den API-Aufruf durch und gibt den Wert zurück,
@@ -254,6 +279,8 @@ class InputFilter:
             value = (
                 self.__validateField(field_name, field_info, value) or value
             )
+
+            value = self.__applySteps(field_name, field_info, value)
 
             if field_info.get("external_api"):
                 value = self.__callExternalApi(field_info, validated_data)
