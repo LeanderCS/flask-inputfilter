@@ -163,7 +163,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that optional field validation works.
         """
-
         self.inputFilter.add("name", required=True)
 
         self.inputFilter.validateData({"name": "Alice"})
@@ -175,24 +174,18 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that default field works.
         """
-
         self.inputFilter.add("available", default=True)
 
-        # Default case triggert
         validated_data = self.inputFilter.validateData({})
-
         self.assertEqual(validated_data["available"], True)
 
-        # Override default case
         validated_data = self.inputFilter.validateData({"available": False})
-
         self.assertEqual(validated_data["available"], False)
 
     def test_fallback(self) -> None:
         """
         Test that fallback field works.
         """
-
         self.inputFilter.add("available", required=True, fallback=True)
         self.inputFilter.add(
             "color",
@@ -246,7 +239,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that custom steps works.
         """
-
         self.inputFilter.add(
             "name_upper",
             steps=[
@@ -267,12 +259,71 @@ class TestInputFilter(unittest.TestCase):
             )
             self.assertEqual(validated_data["name_upper"], "ALICE")
 
+        self.inputFilter.add(
+            "fallback",
+            fallback="fallback",
+            steps=[
+                ToUpperFilter(),
+                InArrayValidator(["FALLBACK"]),
+                ToLowerFilter(),
+            ],
+        )
+
+        validated_data = self.inputFilter.validateData(
+            {"fallback": "fallback"}
+        )
+        self.assertEqual(validated_data["fallback"], "fallback")
+
+        self.inputFilter.add(
+            "default",
+            default="default",
+            steps=[
+                ToUpperFilter(),
+                InArrayValidator(["DEFAULT"]),
+                ToLowerFilter(),
+            ],
+        )
+
+        validated_data = self.inputFilter.validateData({})
+        self.assertEqual(validated_data["default"], "default")
+
+        self.inputFilter.add(
+            "fallback_with_default",
+            default="default",
+            fallback="fallback",
+            steps=[
+                ToUpperFilter(),
+                InArrayValidator(["DEFAULT"]),
+                ToLowerFilter(),
+            ],
+        )
+
+        validated_data = self.inputFilter.validateData({})
+        self.assertEqual(validated_data["fallback_with_default"], "default")
+
+        validated_data = self.inputFilter.validateData(
+            {"fallback_with_default": "fallback"}
+        )
+        self.assertEqual(validated_data["fallback_with_default"], "fallback")
+
+        self.inputFilter.add(
+            "required_without_fallback",
+            required=True,
+            steps=[
+                ToUpperFilter(),
+                InArrayValidator(["REQUIRED"]),
+                ToLowerFilter(),
+            ],
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({})
+
     @patch("requests.request")
     def test_external_api(self, mock_request: Mock) -> None:
         """
         Test that external API calls work.
         """
-
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.json.return_value = {"is_valid": True}

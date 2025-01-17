@@ -16,12 +16,14 @@ from .IsBooleanValidator import IsBooleanValidator
 from .IsFloatValidator import IsFloatValidator
 from .IsFutureDateValidator import IsFutureDateValidator
 from .IsHexadecimalValidator import IsHexadecimalValidator
+from .IsHorizontalImageValidator import IsHorizontalImageValidator
 from .IsInstanceValidator import IsInstanceValidator
 from .IsIntegerValidator import IsIntegerValidator
 from .IsJsonValidator import IsJsonValidator
 from .IsPastDateValidator import IsPastDateValidator
 from .IsStringValidator import IsStringValidator
 from .IsUUIDValidator import IsUUIDValidator
+from .IsVerticalImageValidator import IsVerticalImageValidator
 from .IsWeekdayValidator import IsWeekdayValidator
 from .IsWeekendValidator import IsWeekendValidator
 from .LengthValidator import LengthValidator
