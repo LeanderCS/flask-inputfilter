@@ -6,7 +6,7 @@ from flask import Flask, g, jsonify
 from flask_inputfilter import InputFilter
 from flask_inputfilter.Condition import BaseCondition
 from flask_inputfilter.Exception import ValidationError
-from flask_inputfilter.Filter import ToUpperFilter
+from flask_inputfilter.Filter import ToLowerFilter, ToUpperFilter
 from flask_inputfilter.Model import ExternalApiConfig
 from flask_inputfilter.Validator import (
     InArrayValidator,
@@ -241,6 +241,31 @@ class TestInputFilter(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({})
+
+    def test_steps(self) -> None:
+        """
+        Test that custom steps works.
+        """
+
+        self.inputFilter.add(
+            "name_upper",
+            steps=[
+                ToUpperFilter(),
+                InArrayValidator(["MAURICE"]),
+                ToLowerFilter(),
+            ],
+        )
+
+        validated_data = self.inputFilter.validateData(
+            {"name_upper": "Maurice"}
+        )
+        self.assertEqual(validated_data["name_upper"], "maurice")
+
+        with self.assertRaises(ValidationError):
+            validated_data = self.inputFilter.validateData(
+                {"name_upper": "Alice"}
+            )
+            self.assertEqual(validated_data["name_upper"], "ALICE")
 
     @patch("requests.request")
     def test_external_api(self, mock_request: Mock) -> None:
