@@ -21,16 +21,18 @@ The following validators are available in the `Validator` module:
 13. [`IsFloatValidator`](IsFloatValidator.py) - Validates that the value is a float.
 14. [`IsFutureDateValidator`](IsFutureDateValidator.py) - Validates that the value is a future date.
 15. [`IsHexadecimalValidator`](IsHexadecimalValidator.py) - Validates that the value is a hexadecimal string.
-16. [`IsInstanceValidator`](IsInstanceValidator.py) - Validates that the value is an instance of a class.
-17. [`IsIntegerValidator`](IsIntegerValidator.py) - Validates that the value is an integer.
-18. [`IsJsonValidator`](IsJsonValidator.py) - Validates that the value is a json string.
-19. [`IsPastDateValidator`](IsPastDateValidator.py) - Validates that the value is a past date.
-20. [`IsStringValidator`](IsStringValidator.py) - Validates that the value is a string.
-21. [`IsUUIDValidator`](IsUUIDValidator.py) - Validates that the value is a UUID.
-22. [`IsWeekdayValidator`](IsWeekdayValidator.py) - Validates that the value is a weekday.
-23. [`IsWeekendValidator`](IsWeekendValidator.py) - Validates that the value is a weekend.
-24. [`LengthValidator`](LengthValidator.py) - Validates the length of the value.
-25. [`NotInArrayValidator`](NotInArrayValidator.py) - Validates that the value is not in the given array.
-26. [`NotValidator`](NotValidator.py) - Validates that inverts the result of another validator.
-26. [`RangeValidator`](RangeValidator.py) - Validates that the value is within a specified range.
-27. [`RegexValidator`](RegexValidator.py) - Validates that the value matches a regex pattern.
+16. [`IsHorizontalImageValidator`](IsHorizontalImageValidator.py) - Validates that the value is a horizontally flipped image.
+17. [`IsInstanceValidator`](IsInstanceValidator.py) - Validates that the value is an instance of a class.
+18. [`IsIntegerValidator`](IsIntegerValidator.py) - Validates that the value is an integer.
+19. [`IsJsonValidator`](IsJsonValidator.py) - Validates that the value is a json string.
+20. [`IsPastDateValidator`](IsPastDateValidator.py) - Validates that the value is a past date.
+21. [`IsStringValidator`](IsStringValidator.py) - Validates that the value is a string.
+22. [`IsUUIDValidator`](IsUUIDValidator.py) - Validates that the value is a UUID.
+23. [`IsVerticalImageValidator`](IsVerticalImageValidator.py) - Validates that the value is a vertically flipped image.
+24. [`IsWeekdayValidator`](IsWeekdayValidator.py) - Validates that the value is a weekday.
+25. [`IsWeekendValidator`](IsWeekendValidator.py) - Validates that the value is a weekend.
+26. [`LengthValidator`](LengthValidator.py) - Validates the length of the value.
+27. [`NotInArrayValidator`](NotInArrayValidator.py) - Validates that the value is not in the given array.
+28. [`NotValidator`](NotValidator.py) - Validates that inverts the result of another validator.
+29. [`RangeValidator`](RangeValidator.py) - Validates that the value is within a specified range.
+30. [`RegexValidator`](RegexValidator.py) - Validates that the value matches a regex pattern.

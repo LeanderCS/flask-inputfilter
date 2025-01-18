@@ -5,6 +5,7 @@ from enum import Enum
 from flask_inputfilter import InputFilter
 from flask_inputfilter.Enum import RegexEnum
 from flask_inputfilter.Exception import ValidationError
+from flask_inputfilter.Filter import Base64ImageDownscaleFilter
 from flask_inputfilter.Validator import (
     ArrayElementValidator,
     ArrayLengthValidator,
@@ -22,12 +23,14 @@ from flask_inputfilter.Validator import (
     IsFloatValidator,
     IsFutureDateValidator,
     IsHexadecimalValidator,
+    IsHorizontalImageValidator,
     IsInstanceValidator,
     IsIntegerValidator,
     IsJsonValidator,
     IsPastDateValidator,
     IsStringValidator,
     IsUUIDValidator,
+    IsVerticalImageValidator,
     IsWeekdayValidator,
     IsWeekendValidator,
     LengthValidator,
@@ -660,6 +663,50 @@ class TestInputFilter(unittest.TestCase):
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"hex2": 123})
 
+    def test_is_horizontally_image_validator(self) -> None:
+        """
+        Test IsHorizontallyImageValidator.
+        """
+
+        self.inputFilter.add(
+            "image", validators=[IsHorizontalImageValidator()]
+        )
+
+        with open("test/data/base64_image.txt", "r") as file:
+            self.inputFilter.validateData({"image": file.read()})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"image": "not_a_base64_image"})
+
+        self.inputFilter.add(
+            "horizontally_image",
+            filters=[
+                Base64ImageDownscaleFilter(
+                    width=200, height=100, proportionally=False
+                )
+            ],
+            validators=[IsHorizontalImageValidator()],
+        )
+
+        with open("test/data/base64_image.txt", "r") as file:
+            self.inputFilter.validateData({"horizontally_image": file.read()})
+
+        self.inputFilter.add(
+            "vertically_image",
+            filters=[
+                Base64ImageDownscaleFilter(
+                    width=100, height=200, proportionally=False
+                )
+            ],
+            validators=[IsHorizontalImageValidator()],
+        )
+
+        with open("test/data/base64_image.txt", "r") as file:
+            with self.assertRaises(ValidationError):
+                self.inputFilter.validateData(
+                    {"vertically_image": file.read()}
+                )
+
     def test_is_instance_validator(self) -> None:
         """
         Test IsInstanceValidator.
@@ -803,6 +850,48 @@ class TestInputFilter(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"uuid": 123})
+
+    def test_is_vertically_image_validator(self) -> None:
+        """
+        Test IsVerticalImageValidator.
+        """
+
+        self.inputFilter.add("image", validators=[IsVerticalImageValidator()])
+
+        with open("test/data/base64_image.txt", "r") as file:
+            self.inputFilter.validateData({"image": file.read()})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"image": "not_a_base64_image"})
+
+        self.inputFilter.add(
+            "horizontally_image",
+            filters=[
+                Base64ImageDownscaleFilter(
+                    width=200, height=100, proportionally=False
+                )
+            ],
+            validators=[IsVerticalImageValidator()],
+        )
+
+        with open("test/data/base64_image.txt", "r") as file:
+            with self.assertRaises(ValidationError):
+                self.inputFilter.validateData(
+                    {"horizontally_image": file.read()}
+                )
+
+        self.inputFilter.add(
+            "vertically_image",
+            filters=[
+                Base64ImageDownscaleFilter(
+                    width=100, height=200, proportionally=False
+                )
+            ],
+            validators=[IsVerticalImageValidator()],
+        )
+
+        with open("test/data/base64_image.txt", "r") as file:
+            self.inputFilter.validateData({"vertically_image": file.read()})
 
     def test_is_weekday_validator(self) -> None:
         """

@@ -10,6 +10,21 @@ All notable changes to this project will be documented in this file.
 - New functionality to define steps for a field to have more control over the 
   order of the validation and filtering process.
 
+### Filter
+
+- New [`Base64ImageDownscaleFilter`](flask_inputfilter/Filter/Base64ImageDownscaleFilter.py) to reduce the size of an image.
+- New [`Base64ImageResizeFilter`](flask_inputfilter/Filter/Base64ImageResizeFilter.py) to reduce the file size of an image.
+
+### Validator
+
+- New [`IsHorizontalImageValidator`](flask_inputfilter/Validator/IsHorizontalImageValidator.py) to check if an image is horizontical.
+- New [`IsVerticalImageValidator`](flask_inputfilter/Validator/IsVerticalImageValidator.py) to check if an image is vertical.
+
+## Changed
+
+- Added UnicodeFormEnum to show possible config values for ToNormalizedUnicodeFilter.
+  Old config is still supportet, but will be removed at a later version.
+
 
 # [0.0.7.1] - 2025-01-16
 

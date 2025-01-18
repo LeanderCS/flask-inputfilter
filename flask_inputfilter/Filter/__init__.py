@@ -1,4 +1,6 @@
 from .ArrayExplodeFilter import ArrayExplodeFilter
+from .Base64ImageDownscaleFilter import Base64ImageDownscaleFilter
+from .Base64ImageResizeFilter import Base64ImageResizeFilter
 from .BaseFilter import BaseFilter
 from .BlacklistFilter import BlacklistFilter
 from .RemoveEmojisFilter import RemoveEmojisFilter

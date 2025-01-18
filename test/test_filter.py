@@ -1,10 +1,16 @@
+import base64
+import io
 import unittest
 from datetime import date, datetime
 from enum import Enum
 
+from PIL import Image
+
 from flask_inputfilter import InputFilter
 from flask_inputfilter.Filter import (
     ArrayExplodeFilter,
+    Base64ImageDownscaleFilter,
+    Base64ImageResizeFilter,
     BaseFilter,
     BlacklistFilter,
     RemoveEmojisFilter,
@@ -37,14 +43,12 @@ class TestInputFilter(unittest.TestCase):
         """
         Set up a InputFilter instance for testing.
         """
-
         self.inputFilter = InputFilter()
 
     def test_array_explode_filter(self) -> None:
         """
         Test that ArrayExplodeFilter explodes a string to a list.
         """
-
         self.inputFilter.add(
             "tags",
             required=False,
@@ -65,12 +69,81 @@ class TestInputFilter(unittest.TestCase):
         )
         self.assertEqual(validated_data["items"], ["item1", "item2", "item3"])
 
+    def test_base64_image_downscale_filter(self) -> None:
+        """
+        Test Base64ImageDownscaleFilter.
+        """
+        self.inputFilter.add(
+            "image",
+            filters=[Base64ImageDownscaleFilter(size=144)],
+        )
+
+        with open("test/data/base64_image.txt", "r") as file:
+            validated_data = self.inputFilter.validateData(
+                {"image": file.read()}
+            )
+            size = Image.open(
+                io.BytesIO(base64.b64decode(validated_data["image"]))
+            ).size
+            self.assertEqual(size, (12, 12))
+
+        with open("test/data/base64_image.txt", "r") as file:
+            validated_data = self.inputFilter.validateData(
+                {
+                    "image": Image.open(
+                        io.BytesIO(base64.b64decode(file.read()))
+                    )
+                }
+            )
+            size = Image.open(
+                io.BytesIO(base64.b64decode(validated_data["image"]))
+            ).size
+            self.assertEqual(size, (12, 12))
+
+    def test_base64_image_size_reduce_filter(self) -> None:
+        """
+        Test Base64ImageResizeFilter.
+        """
+        self.inputFilter.add(
+            "image",
+            filters=[Base64ImageResizeFilter(max_size=1024)],
+        )
+
+        with open("test/data/base64_image.txt", "r") as file:
+            validated_data = self.inputFilter.validateData(
+                {"image": file.read()}
+            )
+            image = Image.open(
+                io.BytesIO(base64.b64decode(validated_data["image"]))
+            )
+
+            buffer = io.BytesIO()
+            image.save(buffer, format="JPEG")
+            size = buffer.tell()
+            self.assertLessEqual(size, 1024)
+
+        with open("test/data/base64_image.txt", "r") as file:
+            validated_data = self.inputFilter.validateData(
+                {
+                    "image": Image.open(
+                        io.BytesIO(base64.b64decode(file.read()))
+                    )
+                }
+            )
+            image = Image.open(
+                io.BytesIO(base64.b64decode(validated_data["image"]))
+            )
+
+            buffer = io.BytesIO()
+            image.save(buffer, format="JPEG")
+            size = buffer.tell()
+            self.assertLessEqual(size, 1024)
+
     def test_base_filter(self) -> None:
         """
         Test that BaseFilter raises NotImplementedError when apply
         method is called.
         """
-
         with self.assertRaises(NotImplementedError):
             BaseFilter().apply("test")
 
@@ -78,7 +151,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that BlacklistFilter filters out values that are in the blacklist.
         """
-
         self.inputFilter.add(
             "blacklisted_field",
             required=False,
@@ -111,7 +183,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that RemoveEmojisFilter removes emojis from a string.
         """
-
         self.inputFilter.add(
             "text",
             required=False,
@@ -130,7 +201,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that SlugifyFilter slugifies a string.
         """
-
         self.inputFilter.add(
             "slug",
             required=False,
@@ -149,7 +219,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that StringTrimFilter trims whitespace.
         """
-
         self.inputFilter.add(
             "trimmed_field", required=False, filters=[StringTrimFilter()]
         )
@@ -163,7 +232,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that ToAlphaNumericFilter removes non-alphanumeric characters.
         """
-
         self.inputFilter.add(
             "alphanumeric_field",
             required=False,
@@ -184,7 +252,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that ToBooleanFilter converts string to boolean.
         """
-
         self.inputFilter.add(
             "is_active", required=True, filters=[ToBooleanFilter()]
         )
@@ -196,7 +263,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that CamelCaseFilter converts string to camel case.
         """
-
         self.inputFilter.add(
             "username", required=True, filters=[ToCamelCaseFilter()]
         )
@@ -213,7 +279,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that ToDateFilter converts string to date.
         """
-
         self.inputFilter.add("dob", required=True, filters=[ToDateFilter()])
 
         validated_data = self.inputFilter.validateData({"dob": "1996-12-01"})
@@ -239,7 +304,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that ToDateTimeFilter converts string to datetime.
         """
-
         self.inputFilter.add(
             "created_at", required=True, filters=[ToDateTimeFilter()]
         )
@@ -310,7 +374,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that ToFloatFilter converts string to float.
         """
-
         self.inputFilter.add("price", required=True, filters=[ToFloatFilter()])
 
         validated_data = self.inputFilter.validateData({"price": "19.99"})
@@ -326,7 +389,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that ToIntegerFilter converts string to integer.
         """
-
         self.inputFilter.add("age", required=True, filters=[ToIntegerFilter()])
 
         validated_data = self.inputFilter.validateData({"age": "25"})
@@ -346,7 +408,6 @@ class TestInputFilter(unittest.TestCase):
         Test that ToIsoFilter converts date or datetime to
         ISO 8601 formatted string.
         """
-
         self.inputFilter.add("date", filters=[ToIsoFilter()])
 
         validated_data = self.inputFilter.validateData(
@@ -365,7 +426,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that ToLowerFilter converts string to lowercase.
         """
-
         self.inputFilter.add(
             "username", required=True, filters=[ToLowerFilter()]
         )
@@ -382,7 +442,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that NormalizeUnicodeFilter normalizes Unicode characters.
         """
-
         self.inputFilter.add(
             "unicode_field",
             required=False,
@@ -401,7 +460,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that ToNullFilter transforms empty string to None.
         """
-
         self.inputFilter.add(
             "optional_field", required=False, filters=[ToNullFilter()]
         )
@@ -413,7 +471,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that PascalCaseFilter converts string to pascal case.
         """
-
         self.inputFilter.add(
             "username", required=True, filters=[ToPascaleCaseFilter()]
         )
@@ -430,7 +487,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that SnakeCaseFilter converts string to snake case.
         """
-
         self.inputFilter.add(
             "username", required=True, filters=[ToSnakeCaseFilter()]
         )
@@ -447,7 +503,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that ToStringFilter converts any type to string.
         """
-
         self.inputFilter.add("age", required=True, filters=[ToStringFilter()])
 
         validated_data = self.inputFilter.validateData({"age": 25})
@@ -457,7 +512,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that ToUpperFilter converts string to uppercase.
         """
-
         self.inputFilter.add(
             "username", required=True, filters=[ToUpperFilter()]
         )
@@ -474,7 +528,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that TruncateFilter truncates a string.
         """
-
         self.inputFilter.add(
             "truncated_field", required=False, filters=[TruncateFilter(5)]
         )
@@ -494,7 +547,6 @@ class TestInputFilter(unittest.TestCase):
         Test that WhitelistFilter filters out values that are
         not in the whitelist.
         """
-
         self.inputFilter.add(
             "whitelisted_field",
             required=False,
@@ -525,7 +577,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that WhitespaceCollapseFilter collapses whitespace.
         """
-
         self.inputFilter.add(
             "collapsed_field",
             required=False,

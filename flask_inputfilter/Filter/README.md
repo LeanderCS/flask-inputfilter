@@ -7,6 +7,8 @@ The `Filter` module contains the filters that can be used to filter the input da
 The following filters are available in the `Filter` module:
 
 1. [`ArrayExplodeFilter`](ArrayExplodeFilter.py) - Explodes the input string into an array.
+2. [`Base64ImageDownscaleFilter`](Base64ImageDownscaleFilter.py) - Downscale the base64 image.
+3. [`Base64ImageResizeFilter`](Base64ImageResizeFilter.py) - Resize the base64 image.
 2. [`BlacklistFilter`](BlacklistFilter.py) - Filters the string based on the blacklist.
 3. [`RemoveEmojisFilter`](RemoveEmojisFilter.py) - Removes the emojis from the string.
 4. [`SlugifyFilter`](SlugifyFilter.py) - Converts the string to a slug.

@@ -3,6 +3,7 @@ from typing import Any, Union
 
 from typing_extensions import Literal
 
+from ..Enum import UnicodeFormEnum
 from .BaseFilter import BaseFilter
 
 
@@ -12,20 +13,26 @@ class ToNormalizedUnicodeFilter(BaseFilter):
     """
 
     def __init__(
-        self, form: Literal["NFC", "NFD", "NFKC", "NFKD"] = "NFC"
+        self,
+        form: Union[
+            UnicodeFormEnum, Literal["NFC", "NFD", "NFKC", "NFKD"]
+        ] = UnicodeFormEnum.NFC,
     ) -> None:
+        if not isinstance(form, UnicodeFormEnum):
+            form = UnicodeFormEnum(form)
+
         self.form = form
 
     def apply(self, value: Any) -> Union[str, Any]:
         if not isinstance(value, str):
             return value
 
-        value = unicodedata.normalize(self.form, value)
+        value = unicodedata.normalize(self.form.value, value)
 
         value_without_accents = "".join(
             char
-            for char in unicodedata.normalize("NFD", value)
+            for char in unicodedata.normalize(UnicodeFormEnum.NFD.value, value)
             if unicodedata.category(char) != "Mn"
         )
 
-        return unicodedata.normalize(self.form, value_without_accents)
+        return unicodedata.normalize(self.form.value, value_without_accents)

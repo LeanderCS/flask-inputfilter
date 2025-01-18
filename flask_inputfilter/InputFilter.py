@@ -126,6 +126,9 @@ class InputFilter:
         Apply multiple filters and validators in a specific order.
         """
 
+        if value is None:
+            return
+
         field = self.fields.get(field_name)
 
         try:
@@ -280,7 +283,7 @@ class InputFilter:
                 self.__validateField(field_name, field_info, value) or value
             )
 
-            value = self.__applySteps(field_name, field_info, value)
+            value = self.__applySteps(field_name, field_info, value) or value
 
             if field_info.get("external_api"):
                 value = self.__callExternalApi(field_info, validated_data)

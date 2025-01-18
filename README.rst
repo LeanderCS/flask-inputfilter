@@ -40,7 +40,7 @@ Quickstart
 To use the `InputFilter` class, create a new class that inherits from it and define the
 fields you want to validate and filter.
 
-There are numerous filters and validators available, but you can also create your `own <CREATE_OWN.md>`.
+There are numerous filters and validators available, but you can also create your `own <CREATE_OWN.md>`_.
 
 Definition
 ----------
@@ -93,7 +93,7 @@ Usage
 -----
 
 To use the `InputFilter` class, call the `validate` method on the class instance.
-After calling `validate`, the validated data will be available in `g.validatedData`.
+After calling `validate`, the validated data will be available in `g.validated_data`.
 If the data is invalid, a 400 response with an error message will be returned.
 
 .. code-block:: python
@@ -106,7 +106,7 @@ If the data is invalid, a 400 response with an error message will be returned.
     @app.route('/update-zipcode', methods=['POST'])
     @UpdateZipcodeInputFilter.validate()
     def updateZipcode():
-        data = g.validatedData
+        data = g.validated_data
 
         # Do something with validated data
         id = data.get('id')
