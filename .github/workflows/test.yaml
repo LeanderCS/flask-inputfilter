@@ -7,15 +7,55 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: docker build . -t flask-inputfilter
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-flask-inputfilter-${{ hashFiles('Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-flask-inputfilter-
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver-opts: image=moby/buildkit:latest
+
+      - name: Build flask-inputfilter image with cache
+        run: |
+          docker buildx build \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
+            -t flask-inputfilter . --load
+
+#      - name: Save flask-inputfilter image
+#        run: docker save -o flask-inputfilter.tar flask-inputfilter
+#
+#      - name: Upload flask-inputfilter artifact
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: flask-inputfilter-image
+#          path: flask-inputfilter.tar
+#
+#  test:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v4
+#
+#      - name: Download flask-inputfilter artifact
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: flask-inputfilter-image
+#
+#      - name: Load flask-inputfilter image
+#        run: docker load -i flask-inputfilter.tar
 
       - name: Run tests in Docker and upload coverage to Coveralls
         env:
@@ -25,7 +65,7 @@ jobs:
           set -e # Exit immediately if a command exits with a non-zero status.
           set -u # Exit immediately if a variable is not defined.
 
-          docker run -e COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }} flask-inputfilter sh -c "coverage run --source=flask_inputfilter -m pytest test/ && coveralls"
+          docker run --rm -e COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }} flask-inputfilter sh -c "coverage run --source=flask_inputfilter -m pytest test/ && coveralls"
 
       - name: Run code style checks
         run: |
@@ -33,4 +73,4 @@ jobs:
           set -e # Exit immediately if a command exits with a non-zero status
           set -u # Exit immediately if a variable is not defined
       
-          docker run flask-inputfilter flake8
+          docker run --rm flask-inputfilter flake8
