@@ -1,9 +1,36 @@
 flask-inputfilter
 ==================================
 
-The `InputFilter` class is used to validate and filter input data in Flask applications.
+The ``InputFilter`` class is used to validate and filter input data in Flask applications.
 It provides a modular way to clean and ensure that incoming data meets expected format
 and type requirements before being processed.
+
+.. raw:: html
+
+    <div style="border:1px solid #86989B;padding:1rem;border-radius:3px;background-color:#f7f7f7;">
+        <p style="background-color:hsl(219.5, 84%, 90%);margin:-1rem -1rem 0.8rem -1rem;padding:0.3rem 1rem 0.3rem 2.5rem;position:relative;border-radius:3px 3px 0 0;">
+            <span style="content:'';position:absolute;top:.25rem;left:.5rem;width:1.5rem;height:1.5rem;background-color:hsl(219.5, 84%, 50%);mask-image:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>');"></span>
+            Tip
+        </p>
+        <p style="margin:0;">
+            Thank you for using <code>flask-inputfilter</code>!<br>
+            If you have any questions or suggestions, please feel free to open an issue on GitHub <a href="https://github.com/LeanderCS/flask-inputfilter">here</a>.<br>
+            If you don't want to miss any updates, please star the repository.<br>
+            This will help me to understand how many people are interested in this project.<br>
+        </p>
+    </div>
+
+.. raw:: html
+
+    <div style="border:1px solid #86989B;padding:1rem;border-radius:3px;background-color:#f7f7f7;">
+        <p style="background-color:hsl(150, 36.7%, 90%);margin:-1rem -1rem 0.8rem -1rem;padding:0.3rem 1rem 0.3rem 2.5rem;position:relative;border-radius:3px 3px 0 0;">
+            <span style="content:'';position:absolute;top:.25rem;left:.5rem;width:1.5rem;height:1.5rem;background-color:hsl(150, 36.7%, 50%);mask-image:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.07 11.25l-.9.92C13.45 12.89 13 13.5 13 15h-2v-.5c0-1.11.45-2.11 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41a2 2 0 00-2-2 2 2 0 00-2 2H8a4 4 0 014-4 4 4 0 014 4 3.2 3.2 0 01-.93 2.25M13 19h-2v-2h2M12 2A10 10 0 002 12a10 10 0 0010 10 10 10 0 0010-10c0-5.53-4.5-10-10-10z"/></svg>');"></span>
+            Hint
+        </p>
+        <p style="margin:0;">
+            For information about the usage you can view the documentation
+        </p>
+    </div>
 
 :Test Status:
 
@@ -37,10 +64,10 @@ Installation
 Quickstart
 ==========
 
-To use the `InputFilter` class, create a new class that inherits from it and define the
+To use the ``InputFilter`` class, create a new class that inherits from it and define the
 fields you want to validate and filter.
 
-There are numerous filters and validators available, but you can also create your `own <CREATE_OWN.md>`_.
+There are numerous filters and validators available, but you can also create your `own <CreateOwn.md>`_.
 
 Definition
 ----------
@@ -92,8 +119,8 @@ Definition
 Usage
 -----
 
-To use the `InputFilter` class, call the `validate` method on the class instance.
-After calling `validate`, the validated data will be available in `g.validated_data`.
+To use the ``InputFilter`` class, call the ``validate`` method on the class instance.
+After calling ``validate``, the validated data will be available in ``g.validated_data``.
 If the data is invalid, a 400 response with an error message will be returned.
 
 .. code-block:: python
@@ -112,33 +139,17 @@ If the data is invalid, a 400 response with an error message will be returned.
         id = data.get('id')
         zipcode = data.get('zipcode')
 
-Options
-=======
 
-The `add` method supports several options:
+.. raw:: html
 
-- `Required`_
-- `Filter <flask_inputfilter/Filter/README.md>`_
-- `Validator <flask_inputfilter/Validator/README.md>`_
-- `Default`_
-- `Fallback`_
-- `ExternalApi <EXTERNAL_API.md>`_
+    <div style="border:1px solid #86989B;padding:1rem;border-radius:3px;background-color:#f7f7f7;">
+        <p style="background-color:hsl(150, 36.7%, 90%);margin: -1rem -1rem 0.8rem -1rem;padding:0.3rem 1rem 0.3rem 2.5rem;position:relative;border-radius:3px 3px 0 0;">
+            <span style="content:'';position:absolute;top:.25rem;left:.5rem;width:1.5rem;height:1.5rem;background-color:hsl(150,36.7%,50%);mask-image:url('data:image/svg+xml;charset=utf-8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 24 24&quot;><path d=&quot;M13 9h-2V7h2m0 10h-2v-6h2m-1-9A10 10 0 002 12a10 10 0 0010 10 10 10 0 0010-10A10 10 0 0012 2z&quot;/></svg>');"></span>
+            Tip
+        </p>
+        <p style="margin:0;">
+            For further instructions please view the documentary `Here <https://github.com/LeanderCS/flask-inputfilter.<br>
 
-Required
---------
-
-The `required` option specifies whether the field must be included in the input data.
-If the field is missing, a `ValidationError` will be raised with an appropriate error message.
-
-Default
--------
-
-The `default` option allows you to specify a default value to use if the field is not
-present in the input data.
-
-Fallback
---------
-
-The `fallback` option specifies a value to use if validation fails or required data
-is missing. Note that if the field is optional and absent, `fallback` will not apply;
-use `default` in such cases.
+            For ideas, suggestions or questions, please open an issue on GitHub <a href="https://github.com/LeanderCS/flask-inputfilter">here</a>.
+        </p>
+    </div>

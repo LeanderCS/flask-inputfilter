@@ -1,8 +1,8 @@
 from datetime import date, datetime
 from typing import Any, Dict
 
-from ..Exception import ValidationError
-from .BaseCondition import BaseCondition
+from flask_inputfilter.Condition import BaseCondition
+from flask_inputfilter.Exception import ValidationError
 
 
 class TemporalOrderCondition(BaseCondition):

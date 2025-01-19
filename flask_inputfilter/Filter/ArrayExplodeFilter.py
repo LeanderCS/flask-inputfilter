@@ -1,6 +1,6 @@
 from typing import Any, List, Union
 
-from .BaseFilter import BaseFilter
+from flask_inputfilter.Filter.BaseFilter import BaseFilter
 
 
 class ArrayExplodeFilter(BaseFilter):

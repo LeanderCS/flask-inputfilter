@@ -1,6 +1,6 @@
 from typing import Any, Union
 
-from .BaseFilter import BaseFilter
+from flask_inputfilter.Filter import BaseFilter
 
 
 class ToIntegerFilter(BaseFilter):

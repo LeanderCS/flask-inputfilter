@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from .BaseFilter import BaseFilter
+from flask_inputfilter.Filter import BaseFilter
 
 
 class BlacklistFilter(BaseFilter):

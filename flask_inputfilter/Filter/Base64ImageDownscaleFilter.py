@@ -4,7 +4,7 @@ from typing import Any, Optional
 
 from PIL import Image
 
-from .BaseFilter import BaseFilter
+from flask_inputfilter.Filter.BaseFilter import BaseFilter
 
 
 class Base64ImageDownscaleFilter(BaseFilter):

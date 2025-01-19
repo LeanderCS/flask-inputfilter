@@ -1,6 +1,6 @@
 from typing import Any, Dict, List
 
-from .BaseCondition import BaseCondition
+from flask_inputfilter.Condition import BaseCondition
 
 
 class OneOfMatchesCondition(BaseCondition):
