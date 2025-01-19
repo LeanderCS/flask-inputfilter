@@ -30,4 +30,8 @@ setup(
         "Programming Language :: Python :: 3.7",
     ],
     python_requires=">=3.7",
+    project_urls={
+        "Documentation": "https://leandercs.github.io/flask-inputfilter",
+        "Source": "https://github.com/LeanderCS/flask-inputfilter"
+    }
 )

@@ -1,8 +1,8 @@
 from datetime import date, datetime
 from typing import Any, Optional, Union
 
-from ..Exception import ValidationError
-from .BaseValidator import BaseValidator
+from flask_inputfilter.Exception import ValidationError
+from flask_inputfilter.Validator import BaseValidator
 
 
 class DateBeforeValidator(BaseValidator):

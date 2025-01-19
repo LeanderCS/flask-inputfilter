@@ -4,8 +4,8 @@ from typing import Any, Optional
 
 from PIL import Image
 
-from ..Exception import ValidationError
-from .BaseValidator import BaseValidator
+from flask_inputfilter.Exception import ValidationError
+from flask_inputfilter.Validator import BaseValidator
 
 
 class IsBase64ImageValidator(BaseValidator):

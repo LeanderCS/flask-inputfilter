@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Any, Type, Union
 
-from .BaseFilter import BaseFilter
+from flask_inputfilter.Filter import BaseFilter
 
 
 class ToEnumFilter(BaseFilter):

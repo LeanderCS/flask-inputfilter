@@ -1,7 +1,7 @@
 import re
 from typing import Any, Optional, Union
 
-from .BaseFilter import BaseFilter
+from flask_inputfilter.Filter import BaseFilter
 
 
 class ToAlphaNumericFilter(BaseFilter):

@@ -1,9 +1,19 @@
 flask-inputfilter
-==================================
+=================
 
-The `InputFilter` class is used to validate and filter input data in Flask applications.
+The ``InputFilter`` class is used to validate and filter input data in Flask applications.
 It provides a modular way to clean and ensure that incoming data meets expected format
 and type requirements before being processed.
+
+Thank you for using ``flask-inputfilter``!
+==========================================
+
+If you have any questions or suggestions, please feel free to open an issue on GitHub `here <https://github.com/LeanderCS/flask-inputfilter>`__.
+
+If you don't want to miss any updates, please star the repository.
+This will help me to understand how many people are interested in this project.
+
+For information about the usage you can view the documentation `here <https://leandercs.github.io/flask-inputfilter>`__.
 
 :Test Status:
 
@@ -37,10 +47,10 @@ Installation
 Quickstart
 ==========
 
-To use the `InputFilter` class, create a new class that inherits from it and define the
+To use the ``InputFilter`` class, create a new class that inherits from it and define the
 fields you want to validate and filter.
 
-There are numerous filters and validators available, but you can also create your `own <CREATE_OWN.md>`_.
+There are numerous filters and validators available, but you can also create your `own <https://leandercs.github.io/flask-inputfilter/guides/create_own.html>`__.
 
 Definition
 ----------
@@ -92,8 +102,8 @@ Definition
 Usage
 -----
 
-To use the `InputFilter` class, call the `validate` method on the class instance.
-After calling `validate`, the validated data will be available in `g.validated_data`.
+To use the ``InputFilter`` class, call the ``validate`` method on the class instance.
+After calling ``validate``, the validated data will be available in ``g.validated_data``.
 If the data is invalid, a 400 response with an error message will be returned.
 
 .. code-block:: python
@@ -112,33 +122,12 @@ If the data is invalid, a 400 response with an error message will be returned.
         id = data.get('id')
         zipcode = data.get('zipcode')
 
-Options
-=======
 
-The `add` method supports several options:
 
-- `Required`_
-- `Filter <flask_inputfilter/Filter/README.md>`_
-- `Validator <flask_inputfilter/Validator/README.md>`_
-- `Default`_
-- `Fallback`_
-- `ExternalApi <EXTERNAL_API.md>`_
+See also
+========
 
-Required
---------
+For further instructions please view the documentary `here <https://leandercs.github.io/flask-inputfilter>`__.
 
-The `required` option specifies whether the field must be included in the input data.
-If the field is missing, a `ValidationError` will be raised with an appropriate error message.
+For ideas, suggestions or questions, please open an issue on GitHub `here <https://github.com/LeanderCS/flask-inputfilter>`__.
 
-Default
--------
-
-The `default` option allows you to specify a default value to use if the field is not
-present in the input data.
-
-Fallback
---------
-
-The `fallback` option specifies a value to use if validation fails or required data
-is missing. Note that if the field is optional and absent, `fallback` will not apply;
-use `default` in such cases.

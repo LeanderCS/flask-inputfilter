@@ -4,8 +4,8 @@ from typing import Any
 
 from PIL import Image
 
-from ..Enum import ImageFormatEnum
-from .BaseFilter import BaseFilter
+from flask_inputfilter.Enum import ImageFormatEnum
+from flask_inputfilter.Filter.BaseFilter import BaseFilter
 
 
 class Base64ImageResizeFilter(BaseFilter):

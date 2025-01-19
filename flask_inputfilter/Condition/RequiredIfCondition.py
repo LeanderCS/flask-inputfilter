@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional, Union
 
-from .BaseCondition import BaseCondition
+from flask_inputfilter.Condition import BaseCondition
 
 
 class RequiredIfCondition(BaseCondition):

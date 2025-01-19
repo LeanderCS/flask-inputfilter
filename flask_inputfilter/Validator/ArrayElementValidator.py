@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING, Any, Optional
 
-from ..Exception import ValidationError
-from .BaseValidator import BaseValidator
+from flask_inputfilter.Exception import ValidationError
+from flask_inputfilter.Validator.BaseValidator import BaseValidator
 
 if TYPE_CHECKING:
-    from ..InputFilter import InputFilter
+    from flask_inputfilter import InputFilter
 
 
 class ArrayElementValidator(BaseValidator):

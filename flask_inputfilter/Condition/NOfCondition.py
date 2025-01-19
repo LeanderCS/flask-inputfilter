@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from .BaseCondition import BaseCondition
+from flask_inputfilter.Condition import BaseCondition
 
 
 class NOfCondition(BaseCondition):

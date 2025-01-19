@@ -3,8 +3,8 @@ from typing import Any, Union
 
 from typing_extensions import Literal
 
-from ..Enum import UnicodeFormEnum
-from .BaseFilter import BaseFilter
+from flask_inputfilter.Enum import UnicodeFormEnum
+from flask_inputfilter.Filter import BaseFilter
 
 
 class ToNormalizedUnicodeFilter(BaseFilter):
