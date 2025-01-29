@@ -27,8 +27,6 @@ class ToNormalizedUnicodeFilter(BaseFilter):
         if not isinstance(value, str):
             return value
 
-        value = unicodedata.normalize(self.form.value, value)
-
         value_without_accents = "".join(
             char
             for char in unicodedata.normalize(UnicodeFormEnum.NFD.value, value)

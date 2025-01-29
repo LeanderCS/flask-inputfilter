@@ -1,6 +1,8 @@
 import re
+import unicodedata
 from typing import Any, Optional, Union
 
+from flask_inputfilter.Enum import UnicodeFormEnum
 from flask_inputfilter.Filter import BaseFilter
 
 
@@ -12,6 +14,17 @@ class SlugifyFilter(BaseFilter):
     def apply(self, value: Any) -> Union[Optional[str], Any]:
         if not isinstance(value, str):
             return value
+
+        value_without_accents = "".join(
+            char
+            for char in unicodedata.normalize(UnicodeFormEnum.NFD.value, value)
+            if unicodedata.category(char) != "Mn"
+        )
+
+        value = unicodedata.normalize(
+            UnicodeFormEnum.NFKD.value, value_without_accents
+        )
+        value = value.encode("ascii", "ignore").decode("ascii")
 
         value = value.lower()
 

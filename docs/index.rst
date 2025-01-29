@@ -32,19 +32,9 @@ Available functions:
         </p>
         <p style="margin:0;">
             Thank you for using <code>flask-inputfilter</code>!<br>
-            If you have any questions or suggestions, please feel free to open an issue on GitHub <a href="https://github.com/LeanderCS/flask-inputfilter">here</a>.<br>
+            If you have any questions or suggestions, please feel free to open an issue on <a href="https://github.com/LeanderCS/flask-inputfilter">GitHub</a>.<br>
             If you don't want to miss any updates, please star the repository.<br>
             This will help me to understand how many people are interested in this project.<br>
-        </p>
-    </div>
-
-    <div style="border:1px solid #86989B;padding:1rem;border-radius:3px;margin:20px 0 40px;">
-        <p style="background-color:hsl(150, 36.7%, 90%);margin:-1rem -1rem 0.8rem -1rem;padding:0.3rem 1rem 0.3rem 2.5rem;position:relative;border-radius:3px 3px 0 0;">
-            <span style="content:'';position:absolute;top:.25rem;left:.5rem;width:1.5rem;height:1.5rem;background-color:hsl(150, 36.7%, 50%);mask-image:url('data:image/svg+xml;charset=utf-8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 24 24&quot;><path d=&quot;M15.07 11.25l-.9.92C13.45 12.89 13 13.5 13 15h-2v-.5c0-1.11.45-2.11 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41a2 2 0 00-2-2 2 2 0 00-2 2H8a4 4 0 014-4 4 4 0 014 4 3.2 3.2 0 01-.93 2.25M13 19h-2v-2h2M12 2A10 10 0 002 12a10 10 0 0010 10 10 10 0 0010-10c0-5.53-4.5-10-10-10z&quot;/></svg>');"></span>
-            Hint
-        </p>
-        <p style="margin:0;">
-            For information about the usage you can view the documentation <a href="https://leandercs.github.io/flask-inputfilter">here</a>.
         </p>
     </div>
 

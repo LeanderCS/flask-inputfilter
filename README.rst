@@ -36,6 +36,8 @@ For information about the usage you can view the documentation `here <https://le
 
     .. image:: https://img.shields.io/pypi/dm/flask-inputfilter?style=flat-square&label=PyPI
         :target: https://pypi.org/project/flask-inputfilter/
+    .. image:: https://static.pepy.tech/badge/flask-inputfilter
+        :target: https://pypi.org/project/flask-inputfilter/
 
 Installation
 ============
@@ -127,7 +129,7 @@ If the data is invalid, a 400 response with an error message will be returned.
 See also
 ========
 
-For further instructions please view the documentary `here <https://leandercs.github.io/flask-inputfilter>`__.
+For further instructions please view the `documentary <https://leandercs.github.io/flask-inputfilter>`__.
 
-For ideas, suggestions or questions, please open an issue on GitHub `here <https://github.com/LeanderCS/flask-inputfilter>`__.
+For ideas, suggestions or questions, please open an issue on `GitHub <https://github.com/LeanderCS/flask-inputfilter>`__.
 

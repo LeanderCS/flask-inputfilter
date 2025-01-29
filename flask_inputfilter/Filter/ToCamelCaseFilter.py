@@ -1,5 +1,5 @@
 import re
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 from flask_inputfilter.Filter import BaseFilter
 
@@ -9,7 +9,7 @@ class ToCamelCaseFilter(BaseFilter):
     Filter that converts a string to camelCase.
     """
 
-    def apply(self, value: Any) -> Union[Optional[str], Any]:
+    def apply(self, value: Any) -> Union[str, Any]:
         if not isinstance(value, str):
             return value
 

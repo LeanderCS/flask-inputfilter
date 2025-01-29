@@ -19,6 +19,7 @@ from flask_inputfilter.Filter import (
     ToAlphaNumericFilter,
     ToBooleanFilter,
     ToCamelCaseFilter,
+    ToDataclassFilter,
     ToDateFilter,
     ToDateTimeFilter,
     ToEnumFilter,
@@ -31,6 +32,7 @@ from flask_inputfilter.Filter import (
     ToPascaleCaseFilter,
     ToSnakeCaseFilter,
     ToStringFilter,
+    ToTypedDictFilter,
     ToUpperFilter,
     TruncateFilter,
     WhitelistFilter,
@@ -141,10 +143,10 @@ class TestInputFilter(unittest.TestCase):
 
     def test_base_filter(self) -> None:
         """
-        Test that BaseFilter raises NotImplementedError when apply
+        Test that BaseFilter raises TypeError when apply
         method is called.
         """
-        with self.assertRaises(NotImplementedError):
+        with self.assertRaises(TypeError):
             BaseFilter().apply("test")
 
     def test_blacklist_filter(self) -> None:
@@ -274,6 +276,26 @@ class TestInputFilter(unittest.TestCase):
 
         validated_data = self.inputFilter.validateData({"username": 123})
         self.assertEqual(validated_data["username"], 123)
+
+    def test_to_dataclass_filter(self) -> None:
+        """
+        Test that ToDataclassFilter converts a dictionary to a dataclass.
+        """
+        from dataclasses import dataclass
+
+        @dataclass
+        class Person:
+            name: str
+            age: int
+
+        self.inputFilter.add(
+            "person", required=True, filters=[ToDataclassFilter(Person)]
+        )
+
+        validated_data = self.inputFilter.validateData(
+            {"person": {"name": "John", "age": 25}}
+        )
+        self.assertEqual(validated_data["person"], Person("John", 25))
 
     def test_to_date_filter(self) -> None:
         """
@@ -507,6 +529,25 @@ class TestInputFilter(unittest.TestCase):
 
         validated_data = self.inputFilter.validateData({"age": 25})
         self.assertEqual(validated_data["age"], "25")
+
+    def test_to_typed_dict_filter(self) -> None:
+        """
+        Test that ToTypedDictFilter converts a dictionary to a TypedDict.
+        """
+        from typing_extensions import TypedDict
+
+        class Person(TypedDict):
+            name: str
+            age: int
+
+        self.inputFilter.add(
+            "person", required=True, filters=[ToTypedDictFilter(Person)]
+        )
+
+        validated_data = self.inputFilter.validateData(
+            {"person": {"name": "John", "age": 25}}
+        )
+        self.assertEqual(validated_data["person"], {"name": "John", "age": 25})
 
     def test_to_upper_filter(self) -> None:
         """

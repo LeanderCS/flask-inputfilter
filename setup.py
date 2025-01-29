@@ -32,6 +32,6 @@ setup(
     python_requires=">=3.7",
     project_urls={
         "Documentation": "https://leandercs.github.io/flask-inputfilter",
-        "Source": "https://github.com/LeanderCS/flask-inputfilter"
-    }
+        "Source": "https://github.com/LeanderCS/flask-inputfilter",
+    },
 )
