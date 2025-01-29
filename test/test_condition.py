@@ -82,7 +82,7 @@ class TestConditions(unittest.TestCase):
         Test BaseCondition.
         """
 
-        with self.assertRaises(NotImplementedError):
+        with self.assertRaises(TypeError):
             BaseCondition().check({})
 
     def test_custom_condition(self) -> None:

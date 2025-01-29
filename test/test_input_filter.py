@@ -6,7 +6,11 @@ from flask import Flask, g, jsonify
 from flask_inputfilter import InputFilter
 from flask_inputfilter.Condition import BaseCondition
 from flask_inputfilter.Exception import ValidationError
-from flask_inputfilter.Filter import ToLowerFilter, ToUpperFilter
+from flask_inputfilter.Filter import (
+    SlugifyFilter,
+    ToLowerFilter,
+    ToUpperFilter,
+)
 from flask_inputfilter.Model import ExternalApiConfig
 from flask_inputfilter.Validator import (
     InArrayValidator,
@@ -611,6 +615,45 @@ class TestInputFilter(unittest.TestCase):
 
         validated_data = self.inputFilter.validateData({})
         self.assertEqual(validated_data, {})
+
+    def test_copy(self) -> None:
+        """
+        Test that InputFilter.copy() creates a deep copy
+        of the InputFilter instance.
+        """
+        self.inputFilter.add("username")
+
+        self.inputFilter.add(
+            "escapedUsername", copy="username", filters=[SlugifyFilter()]
+        )
+
+        validated_data = self.inputFilter.validateData(
+            {"username": "test user"}
+        )
+        self.assertEqual(validated_data["escapedUsername"], "test-user")
+
+    def test_final_methods(self) -> None:
+        def test_final_methods(self) -> None:
+            final_methods = [
+                "add",
+                "addCondition",
+                "addGlobalFilter",
+                "addGlobalValidator",
+                "validateData",
+            ]
+
+            for method in final_methods:
+                with self.assertRaises(TypeError), self.subTest(method=method):
+
+                    class SubInputFilter(InputFilter):
+                        def __getattr__(self, name):
+                            if name == method:
+
+                                def dummy_method(*args, **kwargs):
+                                    pass
+
+                                return dummy_method
+                            return super().__getattr__(name)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
 External API
 ============
 
-This documentation provides a comprehensive overview of the external API functionality available in the `InputFilter` class. It covers the configuration, core methods, and examples of usage for interacting with external APIs.
+This documentation provides a comprehensive overview of the external API functionality available in the `InputFilter` class.
+It covers the configuration, core methods, and examples of usage for interacting with external APIs.
 
 Overview
 --------
@@ -11,8 +12,8 @@ This feature allows dynamic data retrieval based on user inputs, such as validat
 
 .. note::
 
-    The external API functionality runs **after** all other filters and validators have been executed.
-    This means the data fetched from the external API will not be validated or filtered.
+    The external API functionality runs **before** all filters and validators have been executed.
+    This means the data fetched from the external API can be validated and/or filtered as normal.
 
 Configuration
 -------------
@@ -52,7 +53,7 @@ Basic External API Integration
 
 .. code-block:: python
 
-    from flask_inputfilter.InputFilter import InputFilter
+    from flask_inputfilter import InputFilter
 
     class MyInputFilter(InputFilter):
         def __init__(self):
@@ -72,9 +73,13 @@ Basic External API Integration
             )
 
     # Example usage
-    filter_instance = MyInputFilter()
-    validated_data = filter_instance.validateData({"user_id": 123})
-    print(validated_data["is_active"])  # True or False based on API response
+    # Body: {"user_id": 123}
+
+    @app.route("/test", methods=["GET"])
+    @MyInputFilter.validate()
+    def test_route():
+        validated_data = g.validated_data
+        print(validated_data["is_active"])  # True or False based on API response
 
 Using Query Parameters
 ^^^^^^^^^^^^^^^^^^^^^^

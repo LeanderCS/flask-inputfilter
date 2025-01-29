@@ -3,6 +3,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import requests
 from flask import Response, g, request
+from typing_extensions import final
 
 from flask_inputfilter.Condition.BaseCondition import BaseCondition
 from flask_inputfilter.Exception import ValidationError
@@ -23,6 +24,7 @@ class InputFilter:
         self.global_filters = []
         self.global_validators = []
 
+    @final
     def add(
         self,
         name: str,
@@ -33,6 +35,7 @@ class InputFilter:
         validators: Optional[List[BaseValidator]] = None,
         steps: Optional[List[Union[BaseFilter, BaseValidator]]] = None,
         external_api: Optional[ExternalApiConfig] = None,
+        copy: Optional[str] = None,
     ) -> None:
         """
         Add the field to the input filter.
@@ -47,6 +50,7 @@ class InputFilter:
         :param steps: Allows to apply multiple filters and validators
         in a specific order.
         :param external_api: Configuration for an external API call.
+        :param copy: The name of the field to copy the value from.
         """
 
         self.fields[name] = {
@@ -57,26 +61,31 @@ class InputFilter:
             "validators": validators or [],
             "steps": steps or [],
             "external_api": external_api,
+            "copy": copy,
         }
 
+    @final
     def addCondition(self, condition: BaseCondition) -> None:
         """
         Add a condition to the input filter.
         """
         self.conditions.append(condition)
 
+    @final
     def addGlobalFilter(self, filter_: BaseFilter) -> None:
         """
         Add a global filter to be applied to all fields.
         """
         self.global_filters.append(filter_)
 
+    @final
     def addGlobalValidator(self, validator: BaseValidator) -> None:
         """
         Add a global validator to be applied to all fields.
         """
         self.global_validators.append(validator)
 
+    @final
     def __applyFilters(self, field_name: str, value: Any) -> Any:
         """
         Apply filters to the field value.
@@ -95,6 +104,7 @@ class InputFilter:
 
         return value
 
+    @final
     def __validateField(
         self, field_name: str, field_info: Any, value: Any
     ) -> None:
@@ -119,6 +129,7 @@ class InputFilter:
 
             return field_info.get("fallback")
 
+    @final
     def __applySteps(
         self, field_name: str, field_info: Any, value: Any
     ) -> Any:
@@ -144,6 +155,7 @@ class InputFilter:
 
         return value
 
+    @final
     def __callExternalApi(
         self, field_info: Any, validated_data: dict
     ) -> Optional[Any]:
@@ -203,6 +215,7 @@ class InputFilter:
             return field_info.get("fallback")
 
     @staticmethod
+    @final
     def __replacePlaceholders(value: str, validated_data: dict) -> str:
         """
         Replace all placeholders, marked with '{{ }}' in value
@@ -215,6 +228,7 @@ class InputFilter:
             value,
         )
 
+    @final
     def __replacePlaceholdersInParams(
         self, params: dict, validated_data: dict
     ) -> dict:
@@ -230,6 +244,7 @@ class InputFilter:
         }
 
     @staticmethod
+    @final
     def __checkForRequired(
         field_name: str, field_info: dict, value: Any
     ) -> Any:
@@ -260,6 +275,7 @@ class InputFilter:
             if not condition.check(validated_data):
                 raise ValidationError(f"Condition '{condition}' not met.")
 
+    @final
     def validateData(
         self, data: Dict[str, Any], kwargs: Dict[str, Any] = None
     ) -> Dict[str, Any]:
@@ -277,6 +293,12 @@ class InputFilter:
         for field_name, field_info in self.fields.items():
             value = combined_data.get(field_name)
 
+            if field_info.get("copy"):
+                value = validated_data.get(field_info.get("copy"))
+
+            if field_info.get("external_api"):
+                value = self.__callExternalApi(field_info, validated_data)
+
             value = self.__applyFilters(field_name, value)
 
             value = (
@@ -284,9 +306,6 @@ class InputFilter:
             )
 
             value = self.__applySteps(field_name, field_info, value) or value
-
-            if field_info.get("external_api"):
-                value = self.__callExternalApi(field_info, validated_data)
 
             value = self.__checkForRequired(field_name, field_info, value)
 
@@ -297,6 +316,7 @@ class InputFilter:
         return validated_data
 
     @classmethod
+    @final
     def validate(
         cls,
     ) -> Callable[

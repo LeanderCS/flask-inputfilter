@@ -1,6 +1,7 @@
 from .ArrayElementValidator import ArrayElementValidator
 from .ArrayLengthValidator import ArrayLengthValidator
 from .BaseValidator import BaseValidator
+from .CustomJsonValidator import CustomJsonValidator
 from .DateAfterValidator import DateAfterValidator
 from .DateBeforeValidator import DateBeforeValidator
 from .DateRangeValidator import DateRangeValidator
@@ -13,6 +14,7 @@ from .IsBase64ImageCorrectSizeValidator import (
 )
 from .IsBase64ImageValidator import IsBase64ImageValidator
 from .IsBooleanValidator import IsBooleanValidator
+from .IsDataclassValidator import IsDataclassValidator
 from .IsFloatValidator import IsFloatValidator
 from .IsFutureDateValidator import IsFutureDateValidator
 from .IsHexadecimalValidator import IsHexadecimalValidator
@@ -22,6 +24,7 @@ from .IsIntegerValidator import IsIntegerValidator
 from .IsJsonValidator import IsJsonValidator
 from .IsPastDateValidator import IsPastDateValidator
 from .IsStringValidator import IsStringValidator
+from .IsTypedDictValidator import IsTypedDictValidator
 from .IsUUIDValidator import IsUUIDValidator
 from .IsVerticalImageValidator import IsVerticalImageValidator
 from .IsWeekdayValidator import IsWeekdayValidator

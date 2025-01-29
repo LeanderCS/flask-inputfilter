@@ -10,6 +10,7 @@ from flask_inputfilter.Validator import (
     ArrayElementValidator,
     ArrayLengthValidator,
     BaseValidator,
+    CustomJsonValidator,
     DateAfterValidator,
     DateBeforeValidator,
     DateRangeValidator,
@@ -20,6 +21,7 @@ from flask_inputfilter.Validator import (
     IsBase64ImageCorrectSizeValidator,
     IsBase64ImageValidator,
     IsBooleanValidator,
+    IsDataclassValidator,
     IsFloatValidator,
     IsFutureDateValidator,
     IsHexadecimalValidator,
@@ -29,6 +31,7 @@ from flask_inputfilter.Validator import (
     IsJsonValidator,
     IsPastDateValidator,
     IsStringValidator,
+    IsTypedDictValidator,
     IsUUIDValidator,
     IsVerticalImageValidator,
     IsWeekdayValidator,
@@ -78,7 +81,6 @@ class TestInputFilter(unittest.TestCase):
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"items": "not an array"})
 
-        # test custom error message
         self.inputFilter.add(
             "items",
             validators=[
@@ -131,8 +133,55 @@ class TestInputFilter(unittest.TestCase):
         Test BaseValidator.
         """
 
-        with self.assertRaises(NotImplementedError):
+        with self.assertRaises(TypeError):
             BaseValidator().validate("value")
+
+    def test_custom_json_validator(self) -> None:
+        """
+        Test CustomJsonValidator.
+        """
+
+        self.inputFilter.add(
+            "data",
+            validators=[
+                CustomJsonValidator(
+                    required_fields=["name", "age"],
+                    schema={"age": int},
+                )
+            ],
+        )
+
+        self.inputFilter.validateData({"data": '{"name": "Alice", "age": 25}'})
+        self.inputFilter.validateData(
+            {"data": '{"name": "Alice", "age": 25, "extra": "extra"}'}
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"data": '{"name": "Alice"}'})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData(
+                {"data": '{"name": "Alice", "age": "25"}'}
+            )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData(
+                {"data": '{"name": "Alice", "age": 25.5}'}
+            )
+
+        self.inputFilter.add(
+            "data",
+            validators=[
+                CustomJsonValidator(
+                    required_fields=["name", "age"],
+                    schema={"age": int},
+                    error_message="Custom error message",
+                )
+            ],
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"data": '{"name": "Alice"}'})
 
     def test_date_after_validator(self) -> None:
         """
@@ -581,6 +630,42 @@ class TestInputFilter(unittest.TestCase):
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"is_active2": "yes"})
 
+    def test_is_dataclass_validator(self) -> None:
+        """
+        Test IsDataclassValidator.
+        """
+
+        from dataclasses import dataclass
+
+        @dataclass
+        class User:
+            id: int
+
+        @dataclass
+        class User2:
+            name: str
+
+        self.inputFilter.add("data", validators=[IsDataclassValidator()])
+
+        self.inputFilter.validateData({"data": User(123)})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"data": "not a dataclass"})
+
+        self.inputFilter.add(
+            "data2",
+            validators=[
+                IsDataclassValidator(
+                    User, error_message="Custom error message"
+                )
+            ],
+        )
+
+        self.inputFilter.validateData({"data2": User(123)})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"data2": User2})
+
     def test_is_float_validator(self) -> None:
         """
         Test that IsFloatValidator validates float type.
@@ -825,6 +910,40 @@ class TestInputFilter(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"name": 123})
+
+    def test_is_typed_dict_validator(self) -> None:
+        """
+        Test IsTypedDictValidator.
+        """
+
+        from typing_extensions import TypedDict
+
+        class User(TypedDict):
+            id: int
+
+        class User2(TypedDict):
+            name: str
+
+        self.inputFilter.add("data", validators=[IsTypedDictValidator()])
+
+        self.inputFilter.validateData({"data": User(id=123)})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"data": "not a TypedDict"})
+
+        self.inputFilter.add(
+            "data2",
+            validators=[
+                IsTypedDictValidator(
+                    User, error_message="Custom error message"
+                )
+            ],
+        )
+
+        self.inputFilter.validateData({"data2": User(id=123)})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"data2": User2})
 
     def test_is_uuid_validator(self) -> None:
         """

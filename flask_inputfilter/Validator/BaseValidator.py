@@ -1,12 +1,12 @@
+from abc import ABC, abstractmethod
 from typing import Any
 
 
-class BaseValidator:
+class BaseValidator(ABC):
     """
     BaseValidator-Class. Every validator should inherit from it.
     """
 
+    @abstractmethod
     def validate(self, value: Any) -> None:
-        raise NotImplementedError(
-            "Validator validate method must be implemented"
-        )
+        pass

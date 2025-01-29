@@ -9,6 +9,7 @@ from .StringTrimFilter import StringTrimFilter
 from .ToAlphaNumericFilter import ToAlphaNumericFilter
 from .ToBooleanFilter import ToBooleanFilter
 from .ToCamelCaseFilter import ToCamelCaseFilter
+from .ToDataclassFilter import ToDataclassFilter
 from .ToDateFilter import ToDateFilter
 from .ToDateTimeFilter import ToDateTimeFilter
 from .ToEnumFilter import ToEnumFilter
@@ -21,6 +22,7 @@ from .ToNullFilter import ToNullFilter
 from .ToPascaleCaseFilter import ToPascaleCaseFilter
 from .ToSnakeCaseFilter import ToSnakeCaseFilter
 from .ToStringFilter import ToStringFilter
+from .ToTypedDictFilter import ToTypedDictFilter
 from .ToUpperFilter import ToUpperFilter
 from .TruncateFilter import TruncateFilter
 from .WhitelistFilter import WhitelistFilter
