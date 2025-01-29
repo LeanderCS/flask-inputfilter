@@ -86,7 +86,7 @@ class InputFilter:
         self.global_validators.append(validator)
 
     @final
-    def __applyFilters(self, field_name: str, value: Any) -> Any:
+    def __applyFilters(self, filters: List[BaseFilter], value: Any) -> Any:
         """
         Apply filters to the field value.
         """
@@ -94,19 +94,14 @@ class InputFilter:
         if value is None:
             return value
 
-        for filter_ in self.global_filters:
-            value = filter_.apply(value)
-
-        field = self.fields.get(field_name)
-
-        for filter_ in field.get("filters"):
+        for filter_ in self.global_filters + filters:
             value = filter_.apply(value)
 
         return value
 
     @final
     def __validateField(
-        self, field_name: str, field_info: Any, value: Any
+        self, validators: List[BaseValidator], fallback: Any, value: Any
     ) -> None:
         """
         Validate the field value.
@@ -116,22 +111,20 @@ class InputFilter:
             return
 
         try:
-            for validator in self.global_validators:
-                validator.validate(value)
-
-            field = self.fields.get(field_name)
-
-            for validator in field.get("validators"):
+            for validator in self.global_validators + validators:
                 validator.validate(value)
         except ValidationError:
-            if field_info.get("fallback") is None:
+            if fallback is None:
                 raise
 
-            return field_info.get("fallback")
+            return fallback
 
     @final
     def __applySteps(
-        self, field_name: str, field_info: Any, value: Any
+        self,
+        steps: List[Union[BaseFilter, BaseValidator]],
+        fallback: Any,
+        value: Any,
     ) -> Any:
         """
         Apply multiple filters and validators in a specific order.
@@ -140,31 +133,27 @@ class InputFilter:
         if value is None:
             return
 
-        field = self.fields.get(field_name)
-
         try:
-            for step in field.get("steps"):
+            for step in steps:
                 if isinstance(step, BaseFilter):
                     value = step.apply(value)
                 elif isinstance(step, BaseValidator):
                     step.validate(value)
         except ValidationError:
-            if field_info.get("fallback") is None:
+            if fallback is None:
                 raise
-            return field_info.get("fallback")
+            return fallback
 
         return value
 
     @final
     def __callExternalApi(
-        self, field_info: Any, validated_data: dict
+        self, config: ExternalApiConfig, fallback: Any, validated_data: dict
     ) -> Optional[Any]:
         """
         Führt den API-Aufruf durch und gibt den Wert zurück,
         der im Antwortkörper zu finden ist.
         """
-
-        config: ExternalApiConfig = field_info.get("external_api")
 
         requestData = {
             "headers": {},
@@ -206,13 +195,13 @@ class InputFilter:
 
             return result
         except Exception:
-            if field_info and field_info.get("fallback") is None:
+            if fallback is None:
                 raise ValidationError(
                     f"External API call failed for field "
                     f"'{config.data_key}'."
                 )
 
-            return field_info.get("fallback")
+            return fallback
 
     @staticmethod
     @final
@@ -246,7 +235,11 @@ class InputFilter:
     @staticmethod
     @final
     def __checkForRequired(
-        field_name: str, field_info: dict, value: Any
+        field_name: str,
+        required: bool,
+        default: Any,
+        fallback: Any,
+        value: Any,
     ) -> Any:
         """
         Determine the value of the field, considering the required and
@@ -262,11 +255,11 @@ class InputFilter:
         if value is not None:
             return value
 
-        if not field_info.get("required"):
-            return field_info.get("default")
+        if not required:
+            return default
 
-        if field_info.get("fallback") is not None:
-            return field_info.get("fallback")
+        if fallback is not None:
+            return fallback
 
         raise ValidationError(f"Field '{field_name}' is required.")
 
@@ -276,38 +269,43 @@ class InputFilter:
                 raise ValidationError(f"Condition '{condition}' not met.")
 
     @final
-    def validateData(
-        self, data: Dict[str, Any], kwargs: Dict[str, Any] = None
-    ) -> Dict[str, Any]:
+    def validateData(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Validate the input data, considering both request data and
         URL parameters (kwargs).
         """
 
-        if kwargs is None:
-            kwargs = {}
-
         validated_data = {}
-        combined_data = {**data, **kwargs}
 
         for field_name, field_info in self.fields.items():
-            value = combined_data.get(field_name)
+            value = data.get(field_name)
 
-            if field_info.get("copy"):
-                value = validated_data.get(field_info.get("copy"))
+            required = field_info["required"]
+            default = field_info["default"]
+            fallback = field_info["fallback"]
+            filters = field_info["filters"]
+            validators = field_info["validators"]
+            steps = field_info["steps"]
+            external_api = field_info["external_api"]
+            copy = field_info["copy"]
 
-            if field_info.get("external_api"):
-                value = self.__callExternalApi(field_info, validated_data)
+            if copy:
+                value = validated_data.get(copy)
 
-            value = self.__applyFilters(field_name, value)
+            if external_api:
+                value = self.__callExternalApi(
+                    external_api, fallback, validated_data
+                )
 
-            value = (
-                self.__validateField(field_name, field_info, value) or value
+            value = self.__applyFilters(filters, value)
+
+            value = self.__validateField(validators, fallback, value) or value
+
+            value = self.__applySteps(steps, fallback, value) or value
+
+            value = self.__checkForRequired(
+                field_name, required, default, fallback, value
             )
-
-            value = self.__applySteps(field_name, field_info, value) or value
-
-            value = self.__checkForRequired(field_name, field_info, value)
 
             validated_data[field_name] = value
 
@@ -339,13 +337,14 @@ class InputFilter:
             def wrapper(
                 *args, **kwargs
             ) -> Union[Response, Tuple[Any, Dict[str, Any]]]:
-                if request.method not in cls().methods:
+                input_filter = cls()
+                if request.method not in input_filter.methods:
                     return Response(status=405, response="Method Not Allowed")
 
                 data = request.json if request.is_json else request.args
 
                 try:
-                    g.validated_data = cls().validateData(data, kwargs)
+                    g.validated_data = input_filter.validateData(data)
 
                 except ValidationError as e:
                     return Response(status=400, response=str(e))

@@ -12,7 +12,7 @@ class IsDataclassValidator(BaseValidator):
 
     def __init__(
         self,
-        dataclass_type: Optional[Type[Any]] = None,
+        dataclass_type: Optional[Type[dict]] = None,
         error_message: Optional[str] = None,
     ) -> None:
         self.dataclass_type = dataclass_type

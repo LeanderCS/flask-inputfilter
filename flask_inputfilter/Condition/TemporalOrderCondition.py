@@ -38,7 +38,6 @@ class TemporalOrderCondition(BaseCondition):
             except ValueError:
                 raise ValidationError(f"Invalid date format: {value}")
 
-        else:
-            raise ValidationError(
-                f"Unsupported type for date parsing: {type(value)}"
-            )
+        raise ValidationError(
+            f"Unsupported type for date parsing: {type(value)}"
+        )

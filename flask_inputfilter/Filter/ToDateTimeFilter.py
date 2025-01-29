@@ -24,5 +24,4 @@ class ToDateTimeFilter(BaseFilter):
             except ValueError:
                 return value
 
-        else:
-            return value
+        return value
