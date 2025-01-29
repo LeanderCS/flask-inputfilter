@@ -1,6 +1,9 @@
 import unittest
+from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 from enum import Enum
+
+from typing_extensions import TypedDict
 
 from flask_inputfilter import InputFilter
 from flask_inputfilter.Enum import RegexEnum
@@ -168,6 +171,12 @@ class TestInputFilter(unittest.TestCase):
             self.inputFilter.validateData(
                 {"data": '{"name": "Alice", "age": 25.5}'}
             )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"data": "not a json"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"data": 123})
 
         self.inputFilter.add(
             "data",
@@ -635,8 +644,6 @@ class TestInputFilter(unittest.TestCase):
         Test IsDataclassValidator.
         """
 
-        from dataclasses import dataclass
-
         @dataclass
         class User:
             id: int
@@ -792,6 +799,9 @@ class TestInputFilter(unittest.TestCase):
                     {"vertically_image": file.read()}
                 )
 
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"vertically_image": 123})
+
     def test_is_instance_validator(self) -> None:
         """
         Test IsInstanceValidator.
@@ -916,8 +926,6 @@ class TestInputFilter(unittest.TestCase):
         Test IsTypedDictValidator.
         """
 
-        from typing_extensions import TypedDict
-
         class User(TypedDict):
             id: int
 
@@ -1011,6 +1019,9 @@ class TestInputFilter(unittest.TestCase):
 
         with open("test/data/base64_image.txt", "r") as file:
             self.inputFilter.validateData({"vertically_image": file.read()})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"vertically_image": 123})
 
     def test_is_weekday_validator(self) -> None:
         """

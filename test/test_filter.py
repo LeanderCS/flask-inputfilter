@@ -1,10 +1,12 @@
 import base64
 import io
 import unittest
+from dataclasses import dataclass
 from datetime import date, datetime
 from enum import Enum
 
 from PIL import Image
+from typing_extensions import TypedDict
 
 from flask_inputfilter import InputFilter
 from flask_inputfilter.Filter import (
@@ -71,10 +73,14 @@ class TestInputFilter(unittest.TestCase):
         )
         self.assertEqual(validated_data["items"], ["item1", "item2", "item3"])
 
+        validated_data = self.inputFilter.validateData({"items": 123})
+        self.assertEqual(validated_data["items"], 123)
+
     def test_base64_image_downscale_filter(self) -> None:
         """
         Test Base64ImageDownscaleFilter.
         """
+
         self.inputFilter.add(
             "image",
             filters=[Base64ImageDownscaleFilter(size=144)],
@@ -102,10 +108,17 @@ class TestInputFilter(unittest.TestCase):
             ).size
             self.assertEqual(size, (12, 12))
 
+        validated_data = self.inputFilter.validateData({"image": 123})
+        self.assertEqual(validated_data["image"], 123)
+
+        validated_data = self.inputFilter.validateData({"image": "no image"})
+        self.assertEqual(validated_data["image"], "no image")
+
     def test_base64_image_size_reduce_filter(self) -> None:
         """
         Test Base64ImageResizeFilter.
         """
+
         self.inputFilter.add(
             "image",
             filters=[Base64ImageResizeFilter(max_size=1024)],
@@ -140,6 +153,12 @@ class TestInputFilter(unittest.TestCase):
             image.save(buffer, format="JPEG")
             size = buffer.tell()
             self.assertLessEqual(size, 1024)
+
+        validated_data = self.inputFilter.validateData({"image": 123})
+        self.assertEqual(validated_data["image"], 123)
+
+        validated_data = self.inputFilter.validateData({"image": "no image"})
+        self.assertEqual(validated_data["image"], "no image")
 
     def test_base_filter(self) -> None:
         """
@@ -281,7 +300,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that ToDataclassFilter converts a dictionary to a dataclass.
         """
-        from dataclasses import dataclass
 
         @dataclass
         class Person:
@@ -296,6 +314,9 @@ class TestInputFilter(unittest.TestCase):
             {"person": {"name": "John", "age": 25}}
         )
         self.assertEqual(validated_data["person"], Person("John", 25))
+
+        validated_data = self.inputFilter.validateData({"person": 123})
+        self.assertEqual(validated_data["person"], 123)
 
     def test_to_date_filter(self) -> None:
         """
@@ -437,12 +458,18 @@ class TestInputFilter(unittest.TestCase):
         )
         self.assertEqual(validated_data["date"], "2021-01-01")
 
-        self.inputFilter.add("datetime", filters=[ToIsoFilter()])
+        validated_data = self.inputFilter.validateData(
+            {"date": datetime(2021, 1, 1, 12, 0, 0)}
+        )
+        self.assertEqual(validated_data["date"], "2021-01-01T12:00:00")
 
         validated_data = self.inputFilter.validateData(
-            {"datetime": datetime(2021, 1, 1, 12, 0, 0)}
+            {"date": "2020-01-01T12:00:00"}
         )
-        self.assertEqual(validated_data["datetime"], "2021-01-01T12:00:00")
+        self.assertEqual(validated_data["date"], "2020-01-01T12:00:00")
+
+        validated_data = self.inputFilter.validateData({"date": "no date"})
+        self.assertEqual(validated_data["date"], "no date")
 
     def test_to_lower_filter(self) -> None:
         """
@@ -534,7 +561,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that ToTypedDictFilter converts a dictionary to a TypedDict.
         """
-        from typing_extensions import TypedDict
 
         class Person(TypedDict):
             name: str
@@ -548,6 +574,9 @@ class TestInputFilter(unittest.TestCase):
             {"person": {"name": "John", "age": 25}}
         )
         self.assertEqual(validated_data["person"], {"name": "John", "age": 25})
+
+        validated_data = self.inputFilter.validateData({"person": 123})
+        self.assertEqual(validated_data["person"], 123)
 
     def test_to_upper_filter(self) -> None:
         """

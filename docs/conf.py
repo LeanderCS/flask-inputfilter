@@ -9,7 +9,7 @@
 project = "flask-inputfilter"
 copyright = "2025, Leander Cain Slotosch"
 author = "Leander Cain Slotosch"
-release = "0.0.8"
+release = "0.0.9"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

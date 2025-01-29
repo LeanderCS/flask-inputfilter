@@ -15,10 +15,10 @@ class WhitelistFilter(BaseFilter):
                 [word for word in value.split() if word in self.whitelist]
             )
 
-        if isinstance(value, list):
+        elif isinstance(value, list):
             return [item for item in value if item in self.whitelist]
 
-        if isinstance(value, dict):
+        elif isinstance(value, dict):
             return {
                 key: value
                 for key, value in value.items()

@@ -16,5 +16,4 @@ class ToIsoFilter(BaseFilter):
         elif isinstance(value, date):
             return value.isoformat()
 
-        else:
-            return value
+        return value

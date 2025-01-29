@@ -14,9 +14,6 @@ class ToDateFilter(BaseFilter):
         if isinstance(value, datetime):
             return value.date()
 
-        elif isinstance(value, date):
-            return value
-
         elif isinstance(value, str):
             try:
                 return datetime.fromisoformat(value).date()
@@ -24,5 +21,4 @@ class ToDateFilter(BaseFilter):
             except ValueError:
                 return value
 
-        else:
-            return value
+        return value

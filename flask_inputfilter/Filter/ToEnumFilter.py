@@ -16,7 +16,7 @@ class ToEnumFilter(BaseFilter):
         if not isinstance(value, (str, int)):
             return value
 
-        if isinstance(value, Enum):
+        elif isinstance(value, Enum):
             return value
 
         try:
