@@ -269,16 +269,22 @@ class InputFilter:
                 raise ValidationError(f"Condition '{condition}' not met.")
 
     @final
-    def validateData(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def validateData(
+        self, data: Dict[str, Any], kwargs: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
         """
         Validate the input data, considering both request data and
         URL parameters (kwargs).
         """
 
+        if kwargs is None:
+            kwargs = {}
+
         validated_data = {}
+        combined_data = {**data, **kwargs}
 
         for field_name, field_info in self.fields.items():
-            value = data.get(field_name)
+            value = combined_data.get(field_name)
 
             required = field_info["required"]
             default = field_info["default"]
@@ -344,7 +350,7 @@ class InputFilter:
                 data = request.json if request.is_json else request.args
 
                 try:
-                    g.validated_data = input_filter.validateData(data)
+                    g.validated_data = input_filter.validateData(data, kwargs)
 
                 except ValidationError as e:
                     return Response(status=400, response=str(e))

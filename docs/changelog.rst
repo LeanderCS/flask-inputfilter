@@ -3,6 +3,15 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+
+[0.0.9.1] - 2025-02-09
+----------------------
+
+Changed
+^^^^^^^
+- Updated ``InputFilter`` to fix the issue with route params.
+
+
 [0.0.9] - 2025-01-29
 --------------------
 

@@ -33,8 +33,6 @@ class TestInputFilter(unittest.TestCase):
     def test_validate_decorator(self, mock_validateData) -> None:
         mock_validateData.return_value = {"username": "test_user", "age": 25}
 
-        app = Flask(__name__)
-
         class MyInputFilter(InputFilter):
             def __init__(self):
                 super().__init__()
@@ -48,6 +46,8 @@ class TestInputFilter(unittest.TestCase):
                     default=18,
                     validators=[IsIntegerValidator()],
                 )
+
+        app = Flask(__name__)
 
         @app.route("/test", methods=["GET", "POST"])
         @MyInputFilter.validate()
