@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="flask_inputfilter",
-    version="0.0.9.1",
+    version="0.0.10",
     author="Leander Cain Slotosch",
     author_email="slotosch.leander@outlook.de",
     description="A library to filter and validate input data in"
@@ -21,6 +21,7 @@ setup(
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3.14",
         "Programming Language :: Python :: 3.13",
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.11",

@@ -4,6 +4,18 @@ Changelog
 All notable changes to this project will be documented in this file.
 
 
+[0.0.10] - 2025-03-06
+--------------------
+
+Added
+^^^^^
+- Added python 3.14 support.
+
+Changed
+^^^^^^^
+- Use ``FieldModel`` vor field definition. (Only internal change, no impact on the user)
+
+
 [0.0.9.1] - 2025-02-09
 ----------------------
 

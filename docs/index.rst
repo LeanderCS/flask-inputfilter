@@ -16,10 +16,11 @@ Overview
 Available functions:
 --------------------
 
-- :doc:`Creating your own Conditions, Filters and Validators <guides/create_own>`
+- :doc:`InputFilter <options/inputfilter>`
 - :doc:`Conditions <options/condition>`
 - :doc:`Filter <options/filter>`
 - :doc:`Validator <options/validator>`
+- :doc:`Creating your own Conditions, Filters and Validators <guides/create_own>`
 - :doc:`ExternalApi <options/external_api>`
 
 

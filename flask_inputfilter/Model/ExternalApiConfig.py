@@ -11,6 +11,8 @@ class ExternalApiConfig:
     :param method: The HTTP method to use.
     :param params: The parameters to send to the API.
     :param data_key: The key in the response JSON to use
+    :param api_key: The API key to use.
+    :param headers: The headers to send to the API.
     """
 
     url: str

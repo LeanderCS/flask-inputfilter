@@ -38,8 +38,9 @@ RUN /root/.pyenv/bin/pyenv install 3.10.2
 RUN /root/.pyenv/bin/pyenv install 3.11.0
 RUN /root/.pyenv/bin/pyenv install 3.12.0
 RUN /root/.pyenv/bin/pyenv install 3.13.0
+RUN /root/.pyenv/bin/pyenv install 3.14-dev
 
-RUN /root/.pyenv/bin/pyenv global 3.7.12 3.8.12 3.9.7 3.10.2 3.11.0 3.12.0 3.13.0
+RUN /root/.pyenv/bin/pyenv global 3.7.12 3.8.12 3.9.7 3.10.2 3.11.0 3.12.0 3.13.0 3.14-dev
 
 RUN pip install --upgrade pip
 

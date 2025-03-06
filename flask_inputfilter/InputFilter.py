@@ -1,15 +1,16 @@
 import re
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
-import requests
 from flask import Response, g, request
 from typing_extensions import final
 
 from flask_inputfilter.Condition.BaseCondition import BaseCondition
 from flask_inputfilter.Exception import ValidationError
 from flask_inputfilter.Filter import BaseFilter
-from flask_inputfilter.Model import ExternalApiConfig
+from flask_inputfilter.Model import ExternalApiConfig, FieldModel
 from flask_inputfilter.Validator import BaseValidator
+
+API_PLACEHOLDER_PATTERN = re.compile(r"{{(.*?)}}")
 
 
 class InputFilter:
@@ -18,11 +19,11 @@ class InputFilter:
     """
 
     def __init__(self, methods: Optional[List[str]] = None) -> None:
-        self.methods = methods or ["GET", "POST", "PATCH", "PUT", "DELETE"]
-        self.fields = {}
-        self.conditions = []
-        self.global_filters = []
-        self.global_validators = []
+        self._methods = methods or ["GET", "POST", "PATCH", "PUT", "DELETE"]
+        self._fields: Dict[str, FieldModel] = {}
+        self._conditions: List[BaseCondition] = []
+        self._global_filters: List[BaseFilter] = []
+        self._global_validators: List[BaseValidator] = []
 
     @final
     def add(
@@ -40,78 +41,74 @@ class InputFilter:
         """
         Add the field to the input filter.
 
-        :param name: The name of the field.
-        :param required: Whether the field is required.
-        :param default: The default value of the field.
-        :param fallback: The fallback value of the field, if validations fails
-        or field None, although it is required .
-        :param filters: The filters to apply to the field value.
-        :param validators: The validators to apply to the field value.
-        :param steps: Allows to apply multiple filters and validators
-        in a specific order.
-        :param external_api: Configuration for an external API call.
-        :param copy: The name of the field to copy the value from.
+        Args:
+            name: The name of the field.
+            required: Whether the field is required.
+            default: The default value of the field.
+            fallback: The fallback value of the field, if validations fails
+                or field None, although it is required .
+            filters: The filters to apply to the field value.
+            validators: The validators to apply to the field value.
+            steps: Allows to apply multiple filters and validators
+                in a specific order.
+            external_api: Configuration for an external API call.
+            copy: The name of the field to copy the value from.
         """
-
-        self.fields[name] = {
-            "required": required,
-            "default": default,
-            "fallback": fallback,
-            "filters": filters or [],
-            "validators": validators or [],
-            "steps": steps or [],
-            "external_api": external_api,
-            "copy": copy,
-        }
+        self._fields[name] = FieldModel(
+            required=required,
+            default=default,
+            fallback=fallback,
+            filters=filters or [],
+            validators=validators or [],
+            steps=steps or [],
+            external_api=external_api,
+            copy=copy,
+        )
 
     @final
     def addCondition(self, condition: BaseCondition) -> None:
         """
         Add a condition to the input filter.
         """
-        self.conditions.append(condition)
+        self._conditions.append(condition)
 
     @final
     def addGlobalFilter(self, filter_: BaseFilter) -> None:
         """
         Add a global filter to be applied to all fields.
         """
-        self.global_filters.append(filter_)
+        self._global_filters.append(filter_)
 
     @final
     def addGlobalValidator(self, validator: BaseValidator) -> None:
         """
         Add a global validator to be applied to all fields.
         """
-        self.global_validators.append(validator)
+        self._global_validators.append(validator)
 
-    @final
     def __applyFilters(self, filters: List[BaseFilter], value: Any) -> Any:
         """
         Apply filters to the field value.
         """
-
         if value is None:
             return value
 
-        for filter_ in self.global_filters + filters:
+        for filter_ in self._global_filters + filters:
             value = filter_.apply(value)
 
         return value
 
-    @final
     def __validateField(
         self, validators: List[BaseValidator], fallback: Any, value: Any
     ) -> None:
         """
         Validate the field value.
         """
-
         if value is None:
             return
 
         try:
-            for validator in self.global_validators + validators:
+            for validator in self._global_validators + validators:
                 validator.validate(value)
         except ValidationError:
             if fallback is None:
@@ -119,9 +116,8 @@ class InputFilter:
 
             return fallback
 
-    @final
+    @staticmethod
     def __applySteps(
-        self,
         steps: List[Union[BaseFilter, BaseValidator]],
         fallback: Any,
         value: Any,
@@ -129,7 +125,6 @@ class InputFilter:
         """
         Apply multiple filters and validators in a specific order.
         """
-
         if value is None:
             return
 
@@ -143,10 +138,8 @@ class InputFilter:
             if fallback is None:
                 raise
             return fallback
-
         return value
 
-    @final
     def __callExternalApi(
         self, config: ExternalApiConfig, fallback: Any, validated_data: dict
     ) -> Optional[Any]:
@@ -154,6 +147,7 @@ class InputFilter:
         Führt den API-Aufruf durch und gibt den Wert zurück,
         der im Antwortkörper zu finden ist.
         """
+        import requests
 
         requestData = {
             "headers": {},
@@ -204,20 +198,16 @@ class InputFilter:
             return fallback
 
     @staticmethod
-    @final
     def __replacePlaceholders(value: str, validated_data: dict) -> str:
         """
         Replace all placeholders, marked with '{{ }}' in value
         with the corresponding values from validated_data.
         """
-
-        return re.sub(
-            r"{{(.*?)}}",
+        return API_PLACEHOLDER_PATTERN.sub(
             lambda match: str(validated_data.get(match.group(1))),
             value,
         )
 
-    @final
     def __replacePlaceholdersInParams(
         self, params: dict, validated_data: dict
     ) -> dict:
@@ -233,7 +223,6 @@ class InputFilter:
         }
 
     @staticmethod
-    @final
     def __checkForRequired(
         field_name: str,
         required: bool,
@@ -251,7 +240,6 @@ class InputFilter:
         value is returned.
         If no of the above conditions are met, a ValidationError is raised.
         """
-
         if value is not None:
             return value
 
@@ -264,7 +252,7 @@ class InputFilter:
         raise ValidationError(f"Field '{field_name}' is required.")
 
     def __checkConditions(self, validated_data: dict) -> None:
-        for condition in self.conditions:
+        for condition in self._conditions:
             if not condition.check(validated_data):
                 raise ValidationError(f"Condition '{condition}' not met.")
 
@@ -276,24 +264,23 @@ class InputFilter:
         Validate the input data, considering both request data and
         URL parameters (kwargs).
         """
-
         if kwargs is None:
             kwargs = {}
 
         validated_data = {}
         combined_data = {**data, **kwargs}
 
-        for field_name, field_info in self.fields.items():
+        for field_name, field_info in self._fields.items():
             value = combined_data.get(field_name)
 
-            required = field_info["required"]
-            default = field_info["default"]
-            fallback = field_info["fallback"]
-            filters = field_info["filters"]
-            validators = field_info["validators"]
-            steps = field_info["steps"]
-            external_api = field_info["external_api"]
-            copy = field_info["copy"]
+            required = field_info.required
+            default = field_info.default
+            fallback = field_info.fallback
+            filters = field_info.filters
+            validators = field_info.validators
+            steps = field_info.steps
+            external_api = field_info.external_api
+            copy = field_info.copy
 
             if copy:
                 value = validated_data.get(copy)
@@ -344,7 +331,7 @@ class InputFilter:
                 *args, **kwargs
             ) -> Union[Response, Tuple[Any, Dict[str, Any]]]:
                 input_filter = cls()
-                if request.method not in input_filter.methods:
+                if request.method not in input_filter._methods:
                     return Response(status=405, response="Method Not Allowed")
 
                 data = request.json if request.is_json else request.args

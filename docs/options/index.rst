@@ -5,9 +5,9 @@ Options
     :maxdepth: 2
 
     condition
+    filter
     validator
     external_api
-    filter
 
 The `add` method supports several options:
 

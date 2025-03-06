@@ -8,12 +8,12 @@ and type requirements before being processed.
 Thank you for using ``flask-inputfilter``!
 ==========================================
 
-If you have any questions or suggestions, please feel free to open an issue on GitHub `here <https://github.com/LeanderCS/flask-inputfilter>`__.
+If you have any questions or suggestions, please feel free to open an issue on `GitHub <https://github.com/LeanderCS/flask-inputfilter>`__.
 
 If you don't want to miss any updates, please star the repository.
 This will help me to understand how many people are interested in this project.
 
-For information about the usage you can view the documentation `here <https://leandercs.github.io/flask-inputfilter>`__.
+For information about the usage you can view the `documentation <https://leandercs.github.io/flask-inputfilter>`__.
 
 :Test Status:
 
@@ -34,7 +34,7 @@ For information about the usage you can view the documentation `here <https://le
 
 :Downloads:
 
-    .. image:: https://img.shields.io/pypi/dm/flask-inputfilter?style=flat-square&label=PyPI
+    .. image:: https://static.pepy.tech/badge/flask-inputfilter/month
         :target: https://pypi.org/project/flask-inputfilter/
     .. image:: https://static.pepy.tech/badge/flask-inputfilter
         :target: https://pypi.org/project/flask-inputfilter/
