@@ -4,7 +4,9 @@ from flask_inputfilter.Filter import BaseFilter
 
 
 class BlacklistFilter(BaseFilter):
-    """Filter that filters out values that are in the blacklist."""
+    """
+    Filter that filters out values that are in the blacklist.
+    """
 
     def __init__(self, blacklist: List[str]) -> None:
         self.blacklist = blacklist

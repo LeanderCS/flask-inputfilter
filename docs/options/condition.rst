@@ -1,15 +1,15 @@
 Condition
 =========
 
-The `Condition` module contains the conditions that can be used to validate the input data.
+``Conditions`` are used to validate the input data based on rules between fields.
 
-Conditions
-----------
+Overview
+--------
 
 The `addCondition` method is used to add a condition between fields.
 
-Example
--------
+Examples
+--------
 
 .. code-block:: python
 

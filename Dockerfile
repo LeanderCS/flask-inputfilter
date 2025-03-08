@@ -11,3 +11,6 @@ COPY requirements.txt /app
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /app
+
+COPY scripts /usr/local/bin
+RUN find /usr/local/bin -type f -name "*" -exec chmod +x {} \;

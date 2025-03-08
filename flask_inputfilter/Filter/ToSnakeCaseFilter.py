@@ -14,7 +14,6 @@ class ToSnakeCaseFilter(BaseFilter):
             return value
 
         value = re.sub(r"(?<!^)(?=[A-Z])", "_", value).lower()
-
         value = re.sub(r"[\s-]+", "_", value)
 
         return value

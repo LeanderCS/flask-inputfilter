@@ -1,5 +1,5 @@
-Create own
-===========
+Create own components
+=====================
 
 Depending on what you want to build your own version from, there are different
 parameters and return values required to work properly.

@@ -14,7 +14,6 @@ class ToCamelCaseFilter(BaseFilter):
             return value
 
         value = re.sub(r"[\s_-]+", " ", value).strip()
-
         value = "".join(word.capitalize() for word in value.split())
 
         return value[0].lower() + value[1:] if value else value

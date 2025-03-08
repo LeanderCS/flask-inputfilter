@@ -1,17 +1,17 @@
 Validator
 =========
 
-The `Validator` class is used to validate the data after the filters have been applied.
+``Validators`` are used to validate the data after the filters have been applied.
 
-Validators
-----------
+Overview
+--------
 
-Validators can be added into the `add` method for a specific field or as a global validator for all fields in `addGlobalValidator`.
+Validators can be added into the ``add`` method for a specific field or as a global validator for all fields in ``addGlobalValidator``.
 
 The global validation will be executed before the specific field validation.
 
-Example
--------
+Examples
+--------
 
 Here is an example of how to use validators in an `InputFilter`:
 

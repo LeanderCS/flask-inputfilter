@@ -47,3 +47,37 @@ Basic Copy Integration
 
         # Cotains the same value as username but escaped eg. "very-important-user"
         print(validated_data["escapedUsername"])
+
+
+The coping can also be used as a chain.
+
+.. code-block:: python
+
+    from flask_inputfilter import InputFilter
+    from flask_inputfilter.Filter import SlugifyFilter, ToUpperFilter, ToLowerFilter
+
+    class MyInputFilter(InputFilter):
+        def __init__(self):
+            super().__init__()
+
+            self.add(
+                "username"
+            )
+
+            self.add(
+                "escapedUsername",
+                copy="username"
+                filters=[SlugifyFilter()]
+            )
+
+            self.add(
+                "upperEscapedUsername",
+                copy="escapedUsername"
+                filters=[ToUpperFilter()]
+            )
+
+            self.add(
+                "lowerEscapedUsername",
+                copy="escapedUsername"
+                filters=[ToLowerFilter()]
+            )

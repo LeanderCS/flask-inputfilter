@@ -1,10 +1,13 @@
 autoflake
 black
+coverage
+coveralls
 flake8==4.0.0
 flask==2.1
 isort
 pillow==8.0.0
 pytest
 requests==2.22.0
-coveralls
-coverage
+sphinx
+sphinx-autobuild
+sphinx_rtd_theme

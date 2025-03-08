@@ -7,7 +7,7 @@ It covers the configuration, core methods, and examples of usage for interacting
 Overview
 --------
 
-The `InputFilter` class includes a mechanism for fetching data from external APIs during the input validation process.
+The ``InputFilter`` class includes a mechanism for fetching data from external APIs during the input validation process.
 This feature allows dynamic data retrieval based on user inputs, such as validating fields or fetching related data from an external service.
 
 .. note::
@@ -62,6 +62,7 @@ Basic External API Integration
             self.add(
                 "user_id", required=True
             )
+
             self.add(
                 "is_active",
                 required=True,

@@ -15,8 +15,8 @@ from flask_inputfilter.Filter import (
     Base64ImageResizeFilter,
     BaseFilter,
     BlacklistFilter,
-    RemoveEmojisFilter,
-    SlugifyFilter,
+    StringRemoveEmojisFilter,
+    StringSlugifyFilter,
     StringTrimFilter,
     ToAlphaNumericFilter,
     ToBooleanFilter,
@@ -24,6 +24,7 @@ from flask_inputfilter.Filter import (
     ToDataclassFilter,
     ToDateFilter,
     ToDateTimeFilter,
+    ToDigitsFilter,
     ToEnumFilter,
     ToFloatFilter,
     ToIntegerFilter,
@@ -31,7 +32,7 @@ from flask_inputfilter.Filter import (
     ToLowerFilter,
     ToNormalizedUnicodeFilter,
     ToNullFilter,
-    ToPascaleCaseFilter,
+    ToPascalCaseFilter,
     ToSnakeCaseFilter,
     ToStringFilter,
     ToTypedDictFilter,
@@ -202,12 +203,12 @@ class TestInputFilter(unittest.TestCase):
 
     def test_remove_emojis_filter(self) -> None:
         """
-        Test that RemoveEmojisFilter removes emojis from a string.
+        Test that StringRemoveEmojisFilter removes emojis from a string.
         """
         self.inputFilter.add(
             "text",
             required=False,
-            filters=[RemoveEmojisFilter()],
+            filters=[StringRemoveEmojisFilter()],
         )
 
         validated_data = self.inputFilter.validateData(
@@ -220,12 +221,12 @@ class TestInputFilter(unittest.TestCase):
 
     def test_slugify_filter(self) -> None:
         """
-        Test that SlugifyFilter slugifies a string.
+        Test that StringSlugifyFilter slugifies a string.
         """
         self.inputFilter.add(
             "slug",
             required=False,
-            filters=[SlugifyFilter()],
+            filters=[StringSlugifyFilter()],
         )
 
         validated_data = self.inputFilter.validateData(
@@ -383,6 +384,31 @@ class TestInputFilter(unittest.TestCase):
         validated_data = self.inputFilter.validateData({"created_at": 123})
         self.assertEqual(validated_data["created_at"], 123)
 
+    def test_to_digits_filter(self) -> None:
+        """
+        Test that ToDigitsFilter turns a string to a int/float if it can.
+        """
+        self.inputFilter.add(
+            "number",
+            required=True,
+            filters=[ToDigitsFilter()],
+        )
+
+        validated_data = self.inputFilter.validateData({"number": "25"})
+        self.assertEqual(validated_data["number"], 25)
+
+        validated_data = self.inputFilter.validateData({"number": "25.3"})
+        self.assertEqual(validated_data["number"], 25.3)
+
+        validated_data = self.inputFilter.validateData({"number": "25.3.3"})
+        self.assertEqual(type(validated_data["number"]), str)
+
+        validated_data = self.inputFilter.validateData({"number": "no number"})
+        self.assertEqual(validated_data["number"], "no number")
+
+        validated_data = self.inputFilter.validateData({"number": 1.23})
+        self.assertEqual(validated_data["number"], 1.23)
+
     def test_to_enum_filter(self) -> None:
         """
         Test that EnumFilter validates a string against a list of values.
@@ -521,7 +547,7 @@ class TestInputFilter(unittest.TestCase):
         Test that PascalCaseFilter converts string to pascal case.
         """
         self.inputFilter.add(
-            "username", required=True, filters=[ToPascaleCaseFilter()]
+            "username", required=True, filters=[ToPascalCaseFilter()]
         )
 
         validated_data = self.inputFilter.validateData(

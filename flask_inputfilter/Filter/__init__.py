@@ -5,6 +5,8 @@ from .BaseFilter import BaseFilter
 from .BlacklistFilter import BlacklistFilter
 from .RemoveEmojisFilter import RemoveEmojisFilter
 from .SlugifyFilter import SlugifyFilter
+from .StringRemoveEmojisFilter import StringRemoveEmojisFilter
+from .StringSlugifyFilter import StringSlugifyFilter
 from .StringTrimFilter import StringTrimFilter
 from .ToAlphaNumericFilter import ToAlphaNumericFilter
 from .ToBooleanFilter import ToBooleanFilter
@@ -12,6 +14,7 @@ from .ToCamelCaseFilter import ToCamelCaseFilter
 from .ToDataclassFilter import ToDataclassFilter
 from .ToDateFilter import ToDateFilter
 from .ToDateTimeFilter import ToDateTimeFilter
+from .ToDigitsFilter import ToDigitsFilter
 from .ToEnumFilter import ToEnumFilter
 from .ToFloatFilter import ToFloatFilter
 from .ToIntegerFilter import ToIntegerFilter
@@ -19,6 +22,7 @@ from .ToIsoFilter import ToIsoFilter
 from .ToLowerFilter import ToLowerFilter
 from .ToNormalizedUnicodeFilter import ToNormalizedUnicodeFilter
 from .ToNullFilter import ToNullFilter
+from .ToPascalCaseFilter import ToPascalCaseFilter
 from .ToPascaleCaseFilter import ToPascaleCaseFilter
 from .ToSnakeCaseFilter import ToSnakeCaseFilter
 from .ToStringFilter import ToStringFilter

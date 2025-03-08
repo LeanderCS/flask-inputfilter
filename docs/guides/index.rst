@@ -5,4 +5,4 @@ Guides
     :maxdepth: 2
     :glob:
 
-    create_own
+    create_own_components

@@ -40,7 +40,10 @@ class Base64ImageResizeFilter(BaseFilter):
             return value
 
     def reduce_image(self, image: Image) -> Image:
-        """Reduce the size of an image by resizing and compressing it."""
+        """
+        Reduce the size of an image by resizing and compressing it.
+        """
+
         is_animated = getattr(image, "is_animated", False)
 
         if not is_animated and image.mode in ("RGBA", "P"):
@@ -73,22 +76,32 @@ class Base64ImageResizeFilter(BaseFilter):
     def save_image_to_buffer(
         self, image: Image.Image, quality: int
     ) -> io.BytesIO:
-        """Save the image to an in-memory buffer with the specified quality."""
+        """
+        Save the image to an in-memory buffer with the specified quality.
+        """
+
         buffer = io.BytesIO()
         image.save(buffer, format=self.format.value, quality=quality)
         buffer.seek(0)
+
         return buffer
 
     def image_to_base64(self, image: Image) -> str:
-        """Convert an image to a base64-encoded string."""
+        """
+        Convert an image to a base64-encoded string.
+        """
+
         buffered = io.BytesIO()
         options = {
             "format": self.format.value,
             "optimize": True,
         }
+
         if self.preserve_icc_profile:
             options["icc_profile"] = image.info.get("icc_profile", None)
+
         if self.preserve_metadata:
             options["exif"] = image.info.get("exif", None)
+
         image.save(buffered, **options)
         return base64.b64encode(buffered.getvalue()).decode("ascii")

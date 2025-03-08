@@ -1,24 +1,17 @@
 import re
 import unicodedata
-import warnings
 from typing import Any, Optional, Union
 
 from flask_inputfilter.Enum import UnicodeFormEnum
 from flask_inputfilter.Filter import BaseFilter
 
 
-class SlugifyFilter(BaseFilter):
+class StringSlugifyFilter(BaseFilter):
     """
     Filter that converts a string to a slug.
     """
 
     def apply(self, value: Any) -> Union[Optional[str], Any]:
-        warnings.warn(
-            "SlugifyFilter is deprecated and will be discontinued. "
-            "It can safely be replaced with StringSlugifyFilter.",
-            DeprecationWarning,
-        )
-
         if not isinstance(value, str):
             return value
 

@@ -80,4 +80,5 @@ class Base64ImageDownscaleFilter(BaseFilter):
     def image_to_base64(image: Image) -> str:
         buffered = io.BytesIO()
         image.save(buffered, format="PNG")
+
         return base64.b64encode(buffered.getvalue()).decode("ascii")

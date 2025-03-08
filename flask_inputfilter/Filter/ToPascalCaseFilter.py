@@ -1,22 +1,15 @@
 import re
-import warnings
 from typing import Any, Optional, Union
 
 from flask_inputfilter.Filter import BaseFilter
 
 
-class ToPascaleCaseFilter(BaseFilter):
+class ToPascalCaseFilter(BaseFilter):
     """
-    Filter that converts a string to PascaleCase.
+    Filter that converts a string to PascalCase.
     """
 
     def apply(self, value: Any) -> Union[Optional[str], Any]:
-        warnings.warn(
-            "ToPascaleCaseFilter is deprecated and will be discontinued. "
-            "It can safely be replaced with ToPascalCaseFilter.",
-            DeprecationWarning,
-        )
-
         if not isinstance(value, str):
             return value
 

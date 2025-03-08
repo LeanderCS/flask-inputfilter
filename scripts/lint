@@ -1,0 +1,12 @@
+#!/bin/bash
+
+cd /app
+
+echo 'Running isort'
+isort .
+
+echo 'Running autoflake'
+autoflake --in-place --remove-all-unused-imports --ignore-init-module-imports --recursive .
+
+echo 'Running black'
+black .

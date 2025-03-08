@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 
 
 [0.0.10] - 2025-03-06
---------------------
+---------------------
 
 Added
 ^^^^^
@@ -13,7 +13,7 @@ Added
 
 Changed
 ^^^^^^^
-- Use ``FieldModel`` vor field definition. (Only internal change, no impact on the user)
+- Use ``FieldModel`` for field definition. (Only internal change, no impact on usage)
 
 
 [0.0.9.1] - 2025-02-09
@@ -29,7 +29,7 @@ Changed
 
 Added
 ^^^^^
-- New ``copy`` functionality to copy the value of another field. `Check it out <options/copy>`_
+- New ``copy`` functionality to copy the value of another field. :doc:`Check it out <options/copy>`
 
 Filter
 """"""
@@ -117,11 +117,11 @@ Removed
 
 Added
 ^^^^^
-- New ``condition`` functionality between fields. `Check it out <options/condition>`_
+- New ``condition`` functionality between fields. :doc:`Check it out <options/condition>`
 
 Changed
 ^^^^^^^
-- Switched ``external_api`` config from dict to class. `Check it out <options/external_api#Configuration>`_
+- Switched ``external_api`` config from dict to class. :doc:`Check it out <options/external_api>`
 
 
 [0.0.4] - 2025-01-09
@@ -129,4 +129,4 @@ Changed
 
 Added
 ^^^^^
-- New external API functionality. `Check it out <options/external_api>`_
+- New external API functionality. :doc:`Check it out <options/external_api>`

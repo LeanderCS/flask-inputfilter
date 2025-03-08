@@ -30,10 +30,10 @@ class IsFutureDateValidator(BaseValidator):
         if isinstance(value, datetime):
             return value
 
-        elif isinstance(value, date):
+        if isinstance(value, date):
             return datetime.combine(value, datetime.min.time())
 
-        elif isinstance(value, str):
+        if isinstance(value, str):
             try:
                 return datetime.fromisoformat(value)
 

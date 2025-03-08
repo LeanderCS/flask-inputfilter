@@ -35,3 +35,6 @@ class RegexEnum(Enum):
     )
 
     HEX_COLOR = r"^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$"
+
+    INTEGER_PATTERN = r"^[0-9]+$"
+    FLOAT_PATTERN = r"^[0-9]*\.[0-9]+$"

@@ -1,6 +1,10 @@
 Development
 ===========
 
+This guide will help you set up a development environment for the library project.
+
+You can find the source code for the library in the `GitHub repository <https://github.com/LeanderCS/flask-inputfilter>`_.
+
 Build docker image
 -------------------
 
@@ -31,6 +35,4 @@ Run linting
 
 .. code-block:: bash
 
-    docker exec -it flask-inputfilter sh -c "isort ."
-    docker exec -it flask-inputfilter sh -c "autoflake --in-place --remove-all-unused-imports --ignore-init-module-imports --recursive ."
-    docker exec -it flask-inputfilter black .
+    docker exec -it flask-inputfilter lint

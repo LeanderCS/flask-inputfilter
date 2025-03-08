@@ -1,0 +1,30 @@
+.wy-side-nav-search {
+    margin: 0;
+}
+.wy-menu-vertical {
+    a, a:visited {
+        color: #d9d9d9;
+    }
+}
+
+.wy-nav-content {
+    max-width: unset;
+
+    a:visited {
+        color: #2980b9;
+    }
+
+    .wy-breadcrumbs-aside {
+        display: none;
+    }
+
+    .document {
+        max-width: 900px;
+    }
+}
+
+footer {
+    .rst-footer-buttons {
+        display: none;
+    }
+}
