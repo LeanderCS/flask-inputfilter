@@ -4,7 +4,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 from flask import Response, g, request
 from typing_extensions import final
 
-from flask_inputfilter.Condition.BaseCondition import BaseCondition
+from flask_inputfilter.Condition import BaseCondition
 from flask_inputfilter.Exception import ValidationError
 from flask_inputfilter.Filter import BaseFilter
 from flask_inputfilter.Model import ExternalApiConfig, FieldModel

@@ -1,6 +1,7 @@
+from flask_inputfilter.Condition.BaseCondition import BaseCondition
+
 from .ArrayLengthEqualCondition import ArrayLengthEqualCondition
 from .ArrayLongerThanCondition import ArrayLongerThanCondition
-from .BaseCondition import BaseCondition
 from .CustomCondition import CustomCondition
 from .EqualCondition import EqualCondition
 from .ExactlyNOfCondition import ExactlyNOfCondition

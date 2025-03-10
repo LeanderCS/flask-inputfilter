@@ -1,7 +1,7 @@
 from typing import Any, Optional
 
 from flask_inputfilter.Exception import ValidationError
-from flask_inputfilter.Validator.BaseValidator import BaseValidator
+from flask_inputfilter.Validator import BaseValidator
 
 
 class ArrayLengthValidator(BaseValidator):
@@ -24,9 +24,7 @@ class ArrayLengthValidator(BaseValidator):
         if not isinstance(value, list):
             raise ValidationError(f"Value '{value}' must be a list.")
 
-        array_length = len(value)
-
-        if not (self.min_length <= array_length <= self.max_length):
+        if not (self.min_length <= len(value) <= self.max_length):
             raise ValidationError(
                 self.error_message
                 or f"Array length must be between '{self.min_length}' "

@@ -14,14 +14,15 @@ class IsFutureDateValidator(BaseValidator):
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
-        value_date = self._parse_date(value)
+        value_date = self.__parse_date(value)
 
         if value_date <= datetime.now():
             raise ValidationError(
                 self.error_message or f"Date '{value}' is not in the future."
             )
 
-    def _parse_date(self, value: Any) -> datetime:
+    @staticmethod
+    def __parse_date(value: Any) -> datetime:
         """
         Converts a value to a datetime object.
         Supports ISO 8601 formatted strings and datetime objects.
@@ -30,10 +31,10 @@ class IsFutureDateValidator(BaseValidator):
         if isinstance(value, datetime):
             return value
 
-        if isinstance(value, date):
+        elif isinstance(value, date):
             return datetime.combine(value, datetime.min.time())
 
-        if isinstance(value, str):
+        elif isinstance(value, str):
             try:
                 return datetime.fromisoformat(value)
 

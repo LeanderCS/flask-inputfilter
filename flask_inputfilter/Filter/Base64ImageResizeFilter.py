@@ -5,7 +5,7 @@ from typing import Any
 from PIL import Image
 
 from flask_inputfilter.Enum import ImageFormatEnum
-from flask_inputfilter.Filter.BaseFilter import BaseFilter
+from flask_inputfilter.Filter import BaseFilter
 
 
 class Base64ImageResizeFilter(BaseFilter):

@@ -10,6 +10,7 @@ from flask_inputfilter.Enum import RegexEnum
 from flask_inputfilter.Exception import ValidationError
 from flask_inputfilter.Filter import Base64ImageDownscaleFilter
 from flask_inputfilter.Validator import (
+    AndValidator,
     ArrayElementValidator,
     ArrayLengthValidator,
     BaseValidator,
@@ -29,12 +30,20 @@ from flask_inputfilter.Validator import (
     IsFutureDateValidator,
     IsHexadecimalValidator,
     IsHorizontalImageValidator,
+    IsHtmlValidator,
     IsInstanceValidator,
     IsIntegerValidator,
     IsJsonValidator,
+    IsLowercaseValidator,
+    IsMacAddressValidator,
+    IsMimeTypeValidator,
     IsPastDateValidator,
+    IsPortValidator,
+    IsRgbColorValidator,
     IsStringValidator,
     IsTypedDictValidator,
+    IsUppercaseValidator,
+    IsUrlValidator,
     IsUUIDValidator,
     IsVerticalImageValidator,
     IsWeekdayValidator,
@@ -42,8 +51,10 @@ from flask_inputfilter.Validator import (
     LengthValidator,
     NotInArrayValidator,
     NotValidator,
+    OrValidator,
     RangeValidator,
     RegexValidator,
+    XorValidator,
 )
 
 
@@ -54,6 +65,45 @@ class TestInputFilter(unittest.TestCase):
         """
 
         self.inputFilter = InputFilter()
+
+    def test_and_validator(self) -> None:
+        """
+        Test AndValidator that validates if all the validators
+        are successful.
+        """
+
+        self.inputFilter.add(
+            "age",
+            validators=[
+                AndValidator(
+                    [IsIntegerValidator(), RangeValidator(min_value=5)]
+                )
+            ],
+        )
+
+        self.inputFilter.validateData({"age": 25})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"age": "not a number"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"age": 4})
+
+        self.inputFilter.add(
+            "age",
+            validators=[
+                AndValidator(
+                    [IsIntegerValidator(), RangeValidator(min_value=5)],
+                    error_message="Custom error message",
+                )
+            ],
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"age": "not a number"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"age": 4})
 
     def test_array_element_validator(self) -> None:
         """
@@ -802,6 +852,26 @@ class TestInputFilter(unittest.TestCase):
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"vertically_image": 123})
 
+    def test_is_html_validator(self) -> None:
+        """
+        Test IsHtmlValidator.
+        """
+
+        self.inputFilter.add("html", validators=[IsHtmlValidator()])
+
+        self.inputFilter.validateData({"html": "<p>HTML content</p>"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"html": "not an HTML content"})
+
+        self.inputFilter.add(
+            "html2",
+            validators=[IsHtmlValidator(error_message="Custom error message")],
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"html2": "not an HTML content"})
+
     def test_is_instance_validator(self) -> None:
         """
         Test IsInstanceValidator.
@@ -866,6 +936,80 @@ class TestInputFilter(unittest.TestCase):
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"data2": "not_a_json"})
 
+    def test_is_lowercase_validator(self) -> None:
+        """
+        Test IsLowercaseValidator.
+        """
+
+        self.inputFilter.add("name", validators=[IsLowercaseValidator()])
+
+        self.inputFilter.validateData({"name": "lowercase"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"name": "NotLowercase"})
+
+        self.inputFilter.add(
+            "name",
+            validators=[
+                IsLowercaseValidator(error_message="Custom error message")
+            ],
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"name": "NotLowercase"})
+
+    def test_is_mac_address_validator(self) -> None:
+        """
+        Test IsMacAddressValidator.
+        """
+
+        self.inputFilter.add(
+            "mac",
+            validators=[IsMacAddressValidator()],
+        )
+
+        self.inputFilter.validateData({"mac": "00:1A:2B:3C:4D:5E"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"mac": "not_a_mac_address"})
+
+        self.inputFilter.add(
+            "mac2",
+            validators=[
+                IsMacAddressValidator(error_message="Custom error message")
+            ],
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"mac2": "not_a_mac_address"})
+
+    def test_is_mime_type_validator(self) -> None:
+        """
+        Test IsMimeTypeValidator.
+        """
+
+        self.inputFilter.add(
+            "image",
+            validators=[IsMimeTypeValidator()],
+        )
+
+        # TODO
+        # with open("test/data/base64_image.txt", "r") as file:
+        # self.inputFilter.validateData({"image": file.read()})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"image": "not_a_base64_image"})
+
+        self.inputFilter.add(
+            "image2",
+            validators=[
+                IsMimeTypeValidator(error_message="Custom error message")
+            ],
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"image2": "not_a_base64_image"})
+
     def test_is_past_date_validator(self) -> None:
         """
         Test IsPastDateValidator.
@@ -898,6 +1042,49 @@ class TestInputFilter(unittest.TestCase):
         with self.assertRaises(ValidationError):
             future_date = date.today() + timedelta(days=10)
             self.inputFilter.validateData({"date2": future_date})
+
+    def test_is_port_validator(self) -> None:
+        """
+        Test IsPortValidator.
+        """
+
+        self.inputFilter.add("port", validators=[IsPortValidator()])
+
+        self.inputFilter.validateData({"port": 80})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"port": 65536})
+
+        self.inputFilter.add(
+            "port2",
+            validators=[IsPortValidator(error_message="Custom error message")],
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"port2": 65536})
+
+    def test_is_rgb_color_validator(self) -> None:
+        """
+        Test IsRgbColorValidator.
+        """
+
+        self.inputFilter.add("color", validators=[IsRgbColorValidator()])
+
+        self.inputFilter.validateData({"color": "rgb(125,125,125)"})
+        self.inputFilter.validateData({"color": "rgb(125, 125, 125)"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"color": "not_a_color"})
+
+        self.inputFilter.add(
+            "color2",
+            validators=[
+                IsRgbColorValidator(error_message="Custom error message")
+            ],
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"color2": "not_a_color"})
 
     def test_is_string_validator(self) -> None:
         """
@@ -952,6 +1139,48 @@ class TestInputFilter(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"data2": User2})
+
+    def test_is_uppercase_validator(self) -> None:
+        """
+        Test IsUppercaseValidator.
+        """
+
+        self.inputFilter.add("name", validators=[IsUppercaseValidator()])
+
+        self.inputFilter.validateData({"name": "UPPERCASE"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"name": "NotUppercase"})
+
+        self.inputFilter.add(
+            "name",
+            validators=[
+                IsUppercaseValidator(error_message="Custom error message")
+            ],
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"name": "NotUppercase"})
+
+    def test_is_url_validator(self) -> None:
+        """
+        Test IsUrlValidator.
+        """
+
+        self.inputFilter.add("url", validators=[IsUrlValidator()])
+
+        self.inputFilter.validateData({"url": "http://example.com"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"url": "not_a_url"})
+
+        self.inputFilter.add(
+            "url2",
+            validators=[IsUrlValidator(error_message="Custom error message")],
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"url2": "not_a_url"})
 
     def test_is_uuid_validator(self) -> None:
         """
@@ -1187,6 +1416,39 @@ class TestInputFilter(unittest.TestCase):
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"age": 25})
 
+    def test_or_validator(self) -> None:
+        """
+        Test OrValidator that validates if at least one of the validators
+        is successful.
+        """
+
+        self.inputFilter.add(
+            "age",
+            validators=[
+                OrValidator([IsIntegerValidator(), IsFloatValidator()])
+            ],
+        )
+
+        self.inputFilter.validateData({"age": 25})
+
+        self.inputFilter.validateData({"age": 25.5})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"age": "not a number"})
+
+        self.inputFilter.add(
+            "age",
+            validators=[
+                OrValidator(
+                    [IsIntegerValidator(), IsFloatValidator()],
+                    error_message="Custom error message",
+                )
+            ],
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"age": "not a number"})
+
     def test_range_validator(self) -> None:
         """
         Test that RangeValidator validates numeric values
@@ -1254,6 +1516,47 @@ class TestInputFilter(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"email": "invalid_email"})
+
+    def test_xor_validator(self) -> None:
+        """
+        Test XorValidator that validates if only one of the validators
+        is successful.
+        """
+
+        self.inputFilter.add(
+            "age",
+            validators=[
+                XorValidator(
+                    [IsIntegerValidator(), RangeValidator(max_value=10)]
+                )
+            ],
+        )
+
+        self.inputFilter.validateData({"age": 25})
+
+        self.inputFilter.validateData({"age": 9.9})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"age": "not a number"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"age": 5})
+
+        self.inputFilter.add(
+            "age",
+            validators=[
+                XorValidator(
+                    [IsIntegerValidator(), RangeValidator(max_value=10)],
+                    error_message="Custom error message",
+                )
+            ],
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"age": "not a number"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"age": 5})
 
 
 if __name__ == "__main__":

@@ -29,9 +29,10 @@ class TestInputFilter(unittest.TestCase):
 
         self.inputFilter = InputFilter()
 
-    @patch.object(InputFilter, "validateData")
-    def test_validate_decorator(self, mock_validateData) -> None:
-        mock_validateData.return_value = {"username": "test_user", "age": 25}
+    def test_validate_decorator(self) -> None:
+        """
+        Test that the validate decorator works.
+        """
 
         class MyInputFilter(InputFilter):
             def __init__(self):
@@ -61,40 +62,67 @@ class TestInputFilter(unittest.TestCase):
             )
             self.assertEqual(response.status_code, 200)
             self.assertEqual(
-                response.json, {"username": "test_user", "age": 25}
+                response.json, {"username": "test_user", "age": 18}
             )
 
-            response = client.post("/test", json={"username": "test_user"})
+            response = client.post(
+                "/test", json={"username": "test_user", "age": 25}
+            )
             self.assertEqual(response.status_code, 200)
             self.assertEqual(
                 response.json, {"username": "test_user", "age": 25}
             )
+
+            response = client.post(
+                "/test", json={"username": "test_user", "age": "not_an_int"}
+            )
+            self.assertEqual(response.status_code, 400)
+
+    def test_route_params(self) -> None:
+        """
+        Test that route parameters are validated correctly.
+        """
+
+        class MyInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add(
+                    name="username",
+                )
 
         app = Flask(__name__)
 
         @app.route("/test-delete/<username>", methods=["DELETE"])
         @MyInputFilter.validate()
-        def test_delete_route(username):
-            validated_data = g.validated_data
-            return jsonify(validated_data)
+        def test_route(username):
+            self.assertEqual(g.validated_data, {"username": "test_user"})
+            return jsonify(g.validated_data)
 
         with app.test_client() as client:
             response = client.delete("/test-delete/test_user")
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(
-                response.json, {"username": "test_user", "age": 25}
-            )
+            self.assertEqual(response.json, {"username": "test_user"})
+
+    def test_unsupported_method(self) -> None:
+        """
+        Test that a method not supported by the InputFilter instance raises
+        a TypeError.
+        """
+
+        class MyInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__(methods=["GET"])
 
         app = Flask(__name__)
 
-        @app.route("/test-unsupported", methods=["NOVALIDMETHOD"])
+        @app.route("/test-unsupported", methods=["POST"])
         @MyInputFilter.validate()
         def test_unsupported_route():
             validated_data = g.validated_data
             return jsonify(validated_data)
 
         with app.test_client() as client:
-            response = client.get("/test-unsupported")
+            response = client.post("/test-unsupported")
             self.assertEqual(response.status_code, 405)
 
     @patch.object(InputFilter, "validateData")

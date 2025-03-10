@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, Optional
 
 from flask_inputfilter.Exception import ValidationError
-from flask_inputfilter.Validator.BaseValidator import BaseValidator
+from flask_inputfilter.Validator import BaseValidator
 
 if TYPE_CHECKING:
     from flask_inputfilter import InputFilter

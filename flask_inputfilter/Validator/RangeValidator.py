@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 from flask_inputfilter.Exception import ValidationError
 from flask_inputfilter.Validator import BaseValidator
@@ -11,8 +11,8 @@ class RangeValidator(BaseValidator):
 
     def __init__(
         self,
-        min_value: Optional[float] = None,
-        max_value: Optional[float] = None,
+        min_value: Optional[Union[int, float]] = None,
+        max_value: Optional[Union[int, float]] = None,
         error_message: Optional[str] = None,
     ) -> None:
         self.min_value = min_value
@@ -20,6 +20,11 @@ class RangeValidator(BaseValidator):
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
+        if not isinstance(value, (int, float)):
+            raise ValidationError(
+                self.error_message or f"Value '{value}' is not a number."
+            )
+
         if (self.min_value is not None and value < self.min_value) or (
             self.max_value is not None and value > self.max_value
         ):

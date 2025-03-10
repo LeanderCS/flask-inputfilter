@@ -8,8 +8,8 @@ Overview
 
 The `addCondition` method is used to add a condition between fields.
 
-Examples
---------
+Example
+-------
 
 .. code-block:: python
 

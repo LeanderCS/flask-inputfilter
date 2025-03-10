@@ -11,6 +11,8 @@ class RegexEnum(Enum):
     IPV4_ADDRESS = r"^(?:\d{1,3}\.){3}\d{1,3}$"
     IPV6_ADDRESS = r"^\[?([a-fA-F0-9:]+:+)+[a-fA-F0-9]+\]?$"
 
+    MAC_ADDRESS = r"^([0-9A-Fa-f]{2}([-:])){5}[0-9A-Fa-f]{2}$"
+
     ISO_DATE = r"^\d{4}-\d{2}-\d{2}$"
     ISO_DATETIME = (
         r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}"
@@ -34,7 +36,10 @@ class RegexEnum(Enum):
         r"(?:2131|1800|35\d{3})\d{11})$"
     )
 
+    RGB_COLOR = r"^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$"
     HEX_COLOR = r"^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$"
 
     INTEGER_PATTERN = r"^[0-9]+$"
     FLOAT_PATTERN = r"^[0-9]*\.[0-9]+$"
+
+    MIME_TYPE = r"^[a-z0-9]+\/[a-z0-9\-\+]+$"

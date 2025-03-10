@@ -21,9 +21,9 @@ class DateRangeValidator(BaseValidator):
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
-        value_date = self._parse_date(value)
-        min_date = self._parse_date(self.min_date) if self.min_date else None
-        max_date = self._parse_date(self.max_date) if self.max_date else None
+        value_date = self.__parse_date(value)
+        min_date = self.__parse_date(self.min_date) if self.min_date else None
+        max_date = self.__parse_date(self.max_date) if self.max_date else None
 
         if (min_date and value_date < min_date) or (
             max_date and value_date > max_date
@@ -34,7 +34,8 @@ class DateRangeValidator(BaseValidator):
                 f"'{self.min_date}' to '{self.max_date}'."
             )
 
-    def _parse_date(self, value: Any) -> datetime:
+    @staticmethod
+    def __parse_date(value: Any) -> datetime:
         """
         Converts a value to a datetime object.
         Supports ISO 8601 formatted strings and datetime objects.

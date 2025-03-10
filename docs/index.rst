@@ -26,9 +26,14 @@ Available functions:
 .. tip::
 
     Thank you for using `flask-inputfilter`!
+
     If you have any questions or suggestions, please feel free to open an issue on `GitHub <https://github.com/LeanderCS/flask-inputfilter>`_.
     If you don't want to miss any updates, please star the repository.
     This will help me to understand how many people are interested in this project.
+
+.. note::
+
+    If you like the project, please consider giving it a star on GitHub.
 
 Installation
 ------------

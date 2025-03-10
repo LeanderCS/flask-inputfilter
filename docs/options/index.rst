@@ -6,6 +6,7 @@ Options
 
     inputfilter
     validator
+    special_validator
     filter
     condition
     copy

@@ -27,5 +27,5 @@ class NotValidator(BaseValidator):
             self.error_message
             or f"Validation of '{value}' in "
             f"'{self.validator.__class__.__name__}' where "
-            f"successful but should have failed"
+            f"successful but should have failed."
         )

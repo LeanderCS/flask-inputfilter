@@ -1,7 +1,6 @@
 Copy functionality
 ==================
 
-
 Overview
 --------
 
@@ -13,8 +12,8 @@ This parameter accepts a string with the name the value should be copied from.
     The copy functionality runs **before** all filters and validators have been executed.
     This means the copied data can be validated and/or filtered.
 
-Examples
---------
+Example
+-------
 
 Basic Copy Integration
 

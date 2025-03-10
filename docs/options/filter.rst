@@ -10,8 +10,8 @@ Filters can be added into the ``add`` method for a specific field or as a global
 
 The global filters will be executed before the specific field filtering.
 
-Examples
---------
+Example
+-------
 
 .. code:: python
 
@@ -39,7 +39,7 @@ Examples
 Available Filters
 -----------------
 
-The following filters are available in the ``Filter`` module:
+The following filters are available:
 
 - `ArrayExplodeFilter`_
 - `Base64ImageDownscaleFilter`_
@@ -68,6 +68,9 @@ The following filters are available in the ``Filter`` module:
 - `TruncateFilter`_
 - `WhitelistFilter`_
 - `WhitespaceCollapseFilter`_
+
+Detailed Description
+--------------------
 
 ArrayExplodeFilter
 ~~~~~~~~~~~~~~~~~~

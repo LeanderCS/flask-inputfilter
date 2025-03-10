@@ -20,8 +20,8 @@ class DateBeforeValidator(BaseValidator):
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
-        value_reference_date = self._parse_date(self.reference_date)
-        value_datetime = self._parse_date(value)
+        value_reference_date = self.__parse_date(self.reference_date)
+        value_datetime = self.__parse_date(value)
 
         if value_datetime >= value_reference_date:
             raise ValidationError(
@@ -29,7 +29,8 @@ class DateBeforeValidator(BaseValidator):
                 or f"Date '{value}' is not before '{value_reference_date}'."
             )
 
-    def _parse_date(self, value: Any) -> datetime:
+    @staticmethod
+    def __parse_date(value: Any) -> datetime:
         if isinstance(value, datetime):
             return value
 

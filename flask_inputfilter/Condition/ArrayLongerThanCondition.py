@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from flask_inputfilter.Condition.BaseCondition import BaseCondition
+from flask_inputfilter.Condition import BaseCondition
 
 
 class ArrayLongerThanCondition(BaseCondition):

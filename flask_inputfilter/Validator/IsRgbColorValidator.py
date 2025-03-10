@@ -10,7 +10,8 @@ RGB_COLOR_PATTERN = re.compile(RegexEnum.RGB_COLOR.value)
 
 class IsRgbColorValidator(BaseValidator):
     """
-    Validator that checks if a value is a valid RGB color string (e.g., 'rgb(255, 0, 0)').
+    Validator that checks if a value is a valid RGB
+    color string (e.g., 'rgb(255, 0, 0)').
     """
 
     def __init__(self, error_message: Optional[str] = None) -> None:

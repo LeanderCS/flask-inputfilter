@@ -15,14 +15,15 @@ class IsWeekdayValidator(BaseValidator):
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
-        value_datetime = self._parse_date(value)
+        value_datetime = self.__parse_date(value)
 
         if value_datetime.weekday() in (5, 6):
             raise ValidationError(
                 self.error_message or f"Date '{value}' is not a weekday."
             )
 
-    def _parse_date(self, value: Any) -> datetime:
+    @staticmethod
+    def __parse_date(value: Any) -> datetime:
         if isinstance(value, datetime):
             return value
 
