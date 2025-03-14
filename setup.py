@@ -5,7 +5,7 @@ setup(
     version="0.0.10",
     author="Leander Cain Slotosch",
     author_email="slotosch.leander@outlook.de",
-    description="A library to filter and validate input data in"
+    description="A library to filter and validate input data in "
     "Flask applications",
     long_description=open("README.rst").read(),
     long_description_content_type="text/x-rst",

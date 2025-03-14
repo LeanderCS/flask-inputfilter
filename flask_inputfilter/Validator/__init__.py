@@ -27,7 +27,6 @@ from .IsIntegerValidator import IsIntegerValidator
 from .IsJsonValidator import IsJsonValidator
 from .IsLowercaseValidator import IsLowercaseValidator
 from .IsMacAddressValidator import IsMacAddressValidator
-from .IsMimeTypeValidator import IsMimeTypeValidator
 from .IsPastDateValidator import IsPastDateValidator
 from .IsPortValidator import IsPortValidator
 from .IsRgbColorValidator import IsRgbColorValidator

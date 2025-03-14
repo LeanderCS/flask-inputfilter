@@ -36,7 +36,6 @@ from flask_inputfilter.Validator import (
     IsJsonValidator,
     IsLowercaseValidator,
     IsMacAddressValidator,
-    IsMimeTypeValidator,
     IsPastDateValidator,
     IsPortValidator,
     IsRgbColorValidator,
@@ -982,33 +981,6 @@ class TestInputFilter(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"mac2": "not_a_mac_address"})
-
-    def test_is_mime_type_validator(self) -> None:
-        """
-        Test IsMimeTypeValidator.
-        """
-
-        self.inputFilter.add(
-            "image",
-            validators=[IsMimeTypeValidator()],
-        )
-
-        # TODO
-        # with open("test/data/base64_image.txt", "r") as file:
-        # self.inputFilter.validateData({"image": file.read()})
-
-        with self.assertRaises(ValidationError):
-            self.inputFilter.validateData({"image": "not_a_base64_image"})
-
-        self.inputFilter.add(
-            "image2",
-            validators=[
-                IsMimeTypeValidator(error_message="Custom error message")
-            ],
-        )
-
-        with self.assertRaises(ValidationError):
-            self.inputFilter.validateData({"image2": "not_a_base64_image"})
 
     def test_is_past_date_validator(self) -> None:
         """
