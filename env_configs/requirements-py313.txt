@@ -1,5 +1,7 @@
+cython
 flask
 pillow
 pytest
 requests
 typing_extensions
+setuptools

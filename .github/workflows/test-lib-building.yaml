@@ -20,22 +20,17 @@ jobs:
           python-version: 3.9
 
       - name: Install build tools and test dependencies
-        run: |
-          pip install build pytest cython
+        run: pip install build pytest cython
 
       - name: Compile Cython code
-        run: |
-          python setup.py build_ext --inplace
+        run: python setup.py build_ext --inplace
 
       - name: Build the library
-        run: |
-          ls -la flask_inputfilter
-          python -m build
+        run: python -m build
         id: build
 
       - name: Install built library
-        run: |
-          pip install dist/*.whl
+        run: pip install dist/*.whl
 
       - name: Verify library usage - Part I
         run: |
@@ -43,5 +38,4 @@ jobs:
           python test_script.py
 
       - name: Verify library usage - Part II
-        run: |
-          PYTHONPATH="" pytest test/
+        run: PYTHONPATH="" pytest test/
