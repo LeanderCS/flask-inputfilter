@@ -8,10 +8,11 @@ from flask_inputfilter.Condition import BaseCondition
 from flask_inputfilter.Exception import ValidationError
 from flask_inputfilter.Filter import (
     SlugifyFilter,
+    ToIntegerFilter,
     ToLowerFilter,
     ToUpperFilter,
 )
-from flask_inputfilter.Model import ExternalApiConfig
+from flask_inputfilter.Model import ExternalApiConfig, FieldModel
 from flask_inputfilter.Validator import (
     InArrayValidator,
     IsIntegerValidator,
@@ -266,6 +267,160 @@ class TestInputFilter(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({})
+
+    def test_count(self) -> None:
+        self.inputFilter.add("field1")
+        self.inputFilter.add("field2")
+
+        self.assertEqual(self.inputFilter.count(), 2)
+
+    def test_get_error_message(self) -> None:
+        self.inputFilter.add("field", required=True)
+        self.inputFilter.isValid()
+
+        self.assertEqual(
+            "Field 'field' is required.", self.inputFilter.getErrorMessage()
+        )
+
+    def test_get_input(self) -> None:
+        self.inputFilter.add("field")
+        self.inputFilter.setData({"field": "value"})
+
+        self.assertEqual(
+            self.inputFilter.getInput("field"),
+            FieldModel(required=False, default=None),
+        )
+
+    def test_get_inputs(self) -> None:
+        self.inputFilter.add("field1")
+        self.inputFilter.add("field2")
+        self.inputFilter.setData({"field1": "value1", "field2": "value2"})
+
+        self.assertEqual(
+            self.inputFilter.getInputs(),
+            {
+                "field1": FieldModel(required=False, default=None),
+                "field2": FieldModel(required=False, default=None),
+            },
+        )
+
+    def test_get_raw_value(self) -> None:
+        self.inputFilter.add("field")
+        self.inputFilter.setUnfilteredData(
+            {"field": "raw_value", "unknown_field": "raw_value2"}
+        )
+
+        self.assertEqual(self.inputFilter.getRawValue("field"), "raw_value")
+
+    def test_get_raw_values(self) -> None:
+        self.inputFilter.add("field1")
+        self.inputFilter.add("field2")
+        self.inputFilter.setUnfilteredData(
+            {"field1": "raw1", "field2": "raw2", "unknown_field": "raw3"}
+        )
+
+        self.assertEqual(
+            self.inputFilter.getRawValues(),
+            {"field1": "raw1", "field2": "raw2"},
+        )
+
+    def test_get_unfiltered_data(self) -> None:
+        self.inputFilter.add("field", filters=[ToIntegerFilter()])
+        self.inputFilter.setData({"field": "raw", "unknown_field": "raw2"})
+
+        self.assertEqual(
+            self.inputFilter.getUnfilteredData(),
+            {"field": "raw", "unknown_field": "raw2"},
+        )
+
+    def test_get_value(self) -> None:
+        self.inputFilter.add("field")
+        self.inputFilter.setData({"field": "value"})
+
+        self.inputFilter.isValid()
+        self.assertEqual(self.inputFilter.getValue("field"), "value")
+
+    def test_get_values(self) -> None:
+        self.inputFilter.add("field1")
+        self.inputFilter.add("field2")
+        self.inputFilter.setData(
+            {"field1": "value1", "field2": "value2", "field3": "value3"}
+        )
+
+        self.inputFilter.isValid()
+        self.assertEqual(
+            self.inputFilter.getValues(),
+            {"field1": "value1", "field2": "value2"},
+        )
+
+    def test_has(self) -> None:
+        self.inputFilter.add("field")
+
+        self.assertTrue(self.inputFilter.has("field"))
+        self.assertFalse(self.inputFilter.has("unknown_field"))
+
+    def test_has_unknown(self) -> None:
+        self.inputFilter.add("field1")
+
+        self.inputFilter.setData(
+            {"field1": "value1", "unknown_field": "value2"}
+        )
+        self.assertTrue(self.inputFilter.hasUnknown())
+
+        self.inputFilter.setData({})
+        self.assertTrue(self.inputFilter.hasUnknown())
+
+        self.inputFilter.remove("field1")
+        self.assertFalse(self.inputFilter.hasUnknown())
+
+    def test_is_valid(self) -> None:
+        self.inputFilter.add("field", required=True)
+
+        self.inputFilter.setData({"field": "value"})
+        self.assertTrue(self.inputFilter.isValid())
+
+        self.inputFilter.setData({})
+        self.assertFalse(self.inputFilter.isValid())
+
+    def test_merge(self) -> None:
+        self.inputFilter.add("field1")
+        self.inputFilter.setData({"field1": "value1"})
+
+        input_filter = InputFilter()
+        input_filter.add("field2")
+        self.inputFilter.merge(input_filter)
+
+        self.inputFilter.isValid()
+        self.assertEqual(
+            self.inputFilter.getValues(), {"field1": "value1", "field2": None}
+        )
+
+    def test_remove(self) -> None:
+        self.inputFilter.add("field")
+        self.inputFilter.setData({"field": "value"})
+
+        self.inputFilter.remove("field")
+        self.assertFalse(self.inputFilter.has("field"))
+
+    def test_replace(self) -> None:
+        self.inputFilter.add("field")
+        self.inputFilter.setData({"field": "value"})
+
+        self.inputFilter.replace("field", filters=[ToUpperFilter()])
+        updated_data = self.inputFilter.validateData({"field": "value"})
+        self.assertEqual(updated_data["field"], "VALUE")
+
+    def test_set_data(self) -> None:
+        self.inputFilter.add("field")
+        self.inputFilter.setData({"field": "value"})
+
+        self.inputFilter.isValid()
+        self.assertEqual(self.inputFilter.getValue("field"), "value")
+
+    def test_set_unfiltered_data(self) -> None:
+        self.inputFilter.add("field")
+        self.inputFilter.setUnfilteredData({"field": "raw_value"})
+        self.assertEqual(self.inputFilter.getRawValue("field"), "raw_value")
 
     def test_steps(self) -> None:
         """
@@ -667,6 +822,23 @@ class TestInputFilter(unittest.TestCase):
                 "addCondition",
                 "addGlobalFilter",
                 "addGlobalValidator",
+                "count",
+                "getErrorMessage",
+                "getInput",
+                "getInputs",
+                "getRawValue",
+                "getRawValues",
+                "getUnfilteredData",
+                "getValue",
+                "getValues",
+                "has",
+                "hasUnknown",
+                "isValid",
+                "merge",
+                "remove",
+                "replace",
+                "setData",
+                "setUnfilteredData",
                 "validateData",
             ]
 

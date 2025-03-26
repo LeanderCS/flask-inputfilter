@@ -3,6 +3,31 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.1.0] - 2025-03-26
+--------------------
+
+Added
+^^^^^
+- Multiple functions to allow a broader usage aside as decorator
+ - getErrorMessage
+ - getRawValue
+ - getRawValues
+ - getUnfilteredData
+ - getValue
+ - getValues
+ - hasUnknown
+ - isValid
+ - merge
+ - remove
+ - replace
+ - setData
+ - setUnfilteredData
+
+Removed
+^^^^^^^
+
+- IsMimeTypeValidator
+
 
 [0.0.10] - 2025-03-06
 ---------------------

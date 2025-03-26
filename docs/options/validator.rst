@@ -66,7 +66,6 @@ The following validators are available:
 - `IsJsonValidator`_
 - `IsLowercaseValidator`_
 - `IsMacAddressValidator`_
-- `IsMimeTypeValidator`_
 - `IsPastDateValidator`_
 - `IsPortValidator`_
 - `IsRgbColorValidator`_
@@ -825,36 +824,6 @@ Ensures the input is a string and matches a regular expression pattern for MAC a
             super().__init__()
             self.add('mac_address', validators=[
                 IsMacAddressValidator()
-            ])
-
-
-IsMimeTypeValidator
-~~~~~~~~~~~~~~~~~~~
-
-**Description:**
-
-Checks if a value is a valid MIME type. The validator uses a regular expression to verify that the input string follows the typical pattern for MIME types (e.g., "text/html").
-
-**Parameters:**
-
-- **error_message** (*Optional[str]*): Custom error message if the value is not a valid MIME type.
-
-**Expected Behavior:**
-
-Confirms that the input is a string and that it matches the MIME type pattern. Raises a ``ValidationError`` if the value does not match the expected format.
-
-**Example Usage:**
-
-.. code-block:: python
-
-    from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsMimeTypeValidator
-
-    class FileInputFilter(InputFilter):
-        def __init__(self):
-            super().__init__()
-            self.add('mime_type', validators=[
-                IsMimeTypeValidator()
             ])
 
 IsPastDateValidator

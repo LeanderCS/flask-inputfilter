@@ -119,3 +119,4 @@ If the data is invalid, a 400 response with an error message will be returned.
         # Do something with validated data
         id = data.get('id')
         zipcode = data.get('zipcode')
+        city = data.get('city')
