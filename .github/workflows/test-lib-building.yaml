@@ -21,10 +21,15 @@ jobs:
 
       - name: Install build tools and test dependencies
         run: |
-          pip install build pytest
+          pip install build pytest cython
+
+      - name: Compile Cython code
+        run: |
+          python setup.py build_ext --inplace
 
       - name: Build the library
         run: |
+          ls -la flask_inputfilter
           python -m build
         id: build
 

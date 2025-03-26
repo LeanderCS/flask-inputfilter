@@ -158,3 +158,5 @@ cython_debug/
 .vscode/
 .DS_Store
 _build
+
+*.c

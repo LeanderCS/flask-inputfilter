@@ -2,6 +2,7 @@ autoflake
 black
 coverage
 coveralls
+cython
 docformatter
 flake8==4.0.0
 flask==2.1

@@ -18,10 +18,12 @@ jobs:
           python-version: 3.9
 
       - name: Install build tools
-        run: pip install build twine wheel
+        run: pip install build twine wheel cython
 
-      - name: Build package
-        run: python setup.py sdist bdist_wheel
+      - name: Compile and Build package
+        run: |
+          python setup.py build_ext --inplace
+          python setup.py sdist bdist_wheel
 
       - name: Publish to PyPI
         env:

@@ -3,6 +3,14 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.2.0] - 2025-03-26
+--------------------
+
+Changed
+^^^^^^^
+- Uses compiled version of InputFilter class to increase speed drastically.
+
+
 [0.1.0] - 2025-03-26
 --------------------
 
