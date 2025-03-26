@@ -13,3 +13,10 @@ known_first_party = [
     "flask_inputfilter/Filter/BaseFilter",
     "flask_inputfilter/Validator/BaseValidator"
 ]
+
+[tool.docformatter]
+wrap-summaries = 79
+wrap-descriptions = 79
+recursive = true
+in_place = true
+pre_summary_newline = true

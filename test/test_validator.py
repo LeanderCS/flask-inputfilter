@@ -8,7 +8,10 @@ from typing_extensions import TypedDict
 from flask_inputfilter import InputFilter
 from flask_inputfilter.Enum import RegexEnum
 from flask_inputfilter.Exception import ValidationError
-from flask_inputfilter.Filter import Base64ImageDownscaleFilter
+from flask_inputfilter.Filter import (
+    Base64ImageDownscaleFilter,
+    ToIntegerFilter,
+)
 from flask_inputfilter.Validator import (
     AndValidator,
     ArrayElementValidator,
@@ -112,6 +115,7 @@ class TestInputFilter(unittest.TestCase):
         elementFilter = InputFilter()
         elementFilter.add(
             "id",
+            filters=[ToIntegerFilter()],
             validators=[IsIntegerValidator()],
         )
 
@@ -144,6 +148,14 @@ class TestInputFilter(unittest.TestCase):
             self.inputFilter.validateData(
                 {"items": [{"id": 1}, {"id": "invalid"}]}
             )
+
+        validated_data = self.inputFilter.validateData(
+            {"items": [{"id": "1"}, {"id": "2"}]}
+        )
+        self.assertEqual(validated_data["items"], [{"id": 1}, {"id": 2}])
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"items": [{"id": "invalid"}]})
 
     def test_array_length_validator(self) -> None:
         """

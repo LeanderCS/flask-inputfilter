@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import TYPE_CHECKING, Any, Optional
 
 from flask_inputfilter.Exception import ValidationError
@@ -26,8 +27,7 @@ class ArrayElementValidator(BaseValidator):
 
         for i, element in enumerate(value):
             try:
-                validated_element = self.elementFilter.validateData(element)
-                value[i] = validated_element
+                value[i] = deepcopy(self.elementFilter.validateData(element))
 
             except ValidationError:
                 raise ValidationError(
