@@ -17,6 +17,7 @@ setup(
         "Flask>=2.1",
         "pillow>=8.0.0",
         "requests>=2.22.0",
+        "typing_extensions>=3.6.2",
     ],
     classifiers=[
         "License :: OSI Approved :: MIT License",
