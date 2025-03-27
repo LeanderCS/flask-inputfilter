@@ -15,5 +15,5 @@ class IsIntegerValidator(BaseValidator):
     def validate(self, value: Any) -> None:
         if not isinstance(value, int):
             raise ValidationError(
-                self.error_message, f"Value '{value}' is not an integer."
+                self.error_message or f"Value '{value}' is not an integer."
             )

@@ -1,13 +1,6 @@
 from Cython.Build import cythonize
 from setuptools import Extension, find_packages, setup
 
-ext_modules = cythonize(
-    [
-        Extension(name="", sources=["flask_inputfilter/InputFilter.pyx"]),
-    ],
-    compiler_directives={"language_level": "3"},
-)
-
 setup(
     name="flask_inputfilter",
     version="0.2.0",
@@ -23,11 +16,18 @@ setup(
     packages=find_packages(
         include=["flask_inputfilter", "flask_inputfilter.*"]
     ),
-    ext_modules=ext_modules,
+    ext_modules=cythonize(
+        [
+            Extension(
+                name="flask_inputfilter.InputFilter",
+                sources=["flask_inputfilter/InputFilter.pyx"],
+            ),
+        ]
+    ),
     package_data={"flask_inputfilter": ["*.pyx", "*.py"]},
     include_package_data=True,
     install_requires=[
-        "Flask>=2.1",
+        "flask>=2.1",
         "pillow>=8.0.0",
         "requests>=2.22.0",
         "typing_extensions>=3.6.2",

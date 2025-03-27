@@ -1,7 +1,8 @@
-try:
-    from .InputFilter import InputFilter
-except ImportError:
+import os
+
+if os.getenv("flask_inputfilter_dev"):
     import pyximport
 
     pyximport.install()
-    from .InputFilter import InputFilter
+
+from .InputFilter import InputFilter

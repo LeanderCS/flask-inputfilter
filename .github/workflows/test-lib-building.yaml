@@ -1,4 +1,4 @@
-name: Build and Test Library
+name: Run Tests on all environments
 
 on:
   push:
@@ -8,7 +8,10 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - name: Checkout code
@@ -20,22 +23,23 @@ jobs:
           python-version: 3.9
 
       - name: Install build tools and test dependencies
-        run: pip install build pytest cython
+        run: pip install build pytest cython cibuildwheel
 
-      - name: Compile Cython code
-        run: python setup.py build_ext --inplace
-
-      - name: Build the library
-        run: python -m build
-        id: build
+      - name: Build wheel with cibuildwheel
+        env:
+          CIBW_BUILD: cp39-*
+        run: cibuildwheel --output-dir wheelhouse
 
       - name: Install built library
-        run: pip install dist/*.whl
+        run: pip install flask_inputfilter --find-links=wheelhouse/ --force-reinstall
 
       - name: Verify library usage - Part I
         run: |
-          echo "import flask_inputfilter" > test_script.py
+          rm -rf flask_inputfilter
+          echo "import flask_inputfilter.InputFilter" > test_script.py
           python test_script.py
 
       - name: Verify library usage - Part II
-        run: PYTHONPATH="" pytest test/
+        run: |
+          rm -rf flask_inputfilter
+          pytest test/

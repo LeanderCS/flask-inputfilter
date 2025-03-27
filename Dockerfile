@@ -14,3 +14,5 @@ COPY . /app
 
 COPY scripts /usr/local/bin
 RUN find /usr/local/bin -type f -name "*" -exec chmod +x {} \;
+
+ENV flask_inputfilter_dev=true

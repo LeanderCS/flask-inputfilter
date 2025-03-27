@@ -13,13 +13,21 @@ from flask_inputfilter.Validator import BaseValidator
 API_PLACEHOLDER_PATTERN = re.compile(r"{{(.*?)}}")
 
 
-class InputFilter:
+cdef class InputFilter:
     """
     Base class for input filters.
     """
+    cdef readonly list __methods
+    cdef readonly dict __fields
+    cdef readonly list __conditions
+    cdef readonly list __global_filters
+    cdef readonly list __global_validators
+    cdef public dict __data
+    cdef readonly dict __validated_data
+    cdef readonly str __error_message
 
     def __init__(self, methods: Optional[List[str]] = None) -> None:
-        self.__methods = methods or ["GET", "POST", "PATCH", "PUT", "DELETE"]
+        self.__methods: List[str] = methods or ["GET", "POST", "PATCH", "PUT", "DELETE"]
         self.__fields: Dict[str, FieldModel] = {}
         self.__conditions: List[BaseCondition] = []
         self.__global_filters: List[BaseFilter] = []

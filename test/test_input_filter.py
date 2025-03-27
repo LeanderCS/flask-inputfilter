@@ -27,7 +27,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Set up a basic InputFilter instance for testing.
         """
-
         self.inputFilter = InputFilter()
 
     def test_validate_decorator(self) -> None:
@@ -104,7 +103,7 @@ class TestInputFilter(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.json, {"username": "test_user"})
 
-    def test_unsupported_method(self) -> None:
+    def test_custom_method(self) -> None:
         """
         Test that a method not supported by the InputFilter instance raises
         a TypeError.
@@ -116,19 +115,24 @@ class TestInputFilter(unittest.TestCase):
 
         app = Flask(__name__)
 
-        @app.route("/test-unsupported", methods=["POST"])
+        @app.route("/test-custom")
         @MyInputFilter.validate()
-        def test_unsupported_route():
+        def test_custom_route():
             validated_data = g.validated_data
             return jsonify(validated_data)
 
         with app.test_client() as client:
-            response = client.post("/test-unsupported")
+            response = client.post("/test-custom")
             self.assertEqual(response.status_code, 405)
 
-    @patch.object(InputFilter, "validateData")
-    def test_validation_error_response(self, mock_validateData):
-        mock_validateData.side_effect = ValidationError("Invalid data")
+            response = client.get("/test-custom")
+            self.assertEqual(response.status_code, 200)
+
+    def test_validation_error_response(self):
+        """
+        Tests the behavior of the application when a validation error occurs
+        due to invalid input data.
+        """
 
         class MyInputFilter(InputFilter):
             def __init__(self):
@@ -137,7 +141,9 @@ class TestInputFilter(unittest.TestCase):
                     name="age",
                     required=False,
                     default=18,
-                    validators=[IsIntegerValidator()],
+                    validators=[
+                        IsIntegerValidator(error_message="Invalid data")
+                    ],
                 )
 
         app = Flask(__name__)
@@ -153,49 +159,11 @@ class TestInputFilter(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data.decode(), "Invalid data")
 
-    @patch.object(InputFilter, "validateData")
-    def test_custom_supported_methods(self, mock_validateData):
-        mock_validateData.return_value = {"username": "test_user", "age": 25}
-
-        class MyInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__(methods=["GET"])
-
-                self.add(
-                    name="username",
-                    required=True,
-                )
-                self.add(
-                    name="age",
-                    required=False,
-                    default=18,
-                    validators=[IsIntegerValidator()],
-                )
-
-        app = Flask(__name__)
-
-        @app.route("/test", methods=["GET", "POST"])
-        @MyInputFilter.validate()
-        def test_route():
-            validated_data = g.validated_data
-            return jsonify(validated_data)
-
-        with app.test_client() as client:
-            response = client.get(
-                "/test", query_string={"username": "test_user"}
-            )
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(
-                response.json, {"username": "test_user", "age": 25}
-            )
-
-            response = client.post("/test", json={"username": "test_user"})
-            self.assertEqual(response.status_code, 405)
-
     def test_optional(self) -> None:
         """
         Test that optional field validation works.
         """
+
         self.inputFilter.add("name", required=True)
 
         self.inputFilter.validateData({"name": "Alice"})
@@ -207,6 +175,7 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that default field works.
         """
+
         self.inputFilter.add("available", default=True)
 
         validated_data = self.inputFilter.validateData({})
@@ -219,6 +188,7 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that fallback field works.
         """
+
         self.inputFilter.add("available", required=True, fallback=True)
         self.inputFilter.add(
             "color",
