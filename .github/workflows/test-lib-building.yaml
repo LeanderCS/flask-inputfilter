@@ -20,14 +20,14 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: 3.11
 
       - name: Install build tools and test dependencies
         run: pip install build pytest cython cibuildwheel
 
       - name: Build wheel with cibuildwheel
         env:
-          CIBW_BUILD: cp39-*
+          CIBW_BUILD: cp311-*
         run: cibuildwheel --output-dir wheelhouse
 
       - name: Install built library
@@ -35,11 +35,13 @@ jobs:
 
       - name: Verify library usage - Part I
         run: |
-          rm -rf flask_inputfilter
+          python -c "import shutil; shutil.rmtree('flask_inputfilter', ignore_errors=True)"
+
           echo "import flask_inputfilter.InputFilter" > test_script.py
           python test_script.py
 
       - name: Verify library usage - Part II
         run: |
-          rm -rf flask_inputfilter
+          python -c "import shutil; shutil.rmtree('flask_inputfilter', ignore_errors=True)"
+
           pytest test/
