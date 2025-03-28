@@ -11,5 +11,5 @@ autoflake --in-place --remove-all-unused-imports --ignore-init-module-imports --
 echo 'Running black'
 black .
 
-echo 'Running docformatter'
-docformatter --in-place .
+# echo 'Running docformatter'
+# docformatter --in-place .

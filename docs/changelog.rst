@@ -3,6 +3,15 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+
+[0.1.1] - 2025-03-29
+--------------------
+
+Changed
+^^^^^^^
+- Fixed unexpected message in error message of ``IsIntegerValidator``
+
+
 [0.1.0] - 2025-03-26
 --------------------
 

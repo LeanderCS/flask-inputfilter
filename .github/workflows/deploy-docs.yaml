@@ -16,21 +16,17 @@ jobs:
     environment: github-pages
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
       - name: Install Dependencies
-        run: |
-          pip install sphinx sphinx_rtd_theme
+        run: pip install sphinx sphinx_rtd_theme
 
       - name: Build Documentation
-        run: |
-          sphinx-build -b html docs/ _build
+        run: sphinx-build -b html docs/ _build
 
       - name: Upload artifacts
         uses: actions/upload-pages-artifact@v3

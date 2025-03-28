@@ -1,4 +1,4 @@
-name: Run Tests
+name: Run Tests and Lint
 
 on: [push]
 
@@ -32,30 +32,6 @@ jobs:
             --cache-from=type=local,src=/tmp/.buildx-cache \
             --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
             -t flask-inputfilter . --load
-
-#      - name: Save flask-inputfilter image
-#        run: docker save -o flask-inputfilter.tar flask-inputfilter
-#
-#      - name: Upload flask-inputfilter artifact
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: flask-inputfilter-image
-#          path: flask-inputfilter.tar
-#
-#  test:
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v4
-#
-#      - name: Download flask-inputfilter artifact
-#        uses: actions/download-artifact@v4
-#        with:
-#          name: flask-inputfilter-image
-#
-#      - name: Load flask-inputfilter image
-#        run: docker load -i flask-inputfilter.tar
 
       - name: Run tests in Docker and upload coverage to Coveralls
         env:
