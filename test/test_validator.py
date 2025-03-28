@@ -909,7 +909,6 @@ class TestInputFilter(unittest.TestCase):
         """
         Test that IsIntegerValidator validates integer type.
         """
-
         self.inputFilter.add("age", validators=[IsIntegerValidator()])
 
         self.inputFilter.validateData({"age": 25})

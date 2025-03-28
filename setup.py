@@ -1,11 +1,27 @@
-from Cython.Build import cythonize
 from setuptools import Extension, find_packages, setup
+
+try:
+    from Cython.Build import cythonize
+    USE_CYTHON = True
+except ImportError:
+    USE_CYTHON = False
+
+ext = ".pyx" if USE_CYTHON else ".c"
+
+extensions = [
+    Extension(
+        name="flask_inputfilter.InputFilter",
+        sources=[f"flask_inputfilter/InputFilter{ext}"],
+    ),
+]
+
+if USE_CYTHON:
+    extensions = cythonize(extensions, language_level=3)
 
 setup(
     name="flask_inputfilter",
-    version="0.2.0",
+    version="0.2.0a3",
     license="MIT",
-    license_files=["LICENSE"],
     author="Leander Cain Slotosch",
     author_email="slotosch.leander@outlook.de",
     description="A library to filter and validate input data in "
@@ -16,15 +32,8 @@ setup(
     packages=find_packages(
         include=["flask_inputfilter", "flask_inputfilter.*"]
     ),
-    ext_modules=cythonize(
-        [
-            Extension(
-                name="flask_inputfilter.InputFilter",
-                sources=["flask_inputfilter/InputFilter.pyx"],
-            ),
-        ]
-    ),
-    package_data={"flask_inputfilter": ["*.pyx", "*.py"]},
+    ext_modules=extensions,
+    package_data={"flask_inputfilter": ["*.pyx", "*.py", "*.c"]},
     include_package_data=True,
     install_requires=[
         "flask>=2.1",

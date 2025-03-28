@@ -14,16 +14,14 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.11
 
       - name: Install build tools and test dependencies
-        run: pip install build pytest cython cibuildwheel
+        run: pip install build pytest cython cibuildwheel typing_extensions
 
       - name: Build wheel with cibuildwheel
         env:
