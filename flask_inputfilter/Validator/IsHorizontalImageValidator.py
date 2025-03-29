@@ -9,6 +9,17 @@ from flask_inputfilter.Validator import BaseValidator
 
 
 class IsHorizontalImageValidator(BaseValidator):
+    """
+    Validates if an image is horizontally oriented.
+
+    This class checks if the given image is in a horizontal orientation by
+    comparing its width and height. If the image is not horizontally oriented,
+    a validation error is raised. The error message can be customized during
+    initialization of the validator.
+    """
+
+    __slots__ = "error_message"
+
     def __init__(self, error_message=None):
         self.error_message = (
             error_message or "The image is not horizontally oriented."

@@ -10,6 +10,17 @@ from flask_inputfilter.Validator import BaseValidator
 
 
 class IsVerticalImageValidator(BaseValidator):
+    """
+    Responsible for validating whether an image is vertically oriented.
+
+    This class is designed to validate if a given image or its base64
+    representation has a height greater than its width. It supports
+    validation for multiple image formats and raises an appropriate
+    error if the validation fails.
+    """
+
+    __slots__ = "error_message"
+
     def __init__(self, error_message=None):
         self.error_message = (
             error_message or "The image is not vertically oriented."

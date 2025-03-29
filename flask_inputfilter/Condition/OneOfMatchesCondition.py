@@ -9,6 +9,8 @@ class OneOfMatchesCondition(BaseCondition):
     fields matches the value.
     """
 
+    __slots__ = ("fields", "value")
+
     def __init__(self, fields: List[str], value: Any) -> None:
         self.fields = fields
         self.value = value

@@ -10,6 +10,8 @@ class InEnumValidator(BaseValidator):
     Validator that checks if a value is in a given Enum.
     """
 
+    __slots__ = ("enumClass", "error_message")
+
     def __init__(
         self,
         enumClass: Type[Enum],

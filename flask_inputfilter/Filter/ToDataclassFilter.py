@@ -8,6 +8,8 @@ class ToDataclassFilter(BaseFilter):
     Filter that converts a dictionary to a dataclass.
     """
 
+    __slots__ = "dataclass_type"
+
     def __init__(self, dataclass_type: Type[dict]) -> None:
         self.dataclass_type = dataclass_type
 

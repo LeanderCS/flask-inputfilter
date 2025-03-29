@@ -10,6 +10,8 @@ class DateRangeValidator(BaseValidator):
     Validator that checks if a date is within a specific range.
     """
 
+    __slots__ = ("min_date", "max_date", "error_message")
+
     def __init__(
         self,
         min_date: Optional[Union[str, date, datetime]] = None,

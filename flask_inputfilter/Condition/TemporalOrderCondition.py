@@ -11,6 +11,8 @@ class TemporalOrderCondition(BaseCondition):
     Supports datetime, date, and ISO 8601 formatted strings.
     """
 
+    __slots__ = ("smaller_date_field", "larger_date_field")
+
     def __init__(
         self, smaller_date_field: str, larger_date_field: str
     ) -> None:

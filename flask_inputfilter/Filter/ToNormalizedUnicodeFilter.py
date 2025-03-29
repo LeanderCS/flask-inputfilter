@@ -12,6 +12,8 @@ class ToNormalizedUnicodeFilter(BaseFilter):
     Filter that normalizes a string to a specified Unicode form.
     """
 
+    __slots__ = "form"
+
     def __init__(
         self,
         form: Union[

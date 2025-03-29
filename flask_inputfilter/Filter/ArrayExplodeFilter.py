@@ -8,6 +8,8 @@ class ArrayExplodeFilter(BaseFilter):
     Filter that splits a string into an array based on a specified delimiter.
     """
 
+    __slots__ = "delimiter"
+
     def __init__(self, delimiter: str = ",") -> None:
         self.delimiter = delimiter
 

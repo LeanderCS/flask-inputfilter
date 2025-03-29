@@ -1,0 +1,36 @@
+name: Build and Test Library
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install build tools and test dependencies
+        run: pip install build pytest
+
+      - name: Build the library
+        run: python -m build
+        id: build
+
+      - name: Install built library
+        run: pip install dist/*.whl
+
+      - name: Verify library usage - Part I
+        run: |
+          echo "import flask_inputfilter.InputFilter" > test_script.py
+          python test_script.py
+
+      - name: Verify library usage - Part II
+        run: pytest test/

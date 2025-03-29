@@ -11,6 +11,8 @@ class RegexValidator(BaseValidator):
     expression pattern.
     """
 
+    __slots__ = ("pattern", "error_message")
+
     def __init__(
         self,
         pattern: str,

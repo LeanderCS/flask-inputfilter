@@ -10,6 +10,8 @@ class IsDataclassValidator(BaseValidator):
     Validator that checks if a value is a dataclass.
     """
 
+    __slots__ = ("dataclass_type", "error_message")
+
     def __init__(
         self,
         dataclass_type: Optional[Type[dict]] = None,

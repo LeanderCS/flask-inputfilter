@@ -4,10 +4,11 @@ from unittest.mock import Mock, patch
 from flask import Flask, g, jsonify
 
 from flask_inputfilter import InputFilter
-from flask_inputfilter.Condition import BaseCondition
+from flask_inputfilter.Condition import BaseCondition, ExactlyOneOfCondition
 from flask_inputfilter.Exception import ValidationError
 from flask_inputfilter.Filter import (
     SlugifyFilter,
+    ToFloatFilter,
     ToIntegerFilter,
     ToLowerFilter,
     ToUpperFilter,
@@ -329,6 +330,24 @@ class TestInputFilter(unittest.TestCase):
         self.assertTrue(self.inputFilter.has("field"))
         self.assertFalse(self.inputFilter.has("unknown_field"))
 
+    def test_get_conditions(self) -> None:
+        condition1 = ExactlyOneOfCondition(["test"])
+        self.inputFilter.addCondition(condition1)
+
+        self.assertEqual(self.inputFilter.getConditions(), [condition1])
+
+    def test_get_global_filters(self) -> None:
+        filter1 = ToIntegerFilter()
+        self.inputFilter.addGlobalFilter(filter1)
+
+        self.assertEqual(self.inputFilter.getGlobalFilters(), [filter1])
+
+    def test_get_global_validators(self) -> None:
+        validator1 = InArrayValidator(["test"])
+        self.inputFilter.addGlobalValidator(validator1)
+
+        self.assertEqual(self.inputFilter.getGlobalValidators(), [validator1])
+
     def test_has_unknown(self) -> None:
         self.inputFilter.add("field1")
 
@@ -365,9 +384,87 @@ class TestInputFilter(unittest.TestCase):
             self.inputFilter.getValues(), {"field1": "value1", "field2": None}
         )
 
+    def test_merge_overrides_field(self) -> None:
+        self.inputFilter.add("field1")
+
+        input_filter = InputFilter()
+        filter = ToIntegerFilter()
+        input_filter.add("field1", filters=[filter])
+        self.inputFilter.merge(input_filter)
+
+        self.inputFilter.isValid()
+        self.assertEqual(self.inputFilter.getInput("field1").filters, [filter])
+
+    def test_merge_combined_conditions(self) -> None:
+        condition1 = ExactlyOneOfCondition(["test"])
+        self.inputFilter.addCondition(condition1)
+
+        condition2 = ExactlyOneOfCondition(["test2"])
+        input_filter = InputFilter()
+        input_filter.addCondition(condition2)
+
+        self.inputFilter.merge(input_filter)
+
+        self.assertEqual(
+            self.inputFilter.getConditions(), [condition1, condition2]
+        )
+
+    def test_merge_combines_global_filters(self) -> None:
+        filter1 = ToIntegerFilter()
+        self.inputFilter.addGlobalFilter(filter1)
+
+        filter2 = ToFloatFilter()
+        input_filter = InputFilter()
+        input_filter.addGlobalFilter(filter2)
+
+        self.inputFilter.merge(input_filter)
+
+        self.assertEqual(
+            self.inputFilter.getGlobalFilters(), [filter1, filter2]
+        )
+
+    def test_merge_replace_global_filters(self) -> None:
+        filter1 = ToIntegerFilter()
+        self.inputFilter.addGlobalFilter(filter1)
+
+        filter2 = ToIntegerFilter()
+        input_filter = InputFilter()
+        input_filter.addGlobalFilter(filter2)
+
+        self.inputFilter.merge(input_filter)
+
+        self.assertEqual(self.inputFilter.getGlobalFilters(), [filter2])
+
+    def test_merge_combines_global_validators(self) -> None:
+        validator1 = InArrayValidator(["test"])
+        self.inputFilter.addGlobalValidator(validator1)
+
+        validator2 = IsIntegerValidator()
+        input_filter = InputFilter()
+        input_filter.addGlobalValidator(validator2)
+
+        self.inputFilter.merge(input_filter)
+
+        self.assertEqual(
+            self.inputFilter.getGlobalValidators(), [validator1, validator2]
+        )
+
+    def test_merge_replace_global_validators(self) -> None:
+        self.inputFilter.addGlobalValidator(InArrayValidator(["test"]))
+
+        validator2 = InArrayValidator(["test2"])
+        input_filter = InputFilter()
+        input_filter.addGlobalValidator(validator2)
+
+        self.inputFilter.merge(input_filter)
+
+        self.assertEqual(self.inputFilter.getGlobalValidators(), [validator2])
+
     def test_remove(self) -> None:
         self.inputFilter.add("field")
         self.inputFilter.setData({"field": "value"})
+
+        self.assertTrue(self.inputFilter.has("field"))
 
         self.inputFilter.remove("field")
         self.assertFalse(self.inputFilter.has("field"))
@@ -386,6 +483,16 @@ class TestInputFilter(unittest.TestCase):
 
         self.inputFilter.isValid()
         self.assertEqual(self.inputFilter.getValue("field"), "value")
+
+    def test_clear(self) -> None:
+        self.inputFilter.add("field")
+        self.inputFilter.setData({"field": "value"})
+
+        self.inputFilter.isValid()
+        self.assertEqual(self.inputFilter.getValue("field"), "value")
+
+        self.inputFilter.clear()
+        self.assertEqual(self.inputFilter.getValue("field"), None)
 
     def test_set_unfiltered_data(self) -> None:
         self.inputFilter.add("field")
@@ -793,7 +900,7 @@ class TestInputFilter(unittest.TestCase):
                 "addGlobalFilter",
                 "addGlobalValidator",
                 "count",
-                "getErrorMessage",
+                "clear" "getErrorMessage",
                 "getInput",
                 "getInputs",
                 "getRawValue",
@@ -801,6 +908,9 @@ class TestInputFilter(unittest.TestCase):
                 "getUnfilteredData",
                 "getValue",
                 "getValues",
+                "getConditions",
+                "getGlobalFilters",
+                "getGlobalValidators",
                 "has",
                 "hasUnknown",
                 "isValid",

@@ -9,6 +9,8 @@ class StringLongerThanCondition(BaseCondition):
     than the given length.
     """
 
+    __slots__ = ("longer_field", "shorter_field")
+
     def __init__(self, longer_field: str, shorter_field: str) -> None:
         self.longer_field = longer_field
         self.shorter_field = shorter_field

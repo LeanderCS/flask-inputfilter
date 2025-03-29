@@ -8,6 +8,8 @@ class TruncateFilter(BaseFilter):
     Filter that truncates a string to a specified maximum length.
     """
 
+    __slots__ = "max_length"
+
     def __init__(self, max_length: int) -> None:
         self.max_length = max_length
 

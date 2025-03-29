@@ -9,6 +9,8 @@ class ExactlyNOfCondition(BaseCondition):
     fields are present in the data.
     """
 
+    __slots__ = ("fields", "n")
+
     def __init__(self, fields: List[str], n: int) -> None:
         self.fields = fields
         self.n = n

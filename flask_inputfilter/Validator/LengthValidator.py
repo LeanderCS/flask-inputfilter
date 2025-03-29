@@ -19,6 +19,8 @@ class LengthValidator(BaseValidator):
     Validator that checks the length of a string value.
     """
 
+    __slots__ = ("min_length", "max_length", "error_message")
+
     def __init__(
         self,
         min_length: Optional[int] = None,

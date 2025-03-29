@@ -9,6 +9,8 @@ class IsInstanceValidator(BaseValidator):
     Validator that checks if a value is an instance of a given class.
     """
 
+    __slots__ = ("classType", "error_message")
+
     def __init__(
         self,
         classType: Type[Any],

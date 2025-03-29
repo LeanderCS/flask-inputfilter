@@ -9,6 +9,8 @@ class OrValidator(BaseValidator):
     Validator that succeeds if one of the given validators succeeds.
     """
 
+    __slots__ = ("validators", "error_message")
+
     def __init__(
         self,
         validators: List[BaseValidator],

@@ -10,6 +10,8 @@ class FloatPrecisionValidator(BaseValidator):
     Validator that checks the precision and scale of a float.
     """
 
+    __slots__ = ("precision", "scale", "error_message")
+
     def __init__(
         self,
         precision: int,

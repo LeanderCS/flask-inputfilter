@@ -9,6 +9,8 @@ class RangeValidator(BaseValidator):
     Validator that checks if a numeric value is within a specified range.
     """
 
+    __slots__ = ("min_value", "max_value", "error_message")
+
     def __init__(
         self,
         min_value: Optional[Union[int, float]] = None,

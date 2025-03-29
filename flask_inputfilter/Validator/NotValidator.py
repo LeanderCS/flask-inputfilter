@@ -9,6 +9,8 @@ class NotValidator(BaseValidator):
     Validator that inverts another validator.
     """
 
+    __slots__ = ("validator", "error_message")
+
     def __init__(
         self,
         validator: BaseValidator,

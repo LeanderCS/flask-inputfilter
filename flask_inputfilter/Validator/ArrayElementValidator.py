@@ -13,6 +13,8 @@ class ArrayElementValidator(BaseValidator):
     Validator to validate each element in an array.
     """
 
+    __slots__ = ("elementFilter", "error_message")
+
     def __init__(
         self,
         elementFilter: "InputFilter",

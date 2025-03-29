@@ -12,6 +12,8 @@ class Base64ImageDownscaleFilter(BaseFilter):
     Filter that downscales a base64 image to a given size
     """
 
+    __slots__ = ("size", "width", "height", "proportionally")
+
     def __init__(
         self,
         size: int = 1024 * 1024,

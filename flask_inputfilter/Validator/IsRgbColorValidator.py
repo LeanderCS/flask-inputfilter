@@ -14,6 +14,8 @@ class IsRgbColorValidator(BaseValidator):
     color string (e.g., 'rgb(255, 0, 0)').
     """
 
+    __slots__ = "error_message"
+
     def __init__(self, error_message: Optional[str] = None) -> None:
         self.error_message = error_message or "Value is not a valid RGB color."
 

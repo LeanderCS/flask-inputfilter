@@ -9,6 +9,8 @@ class RequiredIfCondition(BaseCondition):
     field has a specific value.
     """
 
+    __slots__ = ("condition_field", "value", "required_field")
+
     def __init__(
         self,
         condition_field: str,

@@ -8,6 +8,8 @@ class ArrayLengthEqualCondition(BaseCondition):
     Condition that checks if the array is of the specified length.
     """
 
+    __slots__ = ("first_array_field", "second_array_field")
+
     def __init__(
         self, first_array_field: str, second_array_field: str
     ) -> None:

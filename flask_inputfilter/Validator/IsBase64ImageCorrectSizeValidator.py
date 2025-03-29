@@ -11,6 +11,8 @@ class IsBase64ImageCorrectSizeValidator(BaseValidator):
     By default, the image size must be between 1 and 4MB.
     """
 
+    __slots__ = ("minSize", "maxSize", "error_message")
+
     def __init__(
         self,
         minSize: int = 1,

@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="flask_inputfilter",
-    version="0.1.1",
+    version="0.1.2",
     license="MIT",
     author="Leander Cain Slotosch",
     author_email="slotosch.leander@outlook.de",
@@ -15,9 +15,10 @@ setup(
         include=["flask_inputfilter", "flask_inputfilter.*"]
     ),
     install_requires=[
-        "Flask>=2.1",
+        "flask>=2.1",
         "pillow>=8.0.0",
         "requests>=2.22.0",
+        "typing_extensions>=3.6.2",
     ],
     classifiers=[
         "Operating System :: OS Independent",

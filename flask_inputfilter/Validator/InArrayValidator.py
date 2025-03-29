@@ -9,6 +9,8 @@ class InArrayValidator(BaseValidator):
     Validator that checks if a value is in a given list of allowed values.
     """
 
+    __slots__ = ("haystack", "strict", "error_message")
+
     def __init__(
         self,
         haystack: List[Any],

@@ -8,6 +8,8 @@ class OneOfCondition(BaseCondition):
     Condition that ensures at least one of the specified fields is present.
     """
 
+    __slots__ = "fields"
+
     def __init__(self, fields: List[str]) -> None:
         self.fields = fields
 

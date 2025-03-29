@@ -9,6 +9,8 @@ class ToEnumFilter(BaseFilter):
     Filter that converts a value to an Enum instance.
     """
 
+    __slots__ = "enum_class"
+
     def __init__(self, enum_class: Type[Enum]) -> None:
         self.enum_class = enum_class
 

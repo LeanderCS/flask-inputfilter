@@ -10,6 +10,8 @@ class XorValidator(BaseValidator):
     validators succeeds, but not all.
     """
 
+    __slots__ = ("validators", "error_message")
+
     def __init__(
         self,
         validators: List[BaseValidator],

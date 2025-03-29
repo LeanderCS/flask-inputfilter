@@ -8,6 +8,8 @@ class NOfCondition(BaseCondition):
     Condition that ensures at least N of the specified fields are present.
     """
 
+    __slots__ = ("fields", "n")
+
     def __init__(self, fields: List[str], n: int) -> None:
         self.fields = fields
         self.n = n

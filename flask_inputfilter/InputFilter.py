@@ -18,6 +18,17 @@ class InputFilter:
     Base class for input filters.
     """
 
+    __slots__ = (
+        "__methods",
+        "__fields",
+        "__conditions",
+        "__global_filters",
+        "__global_validators",
+        "__data",
+        "__validated_data",
+        "__error_message",
+    )
+
     def __init__(self, methods: Optional[List[str]] = None) -> None:
         self.__methods = methods or ["GET", "POST", "PATCH", "PUT", "DELETE"]
         self.__fields: Dict[str, FieldModel] = {}
@@ -115,21 +126,22 @@ class InputFilter:
         return field_name in self.__fields
 
     @final
-    def getInput(self, field_name: str) -> FieldModel:
+    def getInput(self, field_name: str) -> Optional[FieldModel]:
         """
-        Represents a method to retrieve the value of a field by its name.
+        Represents a method to retrieve a field by its name.
 
-        This method allows fetching the value of a specific field within the
-        object, using its name as a string. It ensures compatibility with
-        various field names and provides a generic return type to accommodate
-        different data types for the fields.
+        This method allows fetching the configuration of a specific field
+        within the object, using its name as a string. It ensures
+        compatibility with various field names and provides a generic
+        return type to accommodate different data types for the fields.
 
         Args:
-            field_name: A string representing the name of the field whose value
+            field_name: A string representing the name of the field who
                         needs to be retrieved.
 
         Returns:
-            Any: The value of the field corresponding to the specified name.
+            Optional[FieldModel]: The field corresponding to the
+                specified name.
         """
         return self.__fields.get(field_name)
 
@@ -240,6 +252,24 @@ class InputFilter:
                 filtered_data[field_name] = field_value
 
         self.__data = filtered_data
+
+    @final
+    def clear(self) -> None:
+        """
+        Resets all fields of the InputFilter instance to
+        their initial empty state.
+
+        This method clears the internal storage of fields,
+        conditions, filters, validators, and data, effectively
+        resetting the object as if it were newly initialized.
+        """
+        self.__fields.clear()
+        self.__conditions.clear()
+        self.__global_filters.clear()
+        self.__global_validators.clear()
+        self.__data.clear()
+        self.__validated_data.clear()
+        self.__error_message = ""
 
     @final
     def getErrorMessage(self) -> str:
@@ -370,6 +400,50 @@ class InputFilter:
         self.__data = data
 
     @final
+    def getConditions(self) -> List[BaseCondition]:
+        """
+        Retrieve the list of all registered conditions.
+
+        This function provides access to the conditions that have been
+        registered and stored. Each condition in the returned list
+        is represented as an instance of the BaseCondition type.
+
+        Returns:
+            List[BaseCondition]: A list containing all currently registered
+                instances of BaseCondition.
+        """
+        return self.__conditions
+
+    @final
+    def getGlobalFilters(self) -> List[BaseFilter]:
+        """
+        Retrieve all global filters associated with this InputFilter instance.
+
+        This method returns a list of BaseFilter instances that have been
+        added as global filters. These filters are applied universally to
+        all fields during data processing.
+
+        Returns:
+            List[BaseFilter]: A list of global filters.
+        """
+        return self.__global_filters
+
+    @final
+    def getGlobalValidators(self) -> List[BaseValidator]:
+        """
+        Retrieve all global validators associated with this
+        InputFilter instance.
+
+        This method returns a list of BaseValidator instances that have been
+        added as global validators. These validators are applied universally
+        to all fields during validation.
+
+        Returns:
+            List[BaseValidator]: A list of global validators.
+        """
+        return self.__global_validators
+
+    @final
     def hasUnknown(self) -> bool:
         """
         Checks whether any values in the current data do not have
@@ -393,7 +467,7 @@ class InputFilter:
 
         - Fields with the same name are merged recursively if possible,
             otherwise overwritten.
-        - Conditions are combined and deduplicated.
+        - Conditions,  are combined and deduplicated.
         - Global filters and validators are merged without duplicates.
 
         Args:
@@ -405,31 +479,27 @@ class InputFilter:
             )
 
         for key, new_field in other.getInputs().items():
-            if key not in self.__fields:
-                self.__fields[key] = new_field
-                continue
+            self.__fields[key] = new_field
 
-            existing_field = self.__fields[key]
-            if not isinstance(existing_field, InputFilter) or not isinstance(
-                new_field, InputFilter
-            ):
-                self.__fields[key] = new_field
+        self.__conditions = self.__conditions + other.__conditions
 
-            existing_field.merge(new_field)
-
-        self.__conditions = list(set(self.__conditions + other.__conditions))
-
-        existing_global_filters = set(self.__global_filters)
         for filter in other.__global_filters:
-            if filter not in existing_global_filters:
-                self.__global_filters.append(filter)
-                existing_global_filters.add(filter)
+            existing_types = [type(v) for v in self.__global_filters]
+            if type(filter) in existing_types:
+                index = existing_types.index(type(filter))
+                self.__global_filters[index] = filter
 
-        existing_global_validators = set(self.__global_validators)
+            else:
+                self.__global_filters.append(filter)
+
         for validator in other.__global_validators:
-            if validator not in existing_global_validators:
+            existing_types = [type(v) for v in self.__global_validators]
+            if type(validator) in existing_types:
+                index = existing_types.index(type(validator))
+                self.__global_validators[index] = validator
+
+            else:
                 self.__global_validators.append(validator)
-                existing_global_validators.add(validator)
 
     @final
     def isValid(self) -> bool:

@@ -10,6 +10,8 @@ class ArrayLengthValidator(BaseValidator):
     the specified range.
     """
 
+    __slots__ = ("min_length", "max_length", "error_message")
+
     def __init__(
         self,
         min_length: int = 0,

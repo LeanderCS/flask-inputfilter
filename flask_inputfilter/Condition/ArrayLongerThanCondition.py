@@ -8,6 +8,8 @@ class ArrayLongerThanCondition(BaseCondition):
     Condition that checks if the array is longer than the specified length.
     """
 
+    __slots__ = ("longer_field", "shorter_field")
+
     def __init__(self, longer_field: str, shorter_field: str) -> None:
         self.longer_field = longer_field
         self.shorter_field = shorter_field

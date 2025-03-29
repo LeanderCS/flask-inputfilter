@@ -9,6 +9,8 @@ class NOfMatchesCondition(BaseCondition):
     fields matches the value.
     """
 
+    __slots__ = ("fields", "n", "value")
+
     def __init__(self, fields: List[str], n: int, value: Any) -> None:
         self.fields = fields
         self.n = n

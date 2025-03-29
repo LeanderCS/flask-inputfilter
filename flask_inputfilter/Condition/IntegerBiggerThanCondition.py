@@ -8,6 +8,8 @@ class IntegerBiggerThanCondition(BaseCondition):
     Condition that ensures an integer is bigger than the specified value.
     """
 
+    __slots__ = ("bigger_field", "smaller_field")
+
     def __init__(self, bigger_field: str, smaller_field: str) -> None:
         self.bigger_field = bigger_field
         self.smaller_field = smaller_field

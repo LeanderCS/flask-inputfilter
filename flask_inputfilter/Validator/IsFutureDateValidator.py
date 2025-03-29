@@ -10,6 +10,8 @@ class IsFutureDateValidator(BaseValidator):
     Validator that checks if a date is in the future.
     """
 
+    __slots__ = "error_message"
+
     def __init__(self, error_message: Optional[str] = None) -> None:
         self.error_message = error_message
 

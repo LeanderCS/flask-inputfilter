@@ -8,6 +8,8 @@ class EqualCondition(BaseCondition):
     Condition that checks if two fields are equal.
     """
 
+    __slots__ = ("first_field", "second_field")
+
     def __init__(self, first_field: str, second_field: str) -> None:
         self.first_field = first_field
         self.second_field = second_field

@@ -14,6 +14,13 @@ class Base64ImageResizeFilter(BaseFilter):
     image by resizing and compressing it.
     """
 
+    __slots__ = (
+        "max_size",
+        "format",
+        "preserve_icc_profile",
+        "preserve_metadata",
+    )
+
     def __init__(
         self,
         max_size: int = 4 * 1024 * 1024,

@@ -11,6 +11,8 @@ class DateAfterValidator(BaseValidator):
     Supports datetime and ISO 8601 formatted strings.
     """
 
+    __slots__ = ("reference_date", "error_message")
+
     def __init__(
         self,
         reference_date: Union[str, date, datetime],

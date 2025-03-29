@@ -7,9 +7,15 @@ from flask_inputfilter.Validator import BaseValidator
 
 class CustomJsonValidator(BaseValidator):
     """
-    Validiert den übergebenen Wert. Überprüft, ob der Wert ein gültiges
-    JSON ist und ob alle erforderlichen Felder vorhanden sind.
+    CustomJsonValidator validates JSON data against specified requirements.
+
+    The CustomJsonValidator class is designed to validate JSON input in
+    string or dictionary format. It ensures the input adheres to specified
+    required fields and schema constraints, and optionally raises tailored
+    error messages on validation failures.
     """
+
+    __slots__ = ("required_fields", "schema", "error_message")
 
     def __init__(
         self,

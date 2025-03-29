@@ -11,6 +11,8 @@ class IsWeekendValidator(BaseValidator):
     Supports datetime and ISO 8601 formatted strings.
     """
 
+    __slots__ = "error_message"
+
     def __init__(self, error_message: Optional[str] = None) -> None:
         self.error_message = error_message
 

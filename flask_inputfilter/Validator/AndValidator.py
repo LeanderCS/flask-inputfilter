@@ -9,6 +9,8 @@ class AndValidator(BaseValidator):
     Validator that succeeds if all the given validators succeed.
     """
 
+    __slots__ = ("validators", "error_message")
+
     def __init__(
         self,
         validators: List[BaseValidator],
