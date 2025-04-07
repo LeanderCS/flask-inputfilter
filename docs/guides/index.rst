@@ -6,3 +6,4 @@ Guides
     :glob:
 
     create_own_components
+    frontend_validation

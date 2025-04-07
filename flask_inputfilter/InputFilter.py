@@ -1,3 +1,4 @@
+import json
 import re
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
@@ -26,7 +27,7 @@ class InputFilter:
         "__global_validators",
         "__data",
         "__validated_data",
-        "__error_message",
+        "__errors",
     )
 
     def __init__(self, methods: Optional[List[str]] = None) -> None:
@@ -37,7 +38,7 @@ class InputFilter:
         self.__global_validators: List[BaseValidator] = []
         self.__data: Dict[str, Any] = {}
         self.__validated_data: Dict[str, Any] = {}
-        self.__error_message: str = ""
+        self.__errors: Dict[str, str] = {}
 
     @final
     def add(
@@ -269,10 +270,10 @@ class InputFilter:
         self.__global_validators.clear()
         self.__data.clear()
         self.__validated_data.clear()
-        self.__error_message = ""
+        self.__errors.clear()
 
     @final
-    def getErrorMessage(self) -> str:
+    def getErrorMessage(self, field_name: str) -> str:
         """
         Retrieves and returns a predefined error message.
 
@@ -286,7 +287,23 @@ class InputFilter:
         Returns:
             str: A string representing the predefined error message.
         """
-        return self.__error_message
+        return self.__errors.get(field_name)
+
+    @final
+    def getErrorMessages(self) -> Dict[str, str]:
+        """
+        Retrieves all error messages associated with the fields in the
+        input filter.
+
+        This method aggregates and returns a dictionary of error messages
+        where the keys represent field names, and the values are their
+        respective error messages.
+
+        Returns:
+            Dict[str, str]: A dictionary containing field names as keys and
+                            their corresponding error messages as values.
+        """
+        return self.__errors
 
     @final
     def getValue(self, name: str) -> Any:
@@ -516,8 +533,8 @@ class InputFilter:
         try:
             self.validateData(self.__data)
 
-        except (ValidationError, Exception) as e:
-            self.__error_message = str(e)
+        except ValidationError as e:
+            self.__errors = e.args[0]
             return False
 
         return True
@@ -549,6 +566,7 @@ class InputFilter:
         """
         validated_data = self.__validated_data
         data = data or self.__data
+        errors = {}
 
         for field_name, field_info in self.__fields.items():
             value = data.get(field_name)
@@ -562,30 +580,38 @@ class InputFilter:
             external_api = field_info.external_api
             copy = field_info.copy
 
-            if copy:
-                value = validated_data.get(copy)
+            try:
+                if copy:
+                    value = validated_data.get(copy)
 
-            if external_api:
-                value = self.__callExternalApi(
-                    external_api, fallback, validated_data
+                if external_api:
+                    value = self.__callExternalApi(
+                        external_api, fallback, validated_data
+                    )
+
+                value = self.__applyFilters(filters, value)
+                value = (
+                    self.__validateField(validators, fallback, value) or value
+                )
+                value = self.__applySteps(steps, fallback, value) or value
+                value = self.__checkForRequired(
+                    field_name, required, default, fallback, value
                 )
 
-            value = self.__applyFilters(filters, value)
+                validated_data[field_name] = value
 
-            value = self.__validateField(validators, fallback, value) or value
+            except ValidationError as e:
+                errors[field_name] = str(e)
 
-            value = self.__applySteps(steps, fallback, value) or value
+        try:
+            self.__checkConditions(validated_data)
+        except ValidationError as e:
+            errors["_condition"] = str(e)
 
-            value = self.__checkForRequired(
-                field_name, required, default, fallback, value
-            )
-
-            validated_data[field_name] = value
-
-        self.__checkConditions(validated_data)
+        if errors:
+            raise ValidationError(errors)
 
         self.__validated_data = validated_data
-
         return validated_data
 
     @classmethod
@@ -626,7 +652,11 @@ class InputFilter:
                     g.validated_data = input_filter.validateData()
 
                 except ValidationError as e:
-                    return Response(status=400, response=str(e))
+                    return Response(
+                        status=400,
+                        response=json.dumps(e.args[0]),
+                        mimetype="application/json",
+                    )
 
                 return f(*args, **kwargs)
 
@@ -724,7 +754,13 @@ class InputFilter:
                 Raised if the external API call does not succeed and no
                 fallback value is provided.
         """
+        import logging
+
         import requests
+
+        logger = logging.getLogger(__name__)
+
+        data_key = config.data_key
 
         requestData = {
             "headers": {},
@@ -753,25 +789,22 @@ class InputFilter:
             response = requests.request(**requestData)
 
             if response.status_code != 200:
-                raise ValidationError(
-                    f"External API call failed with "
-                    f"status code {response.status_code}"
+                logger.error(
+                    f"External_api request inside of InputFilter "
+                    f"failed: {response.text}"
                 )
+                raise
 
             result = response.json()
 
-            data_key = config.data_key
             if data_key:
                 return result.get(data_key)
 
             return result
-        except Exception as e:
+        except Exception:
             if fallback is None:
-                self.__error_message = str(e)
-
                 raise ValidationError(
-                    f"External API call failed for field "
-                    f"'{config.data_key}'."
+                    f"External API call failed for field " f"'{data_key}'."
                 )
 
             return fallback
@@ -829,7 +862,9 @@ class InputFilter:
 
         raise ValidationError(f"Field '{field_name}' is required.")
 
-    def __checkConditions(self, validated_data: dict) -> None:
+    def __checkConditions(self, validated_data: Dict[str, Any]) -> None:
         for condition in self.__conditions:
             if not condition.check(validated_data):
-                raise ValidationError(f"Condition '{condition}' not met.")
+                raise ValidationError(
+                    f"Condition '{condition.__class__.__name__}' not met."
+                )

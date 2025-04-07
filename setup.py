@@ -2,11 +2,11 @@ from setuptools import find_packages, setup
 
 setup(
     name="flask_inputfilter",
-    version="0.1.2",
+    version="0.2.0",
     license="MIT",
     author="Leander Cain Slotosch",
     author_email="slotosch.leander@outlook.de",
-    description="A library to filter and validate input data in "
+    description="A library to easily filter and validate input data in "
     "Flask applications",
     long_description=open("README.rst").read(),
     long_description_content_type="text/x-rst",
@@ -16,10 +16,14 @@ setup(
     ),
     install_requires=[
         "flask>=2.1",
-        "pillow>=8.0.0",
-        "requests>=2.22.0",
         "typing_extensions>=3.6.2",
     ],
+    extras_require={
+        "optional": [
+            "pillow>=8.0.0",
+            "requests>=2.22.0",
+        ],
+    },
     classifiers=[
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3.14",
