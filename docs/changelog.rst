@@ -4,6 +4,20 @@ Changelog
 All notable changes to this project will be documented in this file.
 
 
+[0.2.0] - 2025-04-07
+--------------------
+
+Added
+^^^^^
+- getErrorMessages
+
+Changed
+^^^^^^^
+- Updated error handling: The first error for each field is now returned in a combined format,
+  enabling more detailed and flexible error handling on the frontend. :doc:`Check it out <guides/frontend_validation>`
+- Errors received through external_api request get logged.
+
+
 [0.1.2] - 2025-03-29
 --------------------
 

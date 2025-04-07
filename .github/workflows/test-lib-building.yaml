@@ -25,7 +25,7 @@ jobs:
         id: build
 
       - name: Install built library
-        run: pip install dist/*.whl
+        run: pip install "$(ls dist/*.whl | head -n 1)[optional]"
 
       - name: Verify library usage - Part I
         run: |

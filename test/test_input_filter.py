@@ -159,7 +159,7 @@ class TestInputFilter(unittest.TestCase):
             response = client.get("/test", query_string={"age": "not_an_int"})
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data.decode(), "Invalid data")
+        self.assertEqual(response.json.get("age"), "Invalid data")
 
     def test_optional(self) -> None:
         """
@@ -250,7 +250,63 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.isValid()
 
         self.assertEqual(
-            "Field 'field' is required.", self.inputFilter.getErrorMessage()
+            self.inputFilter.getErrorMessage("field"),
+            "Field 'field' is required.",
+        )
+
+    def test_get_error_messages(self) -> None:
+        self.inputFilter.add(
+            "field", required=True, validators=[IsIntegerValidator()]
+        )
+        self.inputFilter.add(
+            "field2", required=True, validators=[IsIntegerValidator()]
+        )
+        self.inputFilter.setData({"field2": "value2"})
+        self.inputFilter.isValid()
+
+        self.assertEqual(
+            self.inputFilter.getErrorMessages().get("field"),
+            "Field 'field' is required.",
+        )
+        self.assertEqual(
+            self.inputFilter.getErrorMessages().get("field2"),
+            "Value 'value2' is not an integer.",
+        )
+
+    def test_global_error_messages(self) -> None:
+        self.inputFilter.add("field", required=True)
+        self.inputFilter.add("field2", required=True)
+        self.inputFilter.setData({"field2": "value2"})
+        self.inputFilter.addGlobalValidator(IsIntegerValidator())
+
+        self.inputFilter.isValid()
+
+        self.assertEqual(
+            self.inputFilter.getErrorMessages().get("field"),
+            "Field 'field' is required.",
+        )
+        self.assertEqual(
+            self.inputFilter.getErrorMessages().get("field2"),
+            "Value 'value2' is not an integer.",
+        )
+
+    def test_condition_error_messages(self) -> None:
+        self.inputFilter.add("field")
+        self.inputFilter.add("field2")
+        self.inputFilter.addCondition(
+            ExactlyOneOfCondition(["field", "field2"])
+        )
+        self.inputFilter.setData({"field2": "value2"})
+        self.inputFilter.isValid()
+
+        self.assertEqual(self.inputFilter.getErrorMessages(), {})
+
+        self.inputFilter.setData({"field": "value", "field2": "value2"})
+        self.inputFilter.isValid()
+
+        self.assertEqual(
+            self.inputFilter.getErrorMessages().get("_condition"),
+            "Condition 'ExactlyOneOfCondition' not met.",
         )
 
     def test_get_input(self) -> None:

@@ -327,7 +327,10 @@ class TestInputFilter(unittest.TestCase):
             self.inputFilter.validateData(
                 {"custom_error": "2020-12-31T23:59:59"}
             )
-        self.assertEqual(str(context.exception), "Custom error message")
+        self.assertEqual(
+            context.exception.args[0].get("custom_error"),
+            "Custom error message",
+        )
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"custom_error": "unparseable date"})
