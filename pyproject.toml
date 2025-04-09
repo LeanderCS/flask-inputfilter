@@ -2,6 +2,34 @@
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::DeprecationWarning"
+]
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = py37, py38, py39, py310, py311, py312, py313, py314
+
+[testenv]
+deps =
+    -renv_configs/requirements-{envname}.txt
+install_command = {envbindir}/python -I -m pip install {opts} {packages}
+commands =
+    pytest
+"""
+
+[tool.coverage.run]
+source = ["flask_inputfilter"]
+
+[tool.coverage.report]
+omit = ["__init__.py", "setup.py", "*/test/*"]
+
+[tool.flake8]
+exclude = ["__init__.py", "venv", "*.md", ".*"]
+max-line-length = 79
+
 [tool.black]
 line-length = 79
 

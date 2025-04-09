@@ -1,15 +1,13 @@
 #!/bin/bash
 
-cd /app
-
 echo 'Running isort'
-isort .
+isort /app
 
 echo 'Running autoflake'
-autoflake --in-place --remove-all-unused-imports --ignore-init-module-imports --recursive .
+autoflake --in-place --remove-all-unused-imports --ignore-init-module-imports --recursive /app
 
 echo 'Running black'
-black .
+black /app
 
 # echo 'Running docformatter'
-# docformatter --in-place .
+# docformatter --in-place /app

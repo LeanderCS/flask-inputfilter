@@ -1,5 +1,0 @@
-[run]
-source = flask_inputfilter
-
-[report]
-omit = __init__.py, setup.py, */test/*

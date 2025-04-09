@@ -47,6 +47,7 @@ Changed
 Added
 ^^^^^
 - Multiple functions to allow a broader usage aside as decorator
+
  - getErrorMessage
  - getRawValue
  - getRawValues
