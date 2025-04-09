@@ -3,7 +3,8 @@ black
 coverage
 coveralls
 # docformatter
-flake8==4.0.0
+flake8==5.0.4
+flake8-pyproject==1.2.3
 flask==2.1
 isort
 pillow==8.0.0

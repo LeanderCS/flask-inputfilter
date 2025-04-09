@@ -20,3 +20,4 @@ html_js_files = [
 ]
 html_extra_path = ["_static/google-analytics.js"]
 html_theme_options = {"navigation_depth": 4}
+html_favicon = "_static/favicon.ico"

@@ -1,3 +1,0 @@
-#!/bin/bash
-
-sphinx-build -b html /app/docs/ /app/_build
