@@ -504,16 +504,16 @@ IsDataclassValidator
 ~~~~~~~~~~~~~~~~~~~~
 **Description:**
 
-Validates that the provided value is an instance of a dataclass. Optionally checks whether it matches a specific dataclass type.
+Validates that the provided value conforms to a specific dataclass type.
 
 **Parameters:**
 
-- **dataclass_type** (*Optional[Type]*): The expected dataclass type.
+- **dataclass_type** (*Type[dict]*): The expected dataclass type.
 - **error_message** (*Optional[str]*): Custom error message if validation fails.
 
 **Expected Behavior:**
 
-Ensures the input is a dataclass (using Python’s dataclass mechanism) and, if specified, that it is an instance of the provided type. Raises a ``ValidationError`` otherwise.
+Ensures the input is a dictionary and, that all expected keys are present. Raises a ``ValidationError`` if the structure does not match.
 
 **Example Usage:**
 
@@ -974,16 +974,16 @@ IsTypedDictValidator
 ~~~~~~~~~~~~~~~~~~~~
 **Description:**
 
-Validates that the provided value is a TypedDict instance. Optionally, it checks whether the dictionary conforms to a specified TypedDict structure.
+Validates that the provided value conforms to a specified TypedDict structure.
 
 **Parameters:**
 
-- **typed_dict_type** (*Optional[Type[TypedDict]]*): The TypedDict class that defines the expected structure.
+- **typed_dict_type** (*Type[TypedDict]*): The TypedDict class that defines the expected structure.
 - **error_message** (*Optional[str]*): Custom error message if the validation fails.
 
 **Expected Behavior:**
 
-Ensures the input is a dictionary and, if a specific TypedDict type is provided, that all expected keys are present. Raises a ``ValidationError`` if the structure does not match.
+Ensures the input is a dictionary and, that all expected keys are present. Raises a ``ValidationError`` if the structure does not match.
 
 **Example Usage:**
 

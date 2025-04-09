@@ -1,6 +1,16 @@
 import json
 import re
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+)
 
 from flask import Response, g, request
 from typing_extensions import final
@@ -12,6 +22,8 @@ from flask_inputfilter.Model import ExternalApiConfig, FieldModel
 from flask_inputfilter.Validator import BaseValidator
 
 API_PLACEHOLDER_PATTERN = re.compile(r"{{(.*?)}}")
+
+T = TypeVar("T")
 
 
 class InputFilter:
@@ -28,6 +40,7 @@ class InputFilter:
         "__data",
         "__validated_data",
         "__errors",
+        "__model_class",
     )
 
     def __init__(self, methods: Optional[List[str]] = None) -> None:
@@ -39,6 +52,7 @@ class InputFilter:
         self.__data: Dict[str, Any] = {}
         self.__validated_data: Dict[str, Any] = {}
         self.__errors: Dict[str, str] = {}
+        self.__model_class: Optional[Type[T]] = None
 
     @final
     def add(
@@ -333,7 +347,7 @@ class InputFilter:
         Retrieves a dictionary of key-value pairs from the current object.
         This method provides access to the internal state or configuration of
         the object in a dictionary format, where keys are strings and values
-        can be of various types depending on the object’s design.
+        can be of various types depending on the object's design.
 
         Returns:
             Dict[str, Any]: A dictionary containing string keys and their
@@ -519,6 +533,31 @@ class InputFilter:
                 self.__global_validators.append(validator)
 
     @final
+    def setModel(self, model_class: Type[T]) -> None:
+        """
+        Set the model class for serialization.
+
+        Args:
+            model_class: The class to use for serialization.
+        """
+        self.__model_class = model_class
+
+    @final
+    def serialize(self) -> Union[Dict[str, Any], T]:
+        """
+        Serialize the validated data. If a model class is set,
+        returns an instance of that class, otherwise returns the
+        raw validated data.
+
+        Returns:
+            Union[Dict[str, Any], T]: The serialized data.
+        """
+        if self.__model_class is None:
+            return self.__validated_data
+
+        return self.__model_class(**self.__validated_data)
+
+    @final
     def isValid(self) -> bool:
         """
         Checks if the object's state or its attributes meet certain
@@ -649,7 +688,12 @@ class InputFilter:
 
                     input_filter.__data = {**data, **kwargs}
 
-                    g.validated_data = input_filter.validateData()
+                    validated_data = input_filter.validateData()
+
+                    if input_filter.__model_class is not None:
+                        validated_data = input_filter.serialize()
+
+                    g.validated_data = validated_data
 
                 except ValidationError as e:
                     return Response(
