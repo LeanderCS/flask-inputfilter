@@ -11,3 +11,4 @@ Options
     condition
     copy
     external_api
+    deserialization

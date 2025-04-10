@@ -1,4 +1,5 @@
 import unittest
+from dataclasses import dataclass
 from unittest.mock import Mock, patch
 
 from flask import Flask, g, jsonify
@@ -351,6 +352,13 @@ class TestInputFilter(unittest.TestCase):
             {"field1": "raw1", "field2": "raw2"},
         )
 
+        self.inputFilter.clear()
+
+        self.assertEqual(
+            self.inputFilter.getRawValues(),
+            {},
+        )
+
     def test_get_unfiltered_data(self) -> None:
         self.inputFilter.add("field", filters=[ToIntegerFilter()])
         self.inputFilter.setData({"field": "raw", "unknown_field": "raw2"})
@@ -439,6 +447,9 @@ class TestInputFilter(unittest.TestCase):
         self.assertEqual(
             self.inputFilter.getValues(), {"field1": "value1", "field2": None}
         )
+
+        with self.assertRaises(TypeError):
+            self.inputFilter.merge("no input filter")
 
     def test_merge_overrides_field(self) -> None:
         self.inputFilter.add("field1")
@@ -948,6 +959,78 @@ class TestInputFilter(unittest.TestCase):
         )
         self.assertEqual(validated_data["escapedUsername"], "test-user")
 
+    def test_serialize_and_set_model(self) -> None:
+        """
+        Test that InputFilter.serialize() serializes the validated data.
+        """
+
+        class User:
+            def __init__(self, username: str):
+                self.username = username
+
+        @dataclass
+        class User2:
+            username: str
+
+        self.inputFilter.add("username")
+        self.inputFilter.setData({"username": "test user"})
+
+        self.inputFilter.isValid()
+
+        self.inputFilter.setModel(User)
+        self.assertEqual(self.inputFilter.serialize().username, "test user")
+
+        self.inputFilter.setModel(None)
+        self.assertEqual(
+            self.inputFilter.serialize(), {"username": "test user"}
+        )
+
+        self.inputFilter.setModel(User2)
+        self.assertEqual(self.inputFilter.serialize().username, "test user")
+
+    def test_model_class_serialisation(self) -> None:
+        """
+        Test that the model class is serialized correctly.
+        """
+
+        class User:
+            def __init__(self, username: str):
+                self.username = username
+
+        class MyInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__(methods=["GET"])
+
+                self.add("username")
+                self.setModel(User)
+
+        app = Flask(__name__)
+
+        @app.route("/test-custom", methods=["GET"])
+        @MyInputFilter.validate()
+        def test_custom_route():
+            validated_data = g.validated_data
+
+            return jsonify(validated_data.username)
+
+        with app.test_client() as client:
+            response = client.get(
+                "/test-custom", query_string={"username": "test user"}
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json, "test user")
+
+            response = client.get(
+                "/test-custom",
+                query_string={"username": "test user2", "age": 20},
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json, "test user2")
+
+            response = client.get("/test-custom", query_string={"age": 20})
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json, None)
+
     def test_final_methods(self) -> None:
         def test_final_methods(self) -> None:
             final_methods = [
@@ -976,6 +1059,8 @@ class TestInputFilter(unittest.TestCase):
                 "setData",
                 "setUnfilteredData",
                 "validateData",
+                "setModel",
+                "serialize",
             ]
 
             for method in final_methods:

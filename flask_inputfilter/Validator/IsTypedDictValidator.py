@@ -15,7 +15,7 @@ class IsTypedDictValidator(BaseValidator):
 
     def __init__(
         self,
-        typed_dict_type: Optional[Type[TypedDict]] = None,
+        typed_dict_type: Type[TypedDict],
         error_message: Optional[str] = None,
     ) -> None:
         self.typed_dict_type = typed_dict_type
@@ -25,14 +25,13 @@ class IsTypedDictValidator(BaseValidator):
         if not isinstance(value, dict):
             raise ValidationError(
                 self.error_message
-                or "The provided value is not a TypedDict instance."
+                or "The provided value is not a dict instance."
             )
 
-        if self.typed_dict_type:
-            expected_keys = self.typed_dict_type.__annotations__.keys()
-            if not all(key in value for key in expected_keys):
-                raise ValidationError(
-                    self.error_message
-                    or f"'{value}' does not match "
-                    f"{self.typed_dict_type.__name__} structure."
-                )
+        expected_keys = self.typed_dict_type.__annotations__.keys()
+        if any(key not in value for key in expected_keys):
+            raise ValidationError(
+                self.error_message
+                or f"'{value}' does not match "
+                f"{self.typed_dict_type.__name__} structure."
+            )

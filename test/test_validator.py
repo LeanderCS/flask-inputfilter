@@ -530,6 +530,9 @@ class TestInputFilter(unittest.TestCase):
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"price": "not a float"})
 
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"price": float("inf")})
+
         self.inputFilter.add(
             "custom_message2",
             validators=[
@@ -650,6 +653,9 @@ class TestInputFilter(unittest.TestCase):
                 {"image": "iVBORw0KGgoAAAANSUhEUgAAAAU"}
             )
 
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"image": "iVBORw"})
+
         self.inputFilter.add(
             "image2",
             validators=[
@@ -712,16 +718,15 @@ class TestInputFilter(unittest.TestCase):
         class User:
             id: int
 
-        @dataclass
-        class User2:
-            name: str
+        self.inputFilter.add("data", validators=[IsDataclassValidator(User)])
 
-        self.inputFilter.add("data", validators=[IsDataclassValidator()])
-
-        self.inputFilter.validateData({"data": User(123)})
+        self.inputFilter.validateData({"data": {"id": 123}})
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"data": "not a dataclass"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"data": {"user": {"id": 123}}})
 
         self.inputFilter.add(
             "data2",
@@ -732,10 +737,8 @@ class TestInputFilter(unittest.TestCase):
             ],
         )
 
-        self.inputFilter.validateData({"data2": User(123)})
-
         with self.assertRaises(ValidationError):
-            self.inputFilter.validateData({"data2": User2})
+            self.inputFilter.validateData({"data": "not a dict"})
 
     def test_is_float_validator(self) -> None:
         """
@@ -877,6 +880,9 @@ class TestInputFilter(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"html": "not an HTML content"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"html": 100})
 
         self.inputFilter.add(
             "html2",
@@ -1103,15 +1109,15 @@ class TestInputFilter(unittest.TestCase):
         class User(TypedDict):
             id: int
 
-        class User2(TypedDict):
-            name: str
+        self.inputFilter.add("data", validators=[IsTypedDictValidator(User)])
 
-        self.inputFilter.add("data", validators=[IsTypedDictValidator()])
-
-        self.inputFilter.validateData({"data": User(id=123)})
+        self.inputFilter.validateData({"data": {"id": 123}})
 
         with self.assertRaises(ValidationError):
-            self.inputFilter.validateData({"data": "not a TypedDict"})
+            self.inputFilter.validateData({"data": "not a dict"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"data": {"user": {"id": 123}}})
 
         self.inputFilter.add(
             "data2",
@@ -1122,10 +1128,8 @@ class TestInputFilter(unittest.TestCase):
             ],
         )
 
-        self.inputFilter.validateData({"data2": User(id=123)})
-
         with self.assertRaises(ValidationError):
-            self.inputFilter.validateData({"data2": User2})
+            self.inputFilter.validateData({"data": "not a dict"})
 
     def test_is_uppercase_validator(self) -> None:
         """
@@ -1138,6 +1142,9 @@ class TestInputFilter(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"name": "NotUppercase"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"name": 100})
 
         self.inputFilter.add(
             "name",
@@ -1160,6 +1167,9 @@ class TestInputFilter(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"url": "not_a_url"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"url": 100})
 
         self.inputFilter.add(
             "url2",

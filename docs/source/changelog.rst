@@ -3,6 +3,23 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.3.0] - 2025-04-10
+--------------------
+
+Added
+^^^^^
+
+
+Changed
+^^^^^^^
+- Updated ``IsTypedDictValidator` and ``IsDataclassValidator`` to require a specific model and
+  checks if the input json is in the defined format.
+
+Removed
+^^^^^^^
+- ``RemoveEmojisFilter``
+- ``ToPascaleCaseFilter``
+
 
 [0.2.0] - 2025-04-07
 --------------------

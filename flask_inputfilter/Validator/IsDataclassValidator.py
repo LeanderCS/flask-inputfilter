@@ -1,8 +1,9 @@
-from dataclasses import is_dataclass
-from typing import Any, Optional, Type
+from typing import Any, Optional, Type, TypeVar
 
 from flask_inputfilter.Exception import ValidationError
 from flask_inputfilter.Validator import BaseValidator
+
+T = TypeVar("T")
 
 
 class IsDataclassValidator(BaseValidator):
@@ -14,20 +15,21 @@ class IsDataclassValidator(BaseValidator):
 
     def __init__(
         self,
-        dataclass_type: Optional[Type[dict]] = None,
+        dataclass_type: Type[T],
         error_message: Optional[str] = None,
     ) -> None:
         self.dataclass_type = dataclass_type
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
-        if not is_dataclass(value):
+        if not isinstance(value, dict):
             raise ValidationError(
                 self.error_message
-                or "The provided value is not a dataclass instance."
+                or "The provided value is not a dict instance."
             )
 
-        if self.dataclass_type and not isinstance(value, self.dataclass_type):
+        expected_keys = self.dataclass_type.__annotations__.keys()
+        if any(key not in value for key in expected_keys):
             raise ValidationError(
                 self.error_message
                 or f"'{value}' is not an instance "
