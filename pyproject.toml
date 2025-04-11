@@ -2,6 +2,63 @@
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "flask_inputfilter"
+version = "0.3.0"
+description = "A library to easily filter and validate input data in Flask applications"
+readme = "README.rst"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+authors = [
+    {name = "Leander Cain Slotosch", email = "slotosch.leander@outlook.de"}
+]
+dependencies = [
+    "flask>=2.1",
+    "typing_extensions>=3.6.2",
+]
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "autoflake",
+    "black",
+    "coverage",
+    "coveralls",
+    #"docformatter",
+    "flake8==5.0.4",
+    "flake8-pyproject==1.2.3",
+    "isort",
+    "pillow>=8.0.0",
+    "pytest",
+    "requests>=2.22.0",
+    "sphinx",
+    "sphinx-autobuild",
+    "sphinx_rtd_theme"
+]
+optional = [
+    "pillow>=8.0.0",
+    "requests>=2.22.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/LeanderCS/flask-inputfilter"
+Documentation = "https://leandercs.github.io/flask-inputfilter"
+Source = "https://github.com/LeanderCS/flask-inputfilter"
+Issues = "https://github.com/LeanderCS/flask-inputfilter/issues"
+
+[tool.setuptools.packages.find]
+include = ["flask_inputfilter"]
+
 [tool.pytest.ini_options]
 filterwarnings = [
     "ignore::DeprecationWarning"
@@ -24,7 +81,7 @@ commands =
 source = ["flask_inputfilter"]
 
 [tool.coverage.report]
-omit = ["__init__.py", "setup.py", "*/test/*"]
+omit = ["__init__.py", "setup.py", "*/tests/*"]
 
 [tool.flake8]
 exclude = ["__init__.py", "venv", "*.md", ".*"]

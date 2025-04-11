@@ -33,4 +33,4 @@ jobs:
           python test_script.py
 
       - name: Verify library usage - Part II
-        run: pytest test/
+        run: pytest tests/
