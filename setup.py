@@ -1,8 +1,25 @@
-from setuptools import find_packages, setup
+from setuptools import setup, find_packages
+from setuptools.extension import Extension
+
+try:
+    from Cython.Build import cythonize
+    USE_CYTHON = True
+except ImportError:
+    USE_CYTHON = False
+
+ext_modules = []
+if USE_CYTHON:
+    ext_modules = cythonize([
+        Extension(
+            "flask_inputfilter.InputFilter",
+            ["flask_inputfilter/InputFilter.pyx"],
+            extra_compile_args=["-O3"]
+        )
+    ])
 
 setup(
     name="flask_inputfilter",
-    version="0.3.0",
+    version="0.3.0a4",
     license="MIT",
     author="Leander Cain Slotosch",
     author_email="slotosch.leander@outlook.de",
@@ -11,9 +28,14 @@ setup(
     long_description=open("README.rst").read(),
     long_description_content_type="text/x-rst",
     url="https://github.com/LeanderCS/flask-inputfilter",
-    packages=find_packages(
-        include=["flask_inputfilter", "flask_inputfilter.*"]
-    ),
+    packages=find_packages(include=["flask_inputfilter", "flask_inputfilter.*"]),
+    package_data={
+        "flask_inputfilter": ["*.pyx", "*.pxd"]
+    },
+    setup_requires=[
+        "cython>=0.29.0",
+    ],
+    ext_modules=ext_modules,
     install_requires=[
         "flask>=2.1",
         "typing_extensions>=3.6.2",

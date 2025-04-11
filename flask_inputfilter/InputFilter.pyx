@@ -33,7 +33,7 @@ from flask_inputfilter.Validator import BaseValidator
 T = TypeVar("T")
 
 
-class InputFilter(
+cdef class InputFilter(
     ConditionMixin,
     DataMixin,
     ErrorHandlingMixin,
@@ -47,19 +47,18 @@ class InputFilter(
     Base class for input filters.
     """
 
-    __slots__ = (
-        "__methods",
-        "_fields",
-        "_conditions",
-        "_global_filters",
-        "_global_validators",
-        "_data",
-        "_validated_data",
-        "_errors",
-        "_model_class",
-    )
+    cdef:
+        list __methods
+        dict _fields
+        list _conditions
+        list _global_filters
+        list _global_validators
+        dict _data
+        dict _validated_data
+        dict _errors
+        object _model_class
 
-    def __init__(self, methods: Optional[List[str]] = None) -> None:
+    cpdef __init__(self, methods: Optional[List[str]] = None):
         self.__methods = methods or ["GET", "POST", "PATCH", "PUT", "DELETE"]
         self._fields: Dict[str, FieldModel] = {}
         self._conditions: List[BaseCondition] = []
@@ -71,7 +70,7 @@ class InputFilter(
         self._model_class: Optional[Type[T]] = None
 
     @final
-    def isValid(self) -> bool:
+    cpdef bint isValid(self):
         """
         Checks if the object's state or its attributes meet certain
         conditions to be considered valid. This function is typically used to
@@ -147,9 +146,9 @@ class InputFilter(
         return decorator
 
     @final
-    def validateData(
+    cpdef dict validateData(
         self, data: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    ):
         """
         Validates input data against defined field rules, including applying
         filters, validators, custom logic steps, and fallback mechanisms. The
