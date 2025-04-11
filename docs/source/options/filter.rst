@@ -224,7 +224,7 @@ StringSlugifyFilter
 ~~~~~~~~~~~~~~~~~~~
 **Description:**
 
-Converts a string into a slug format without deprecation warnings.
+Converts a string into a slug format.
 
 **Expected Behavior:**
 

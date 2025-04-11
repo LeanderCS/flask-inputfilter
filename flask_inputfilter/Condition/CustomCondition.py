@@ -8,7 +8,7 @@ class CustomCondition(BaseCondition):
     Allows users to define their own condition as a callable.
     """
 
-    __slots__ = "condition"
+    __slots__ = ("condition",)
 
     def __init__(self, condition: Callable[[Dict[str, Any]], bool]) -> None:
         self.condition = condition

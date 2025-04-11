@@ -10,6 +10,8 @@ from flask_inputfilter.Enum import RegexEnum
 from flask_inputfilter.Exception import ValidationError
 from flask_inputfilter.Filter import (
     Base64ImageDownscaleFilter,
+    ToDateFilter,
+    ToDateTimeFilter,
     ToIntegerFilter,
 )
 from flask_inputfilter.Validator import (
@@ -29,6 +31,8 @@ from flask_inputfilter.Validator import (
     IsBase64ImageValidator,
     IsBooleanValidator,
     IsDataclassValidator,
+    IsDateTimeValidator,
+    IsDateValidator,
     IsFloatValidator,
     IsFutureDateValidator,
     IsHexadecimalValidator,
@@ -739,6 +743,56 @@ class TestInputFilter(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.inputFilter.validateData({"data": "not a dict"})
+
+    def test_is_datetime_validator(self) -> None:
+        """
+        Test that IsDateTimeValidator validates datetime type.
+        """
+
+        self.inputFilter.add(
+            "datetime",
+            filters=[ToDateTimeFilter()],
+            validators=[IsDateTimeValidator()],
+        )
+
+        self.inputFilter.validateData({"datetime": "2025-01-01 00:00:00"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"datetime": "not a datetime"})
+
+        self.inputFilter.add(
+            "datetime2",
+            filters=[ToDateTimeFilter()],
+            validators=[
+                IsDateTimeValidator(error_message="Custom error message")
+            ],
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"datetime": 123})
+
+    def test_is_date_validator(self) -> None:
+        """
+        Test that IsDateValidator validates datetime type.
+        """
+
+        self.inputFilter.add(
+            "date", filters=[ToDateFilter()], validators=[IsDateValidator()]
+        )
+
+        self.inputFilter.validateData({"date": "2025-01-01"})
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"date": "not a date"})
+
+        self.inputFilter.add(
+            "date2",
+            filters=[ToDateFilter()],
+            validators=[IsDateValidator(error_message="Custom error message")],
+        )
+
+        with self.assertRaises(ValidationError):
+            self.inputFilter.validateData({"date": 123})
 
     def test_is_float_validator(self) -> None:
         """

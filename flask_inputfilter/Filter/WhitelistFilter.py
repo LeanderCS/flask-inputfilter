@@ -6,7 +6,7 @@ from flask_inputfilter.Filter import BaseFilter
 class WhitelistFilter(BaseFilter):
     """Filter that filters out values that are not in the whitelist."""
 
-    __slots__ = "whitelist"
+    __slots__ = ("whitelist",)
 
     def __init__(self, whitelist: List[str] = None) -> None:
         self.whitelist = whitelist

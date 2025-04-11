@@ -20,7 +20,7 @@ Basic Copy Integration
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import SlugifyFilter
+    from flask_inputfilter.Filter import StringSlugifyFilter
 
     class MyInputFilter(InputFilter):
         def __init__(self):
@@ -33,7 +33,7 @@ Basic Copy Integration
             self.add(
                 "escapedUsername",
                 copy="username"
-                filters=[SlugifyFilter()]
+                filters=[StringSlugifyFilter()]
             )
 
     # Example usage
@@ -53,7 +53,7 @@ The coping can also be used as a chain.
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import SlugifyFilter, ToUpperFilter, ToLowerFilter
+    from flask_inputfilter.Filter import StringSlugifyFilter, ToUpperFilter, ToLowerFilter
 
     class MyInputFilter(InputFilter):
         def __init__(self):
@@ -66,7 +66,7 @@ The coping can also be used as a chain.
             self.add(
                 "escapedUsername",
                 copy="username"
-                filters=[SlugifyFilter()]
+                filters=[StringSlugifyFilter()]
             )
 
             self.add(

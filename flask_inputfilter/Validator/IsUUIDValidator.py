@@ -10,7 +10,7 @@ class IsUUIDValidator(BaseValidator):
     Validator that checks if a value is a valid UUID string.
     """
 
-    __slots__ = "error_message"
+    __slots__ = ("error_message",)
 
     def __init__(self, error_message: Optional[str] = None) -> None:
         self.error_message = error_message

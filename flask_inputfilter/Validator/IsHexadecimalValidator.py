@@ -9,7 +9,7 @@ class IsHexadecimalValidator(BaseValidator):
     Validator that checks if a value is a valid hexadecimal string.
     """
 
-    __slots__ = "error_message"
+    __slots__ = ("error_message",)
 
     def __init__(
         self,

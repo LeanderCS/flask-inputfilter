@@ -4,7 +4,6 @@ from .ArrayExplodeFilter import ArrayExplodeFilter
 from .Base64ImageDownscaleFilter import Base64ImageDownscaleFilter
 from .Base64ImageResizeFilter import Base64ImageResizeFilter
 from .BlacklistFilter import BlacklistFilter
-from .SlugifyFilter import SlugifyFilter
 from .StringRemoveEmojisFilter import StringRemoveEmojisFilter
 from .StringSlugifyFilter import StringSlugifyFilter
 from .StringTrimFilter import StringTrimFilter
