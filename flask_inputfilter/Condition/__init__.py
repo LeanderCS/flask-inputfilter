@@ -11,6 +11,7 @@ from .ExactlyOneOfMatchesCondition import ExactlyOneOfMatchesCondition
 from .IntegerBiggerThanCondition import IntegerBiggerThanCondition
 from .NOfCondition import NOfCondition
 from .NOfMatchesCondition import NOfMatchesCondition
+from .NotEqualCondition import NotEqualCondition
 from .OneOfCondition import OneOfCondition
 from .OneOfMatchesCondition import OneOfMatchesCondition
 from .RequiredIfCondition import RequiredIfCondition

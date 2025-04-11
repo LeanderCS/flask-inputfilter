@@ -8,7 +8,7 @@ from flask_inputfilter import InputFilter
 from flask_inputfilter.Condition import BaseCondition, ExactlyOneOfCondition
 from flask_inputfilter.Exception import ValidationError
 from flask_inputfilter.Filter import (
-    SlugifyFilter,
+    StringSlugifyFilter,
     ToFloatFilter,
     ToIntegerFilter,
     ToLowerFilter,
@@ -951,7 +951,7 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.add("username")
 
         self.inputFilter.add(
-            "escapedUsername", copy="username", filters=[SlugifyFilter()]
+            "escapedUsername", copy="username", filters=[StringSlugifyFilter()]
         )
 
         validated_data = self.inputFilter.validateData(

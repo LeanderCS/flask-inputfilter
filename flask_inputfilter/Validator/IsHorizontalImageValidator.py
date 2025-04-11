@@ -18,7 +18,7 @@ class IsHorizontalImageValidator(BaseValidator):
     initialization of the validator.
     """
 
-    __slots__ = "error_message"
+    __slots__ = ("error_message",)
 
     def __init__(self, error_message=None):
         self.error_message = (

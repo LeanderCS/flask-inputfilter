@@ -8,7 +8,7 @@ class BlacklistFilter(BaseFilter):
     Filter that filters out values that are in the blacklist.
     """
 
-    __slots__ = "blacklist"
+    __slots__ = ("blacklist",)
 
     def __init__(self, blacklist: List[str]) -> None:
         self.blacklist = blacklist

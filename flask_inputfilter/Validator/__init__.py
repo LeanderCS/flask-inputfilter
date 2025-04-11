@@ -17,6 +17,8 @@ from .IsBase64ImageCorrectSizeValidator import (
 from .IsBase64ImageValidator import IsBase64ImageValidator
 from .IsBooleanValidator import IsBooleanValidator
 from .IsDataclassValidator import IsDataclassValidator
+from .IsDateTimeValidator import IsDateTimeValidator
+from .IsDateValidator import IsDateValidator
 from .IsFloatValidator import IsFloatValidator
 from .IsFutureDateValidator import IsFutureDateValidator
 from .IsHexadecimalValidator import IsHexadecimalValidator

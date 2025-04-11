@@ -10,7 +10,7 @@ class ToTypedDictFilter(BaseFilter):
     Filter that converts a dictionary to a TypedDict.
     """
 
-    __slots__ = "typed_dict"
+    __slots__ = ("typed_dict",)
 
     def __init__(self, typed_dict: Type[TypedDict]) -> None:
         self.typed_dict = typed_dict

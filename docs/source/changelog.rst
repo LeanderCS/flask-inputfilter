@@ -8,17 +8,29 @@ All notable changes to this project will be documented in this file.
 
 Added
 ^^^^^
-
+- ``IsDateTimeValidator``
+- ``IsDateValidator``
 
 Changed
 ^^^^^^^
 - Updated ``IsTypedDictValidator` and ``IsDataclassValidator`` to require a specific model and
   checks if the input json is in the defined format.
+- Introduced Mixins for parts of InputFilter
+
+ - ``ConditionMixin``
+ - ``DataMixin``
+ - ``ErrorHandlingMixin``
+ - ``ExternalApiMixin``
+ - ``FieldMixin``
+ - ``FilterMixin``
+ - ``ModelMixin``
+ - ``ValidationMixin``
 
 Removed
 ^^^^^^^
 - ``RemoveEmojisFilter``
 - ``ToPascaleCaseFilter``
+- ``SlugifyFilter``
 
 
 [0.2.0] - 2025-04-07

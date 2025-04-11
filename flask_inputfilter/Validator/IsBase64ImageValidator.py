@@ -13,7 +13,7 @@ class IsBase64ImageValidator(BaseValidator):
     Validator that checks if a Base64 string is a valid image.
     """
 
-    __slots__ = "error_message"
+    __slots__ = ("error_message",)
 
     def __init__(
         self,

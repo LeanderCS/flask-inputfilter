@@ -11,7 +11,7 @@ class IsTypedDictValidator(BaseValidator):
     Validator that checks if a value is a TypedDict.
     """
 
-    __slots__ = "typed_dict_type" "error_message"
+    __slots__ = ("typed_dict_type", "error_message")
 
     def __init__(
         self,

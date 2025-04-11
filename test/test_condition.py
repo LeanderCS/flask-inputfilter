@@ -15,13 +15,13 @@ from flask_inputfilter.Condition import (
     IntegerBiggerThanCondition,
     NOfCondition,
     NOfMatchesCondition,
+    NotEqualCondition,
     OneOfCondition,
     OneOfMatchesCondition,
     RequiredIfCondition,
     StringLongerThanCondition,
     TemporalOrderCondition,
 )
-from flask_inputfilter.Condition.NotEqualCondition import NotEqualCondition
 from flask_inputfilter.Exception import ValidationError
 
 
