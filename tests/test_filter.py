@@ -87,7 +87,7 @@ class TestInputFilter(unittest.TestCase):
             filters=[Base64ImageDownscaleFilter(size=144)],
         )
 
-        with open("test/data/base64_image.txt", "r") as file:
+        with open("tests/data/base64_image.txt", "r") as file:
             validated_data = self.inputFilter.validateData(
                 {"image": file.read()}
             )
@@ -96,7 +96,7 @@ class TestInputFilter(unittest.TestCase):
             ).size
             self.assertEqual(size, (12, 12))
 
-        with open("test/data/base64_image.txt", "r") as file:
+        with open("tests/data/base64_image.txt", "r") as file:
             validated_data = self.inputFilter.validateData(
                 {
                     "image": Image.open(
@@ -125,7 +125,7 @@ class TestInputFilter(unittest.TestCase):
             filters=[Base64ImageResizeFilter(max_size=1024)],
         )
 
-        with open("test/data/base64_image.txt", "r") as file:
+        with open("tests/data/base64_image.txt", "r") as file:
             validated_data = self.inputFilter.validateData(
                 {"image": file.read()}
             )
@@ -138,7 +138,7 @@ class TestInputFilter(unittest.TestCase):
             size = buffer.tell()
             self.assertLessEqual(size, 1024)
 
-        with open("test/data/base64_image.txt", "r") as file:
+        with open("tests/data/base64_image.txt", "r") as file:
             validated_data = self.inputFilter.validateData(
                 {
                     "image": Image.open(

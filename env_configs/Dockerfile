@@ -42,10 +42,8 @@ RUN /root/.pyenv/bin/pyenv install 3.14-dev
 
 RUN /root/.pyenv/bin/pyenv global 3.7.12 3.8.12 3.9.7 3.10.2 3.11.0 3.12.0 3.13.0 3.14-dev
 
-RUN pip install --upgrade pip
+COPY pyproject.toml /app
 
-COPY ../requirements.txt /app
-
-RUN pip install --no-cache-dir -r requirements.txt && pip install tox
+RUN python -m pip install .[dev] && python -m pip install tox
 
 COPY .. /app

@@ -685,7 +685,7 @@ class TestInputFilter(unittest.TestCase):
             "image", required=True, validators=[IsBase64ImageValidator()]
         )
 
-        with open("test/data/base64_image.txt", "r") as file:
+        with open("tests/data/base64_image.txt", "r") as file:
             self.inputFilter.validateData({"image": file.read()})
 
         with self.assertRaises(ValidationError):
@@ -885,7 +885,7 @@ class TestInputFilter(unittest.TestCase):
             "image", validators=[IsHorizontalImageValidator()]
         )
 
-        with open("test/data/base64_image.txt", "r") as file:
+        with open("tests/data/base64_image.txt", "r") as file:
             self.inputFilter.validateData({"image": file.read()})
 
         with self.assertRaises(ValidationError):
@@ -901,7 +901,7 @@ class TestInputFilter(unittest.TestCase):
             validators=[IsHorizontalImageValidator()],
         )
 
-        with open("test/data/base64_image.txt", "r") as file:
+        with open("tests/data/base64_image.txt", "r") as file:
             self.inputFilter.validateData({"horizontally_image": file.read()})
 
         self.inputFilter.add(
@@ -914,7 +914,7 @@ class TestInputFilter(unittest.TestCase):
             validators=[IsHorizontalImageValidator()],
         )
 
-        with open("test/data/base64_image.txt", "r") as file:
+        with open("tests/data/base64_image.txt", "r") as file:
             with self.assertRaises(ValidationError):
                 self.inputFilter.validateData(
                     {"vertically_image": file.read()}
@@ -1265,7 +1265,7 @@ class TestInputFilter(unittest.TestCase):
 
         self.inputFilter.add("image", validators=[IsVerticalImageValidator()])
 
-        with open("test/data/base64_image.txt", "r") as file:
+        with open("tests/data/base64_image.txt", "r") as file:
             self.inputFilter.validateData({"image": file.read()})
 
         with self.assertRaises(ValidationError):
@@ -1281,7 +1281,7 @@ class TestInputFilter(unittest.TestCase):
             validators=[IsVerticalImageValidator()],
         )
 
-        with open("test/data/base64_image.txt", "r") as file:
+        with open("tests/data/base64_image.txt", "r") as file:
             with self.assertRaises(ValidationError):
                 self.inputFilter.validateData(
                     {"horizontally_image": file.read()}
@@ -1297,7 +1297,7 @@ class TestInputFilter(unittest.TestCase):
             validators=[IsVerticalImageValidator()],
         )
 
-        with open("test/data/base64_image.txt", "r") as file:
+        with open("tests/data/base64_image.txt", "r") as file:
             self.inputFilter.validateData({"vertically_image": file.read()})
 
         with self.assertRaises(ValidationError):
