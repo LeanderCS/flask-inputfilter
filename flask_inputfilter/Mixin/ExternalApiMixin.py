@@ -2,13 +2,14 @@ import re
 from typing import Any, Optional
 
 from flask_inputfilter.Exception import ValidationError
-from flask_inputfilter.Mixin import BaseMixin
 from flask_inputfilter.Model import ExternalApiConfig
 
 API_PLACEHOLDER_PATTERN = re.compile(r"{{(.*?)}}")
 
 
-class ExternalApiMixin(BaseMixin):
+class ExternalApiMixin:
+    __slots__ = ()
+
     def __callExternalApi(
         self, config: ExternalApiConfig, fallback: Any, validated_data: dict
     ) -> Optional[Any]:

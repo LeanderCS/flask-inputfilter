@@ -2,15 +2,15 @@ from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar, Union
 
 from typing_extensions import final
 
-from flask_inputfilter.Mixin import BaseMixin
-
 if TYPE_CHECKING:
     from flask_inputfilter import InputFilter
 
 T = TypeVar("T")
 
 
-class ModelMixin(BaseMixin):
+class ModelMixin:
+    __slots__ = ()
+
     @final
     def clear(self) -> None:
         """

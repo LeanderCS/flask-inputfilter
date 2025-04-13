@@ -2,10 +2,10 @@ from typing import Dict
 
 from typing_extensions import final
 
-from flask_inputfilter.Mixin import BaseMixin
 
+class ErrorHandlingMixin:
+    __slots__ = ()
 
-class ErrorHandlingMixin(BaseMixin):
     @final
     def getErrorMessage(self, field_name: str) -> str:
         """

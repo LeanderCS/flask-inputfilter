@@ -4,10 +4,11 @@ from typing_extensions import final
 
 from flask_inputfilter.Condition import BaseCondition
 from flask_inputfilter.Exception import ValidationError
-from flask_inputfilter.Mixin import BaseMixin
 
 
-class ConditionMixin(BaseMixin):
+class ConditionMixin:
+    __slots__ = ()
+
     @final
     def addCondition(self, condition: BaseCondition) -> None:
         """

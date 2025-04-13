@@ -4,12 +4,13 @@ from typing_extensions import final
 
 from flask_inputfilter.Exception import ValidationError
 from flask_inputfilter.Filter import BaseFilter
-from flask_inputfilter.Mixin import BaseMixin
 from flask_inputfilter.Model import ExternalApiConfig, FieldModel
 from flask_inputfilter.Validator import BaseValidator
 
 
-class FieldMixin(BaseMixin):
+class FieldMixin:
+    __slots__ = ()
+
     @final
     def add(
         self,

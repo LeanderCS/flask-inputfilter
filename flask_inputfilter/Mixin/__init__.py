@@ -1,5 +1,3 @@
-from flask_inputfilter.Mixin.BaseMixin import BaseMixin
-
 from .ConditionMixin import ConditionMixin
 from .DataMixin import DataMixin
 from .ErrorHandlingMixin import ErrorHandlingMixin

@@ -3,10 +3,11 @@ from typing import Any, List
 from typing_extensions import final
 
 from flask_inputfilter.Filter import BaseFilter
-from flask_inputfilter.Mixin import BaseMixin
 
 
-class FilterMixin(BaseMixin):
+class FilterMixin:
+    __slots__ = ()
+
     @final
     def addGlobalFilter(self, filter: BaseFilter) -> None:
         """

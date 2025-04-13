@@ -3,11 +3,12 @@ from typing import Any, List
 from typing_extensions import final
 
 from flask_inputfilter.Exception import ValidationError
-from flask_inputfilter.Mixin import BaseMixin
 from flask_inputfilter.Validator import BaseValidator
 
 
-class ValidationMixin(BaseMixin):
+class ValidationMixin:
+    __slots__ = ()
+
     @final
     def addGlobalValidator(self, validator: BaseValidator) -> None:
         """

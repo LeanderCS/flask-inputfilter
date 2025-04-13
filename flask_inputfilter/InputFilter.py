@@ -60,7 +60,9 @@ class InputFilter(
     )
 
     def __init__(self, methods: Optional[List[str]] = None) -> None:
-        self.__methods = methods or ["GET", "POST", "PATCH", "PUT", "DELETE"]
+        self.__methods: frozenset = frozenset(
+            methods or ["GET", "POST", "PATCH", "PUT", "DELETE"]
+        )
         self._fields: Dict[str, FieldModel] = {}
         self._conditions: List[BaseCondition] = []
         self._global_filters: List[BaseFilter] = []

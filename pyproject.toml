@@ -32,6 +32,7 @@ classifiers = [
 dev = [
     "autoflake",
     "black",
+    "build",
     "coverage",
     "coveralls",
     #"docformatter",
@@ -81,10 +82,10 @@ commands =
 source = ["flask_inputfilter"]
 
 [tool.coverage.report]
-omit = ["__init__.py", "setup.py", "*/tests/*"]
+omit = ["__init__.py", "*/tests/*"]
 
 [tool.flake8]
-exclude = ["__init__.py", "venv", "*.md", ".*"]
+exclude = ["__init__.py", "*.md", ".*"]
 max-line-length = 79
 
 [tool.black]

@@ -2,10 +2,10 @@ from typing import Any, Dict
 
 from typing_extensions import final
 
-from flask_inputfilter.Mixin import BaseMixin
 
+class DataMixin:
+    __slots__ = ()
 
-class DataMixin(BaseMixin):
     @final
     def setData(self, data: Dict[str, Any]) -> None:
         """

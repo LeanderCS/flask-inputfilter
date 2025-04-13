@@ -28,9 +28,7 @@ jobs:
         run: pip install "$(ls dist/*.whl | head -n 1)[optional]"
 
       - name: Verify library usage - Part I
-        run: |
-          echo "import flask_inputfilter.InputFilter" > test_script.py
-          python test_script.py
+        run: python -c "import flask_inputfilter.InputFilter"
 
       - name: Verify library usage - Part II
         run: pytest tests/
