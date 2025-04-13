@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, Union
 
 from flask_inputfilter.Filter import BaseFilter

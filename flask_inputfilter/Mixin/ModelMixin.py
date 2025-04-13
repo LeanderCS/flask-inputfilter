@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar, Union
 
 from typing_extensions import final
@@ -56,20 +58,22 @@ class ModelMixin:
         self._conditions = self._conditions + other._conditions
 
         for filter in other._global_filters:
-            existing_types = [type(v) for v in self._global_filters]
-            if type(filter) in existing_types:
-                index = existing_types.index(type(filter))
-                self._global_filters[index] = filter
-
+            existing_type_map = {
+                type(v): i for i, v in enumerate(self._global_filters)
+            }
+            if type(filter) in existing_type_map:
+                self._global_filters[existing_type_map[type(filter)]] = filter
             else:
                 self._global_filters.append(filter)
 
         for validator in other._global_validators:
-            existing_types = [type(v) for v in self._global_validators]
-            if type(validator) in existing_types:
-                index = existing_types.index(type(validator))
-                self._global_validators[index] = validator
-
+            existing_type_map = {
+                type(v): i for i, v in enumerate(self._global_validators)
+            }
+            if type(validator) in existing_type_map:
+                self._global_validators[
+                    existing_type_map[type(validator)]
+                ] = validator
             else:
                 self._global_validators.append(validator)
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 import unicodedata
 from typing import Any, Optional, Union

@@ -1,13 +1,20 @@
 #!/bin/bash
 
-echo 'Running isort'
+echo "Adding additional annotations"
+find /app/flask_inputfilter -name "*.py" ! -name "__init__.py" | while read -r file; do
+  if ! grep -q "^from __future__ import annotations" "$file"; then
+    sed -i '1i from __future__ import annotations' "$file"
+  fi
+done
+
+echo "Running isort"
 isort /app
 
-echo 'Running autoflake'
+echo "Running autoflake"
 autoflake --in-place --remove-all-unused-imports --ignore-init-module-imports --recursive /app
 
-echo 'Running black'
+echo "Running black"
 black /app
 
-# echo 'Running docformatter'
+# echo "Running docformatter"
 # docformatter --in-place /app
