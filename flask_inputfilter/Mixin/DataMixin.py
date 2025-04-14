@@ -155,6 +155,7 @@ class DataMixin:
         """
         if not self._data and self._fields:
             return True
+
         return any(
             field_name not in self._fields.keys()
             for field_name in self._data.keys()

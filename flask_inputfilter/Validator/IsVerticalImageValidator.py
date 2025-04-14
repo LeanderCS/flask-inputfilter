@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import base64
+import binascii
 import io
 from typing import Any
 
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from PIL.Image import Image as ImageType
 
 from flask_inputfilter.Exception import ValidationError
@@ -24,9 +25,7 @@ class IsVerticalImageValidator(BaseValidator):
     __slots__ = ("error_message",)
 
     def __init__(self, error_message=None):
-        self.error_message = (
-            error_message or "The image is not vertically oriented."
-        )
+        self.error_message = error_message
 
     def validate(self, value: Any) -> None:
         if not isinstance(value, (str, ImageType)):
@@ -39,7 +38,9 @@ class IsVerticalImageValidator(BaseValidator):
                 value = Image.open(io.BytesIO(base64.b64decode(value)))
 
             if value.width > value.height:
-                raise
+                raise ValidationError
 
-        except Exception:
-            raise ValidationError(self.error_message)
+        except (binascii.Error, UnidentifiedImageError, OSError):
+            raise ValidationError(
+                self.error_message or "The image is not vertically oriented."
+            )

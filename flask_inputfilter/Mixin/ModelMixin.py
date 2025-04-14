@@ -55,7 +55,7 @@ class ModelMixin:
         for key, new_field in other.getInputs().items():
             self._fields[key] = new_field
 
-        self._conditions = self._conditions + other._conditions
+        self._conditions += other._conditions
 
         for filter in other._global_filters:
             existing_type_map = {

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from typing import (
     Any,
     Callable,
@@ -87,7 +88,7 @@ class InputFilter(
                 all required conditions; otherwise, returns False.
         """
         try:
-            self.validateData(self._data)
+            self.validateData()
 
         except ValidationError as e:
             self._errors = e.args[0]
@@ -133,9 +134,9 @@ class InputFilter(
                     validated_data = input_filter.validateData()
 
                     if input_filter._model_class is not None:
-                        validated_data = input_filter.serialize()
-
-                    g.validated_data = validated_data
+                        g.validated_data = input_filter.serialize()
+                    else:
+                        g.validated_data = validated_data
 
                 except ValidationError as e:
                     return Response(
@@ -143,6 +144,13 @@ class InputFilter(
                         response=json.dumps(e.args[0]),
                         mimetype="application/json",
                     )
+
+                except Exception:
+                    logging.getLogger(__name__).exception(
+                        "An unexpected exception occurred while "
+                        "validating input data.",
+                    )
+                    return Response(status=500)
 
                 return f(*args, **kwargs)
 
@@ -175,7 +183,6 @@ class InputFilter(
                 logical steps execution of the respective fields or conditions
                 will propagate without explicit handling here.
         """
-        validated_data = self._validated_data
         data = data or self._data
         errors = {}
 
@@ -193,11 +200,11 @@ class InputFilter(
 
             try:
                 if copy:
-                    value = validated_data.get(copy)
+                    value = self._validated_data.get(copy)
 
                 if external_api:
                     value = self._ExternalApiMixin__callExternalApi(
-                        external_api, fallback, validated_data
+                        external_api, fallback, self._validated_data
                     )
 
                 value = self._FilterMixin__applyFilters(filters, value)
@@ -215,18 +222,17 @@ class InputFilter(
                     field_name, required, default, fallback, value
                 )
 
-                validated_data[field_name] = value
+                self._validated_data[field_name] = value
 
             except ValidationError as e:
                 errors[field_name] = str(e)
 
         try:
-            self._ConditionMixin__checkConditions(validated_data)
+            self._ConditionMixin__checkConditions(self._validated_data)
         except ValidationError as e:
             errors["_condition"] = str(e)
 
         if errors:
             raise ValidationError(errors)
 
-        self._validated_data = validated_data
-        return validated_data
+        return self._validated_data

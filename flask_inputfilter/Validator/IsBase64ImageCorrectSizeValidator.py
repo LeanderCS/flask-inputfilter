@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import binascii
 from typing import Any, Optional
 
 from flask_inputfilter.Exception import ValidationError
@@ -32,7 +33,7 @@ class IsBase64ImageCorrectSizeValidator(BaseValidator):
             if not (self.min_size <= image_size <= self.max_size):
                 raise ValidationError
 
-        except Exception:
+        except (binascii.Error, ValidationError):
             raise ValidationError(
                 self.error_message
                 or "The image is invalid or does not have an allowed size."

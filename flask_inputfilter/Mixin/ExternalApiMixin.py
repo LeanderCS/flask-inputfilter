@@ -81,27 +81,36 @@ class ExternalApiMixin:
 
         try:
             response = requests.request(**requestData)
-
-            if response.status_code != 200:
-                logger.error(
-                    f"External_api request inside of InputFilter "
-                    f"failed: {response.text}"
-                )
-                raise
-
             result = response.json()
-
-            if data_key:
-                return result.get(data_key)
-
-            return result
-        except Exception:
+        except requests.exceptions.RequestException:
             if fallback is None:
+                logger.exception("External API request failed unexpectedly.")
                 raise ValidationError(
                     f"External API call failed for field " f"'{data_key}'."
                 )
-
             return fallback
+        except ValueError:
+            if fallback is None:
+                logger.exception(
+                    "External API response could not be parsed to json."
+                )
+                raise ValidationError(
+                    f"External API call failed for field " f"'{data_key}'."
+                )
+            return fallback
+
+        if response.status_code != 200:
+            if fallback is None:
+                logger.error(
+                    f"External API request failed with status "
+                    f"{response.status_code}: {response.text}"
+                )
+                raise ValidationError(
+                    f"External API call failed for field " f"'{data_key}'."
+                )
+            return fallback
+
+        return result.get(data_key) if data_key else result
 
     @staticmethod
     def __replacePlaceholders(value: str, validated_data: dict) -> str:

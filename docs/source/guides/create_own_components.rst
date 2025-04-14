@@ -149,7 +149,7 @@ Example implementation
                     if value not in self.haystack:
                         raise ValidationError
 
-            except Exception:
+            except ValidationError:
                 raise ValidationError(
                     self.error_message
                     or f"Value '{value}' is not in the allowed "

@@ -3,6 +3,15 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.3.1] - 2025-04-14
+--------------------
+
+Changed
+^^^^^^^
+- Updated error handling and changed broad ``Exception`` to specific errors.
+- Smaller performance improvements
+
+
 [0.3.0] - 2025-04-10
 --------------------
 

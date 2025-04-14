@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import base64
+import binascii
 import io
 from typing import Any, Optional
 
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 
 from flask_inputfilter.Filter import BaseFilter
 
@@ -38,7 +39,13 @@ class Base64ImageDownscaleFilter(BaseFilter):
             image = Image.open(io.BytesIO(base64.b64decode(value)))
             return self.resize_picture(image)
 
-        except Exception:
+        except (
+            binascii.Error,
+            UnidentifiedImageError,
+            OSError,
+            ValueError,
+            TypeError,
+        ):
             return value
 
     def resize_picture(self, image: Image) -> str:
