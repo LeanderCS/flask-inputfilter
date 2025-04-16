@@ -3,6 +3,16 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.4.0a1] - 2025-04-17
+----------------------
+
+Changed
+^^^^^^^
+- InputFilter now uses cython for performance improvements.
+- Made super().__init__() call optional. You will only need to call it,
+  if you are wanting to limit the allowed methods.
+
+
 [0.3.1] - 2025-04-14
 --------------------
 

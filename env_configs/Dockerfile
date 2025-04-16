@@ -3,25 +3,26 @@ FROM debian:buster-slim
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
-    gcc \
-    make \
     build-essential \
-    libssl-dev \
-    zlib1g-dev \
-    libbz2-dev \
-    libreadline-dev \
-    libsqlite3-dev \
-    wget \
     curl \
-    llvm \
+    gcc \
+    git \
+    libbz2-dev \
+    libffi-dev \
+    libjpeg-dev \
+    liblzma-dev \
     libncurses5-dev \
     libncursesw5-dev \
-    xz-utils \
+    libreadline-dev \
+    libsqlite3-dev \
+    libssl-dev \
+    llvm \
+    make \
+    python3-dev \
     tk-dev \
-    libffi-dev \
-    liblzma-dev \
-    git \
-    libjpeg-dev
+    wget \
+    xz-utils \
+    zlib1g-dev
 
 RUN curl https://pyenv.run | bash
 

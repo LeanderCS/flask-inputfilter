@@ -1,20 +1,9 @@
-from __future__ import annotations
+cdef class ExternalApiMixin:
 
-import re
-from typing import Any, Optional
-
-from flask_inputfilter.Exception import ValidationError
-from flask_inputfilter.Model import ExternalApiConfig
-
-API_PLACEHOLDER_PATTERN = re.compile(r"{{(.*?)}}")
-
-
-class ExternalApiMixin:
-    __slots__ = ()
-
-    def __callExternalApi(
-        self, config: ExternalApiConfig, fallback: Any, validated_data: dict
-    ) -> Optional[Any]:
+    @staticmethod
+    cdef Optional[object] callExternalApi(
+            config: ExternalApiConfig, fallback: Any, validated_data: Dict[str, Any]
+    ):
         """
         Makes a call to an external API using provided configuration and
         returns the response.
@@ -29,12 +18,12 @@ class ExternalApiMixin:
         raised.
 
         Parameters:
-            config:
+            config (ExternalApiConfig):
                 An object containing the configuration details for the
                 external API call, such as URL, headers, method, and API key.
-            fallback:
+            fallback (Any):
                 The value to be returned in case the external API call fails.
-            validated_data:
+            validated_data (Dict[str, Any]):
                 The dictionary containing data used to replace placeholders
                 in the URL and parameters of the API request.
 
@@ -70,11 +59,11 @@ class ExternalApiMixin:
             requestData["headers"].update(config.headers)
 
         if config.params:
-            requestData["params"] = self.__replacePlaceholdersInParams(
+            requestData["params"] = InputFilter.replacePlaceholdersInParams(
                 config.params, validated_data
             )
 
-        requestData["url"] = self.__replacePlaceholders(
+        requestData["url"] = InputFilter.replacePlaceholders(
             config.url, validated_data
         )
         requestData["method"] = config.method
@@ -113,25 +102,47 @@ class ExternalApiMixin:
         return result.get(data_key) if data_key else result
 
     @staticmethod
-    def __replacePlaceholders(value: str, validated_data: dict) -> str:
+    cdef str replacePlaceholders(
+            value: str,
+            validated_data: Dict[str, Any]
+    ):
         """
         Replace all placeholders, marked with '{{ }}' in value
         with the corresponding values from validated_data.
+
+        Params:
+            value (str): The string containing placeholders to be replaced.
+            validated_data (Dict[str, Any]): The dictionary containing 
+                the values to replace the placeholders with.
+
+        Returns:
+            str: The value with all placeholders replaced with
+                 the corresponding values from validated_data.
         """
-        return API_PLACEHOLDER_PATTERN.sub(
+        return re.compile(r"{{(.*?)}}").sub(
             lambda match: str(validated_data.get(match.group(1))),
             value,
         )
 
-    def __replacePlaceholdersInParams(
-        self, params: dict, validated_data: dict
-    ) -> dict:
+    @staticmethod
+    cdef dict replacePlaceholdersInParams(
+            params: dict, validated_data: Dict[str, Any]
+    ):
         """
         Replace all placeholders in params with the corresponding
         values from validated_data.
+
+        Params:
+            params (dict): The params dictionary containing placeholders.
+            validated_data (Dict[str, Any]): The dictionary containing 
+                the values to replace the placeholders with.
+
+        Returns:
+            dict: The params dictionary with all placeholders replaced
+                  with the corresponding values from validated_data.
         """
         return {
-            key: self.__replacePlaceholders(value, validated_data)
+            key: InputFilter.replacePlaceholders(value, validated_data)
             if isinstance(value, str)
             else value
             for key, value in params.items()

@@ -39,7 +39,6 @@ class TestInputFilter(unittest.TestCase):
 
         class MyInputFilter(InputFilter):
             def __init__(self):
-                super().__init__()
                 self.add(
                     name="username",
                     required=True,
@@ -88,7 +87,6 @@ class TestInputFilter(unittest.TestCase):
 
         class MyInputFilter(InputFilter):
             def __init__(self):
-                super().__init__()
                 self.add(
                     name="username",
                 )
@@ -118,7 +116,7 @@ class TestInputFilter(unittest.TestCase):
 
         app = Flask(__name__)
 
-        @app.route("/test-custom", methods=["GET"])
+        @app.route("/test-custom", methods=["GET", "POST"])
         @MyInputFilter.validate()
         def test_custom_route():
             validated_data = g.validated_data
@@ -139,7 +137,6 @@ class TestInputFilter(unittest.TestCase):
 
         class MyInputFilter(InputFilter):
             def __init__(self):
-                super().__init__()
                 self.add(
                     name="age",
                     required=False,
@@ -539,6 +536,9 @@ class TestInputFilter(unittest.TestCase):
     def test_replace(self) -> None:
         self.inputFilter.add("field")
         self.inputFilter.setData({"field": "value"})
+
+        with self.assertRaises(ValueError):
+            self.inputFilter.add("field")
 
         self.inputFilter.replace("field", filters=[ToUpperFilter()])
         updated_data = self.inputFilter.validateData({"field": "value"})
@@ -999,8 +999,6 @@ class TestInputFilter(unittest.TestCase):
 
         class MyInputFilter(InputFilter):
             def __init__(self):
-                super().__init__(methods=["GET"])
-
                 self.add("username")
                 self.setModel(User)
 
@@ -1030,51 +1028,6 @@ class TestInputFilter(unittest.TestCase):
             response = client.get("/test-custom", query_string={"age": 20})
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.json, None)
-
-    def test_final_methods(self) -> None:
-        def test_final_methods(self) -> None:
-            final_methods = [
-                "add",
-                "addCondition",
-                "addGlobalFilter",
-                "addGlobalValidator",
-                "count",
-                "clear" "getErrorMessage",
-                "getInput",
-                "getInputs",
-                "getRawValue",
-                "getRawValues",
-                "getUnfilteredData",
-                "getValue",
-                "getValues",
-                "getConditions",
-                "getGlobalFilters",
-                "getGlobalValidators",
-                "has",
-                "hasUnknown",
-                "isValid",
-                "merge",
-                "remove",
-                "replace",
-                "setData",
-                "setUnfilteredData",
-                "validateData",
-                "setModel",
-                "serialize",
-            ]
-
-            for method in final_methods:
-                with self.assertRaises(TypeError), self.subTest(method=method):
-
-                    class SubInputFilter(InputFilter):
-                        def __getattr__(self, name):
-                            if name == method:
-
-                                def dummy_method(*args, **kwargs):
-                                    pass
-
-                                return dummy_method
-                            return super().__getattr__(name)
 
 
 if __name__ == "__main__":

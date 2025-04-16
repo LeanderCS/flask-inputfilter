@@ -30,10 +30,19 @@ class IsTypedDictValidator(BaseValidator):
                 or "The provided value is not a dict instance."
             )
 
-        expected_keys = self.typed_dict_type.__annotations__.keys()
-        if any(key not in value for key in expected_keys):
-            raise ValidationError(
-                self.error_message
-                or f"'{value}' does not match "
-                f"{self.typed_dict_type.__name__} structure."
-            )
+        expected_keys = self.typed_dict_type.__annotations__
+        for key, expected_type in expected_keys.items():
+            if key not in value:
+                raise ValidationError(
+                    self.error_message
+                    or f"'{value}' does not match "
+                    f"'{self.typed_dict_type.__name__}' structure: "
+                    f"Missing key '{key}'."
+                )
+            if not isinstance(value[key], expected_type):
+                raise ValidationError(
+                    self.error_message
+                    or f"'{value}' does not match "
+                    f"'{self.typed_dict_type.__name__}' structure: "
+                    f"Key '{key}' has invalid type."
+                )
