@@ -39,6 +39,8 @@ class TestInputFilter(unittest.TestCase):
 
         class MyInputFilter(InputFilter):
             def __init__(self):
+                super().__init__()
+
                 self.add(
                     name="username",
                     required=True,
@@ -87,6 +89,8 @@ class TestInputFilter(unittest.TestCase):
 
         class MyInputFilter(InputFilter):
             def __init__(self):
+                super().__init__()
+
                 self.add(
                     name="username",
                 )
@@ -137,6 +141,8 @@ class TestInputFilter(unittest.TestCase):
 
         class MyInputFilter(InputFilter):
             def __init__(self):
+                super().__init__()
+
                 self.add(
                     name="age",
                     required=False,
@@ -999,6 +1005,8 @@ class TestInputFilter(unittest.TestCase):
 
         class MyInputFilter(InputFilter):
             def __init__(self):
+                super().__init__()
+
                 self.add("username")
                 self.setModel(User)
 

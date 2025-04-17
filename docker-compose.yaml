@@ -3,7 +3,7 @@ services:
   flask-inputfilter:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: env_configs/cython.Dockerfile
     container_name: flask-inputfilter
     volumes:
       - .:/app

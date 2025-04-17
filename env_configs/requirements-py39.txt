@@ -4,4 +4,3 @@ pillow==8.0.0
 pytest
 requests==2.22.0
 Werkzeug==2.0.3
-typing_extensions

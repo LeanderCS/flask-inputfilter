@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "flask_inputfilter"
-version = "0.4.0a1"
+version = "0.4.0a2"
 description = "A library to easily filter and validate input data in Flask applications"
 readme = "README.rst"
 requires-python = ">=3.7"
@@ -13,14 +13,7 @@ authors = [
     {name = "Leander Cain Slotosch", email = "slotosch.leander@outlook.de"}
 ]
 dependencies = [
-    "flask>=2.1",
-    "typing_extensions>=3.6.2",
-    "cython>=0.29; python_version <= '3.8'",
-    "cython>=0.29.21; python_version == '3.9'",
-    "cython>=0.29.24; python_version == '3.10'",
-    "cython>=0.29.32; python_version == '3.11'",
-    "cython>=3.0; python_version == '3.12'",
-    "cython>=3.0.12; python_version >= '3.13'",
+    "flask>=2.1"
 ]
 classifiers = [
     "Operating System :: OS Independent",
@@ -41,6 +34,7 @@ dev = [
     "build",
     "coverage",
     "coveralls",
+    "cython",
     "flake8-pyproject==1.2.3",
     "flake8==5.0.4",
     "isort",
@@ -55,6 +49,20 @@ dev = [
 optional = [
     "pillow>=8.0.0",
     "requests>=2.22.0",
+    "cython>=0.29; python_version <= '3.8'",
+    "cython>=0.29.21; python_version == '3.9'",
+    "cython>=0.29.24; python_version == '3.10'",
+    "cython>=0.29.32; python_version == '3.11'",
+    "cython>=3.0; python_version == '3.12'",
+    "cython>=3.0.12; python_version >= '3.13'",
+]
+compile = [
+    "cython>=0.29; python_version <= '3.8'",
+    "cython>=0.29.21; python_version == '3.9'",
+    "cython>=0.29.24; python_version == '3.10'",
+    "cython>=0.29.32; python_version == '3.11'",
+    "cython>=3.0; python_version == '3.12'",
+    "cython>=3.0.12; python_version >= '3.13'",
 ]
 
 [project.urls]

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import Any, Optional
 
-
 from flask_inputfilter.Exception import ValidationError
 from flask_inputfilter.Validator import BaseValidator
 
@@ -19,6 +18,14 @@ class IsTypedDictValidator(BaseValidator):
         typed_dict_type,
         error_message: Optional[str] = None,
     ) -> None:
+        """
+        Parameters:
+            typed_dict_type (Type[TypedDict]): The TypedDict class
+                to validate against.
+            error_message (Optional[str]): Custom error message to
+                use if validation fails.
+        """
+
         self.typed_dict_type = typed_dict_type
         self.error_message = error_message
 

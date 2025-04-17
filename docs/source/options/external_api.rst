@@ -57,6 +57,7 @@ Basic External API Integration
 
     class MyInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add(
                 "user_id", required=True

@@ -6,7 +6,6 @@ from datetime import date, datetime
 from enum import Enum
 
 from PIL import Image
-from typing_extensions import TypedDict
 
 from flask_inputfilter import InputFilter
 from flask_inputfilter.Filter import (
@@ -588,9 +587,22 @@ class TestInputFilter(unittest.TestCase):
         Test that ToTypedDictFilter converts a dictionary to a TypedDict.
         """
 
-        class Person(TypedDict):
-            name: str
-            age: int
+        # TODO: Readd when Python 3.7 support is dropped
+        # class Person(TypedDict):
+        #     name: str
+        #     age: int
+
+        class Person:
+            __annotations__ = {"name": str, "age": int}
+
+            def __init__(self, name: str, age: int) -> None:
+                self.name = name
+                self.age = age
+
+            def __eq__(self, other):
+                if isinstance(other, dict):
+                    return other == {"name": self.name, "age": self.age}
+                return NotImplemented
 
         self.inputFilter.add(
             "person", required=True, filters=[ToTypedDictFilter(Person)]

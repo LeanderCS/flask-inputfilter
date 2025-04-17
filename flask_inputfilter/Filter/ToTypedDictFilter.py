@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Type
-
-from typing_extensions import TypedDict
+from typing import Any
 
 from flask_inputfilter.Filter import BaseFilter
 
@@ -14,7 +12,13 @@ class ToTypedDictFilter(BaseFilter):
 
     __slots__ = ("typed_dict",)
 
-    def __init__(self, typed_dict: Type[TypedDict]) -> None:
+    def __init__(self, typed_dict) -> None:
+        """
+        Parameters:
+            typed_dict (Type[TypedDict]): The TypedDict class
+                to convert the dictionary to.
+        """
+
         self.typed_dict = typed_dict
 
     def apply(self, value: Any) -> Any:
