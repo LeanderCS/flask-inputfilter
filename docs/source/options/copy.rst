@@ -24,7 +24,6 @@ Basic Copy Integration
 
     class MyInputFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 "username"
@@ -57,7 +56,6 @@ The coping can also be used as a chain.
 
     class MyInputFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 "username"

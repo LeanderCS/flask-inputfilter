@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, Optional, Type
+from typing import Any, Optional
 
-from typing_extensions import TypedDict
 
 from flask_inputfilter.Exception import ValidationError
 from flask_inputfilter.Validator import BaseValidator
@@ -17,7 +16,7 @@ class IsTypedDictValidator(BaseValidator):
 
     def __init__(
         self,
-        typed_dict_type: Type[TypedDict],
+        typed_dict_type,
         error_message: Optional[str] = None,
     ) -> None:
         self.typed_dict_type = typed_dict_type
@@ -30,10 +29,19 @@ class IsTypedDictValidator(BaseValidator):
                 or "The provided value is not a dict instance."
             )
 
-        expected_keys = self.typed_dict_type.__annotations__.keys()
-        if any(key not in value for key in expected_keys):
-            raise ValidationError(
-                self.error_message
-                or f"'{value}' does not match "
-                f"{self.typed_dict_type.__name__} structure."
-            )
+        expected_keys = self.typed_dict_type.__annotations__
+        for key, expected_type in expected_keys.items():
+            if key not in value:
+                raise ValidationError(
+                    self.error_message
+                    or f"'{value}' does not match "
+                    f"'{self.typed_dict_type.__name__}' structure: "
+                    f"Missing key '{key}'."
+                )
+            if not isinstance(value[key], expected_type):
+                raise ValidationError(
+                    self.error_message
+                    or f"'{value}' does not match "
+                    f"'{self.typed_dict_type.__name__}' structure: "
+                    f"Key '{key}' has invalid type."
+                )

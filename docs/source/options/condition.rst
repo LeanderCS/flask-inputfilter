@@ -20,7 +20,6 @@ Example
 
     class TestInputFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 'username',
@@ -89,7 +88,6 @@ Validates that the length of the array from ``first_array_field`` is equal to th
 
     class ArrayLengthFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 'list1',
@@ -129,7 +127,6 @@ Validates that the array in ``longer_field`` has more elements than the array in
 
     class ArrayComparisonFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 'list1',
@@ -171,7 +168,6 @@ Executes the provided callable with the input data. The condition passes if the 
 
     class CustomFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 'age',
@@ -205,7 +201,6 @@ Validates that the values of ``first_field`` and ``second_field`` are equal. Fai
 
     class EqualFieldsFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 'password'
@@ -242,7 +237,6 @@ Counts the number of specified fields present in the data and validates that the
 
     class ExactFieldsFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 'field1'
@@ -284,7 +278,6 @@ Validates that exactly ``n`` fields among the specified ones have the given valu
 
     class MatchFieldsFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 'field1'
@@ -320,7 +313,6 @@ Validates that only one field among the specified fields exists in the input dat
 
     class OneFieldFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 'email'
@@ -357,7 +349,6 @@ Validates that exactly one of the specified fields has the given value.
 
     class OneMatchFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 'option1'
@@ -395,7 +386,6 @@ Validates that the integer value from ``bigger_field`` is greater than the value
 
     class NumberComparisonFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 'field_should_be_bigger',
@@ -434,7 +424,6 @@ Validates that the count of the specified fields present is greater than or equa
 
     class MinimumFieldsFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 'field1'
@@ -476,7 +465,6 @@ Validates that the count of fields matching the given value is greater than or e
 
     class MinimumMatchFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 'field1'
@@ -513,7 +501,6 @@ Validates that the values of ``first_field`` and ``second_field`` are not equal.
 
     class DifferenceFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 'field1'
@@ -549,7 +536,6 @@ Validates that at least one field from the specified list is present. Fails if n
 
     class OneFieldRequiredFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 'email'
@@ -586,7 +572,6 @@ Validates that at least one field from the specified list has the given value.
 
     class OneMatchRequiredFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 'option1'
@@ -624,7 +609,6 @@ If the value of ``condition_field`` matches the specified value (or is in the sp
 
     class ConditionalRequiredFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 'status'
@@ -667,7 +651,6 @@ Validates that the string in ``longer_field`` has a greater length than the stri
 
     class StringLengthFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 'description'
@@ -704,7 +687,6 @@ Validates that the date in ``smaller_date_field`` is earlier than the date in ``
 
     class DateOrderFilter(InputFilter):
         def __init__(self):
-            super().__init__()
 
             self.add(
                 'start_date'
