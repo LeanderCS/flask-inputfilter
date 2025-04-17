@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, Optional, Type
+from typing import Any, Optional
 
-from typing_extensions import TypedDict
 
 from flask_inputfilter.Exception import ValidationError
 from flask_inputfilter.Validator import BaseValidator
@@ -17,7 +16,7 @@ class IsTypedDictValidator(BaseValidator):
 
     def __init__(
         self,
-        typed_dict_type: Type[TypedDict],
+        typed_dict_type,
         error_message: Optional[str] = None,
     ) -> None:
         self.typed_dict_type = typed_dict_type

@@ -1,8 +1,20 @@
+# cython: language=c++
+# cython: language_level=3
+# cython: binding=True
+# cython: cdivision=True
+# cython: boundscheck=False
+# cython: initializedcheck=False
+import re
+from typing import Any, Dict, Optional
+
+from flask_inputfilter.Exception import ValidationError
+from flask_inputfilter.Model import ExternalApiConfig
+
+
 cdef class ExternalApiMixin:
 
-    @staticmethod
-    cdef Optional[object] callExternalApi(
-            config: ExternalApiConfig, fallback: Any, validated_data: Dict[str, Any]
+    cpdef object callExternalApi(
+            self, config: ExternalApiConfig, fallback: Any, validated_data: Dict[str, Any]
     ):
         """
         Makes a call to an external API using provided configuration and
@@ -59,11 +71,11 @@ cdef class ExternalApiMixin:
             requestData["headers"].update(config.headers)
 
         if config.params:
-            requestData["params"] = InputFilter.replacePlaceholdersInParams(
+            requestData["params"] = ExternalApiMixin.replacePlaceholdersInParams(
                 config.params, validated_data
             )
 
-        requestData["url"] = InputFilter.replacePlaceholders(
+        requestData["url"] = ExternalApiMixin.replacePlaceholders(
             config.url, validated_data
         )
         requestData["method"] = config.method
@@ -142,7 +154,7 @@ cdef class ExternalApiMixin:
                   with the corresponding values from validated_data.
         """
         return {
-            key: InputFilter.replacePlaceholders(value, validated_data)
+            key: ExternalApiMixin.replacePlaceholders(value, validated_data)
             if isinstance(value, str)
             else value
             for key, value in params.items()

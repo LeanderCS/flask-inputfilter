@@ -1,9 +1,11 @@
-# cython: language_level=3, cython: binding=True
-from __future__ import annotations
-
+# cython: language=c++
+# cython: language_level=3
+# cython: binding=True
+# cython: cdivision=True
+# cython: boundscheck=False
+# cython: initializedcheck=False
 import json
 import logging
-import re
 from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union
 
 from flask import Response, g, request
@@ -11,9 +13,9 @@ from flask import Response, g, request
 from flask_inputfilter.Condition import BaseCondition
 from flask_inputfilter.Exception import ValidationError
 from flask_inputfilter.Filter import BaseFilter
+from flask_inputfilter.Mixin import ExternalApiMixin
 from flask_inputfilter.Model import ExternalApiConfig, FieldModel
 from flask_inputfilter.Validator import BaseValidator
-from flask_inputfilter.Mixin import ExternalApiMixin
 
 T = TypeVar("T")
 
@@ -179,8 +181,8 @@ cdef class InputFilter:
         cdef object fallback
         cdef list filters
         cdef list validators
-        cdef Optional[object] external_api
-        cdef Optional[str] copy
+        cdef object external_api
+        cdef str copy
 
         for field_name, field_info in self.fields.items():
             value = data.get(field_name)
@@ -199,7 +201,7 @@ cdef class InputFilter:
                     value = self.validated_data.get(copy)
 
                 if external_api:
-                    value = ExternalApiMixin.callExternalApi(
+                    value = ExternalApiMixin().callExternalApi(
                         external_api, fallback, self.validated_data
                     )
 
@@ -259,7 +261,7 @@ cdef class InputFilter:
         """
         return self.conditions
 
-    cdef void checkConditions(self, validated_data: Dict[str, Any]):
+    cdef void checkConditions(self, validated_data: Dict[str, Any]) except *:
         """
         Checks if all conditions are met.
 
@@ -468,7 +470,7 @@ cdef class InputFilter:
         steps: Optional[List[Union[BaseFilter, BaseValidator]]] = None,
         external_api: Optional[ExternalApiConfig] = None,
         copy: Optional[str] = None,
-    ):
+    ) except *:
         """
         Add the field to the input filter.
 
@@ -498,6 +500,7 @@ cdef class InputFilter:
                 from.
         """
         if name in self.fields:
+            print(self.fields)
             raise ValueError(f"Field '{name}' already exists.")
 
         self.fields[name] = FieldModel(
@@ -686,7 +689,7 @@ cdef class InputFilter:
     @staticmethod
     cdef object checkForRequired(
         field_name: str,
-        required: bint,
+        required: bool,
         default: Any,
         fallback: Any,
         value: Any,
