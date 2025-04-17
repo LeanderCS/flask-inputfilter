@@ -20,6 +20,7 @@ Example
 
     class TestInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add(
                 'username',
@@ -94,6 +95,7 @@ If the input value is a string, it returns a list of substrings. For non-string 
 
     class TagFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('tags', filters=[
                 ArrayExplodeFilter(delimiter=";")
@@ -125,6 +127,7 @@ If the image (or its base64 representation) exceeds the target dimensions, the f
 
     class ImageFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('profile_pic', filters=[
                 Base64ImageDownscaleFilter(size=1024*1024)
@@ -156,6 +159,7 @@ The filter resizes and compresses the image iteratively until its size is below 
 
     class AvatarFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('avatar', filters=[
                 Base64ImageResizeFilter(max_size=4*1024*1024)
@@ -185,6 +189,7 @@ Filters out unwanted substrings or keys based on a predefined blacklist.
 
     class CommentFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('comment', filters=[
                 BlacklistFilter(blacklist=["badword1", "badword2"])
@@ -209,6 +214,7 @@ If the input is a string, all emoji characters are removed; non-string inputs ar
 
     class CommentFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('comment', filters=[
                 StringRemoveEmojisFilter()
@@ -233,6 +239,7 @@ Normalizes Unicode, converts to ASCII, lowercases the string, and replaces space
 
     class PostFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('title', filters=[
                 StringSlugifyFilter()
@@ -257,6 +264,7 @@ If the input is a string, it returns the trimmed version. Otherwise, the value r
 
     class UserFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('username', filters=[
                 StringTrimFilter()
@@ -281,6 +289,7 @@ Strips out any character that is not a letter, digit, or underscore from the inp
 
     class CodeFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('code', filters=[
                 ToAlphaNumericFilter()
@@ -305,6 +314,7 @@ Uses Python’s built-in ``bool()`` conversion. Note that non-empty strings and 
 
     class ActiveFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('active', filters=[
                 ToBooleanFilter()
@@ -329,6 +339,7 @@ Normalizes delimiters such as spaces, underscores, or hyphens, capitalizes each 
 
     class IdentifierFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('identifier', filters=[
                 ToCamelCaseFilter()
@@ -357,6 +368,7 @@ If the input is a dictionary, it instantiates the provided dataclass using the d
 
     class DataFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('data', filters=[
                 ToDataclassFilter(MyDataClass)
@@ -383,6 +395,7 @@ Converts an input value to a ``date`` object. Supports ISO 8601 formatted string
 
     class BirthdateFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('birthdate', filters=[
                 ToDateFilter()
@@ -410,6 +423,7 @@ Converts an input value to a ``datetime`` object. Supports ISO 8601 formatted st
 
     class TimestampFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('timestamp', filters=[
                 ToDateTimeFilter()
@@ -436,6 +450,7 @@ Converts a string to a numeric type (either an integer or a float).
 
     class QuantityFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('quantity', filters=[
                 ToDigitsFilter()
@@ -467,6 +482,7 @@ Converts a value to an instance of a specified Enum.
 
     class ColorFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('color', filters=[
                 ToEnumFilter(ColorEnum)
@@ -489,6 +505,7 @@ Converts the input value to a float.
 
     class PriceFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
                 self.add('price', filters=[
                     ToFloatFilter()
@@ -513,6 +530,7 @@ Converts the input value to an integer.
 
     class AgeFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('age', filters=[
                 ToIntegerFilter()
@@ -537,6 +555,7 @@ Converts a date or datetime object to an ISO 8601 formatted string.
 
     class TimestampIsoFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('timestamp', filters=[
             ToIsoFilter()
@@ -561,6 +580,7 @@ Converts a string to lowercase.
 
     class UsernameFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('username', filters=[
                 ToLowerFilter()
@@ -587,6 +607,7 @@ Normalizes a Unicode string to a specified form.
 
     class TextFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('text', filters=[
                 ToNormalizedUnicodeFilter(form="NFKC")
@@ -609,6 +630,7 @@ Transforms the input to ``None`` if it is an empty string or already ``None``.
 
     class MiddleNameFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('middle_name', filters=[
                 ToNullFilter()
@@ -631,6 +653,7 @@ Converts a string to PascalCase.
 
     class ClassNameFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('class_name', filters=[
                 ToPascalCaseFilter()
@@ -653,6 +676,7 @@ Converts a string to snake_case.
 
     class VariableFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('variableName', filters=[
                 ToSnakeCaseFilter()
@@ -674,6 +698,7 @@ Converts any input value to its string representation.
 
     class IdFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('id', filters=[
                 ToStringFilter()
@@ -700,6 +725,7 @@ Converts a dictionary into an instance of a specified TypedDict.
 
     class ConfigFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('config', filters=[
                 ToTypedDictFilter(MyTypedDict)
@@ -722,6 +748,7 @@ Converts a string to uppercase.
 
     class CodeFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('code', filters=[
                 ToUpperFilter()
@@ -748,6 +775,7 @@ Truncates a string to a specified maximum length.
 
     class DescriptionFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('description', filters=[
                 TruncateFilter(max_length=100)
@@ -775,6 +803,7 @@ Filters the input by only keeping elements that appear in a predefined whitelist
 
     class RolesFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('roles', filters=[
                 WhitelistFilter(whitelist=["admin", "user"])
@@ -797,6 +826,7 @@ Collapses multiple consecutive whitespace characters into a single space.
 
     class AddressFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('address', filters=[
                 WhitespaceCollapseFilter()

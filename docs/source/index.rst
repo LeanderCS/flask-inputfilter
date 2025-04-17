@@ -63,6 +63,7 @@ Definition
 
     class UpdateZipcodeInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add(
                 'id',

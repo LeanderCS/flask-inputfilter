@@ -7,7 +7,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  build-and-test-pure:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,21 +17,21 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-docker-flask-inputfilter-${{ hashFiles('Dockerfile') }}
+          key: ${{ runner.os }}-docker-flask-inputfilter-pure-${{ hashFiles('env_configs/pure.Dockerfile') }}
           restore-keys: |
-            ${{ runner.os }}-docker-flask-inputfilter-
+            ${{ runner.os }}-docker-flask-inputfilter-pure-
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: image=moby/buildkit:latest
 
-      - name: Build flask-inputfilter image with cache
+      - name: Build flask-inputfilter-pure image with cache
         run: |
           docker buildx build \
             --cache-from=type=local,src=/tmp/.buildx-cache \
             --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
-            -t flask-inputfilter . --load
+            -t flask-inputfilter-pure -f env_configs/pure.Dockerfile . --load
 
       - name: Run tests in Docker and upload coverage to Coveralls
         env:
@@ -41,7 +41,7 @@ jobs:
           set -e # Exit immediately if a command exits with a non-zero status.
           set -u # Exit immediately if a variable is not defined.
 
-          docker run --rm -e COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }} flask-inputfilter sh -c "coverage run --source=flask_inputfilter -m pytest tests/ && coveralls"
+          docker run --rm -e COVERALLS_REPO_TOKEN=${{ secrets.COVERALLS_REPO_TOKEN }} flask-inputfilter-pure sh -c "coverage run --source=flask_inputfilter -m pytest tests/ && coveralls"
 
       - name: Run code style checks
         run: |
@@ -49,4 +49,40 @@ jobs:
           set -e # Exit immediately if a command exits with a non-zero status
           set -u # Exit immediately if a variable is not defined
       
-          docker run --rm flask-inputfilter flake8
+          docker run --rm flask-inputfilter-pure flake8
+
+  build-and-test-cython:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-flask-inputfilter-cython-${{ hashFiles('env_configs/cython.Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-flask-inputfilter-cython-
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: image=moby/buildkit:latest
+
+      - name: Build flask-inputfilter-cython image with cache
+        run: |
+          docker buildx build \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
+            -t flask-inputfilter-cython -f env_configs/cython.Dockerfile . --load
+
+      - name: Run tests in Docker
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        run: |
+          set -x # Print commands and their arguments as they are executed.
+          set -e # Exit immediately if a command exits with a non-zero status.
+          set -u # Exit immediately if a variable is not defined.
+
+          docker run --rm flask-inputfilter-cython pytest

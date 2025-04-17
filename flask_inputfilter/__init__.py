@@ -1,16 +1,23 @@
+import logging
+import shutil
+
 try:
-    from .InputFilter import InputFilter
+    from ._InputFilter import InputFilter
 
 except ImportError:
-    import logging
+    if shutil.which("g++") is not None:
+        import logging
 
-    import pyximport
+        import pyximport
 
-    pyximport.install(setup_args={"script_args": ["--quiet"]})
+        pyximport.install(setup_args={"script_args": ["--quiet"]})
 
-    from .InputFilter import InputFilter
+        from ._InputFilter import InputFilter
 
-    logging.getLogger(__name__).warning(
-        "flask-inputfilter not compiled, using pure Python version. "
-        + "Consider installing a C compiler to compile the Cython version for better performance."
-    )
+    else:
+        logging.getLogger(__name__).warning(
+            "Cython is not installed and g++ is not available. "
+            "Falling back to pure Python implementation. "
+            "Consider installing Cython and g++ for better performance."
+        )
+        from .InputFilter import InputFilter

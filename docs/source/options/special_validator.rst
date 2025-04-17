@@ -17,6 +17,8 @@ Example
 
     class NotIntegerInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
+
             self.add('value', validators=[
                 NotValidator(validator=IsIntegerValidator())
             ])
@@ -59,6 +61,8 @@ The validator sequentially applies each validator in the provided list to the in
 
     class AndInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
+
             self.add('value', validators=[
                 AndValidator([IsIntegerValidator(), RangeValidator(min_value=0, max_value=100)])
             ])
@@ -87,6 +91,8 @@ Executes the inner validator on the input. If the inner validator does not raise
 
     class NotIntegerInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
+
             self.add('value', validators=[
                 NotValidator(validator=IsIntegerValidator())
             ])
@@ -116,6 +122,8 @@ The validator applies each validator in the provided list to the input value. If
 
     class OrInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
+
             self.add('value', validators=[
                 OrValidator([IsIntegerValidator(), IsStringValidator()])
             ])
@@ -145,6 +153,7 @@ The validator applies each validator in the provided list to the input value and
 
     class XorInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('value', validators=[
                 XorValidator([IsIntegerValidator(), IsStringValidator()])

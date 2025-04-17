@@ -3,8 +3,6 @@ from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 from enum import Enum
 
-from typing_extensions import TypedDict
-
 from flask_inputfilter import InputFilter
 from flask_inputfilter.Enum import RegexEnum
 from flask_inputfilter.Exception import ValidationError
@@ -1160,8 +1158,20 @@ class TestInputFilter(unittest.TestCase):
         Test IsTypedDictValidator.
         """
 
-        class User(TypedDict):
-            id: int
+        # TODO: Readd when Python 3.7 support is dropped
+        # class User(TypedDict):
+        #     id: int
+
+        class User:
+            __annotations__ = {"id": int}
+
+            def __init__(self, id: int):
+                self.id = id
+
+            def __eq__(self, other):
+                if isinstance(other, dict):
+                    return other == {"id": self.id}
+                return NotImplemented
 
         self.inputFilter.add("data", validators=[IsTypedDictValidator(User)])
 

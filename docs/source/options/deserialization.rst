@@ -35,6 +35,7 @@ into an instance of the model class, if there is a model class set.
 
     class UserInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.setModel(User)
 

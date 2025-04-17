@@ -1,17 +1,18 @@
-import os
+import shutil
 
-from Cython.Build import cythonize
 from setuptools import setup
 
-os.environ["CC"] = "g++"
-os.environ["CXX"] = "g++"
+if shutil.which("g++") is not None:
+    from Cython.Build import cythonize
 
-setup(
-    ext_modules=cythonize(
+    ext_modules = cythonize(
         [
-            "flask_inputfilter/Mixin/ExternalApiMixin.pyx",
-            "flask_inputfilter/InputFilter.pyx",
+            "flask_inputfilter/Mixin/_ExternalApiMixin.pyx",
+            "flask_inputfilter/_InputFilter.pyx",
         ],
         language_level=3,
-    ),
-)
+    )
+else:
+    ext_modules = []
+
+setup(ext_modules=ext_modules)

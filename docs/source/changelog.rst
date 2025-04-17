@@ -3,6 +3,15 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.4.0a2] - 2025-04-17
+----------------------
+
+Changed
+^^^^^^^
+- Added fallback for ``cython`` to use ``python`` if no c++ compiler is installed.
+- super().__init__() is now **ONLY** optional, if you are using the cython version.
+
+
 [0.4.0a1] - 2025-04-17
 ----------------------
 

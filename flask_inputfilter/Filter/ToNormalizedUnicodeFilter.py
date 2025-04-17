@@ -3,8 +3,6 @@ from __future__ import annotations
 import unicodedata
 from typing import Any, Union
 
-from typing_extensions import Literal
-
 from flask_inputfilter.Enum import UnicodeFormEnum
 from flask_inputfilter.Filter import BaseFilter
 
@@ -18,9 +16,7 @@ class ToNormalizedUnicodeFilter(BaseFilter):
 
     def __init__(
         self,
-        form: Union[
-            UnicodeFormEnum, Literal["NFC", "NFD", "NFKC", "NFKD"]
-        ] = UnicodeFormEnum.NFC,
+        form: UnicodeFormEnum = UnicodeFormEnum.NFC,
     ) -> None:
         if not isinstance(form, UnicodeFormEnum):
             form = UnicodeFormEnum(form)

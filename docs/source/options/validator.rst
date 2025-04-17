@@ -22,6 +22,7 @@ Example
 
     class UpdatePointsInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add(
                 'id',
@@ -121,6 +122,7 @@ Verifies that the input is a list and then applies the provided filter to each e
 
     class TagInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('tags', validators=[
                 ArrayElementValidator(elementFilter=MyElementFilter())
@@ -151,6 +153,7 @@ Ensures that the input is a list and that its length is between the specified mi
 
     class ListInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('items', validators=[
                 ArrayLengthValidator(min_length=1, max_length=5)
@@ -181,6 +184,7 @@ If the input is a string, it attempts to parse it as JSON. It then confirms that
 
     class JsonInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('data', validators=[
                 CustomJsonValidator(
@@ -213,6 +217,7 @@ Converts both the input and the reference date to datetime objects and verifies 
 
     class EventInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('event_date', validators=[
                 DateAfterValidator(reference_date="2023-01-01")
@@ -242,6 +247,7 @@ Parses the input and reference date into datetime objects and checks that the in
 
     class RegistrationInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('birth_date', validators=[
                 DateBeforeValidator(reference_date="2005-01-01")
@@ -272,6 +278,7 @@ Ensures the input date is not earlier than ``min_date`` and not later than ``max
 
     class BookingInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('booking_date', validators=[
                 DateRangeValidator(min_date="2023-01-01", max_date="2023-12-31")
@@ -302,6 +309,7 @@ Converts the number to a string and checks the total number of digits and the di
 
     class PriceInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('price', validators=[
                 FloatPrecisionValidator(precision=5, scale=2)
@@ -332,6 +340,7 @@ Verifies that the value is present in the list. In strict mode, type compatibili
 
     class StatusInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('status', validators=[
                 InArrayValidator(haystack=["active", "inactive"])
@@ -367,6 +376,7 @@ Performs a case-insensitive comparison to ensure that the value matches one of t
 
     class ColorInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('color', validators=[
                 InEnumValidator(enumClass=ColorEnum)
@@ -395,6 +405,7 @@ Raises a ``ValidationError`` if the input is not a list.
 
     class ListInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('items', validators=[
                 IsArrayValidator()
@@ -425,6 +436,7 @@ Decodes the Base64 string to determine the image size and raises a ``ValidationE
 
     class ImageInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('image', validators=[
                 IsBase64ImageCorrectSizeValidator(minSize=1024, maxSize=2 * 1024 * 1024)
@@ -453,6 +465,7 @@ Attempts to decode the Base64 string and open the image using the PIL library. I
 
     class AvatarInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('avatar', validators=[
                 IsBase64ImageValidator()
@@ -481,6 +494,7 @@ Raises a ``ValidationError`` if the input value is not of type bool.
 
     class FlagInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('is_active', validators=[
                 IsBooleanValidator()
@@ -516,6 +530,7 @@ Ensures the input is a dictionary and, that all expected keys are present. Raise
 
     class UserInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('user', validators=[
                 IsDataclassValidator(dataclass_type=User)
@@ -544,6 +559,7 @@ Raises a ``ValidationError`` if the input value is not of type float.
 
     class MeasurementInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('temperature', validators=[
                 IsFloatValidator()
@@ -572,6 +588,7 @@ Parses the input date and compares it to the current date and time. If the input
 
     class AppointmentInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
 
             self.add('appointment_date', validators=[
                 IsFutureDateValidator()
@@ -600,12 +617,13 @@ Verifies that the input is a string and attempts to convert it to an integer usi
 
     class HexInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('hex_value', validators=[
                 IsHexadecimalValidator()
             ])
 
 IsHorizontalImageValidator
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~          
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Description:**
 
 Ensures that the provided image is horizontally oriented. This validator accepts either a Base64 encoded string or an image object.
@@ -627,6 +645,7 @@ Decodes the image (if provided as a string) and checks that its width is greater
 
     class HorizontalImageInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('image', validators=[
                 IsHorizontalImageValidator()
             ])
@@ -655,12 +674,13 @@ Verifies that the input is a string and checks for HTML tags using a regular exp
 
     class HtmlInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('html_content', validators=[
                 IsHtmlValidator()
             ])
 
 IsInstanceValidator
-~~~~~~~~~~~~~~~~~~~          
+~~~~~~~~~~~~~~~~~~~
 **Description:**
 
 Validates that the provided value is an instance of a specified class.
@@ -686,12 +706,13 @@ Raises a ``ValidationError`` if the input is not an instance of the specified cl
 
     class InstanceInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('object', validators=[
                 IsInstanceValidator(classType=MyClass)
             ])
 
 IsIntegerValidator
-~~~~~~~~~~~~~~~~~~          
+~~~~~~~~~~~~~~~~~~
 **Description:**
 
 Checks whether the provided value is an integer.
@@ -713,6 +734,7 @@ Raises a ``ValidationError`` if the input value is not of type int.
 
     class NumberInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('number', validators=[
                 IsIntegerValidator()
             ])
@@ -740,6 +762,7 @@ Attempts to parse the input using JSON decoding. Raises a ``ValidationError`` if
 
     class JsonInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('json_data', validators=[
                 IsJsonValidator()
             ])
@@ -768,6 +791,7 @@ Confirms that the input is a string and verifies that all characters are lowerca
 
     class LowercaseInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('username', validators=[
                 IsLowercaseValidator()
             ])
@@ -797,6 +821,7 @@ Ensures the input is a string and matches a regular expression pattern for MAC a
 
     class NetworkInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('mac_address', validators=[
                 IsMacAddressValidator()
             ])
@@ -824,6 +849,7 @@ Parses the input date and verifies that it is earlier than the current date and 
 
     class HistoryInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('past_date', validators=[
                 IsPastDateValidator()
             ])
@@ -852,6 +878,7 @@ Ensures that the input is an integer and that it lies within the valid range for
 
     class PortInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('port', validators=[
                 IsPortValidator()
             ])
@@ -881,6 +908,7 @@ Verifies that the input is a string, matches the RGB color format using a regula
 
     class ColorInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('color', validators=[
                 IsRgbColorValidator()
             ])
@@ -909,6 +937,7 @@ Ensures that the input is a string and matches the expected slug pattern (e.g., 
 
     class SlugInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('slug', validators=[
                 IsSlugValidator()
             ])
@@ -936,6 +965,7 @@ Raises a ``ValidationError`` if the input is not of type str.
 
     class TextInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('text', validators=[
                 IsStringValidator()
             ])
@@ -969,6 +999,7 @@ Ensures the input is a dictionary and, that all expected keys are present. Raise
 
     class PersonInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('person', validators=[
                 IsTypedDictValidator(typed_dict_type=PersonDict)
             ])
@@ -997,6 +1028,7 @@ Ensures that the input is a string and that all characters are uppercase using t
 
     class UppercaseInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('code', validators=[
                 IsUppercaseValidator()
             ])
@@ -1026,6 +1058,7 @@ Verifies that the input is a string and uses URL parsing (via ``urllib.parse.url
 
     class UrlInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('website', validators=[
                 IsUrlValidator()
             ])
@@ -1053,6 +1086,7 @@ Verifies that the input is a string and attempts to parse it as a UUID. Raises a
 
     class UUIDInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('uuid', validators=[
                 IsUUIDValidator()
             ])
@@ -1080,6 +1114,7 @@ Decodes the image (if provided as a string) and checks that its height is greate
 
     class VerticalImageInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('image', validators=[
                 IsVerticalImageValidator()
             ])
@@ -1107,6 +1142,7 @@ Parses the input date and verifies that it corresponds to a weekday. Raises a ``
 
     class WorkdayInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('date', validators=[
                 IsWeekdayValidator()
             ])
@@ -1134,6 +1170,7 @@ Parses the input date and confirms that it corresponds to a weekend day. Raises 
 
     class WeekendInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('date', validators=[
                 IsWeekendValidator()
             ])
@@ -1163,6 +1200,7 @@ Checks the length of the input string and raises a ``ValidationError`` if it is 
 
     class TextLengthInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('username', validators=[
                 LengthValidator(min_length=3, max_length=15)
             ])
@@ -1193,6 +1231,7 @@ Raises a ``ValidationError`` if the value is found in the disallowed list, or if
 
     class UsernameInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('username', validators=[
                 NotInArrayValidator(haystack=["admin", "root"])
             ])
@@ -1222,6 +1261,7 @@ Verifies that the numeric input is not less than ``min_value`` and not greater t
 
     class ScoreInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('score', validators=[
                 RangeValidator(min_value=0, max_value=100)
             ])
@@ -1250,7 +1290,7 @@ Uses the Python ``re`` module to compare the input string against the provided p
 
     class EmailInputFilter(InputFilter):
         def __init__(self):
+            super().__init__()
             self.add('email', validators=[
                 RegexValidator(pattern=r"[^@]+@[^@]+\.[^@]+")
             ])
-

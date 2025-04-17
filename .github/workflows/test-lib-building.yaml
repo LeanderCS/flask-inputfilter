@@ -7,13 +7,16 @@ on:
   pull_request:
 
 jobs:
-  build-and-test:
+  build-and-test-pure:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v4
+      - name: Remove g++ compiler
+        run: sudo apt-get remove --purge -y g++
+
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.11
 
@@ -25,10 +28,43 @@ jobs:
         id: build
 
       - name: Install built library
-        run: pip install "$(ls dist/*.whl | head -n 1)[optional]"
+        run: pip install "$(ls dist/*.tar.gz | head -n 1)[optional]"
 
       - name: Verify library usage - Part I
-        run: python -c "import flask_inputfilter.InputFilter"
+        run: |
+          python -c "import flask_inputfilter.InputFilter"
+          python -c "from flask_inputfilter import InputFilter"
 
       - name: Verify library usage - Part II
         run: pytest tests/
+
+  build-and-test-cython:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install compilers
+        run: sudo apt-get install -y g++
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install build tools and test dependencies
+        run: pip install build pytest
+
+      - name: Build the library
+        run: python -m build
+        id: build
+
+      - name: Install built library
+        run: pip install "$(ls dist/*.tar.gz | head -n 1)[optional]"
+
+      - name: Verify library usage - Part I
+        run: |
+          python -c "import flask_inputfilter.InputFilter"
+          python -c "from flask_inputfilter import InputFilter"
+
+      #- name: Verify library usage - Part II
+      #  run: pytest tests/
