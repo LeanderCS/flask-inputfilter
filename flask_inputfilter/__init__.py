@@ -16,8 +16,7 @@ except ImportError:
 
     else:
         logging.getLogger(__name__).warning(
-            "Cython is not installed and g++ is not available. "
-            "Falling back to pure Python implementation. "
-            "Consider installing Cython and g++ for better performance."
+            "Cython or g++ not available. Falling back to pure Python implementation.\n"
+            "Consult docs for better performance: https://leandercs.github.io/flask-inputfilter/guides/compile.html"
         )
         from .InputFilter import InputFilter

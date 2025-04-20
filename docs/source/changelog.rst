@@ -3,6 +3,15 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.4.0] - 2025-04-20
+--------------------
+
+Added
+^^^^^
+- Added possibility to use ``cython`` for performance improvements.
+  View :doc:`the guide <guides/compile>` for more information.
+
+
 [0.4.0a2] - 2025-04-17
 ----------------------
 

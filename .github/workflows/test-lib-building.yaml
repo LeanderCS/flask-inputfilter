@@ -1,10 +1,6 @@
 name: Build and Test Library
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
+on: [push]
 
 jobs:
   build-and-test-pure:
@@ -28,15 +24,28 @@ jobs:
         id: build
 
       - name: Install built library
-        run: pip install "$(ls dist/*.tar.gz | head -n 1)[optional]"
+        run: | 
+          pip install "$(ls dist/*.tar.gz | head -n 1)[optional]"
+          rm -rf flask_inputfilter
 
-      - name: Verify library usage - Part I
+      - name: Verify library usage - Part I - installation
         run: |
           python -c "import flask_inputfilter.InputFilter"
           python -c "from flask_inputfilter import InputFilter"
 
-      - name: Verify library usage - Part II
+      - name: Verify library usage - Part II - functional test
         run: pytest tests/
+
+      - name: Verify library usage - Part III - correct version
+        run: |
+          output=$(python -c "from flask_inputfilter import InputFilter; print(InputFilter)")
+
+          if [ "$output" = "<class 'flask_inputfilter.InputFilter.InputFilter'>" ]; then
+            echo "Test passed: Correct class returned"
+          else
+            echo "Test failed: Unexpected output - $output"
+            exit 1
+          fi
 
   build-and-test-cython:
     runs-on: ubuntu-latest
@@ -59,12 +68,40 @@ jobs:
         id: build
 
       - name: Install built library
-        run: pip install "$(ls dist/*.tar.gz | head -n 1)[optional]"
+        run: | 
+          pip install "$(ls dist/*.tar.gz | head -n 1)[optional]"
+          rm -rf flask_inputfilter
 
-      - name: Verify library usage - Part I
+      - name: Verify library usage - Part I - installation
         run: |
           python -c "import flask_inputfilter.InputFilter"
           python -c "from flask_inputfilter import InputFilter"
 
-      #- name: Verify library usage - Part II
-      #  run: pytest tests/
+      - name: Verify library usage - Part II - functional test
+        run: pytest tests/
+
+      - name: Verify library usage - Part III - correct version
+        run: |
+          output=$(python -c "from flask_inputfilter import InputFilter; print(InputFilter)")
+
+          if [ "$output" = "<class 'flask_inputfilter._InputFilter.InputFilter'>" ]; then
+            echo "Test passed: Correct class returned"
+          else
+            echo "Test failed: Unexpected output - $output"
+            exit 1
+          fi
+          
+          # Creates and uses compiled file instead of pyximport
+          
+          module_path=$(python -c "import flask_inputfilter; print(flask_inputfilter.__file__)")
+
+          module_dir=$(dirname "$module_path")
+          
+          so_files=$(find "$module_dir" -maxdepth 1 -name "*.so")
+          
+          if [ -n "$so_files" ]; then
+            echo ".so-files found:"
+            echo "$so_files"
+          else
+            echo "No .so-files found."
+          fi

@@ -2,7 +2,7 @@ FROM python:3.7-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y g++ python3-dev git
+RUN apt-get update && apt-get install -y g++ git
 
 COPY pyproject.toml /app
 

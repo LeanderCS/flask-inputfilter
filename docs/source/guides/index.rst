@@ -7,3 +7,4 @@ Guides
 
     create_own_components
     frontend_validation
+    compile
