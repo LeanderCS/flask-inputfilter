@@ -33,7 +33,7 @@ Available functions:
 
 .. note::
 
-    If you like the project, please consider giving it a star on GitHub.
+    If you like the project, please consider giving it a star on `GitHub <https://github.com/LeanderCS/flask-inputfilter>`_.
 
 Installation
 ------------

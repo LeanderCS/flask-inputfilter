@@ -23,7 +23,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install Dependencies
-        run: pip install sphinx sphinx_rtd_theme
+        run: pip install sphinx sphinx_rtd_theme sphinx_design
 
       - name: Build Documentation
         run: sphinx-build -b html docs/source/ _build

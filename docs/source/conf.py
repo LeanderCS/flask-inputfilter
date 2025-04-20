@@ -1,9 +1,9 @@
 project = "flask-inputfilter"
 copyright = "2025, Leander Cain Slotosch"
 author = "Leander Cain Slotosch"
-release = "0.4.0a2"
+release = "0.4.0"
 
-extensions = ["sphinx_rtd_theme"]
+extensions = ["sphinx_rtd_theme", "sphinx_design"]
 
 templates_path = []
 exclude_patterns = []

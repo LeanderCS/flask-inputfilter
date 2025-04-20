@@ -3,3 +3,4 @@ include LICENSE
 include docs/source/changelog.rst
 recursive-include flask_inputfilter *.py *.pyx *.c *.cpp
 prune tests
+recursive-prune __pycache__
