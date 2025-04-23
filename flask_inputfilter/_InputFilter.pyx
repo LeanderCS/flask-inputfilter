@@ -16,6 +16,18 @@ from flask_inputfilter.Filter import BaseFilter
 from flask_inputfilter.Mixin import ExternalApiMixin
 from flask_inputfilter.Model import ExternalApiConfig, FieldModel
 from flask_inputfilter.Validator import BaseValidator
+from libcpp.vector cimport vector
+from libcpp.string cimport string
+
+cdef extern from *:
+    """
+    #include <vector>
+    #include <string>
+    inline std::vector<std::string> make_default_methods() {
+        return {"GET","POST","PATCH","PUT","DELETE"};
+    }
+    """
+    vector[string] make_default_methods()
 
 T = TypeVar("T")
 
@@ -25,7 +37,7 @@ cdef class InputFilter:
     Base class for all input filters.
     """
 
-    cdef readonly list methods
+    cdef readonly vector[string] methods
     cdef readonly dict fields
     cdef readonly list conditions
     cdef readonly list global_filters
@@ -36,7 +48,7 @@ cdef class InputFilter:
     cdef readonly object model_class
 
     def __cinit__(self) -> None:
-        self.methods: List[str] = ["GET", "POST", "PATCH", "PUT", "DELETE"]
+        self.methods = make_default_methods()
         self.fields: Dict[str, FieldModel] = {}
         self.conditions: List[BaseCondition] = []
         self.global_filters: List[BaseFilter] = []
@@ -48,7 +60,8 @@ cdef class InputFilter:
 
     def __init__(self, methods: Optional[List[str]] = None) -> None:
         if methods is not None:
-            self.methods: List[str] = methods
+            self.methods.clear()
+            [self.methods.push_back(method.encode()) for method in methods]
 
     cpdef bint isValid(self):
         """
@@ -118,7 +131,8 @@ cdef class InputFilter:
                 """
 
                 cdef InputFilter input_filter = cls()
-                if request.method not in input_filter.methods:
+                cdef string request_method = request.method.encode()
+                if not any(request_method == method for method in input_filter.methods):
                     return Response(status=405, response="Method Not Allowed")
 
                 data = request.json if request.is_json else request.args
