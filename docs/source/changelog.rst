@@ -3,6 +3,15 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.4.1] - 2025-04-24
+--------------------
+
+Changed
+^^^^^^^
+- Introduced c++ vectors in ``InputFilter`` to improve performance.
+- Updated required ``cython`` version to 3.0 or higher for python 3.7 - 3.11.
+
+
 [0.4.0] - 2025-04-20
 --------------------
 

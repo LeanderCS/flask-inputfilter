@@ -6,7 +6,7 @@
 # cython: initializedcheck=False
 import json
 import logging
-from typing import Any, Dict, List, Optional, TypeVar, Union, Type
+from typing import Any, Dict, List, Optional, Type, TypeVar, Union
 
 from flask import Response, g, request
 
@@ -16,17 +16,12 @@ from flask_inputfilter.Filter import BaseFilter
 from flask_inputfilter.Mixin import ExternalApiMixin
 from flask_inputfilter.Model import ExternalApiConfig, FieldModel
 from flask_inputfilter.Validator import BaseValidator
-from libcpp.vector cimport vector
-from libcpp.string cimport string
 
-cdef extern from *:
-    """
-    #include <vector>
-    #include <string>
-    inline std::vector<std::string> make_default_methods() {
-        return {"GET","POST","PATCH","PUT","DELETE"};
-    }
-    """
+from libcpp.string cimport string
+from libcpp.vector cimport vector
+
+
+cdef extern from "helper.h":
     vector[string] make_default_methods()
 
 T = TypeVar("T")
