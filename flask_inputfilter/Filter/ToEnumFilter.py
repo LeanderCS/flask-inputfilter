@@ -17,10 +17,7 @@ class ToEnumFilter(BaseFilter):
         self.enum_class = enum_class
 
     def apply(self, value: Any) -> Union[Enum, Any]:
-        if not isinstance(value, (str, int)):
-            return value
-
-        elif isinstance(value, Enum):
+        if not isinstance(value, (str, int)) or isinstance(value, Enum):
             return value
 
         try:

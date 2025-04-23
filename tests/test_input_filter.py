@@ -185,10 +185,10 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.add("available", default=True)
 
         validated_data = self.inputFilter.validateData({})
-        self.assertEqual(validated_data["available"], True)
+        self.assertTrue(validated_data["available"])
 
         validated_data = self.inputFilter.validateData({"available": False})
-        self.assertEqual(validated_data["available"], False)
+        self.assertFalse(validated_data["available"])
 
     def test_fallback(self) -> None:
         """
@@ -204,14 +204,14 @@ class TestInputFilter(unittest.TestCase):
 
         validated_data = self.inputFilter.validateData({"color": "yellow"})
 
-        self.assertEqual(validated_data["available"], True)
+        self.assertTrue(validated_data["available"])
         self.assertEqual(validated_data["color"], "red")
 
         validated_data = self.inputFilter.validateData(
             {"available": False, "color": "green"}
         )
 
-        self.assertEqual(validated_data["available"], False)
+        self.assertFalse(validated_data["available"])
         self.assertEqual(validated_data["color"], "green")
 
     def test_fallback_with_default(self) -> None:
@@ -231,12 +231,12 @@ class TestInputFilter(unittest.TestCase):
 
         validated_data = self.inputFilter.validateData({})
 
-        self.assertEqual(validated_data["available"], False)
+        self.assertFalse(validated_data["available"])
         self.assertEqual(validated_data["color"], "red")
 
         validated_data = self.inputFilter.validateData({"available": False})
 
-        self.assertEqual(validated_data["available"], False)
+        self.assertFalse(validated_data["available"])
 
         self.inputFilter.add("required_without_fallback", required=True)
 
@@ -458,12 +458,14 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.add("field1")
 
         input_filter = InputFilter()
-        filter = ToIntegerFilter()
-        input_filter.add("field1", filters=[filter])
+        filter_ = ToIntegerFilter()
+        input_filter.add("field1", filters=[filter_])
         self.inputFilter.merge(input_filter)
 
         self.inputFilter.isValid()
-        self.assertEqual(self.inputFilter.getInput("field1").filters, [filter])
+        self.assertEqual(
+            self.inputFilter.getInput("field1").filters, [filter_]
+        )
 
     def test_merge_combined_conditions(self) -> None:
         condition1 = ExactlyOneOfCondition(["test"])
@@ -565,7 +567,7 @@ class TestInputFilter(unittest.TestCase):
         self.assertEqual(self.inputFilter.getValue("field"), "value")
 
         self.inputFilter.clear()
-        self.assertEqual(self.inputFilter.getValue("field"), None)
+        self.assertIsNone(self.inputFilter.getValue("field"))
 
     def test_set_unfiltered_data(self) -> None:
         self.inputFilter.add("field")
@@ -590,15 +592,16 @@ class TestInputFilter(unittest.TestCase):
         )
         self.assertEqual(validated_data["name_upper"], "maurice")
 
+        validated_data = None
         with self.assertRaises(ValidationError):
             validated_data = self.inputFilter.validateData(
                 {"name_upper": "Alice"}
             )
-            self.assertEqual(validated_data["name_upper"], "ALICE")
+        self.assertIsNone(validated_data)
 
         self.inputFilter.add(
             "fallback",
-            fallback="fallback",
+            fallback="FALLBACK",
             steps=[
                 ToUpperFilter(),
                 InArrayValidator(["FALLBACK"]),
@@ -613,7 +616,7 @@ class TestInputFilter(unittest.TestCase):
 
         self.inputFilter.add(
             "default",
-            default="default",
+            default="DEFAULT",
             steps=[
                 ToUpperFilter(),
                 InArrayValidator(["DEFAULT"]),
@@ -622,7 +625,7 @@ class TestInputFilter(unittest.TestCase):
         )
 
         validated_data = self.inputFilter.validateData({})
-        self.assertEqual(validated_data["default"], "default")
+        self.assertEqual(validated_data["default"], "DEFAULT")
 
         self.inputFilter.add(
             "fallback_with_default",
@@ -682,7 +685,7 @@ class TestInputFilter(unittest.TestCase):
         # API returns valid result
         validated_data = self.inputFilter.validateData({})
 
-        self.assertEqual(validated_data["is_valid"], True)
+        self.assertTrue(validated_data["is_valid"])
         expected_url = "https://api.example.com/validate_user/test_user"
         mock_request.assert_called_with(
             headers={}, method="GET", url=expected_url, params={}
@@ -725,7 +728,7 @@ class TestInputFilter(unittest.TestCase):
             {"name": "test_user", "hash": "1234"}
         )
 
-        self.assertEqual(validated_data["is_valid"], True)
+        self.assertTrue(validated_data["is_valid"])
         expected_url = "https://api.example.com/validate_user/test_user"
         mock_request.assert_called_with(
             headers={"Authorization": "Bearer 1234", "custom_header": "value"},
@@ -1035,7 +1038,7 @@ class TestInputFilter(unittest.TestCase):
 
             response = client.get("/test-custom", query_string={"age": 20})
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.json, None)
+            self.assertIsNone(response.json)
 
 
 if __name__ == "__main__":

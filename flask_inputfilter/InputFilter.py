@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+from collections.abc import Callable
 from typing import Any, Dict, List, Optional, Type, TypeVar, Union
 
 from flask import Response, g, request
@@ -36,9 +37,9 @@ class InputFilter:
         self.data: Dict[str, Any] = {}
         self.validated_data: Dict[str, Any] = {}
         self.errors: Dict[str, str] = {}
-        self.model_class: Optional = None
+        self.model_class: Optional[Type[T]] = None
 
-    def isValid(self):
+    def isValid(self) -> bool:
         """
         Checks if the object's state or its attributes meet certain
         conditions to be considered valid. This function is typically used to
@@ -61,7 +62,13 @@ class InputFilter:
     @classmethod
     def validate(
         cls,
-    ):
+    ) -> Callable[
+        [Any],
+        Callable[
+            [tuple[Any, ...], Dict[str, Any]],
+            Union[Response, tuple[Any, Dict[str, Any]]],
+        ],
+    ]:
         """
         Decorator for validating input data in routes.
 
@@ -72,15 +79,15 @@ class InputFilter:
             Callable[
                 [Any],
                 Callable[
-                    [Tuple[Any, ...], Dict[str, Any]],
-                    Union[Response, Tuple[Any, Dict[str, Any]]],
+                    [tuple[Any, ...], Dict[str, Any]],
+                    Union[Response, tuple[Any, Dict[str, Any]]],
                 ],
             ]
         """
 
         def decorator(
-            f,
-        ):
+            f: Callable,
+        ) -> Callable[[Any, Any], Union[Response, tuple[Any, Dict[str, Any]]]]:
             """
             Decorator function to validate input data for a Flask route.
 
@@ -92,12 +99,14 @@ class InputFilter:
                     [Any, Any],
                     Union[
                         Response,
-                        Tuple[Any, Dict[str, Any]]
+                        tuple[Any, Dict[str, Any]]
                     ]
                 ]: The wrapped function with input validation.
             """
 
-            def wrapper(*args, **kwargs):
+            def wrapper(
+                *args, **kwargs
+            ) -> Union[Response, tuple[Any, Dict[str, Any]]]:
                 """
                 Wrapper function to handle input validation and
                 error handling for the decorated route function.
@@ -107,7 +116,7 @@ class InputFilter:
                     **kwargs: Keyword arguments for the route function.
 
                 Returns:
-                    Union[Response, Tuple[Any, Dict[str, Any]]]: The response
+                    Union[Response, tuple[Any, Dict[str, Any]]]: The response
                         from the route function or an error response.
                 """
 
@@ -144,7 +153,9 @@ class InputFilter:
 
         return decorator
 
-    def validateData(self, data: Optional[Dict[str, Any]] = None):
+    def validateData(
+        self, data: Optional[Dict[str, Any]] = None
+    ) -> Union[Dict[str, Any], Type[T]]:
         """
         Validates input data against defined field rules, including applying
         filters, validators, custom logic steps, and fallback mechanisms. The
@@ -175,8 +186,8 @@ class InputFilter:
             required = field_info.required
             default = field_info.default
             fallback = field_info.fallback
-            filters = field_info.filters
-            validators = field_info.validators
+            filters = field_info.filters + self.global_filters
+            validators = field_info.validators + self.global_validators
             steps = field_info.steps
             external_api = field_info.external_api
             copy = field_info.copy
@@ -190,11 +201,12 @@ class InputFilter:
                         external_api, fallback, self.validated_data
                     )
 
-                value = self.applyFilters(filters, value)
+                value = InputFilter.applyFilters(filters, value)
                 value = (
-                    self.validateField(validators, fallback, value) or value
+                    InputFilter.validateField(validators, fallback, value)
+                    or value
                 )
-                value = self.applySteps(steps, fallback, value) or value
+                value = InputFilter.applySteps(steps, fallback, value) or value
                 value = InputFilter.checkForRequired(
                     field_name, required, default, fallback, value
                 )
@@ -205,7 +217,7 @@ class InputFilter:
                 errors[field_name] = str(e)
 
         try:
-            self.checkConditions(self.validated_data)
+            InputFilter.checkConditions(self.conditions, self.validated_data)
         except ValidationError as e:
             errors["_condition"] = str(e)
 
@@ -217,7 +229,7 @@ class InputFilter:
 
         return self.validated_data
 
-    def addCondition(self, condition: BaseCondition):
+    def addCondition(self, condition: BaseCondition) -> None:
         """
         Add a condition to the input filter.
 
@@ -226,7 +238,7 @@ class InputFilter:
         """
         self.conditions.append(condition)
 
-    def getConditions(self):
+    def getConditions(self) -> List[BaseCondition]:
         """
         Retrieve the list of all registered conditions.
 
@@ -240,7 +252,10 @@ class InputFilter:
         """
         return self.conditions
 
-    def checkConditions(self, validated_data: Dict[str, Any]):
+    @staticmethod
+    def checkConditions(
+        conditions: List[BaseCondition], validated_data: Dict[str, Any]
+    ) -> None:
         """
         Checks if all conditions are met.
 
@@ -250,16 +265,18 @@ class InputFilter:
         message indicating which condition failed.
 
         Args:
+            conditions (List[BaseCondition]):
+                A list of conditions to be checked against the validated
             validated_data (Dict[str, Any]):
                 The validated data to check against the conditions.
         """
-        for condition in self.conditions:
+        for condition in conditions:
             if not condition.check(validated_data):
                 raise ValidationError(
                     f"Condition '{condition.__class__.__name__}' not met."
                 )
 
-    def setData(self, data: Dict[str, Any]):
+    def setData(self, data: Dict[str, Any]) -> None:
         """
         Filters and sets the provided data into the object's internal
         storage, ensuring that only the specified fields are considered and
@@ -274,14 +291,14 @@ class InputFilter:
         self.data = {}
         for field_name, field_value in data.items():
             if field_name in self.fields:
-                field_value = self.applyFilters(
+                field_value = InputFilter.applyFilters(
                     filters=self.fields[field_name].filters,
                     value=field_value,
                 )
 
             self.data[field_name] = field_value
 
-    def getValue(self, name: str):
+    def getValue(self, name: str) -> Any:
         """
         This method retrieves a value associated with the provided name. It
         searches for the value based on the given identifier and returns the
@@ -302,7 +319,7 @@ class InputFilter:
         """
         return self.validated_data.get(name)
 
-    def getValues(self):
+    def getValues(self) -> Dict[str, Any]:
         """
         Retrieves a dictionary of key-value pairs from the current object.
         This method provides access to the internal state or configuration of
@@ -315,7 +332,7 @@ class InputFilter:
         """
         return self.validated_data
 
-    def getRawValue(self, name: str):
+    def getRawValue(self, name: str) -> Any:
         """
         Fetches the raw value associated with the provided key.
 
@@ -334,7 +351,7 @@ class InputFilter:
         """
         return self.data.get(name) if name in self.data else None
 
-    def getRawValues(self):
+    def getRawValues(self) -> Dict[str, Any]:
         """
         Retrieves raw values from a given source and returns them as a
         dictionary.
@@ -358,7 +375,7 @@ class InputFilter:
             if field in self.data
         }
 
-    def getUnfilteredData(self):
+    def getUnfilteredData(self) -> Dict[str, Any]:
         """
         Fetches unfiltered data from the data source.
 
@@ -375,7 +392,7 @@ class InputFilter:
         """
         return self.data
 
-    def setUnfilteredData(self, data: Dict[str, Any]):
+    def setUnfilteredData(self, data: Dict[str, Any]) -> None:
         """
         Sets unfiltered data for the current instance. This method assigns a
         given dictionary of data to the instance for further processing. It
@@ -403,7 +420,7 @@ class InputFilter:
             for field_name in self.data.keys()
         )
 
-    def getErrorMessage(self, field_name: str):
+    def getErrorMessage(self, field_name: str) -> Optional[str]:
         """
         Retrieves and returns a predefined error message.
 
@@ -419,11 +436,11 @@ class InputFilter:
                 message is being retrieved.
 
         Returns:
-            str: A string representing the predefined error message.
+            Optional[str]: A string representing the predefined error message.
         """
         return self.errors.get(field_name)
 
-    def getErrorMessages(self):
+    def getErrorMessages(self) -> Dict[str, str]:
         """
         Retrieves all error messages associated with the fields in the
         input filter.
@@ -449,7 +466,7 @@ class InputFilter:
         steps: Optional[List[Union[BaseFilter, BaseValidator]]] = None,
         external_api: Optional[ExternalApiConfig] = None,
         copy: Optional[str] = None,
-    ):
+    ) -> None:
         """
         Add the field to the input filter.
 
@@ -492,7 +509,7 @@ class InputFilter:
             copy=copy,
         )
 
-    def has(self, field_name: str):
+    def has(self, field_name: str) -> bool:
         """
         This method checks the existence of a specific field within the
         input filter values, identified by its field name. It does not return a
@@ -507,7 +524,7 @@ class InputFilter:
         """
         return field_name in self.fields
 
-    def getInput(self, field_name: str):
+    def getInput(self, field_name: str) -> Optional[FieldModel]:
         """
         Represents a method to retrieve a field by its name.
 
@@ -526,7 +543,7 @@ class InputFilter:
         """
         return self.fields.get(field_name)
 
-    def getInputs(self):
+    def getInputs(self) -> Dict[str, FieldModel]:
         """
         Retrieve the dictionary of input fields associated with the object.
 
@@ -536,7 +553,7 @@ class InputFilter:
         """
         return self.fields
 
-    def remove(self, field_name: str):
+    def remove(self, field_name: str) -> Optional[FieldModel]:
         """
         Removes the specified field from the instance or collection.
 
@@ -553,7 +570,7 @@ class InputFilter:
         """
         return self.fields.pop(field_name, None)
 
-    def count(self):
+    def count(self) -> int:
         """
         Counts the total number of elements in the collection.
 
@@ -577,7 +594,7 @@ class InputFilter:
         steps: Optional[List[Union[BaseFilter, BaseValidator]]] = None,
         external_api: Optional[ExternalApiConfig] = None,
         copy: Optional[str] = None,
-    ):
+    ) -> None:
         """
         Replaces a field in the input filter.
 
@@ -617,12 +634,12 @@ class InputFilter:
             copy=copy,
         )
 
+    @staticmethod
     def applySteps(
-        self,
         steps: List[Union[BaseFilter, BaseValidator]],
         fallback: Any,
         value: Any,
-    ):
+    ) -> Any:
         """
         Apply multiple filters and validators in a specific order.
 
@@ -671,7 +688,7 @@ class InputFilter:
         default: Any,
         fallback: Any,
         value: Any,
-    ):
+    ) -> Any:
         """
         Determine the value of the field, considering the required and
         fallback attributes.
@@ -709,7 +726,7 @@ class InputFilter:
 
         raise ValidationError(f"Field '{field_name}' is required.")
 
-    def addGlobalFilter(self, filter: BaseFilter):
+    def addGlobalFilter(self, filter: BaseFilter) -> None:
         """
         Add a global filter to be applied to all fields.
 
@@ -718,7 +735,7 @@ class InputFilter:
         """
         self.global_filters.append(filter)
 
-    def getGlobalFilters(self):
+    def getGlobalFilters(self) -> List[BaseFilter]:
         """
         Retrieve all global filters associated with this InputFilter instance.
 
@@ -731,7 +748,8 @@ class InputFilter:
         """
         return self.global_filters
 
-    def applyFilters(self, filters: List[BaseFilter], value: Any):
+    @staticmethod
+    def applyFilters(filters: List[BaseFilter], value: Any) -> Any:
         """
         Apply filters to the field value.
 
@@ -747,12 +765,12 @@ class InputFilter:
         if value is None:
             return
 
-        for filter in self.global_filters + filters:
+        for filter in filters:
             value = filter.apply(value)
 
         return value
 
-    def clear(self):
+    def clear(self) -> None:
         """
         Resets all fields of the InputFilter instance to
         their initial empty state.
@@ -858,8 +876,9 @@ class InputFilter:
         """
         return self.global_validators
 
+    @staticmethod
     def validateField(
-        self, validators: List[BaseValidator], fallback: Any, value: Any
+        validators: List[BaseValidator], fallback: Any, value: Any
     ) -> Any:
         """
         Validate the field value.
@@ -879,7 +898,7 @@ class InputFilter:
             return
 
         try:
-            for validator in self.global_validators + validators:
+            for validator in validators:
                 validator.validate(value)
         except ValidationError:
             if fallback is None:

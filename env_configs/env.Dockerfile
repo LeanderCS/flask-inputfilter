@@ -2,35 +2,37 @@ FROM debian:buster-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    curl \
-    g++ \
-    git \
-    libbz2-dev \
-    libffi-dev \
-    libjpeg-dev \
-    liblzma-dev \
-    libncurses5-dev \
-    libncursesw5-dev \
-    libreadline-dev \
-    libsqlite3-dev \
-    libssl-dev \
-    llvm \
-    make \
-    python3-dev \
-    tk-dev \
-    wget \
-    xz-utils \
-    zlib1g-dev
+RUN apt-get update  \
+    && apt-get install -y \
+        build-essential \
+        curl \
+        g++ \
+        git \
+        libbz2-dev \
+        libffi-dev \
+        libjpeg-dev \
+        liblzma-dev \
+        libncurses5-dev \
+        libncursesw5-dev \
+        libreadline-dev \
+        libsqlite3-dev \
+        libssl-dev \
+        llvm \
+        make \
+        python3-dev \
+        tk-dev \
+        wget \
+        xz-utils \
+        zlib1g-dev \
+    && apt-get clean
 
 RUN curl https://pyenv.run | bash
 
 ENV PATH="/root/.pyenv/bin:/root/.pyenv/shims:/root/.pyenv/versions/3.7.12/bin:$PATH"
-RUN echo 'export PATH="/root/.pyenv/bin:$PATH"' >> ~/.bashrc
-RUN echo 'eval "$(pyenv init --path)"' >> ~/.bashrc
-RUN echo 'eval "$(pyenv init -)"' >> ~/.bashrc
-RUN echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
+RUN echo 'export PATH="/root/.pyenv/bin:$PATH"' >> ~/.bashrc \
+    && echo 'eval "$(pyenv init --path)"' >> ~/.bashrc \
+    && echo 'eval "$(pyenv init -)"' >> ~/.bashrc \
+    && echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
 
 RUN /root/.pyenv/bin/pyenv install 3.7.12
 RUN /root/.pyenv/bin/pyenv install 3.8.12

@@ -448,7 +448,7 @@ class TestInputFilter(unittest.TestCase):
         self.assertEqual(validated_data["price"], 19.99)
 
         validated_data = self.inputFilter.validateData({"price": False})
-        self.assertEqual(validated_data["price"], False)
+        self.assertFalse(validated_data["price"])
 
         validated_data = self.inputFilter.validateData({"price": "no float"})
         self.assertEqual(validated_data["price"], "no float")
@@ -466,7 +466,7 @@ class TestInputFilter(unittest.TestCase):
         self.assertEqual(validated_data["age"], 25)
 
         validated_data = self.inputFilter.validateData({"age": False})
-        self.assertEqual(validated_data["age"], False)
+        self.assertFalse(validated_data["age"])
 
         validated_data = self.inputFilter.validateData({"age": "no integer"})
         self.assertEqual(validated_data["age"], "no integer")

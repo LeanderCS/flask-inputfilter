@@ -5,7 +5,7 @@ import binascii
 import io
 from typing import Any, Optional
 
-from PIL import Image, UnidentifiedImageError
+from PIL import Image
 
 from flask_inputfilter.Exception import ValidationError
 from flask_inputfilter.Validator import BaseValidator
@@ -28,7 +28,7 @@ class IsBase64ImageValidator(BaseValidator):
         try:
             Image.open(io.BytesIO(base64.b64decode(value))).verify()
 
-        except (binascii.Error, UnidentifiedImageError, OSError):
+        except (binascii.Error, OSError):
             raise ValidationError(
                 self.error_message
                 or "The image is invalid or does not have an allowed size."

@@ -31,7 +31,7 @@ Example implementation
 
 .. code-block:: python
 
-    from typing import Any, Dict
+    from typing import Any
 
     from flask_inputfilter.Condition import BaseCondition
 
@@ -45,7 +45,7 @@ Example implementation
             self.first_field = first_field
             self.second_field = second_field
 
-        def check(self, data: Dict[str, Any]) -> bool:
+        def check(self, data: dict[str, Any]) -> bool:
             return data.get(self.first_field) == data.get(self.second_field)
 
 
@@ -69,7 +69,7 @@ Example implementation
 .. code-block:: python
 
     from datetime import date, datetime
-    from typing import Any, Union
+    from typing import Any
 
     from flask_inputfilter.Filter import BaseFilter
 
@@ -80,7 +80,7 @@ Example implementation
         Supports ISO 8601 formatted strings.
         """
 
-        def apply(self, value: Any) -> Union[datetime, Any]:
+        def apply(self, value: Any) -> datetime|Any:
             if isinstance(value, datetime):
                 return value
 
@@ -94,8 +94,7 @@ Example implementation
                 except ValueError:
                     return value
 
-            else:
-                return value
+            return value
 
 
 Validator
@@ -116,7 +115,7 @@ Example implementation
 
 .. code-block:: python
 
-    from typing import Any, List, Optional
+    from typing import Any, Optional
 
     from flask_inputfilter.Exception import ValidationError
     from flask_inputfilter.Validator import BaseValidator
@@ -129,7 +128,7 @@ Example implementation
 
         def __init__(
             self,
-            haystack: List[Any],
+            haystack: list[Any],
             strict: bool = False,
             error_message: Optional[str] = None,
         ) -> None:
