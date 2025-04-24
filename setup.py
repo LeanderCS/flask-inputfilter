@@ -8,6 +8,7 @@ if shutil.which("g++") is not None:
     ext_modules = cythonize(
         [
             "flask_inputfilter/Mixin/_ExternalApiMixin.pyx",
+            "flask_inputfilter/Model/_FieldModel.pyx",
             "flask_inputfilter/_InputFilter.pyx",
         ],
         language_level=3,

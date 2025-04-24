@@ -14,7 +14,7 @@ from flask_inputfilter.Filter import (
     ToLowerFilter,
     ToUpperFilter,
 )
-from flask_inputfilter.Model import ExternalApiConfig, FieldModel
+from flask_inputfilter.Model import ExternalApiConfig
 from flask_inputfilter.Validator import (
     InArrayValidator,
     IsIntegerValidator,
@@ -317,23 +317,24 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.add("field")
         self.inputFilter.setData({"field": "value"})
 
-        self.assertEqual(
-            self.inputFilter.getInput("field"),
-            FieldModel(required=False, default=None),
-        )
+        self.assertFalse(self.inputFilter.getInput("field").required)
+
+        self.inputFilter.add("field2", required=True)
+        self.assertTrue(self.inputFilter.getInput("field2").required)
 
     def test_get_inputs(self) -> None:
         self.inputFilter.add("field1")
-        self.inputFilter.add("field2")
+        self.inputFilter.add("field2", required=True, default=True)
         self.inputFilter.setData({"field1": "value1", "field2": "value2"})
 
-        self.assertEqual(
-            self.inputFilter.getInputs(),
-            {
-                "field1": FieldModel(required=False, default=None),
-                "field2": FieldModel(required=False, default=None),
-            },
-        )
+        field1 = self.inputFilter.getInputs().get("field1")
+        field2 = self.inputFilter.getInputs().get("field2")
+
+        self.assertFalse(field1.required)
+        self.assertTrue(field2.required)
+
+        self.assertIsNone(field1.default)
+        self.assertTrue(field2.default)
 
     def test_get_raw_value(self) -> None:
         self.inputFilter.add("field")
