@@ -1,6 +1,11 @@
+# cython: language=c++
+# cython: language_level=3
+# cython: binding=True
+# cython: cdivision=True
+# cython: boundscheck=False
+# cython: initializedcheck=False
 from __future__ import annotations
 
-from dataclasses import field
 from typing import Any, List, Optional, Union
 
 from flask_inputfilter.Filter import BaseFilter
@@ -44,11 +49,8 @@ cdef class FieldModel:
         self.required = required
         self.default = default
         self.fallback = fallback
-        if filters is not None:
-            self.filters = filters
-        if validators is not None:
-            self.validators = validators
-        if steps is not None:
-            self.steps = steps
+        self.filters = filters or []
+        self.validators = validators or []
+        self.steps = steps or []
         self.external_api = external_api
         self.copy = copy

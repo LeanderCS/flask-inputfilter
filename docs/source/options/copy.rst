@@ -44,7 +44,7 @@ Basic Copy Integration
     def test_route():
         validated_data = g.validated_data
 
-        # Cotains the same value as username but escaped eg. "very-important-user"
+        # Contains the same value as username but escaped eg. "very-important-user"
         print(validated_data["escapedUsername"])
 
 

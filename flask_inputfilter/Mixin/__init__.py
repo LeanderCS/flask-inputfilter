@@ -5,3 +5,4 @@ if shutil.which("g++") is not None:
 
 else:
     from .ExternalApiMixin import ExternalApiMixin
+    from .FieldMixin import FieldMixin

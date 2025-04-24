@@ -8,8 +8,8 @@ from flask_inputfilter.Model import ExternalApiConfig
 
 
 class ExternalApiMixin:
+    @staticmethod
     def callExternalApi(
-        self,
         config: ExternalApiConfig,
         fallback: Any,
         validated_data: Dict[str, Any],
