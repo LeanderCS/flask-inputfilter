@@ -43,14 +43,15 @@ class CustomJsonValidator(BaseValidator):
             if field not in value:
                 raise ValidationError(f"Missing required field '{field}'.")
 
-        if self.schema:
-            for field, expected_type in self.schema.items():
-                if field in value:
-                    if not isinstance(value[field], expected_type):
-                        raise ValidationError(
-                            self.error_message
-                            or f"Field '{field}' has to be of type "
-                            f"'{expected_type.__name__}'."
-                        )
+        if not self.schema:
+            return True
+
+        for field, expected_type in self.schema.items():
+            if field in value and not isinstance(value[field], expected_type):
+                raise ValidationError(
+                    self.error_message
+                    or f"Field '{field}' has to be of type "
+                    f"'{expected_type.__name__}'."
+                )
 
         return True

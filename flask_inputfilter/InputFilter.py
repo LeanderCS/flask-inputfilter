@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+from collections.abc import Callable
 from typing import Any, Dict, List, Optional, Type, TypeVar, Union
 
 from flask import Response, g, request
@@ -9,7 +10,7 @@ from flask import Response, g, request
 from flask_inputfilter.Condition import BaseCondition
 from flask_inputfilter.Exception import ValidationError
 from flask_inputfilter.Filter import BaseFilter
-from flask_inputfilter.Mixin import ExternalApiMixin
+from flask_inputfilter.Mixin import ExternalApiMixin, FieldMixin
 from flask_inputfilter.Model import ExternalApiConfig, FieldModel
 from flask_inputfilter.Validator import BaseValidator
 
@@ -36,9 +37,9 @@ class InputFilter:
         self.data: Dict[str, Any] = {}
         self.validated_data: Dict[str, Any] = {}
         self.errors: Dict[str, str] = {}
-        self.model_class: Optional = None
+        self.model_class: Optional[Type[T]] = None
 
-    def isValid(self):
+    def isValid(self) -> bool:
         """
         Checks if the object's state or its attributes meet certain
         conditions to be considered valid. This function is typically used to
@@ -61,7 +62,13 @@ class InputFilter:
     @classmethod
     def validate(
         cls,
-    ):
+    ) -> Callable[
+        [Any],
+        Callable[
+            [tuple[Any, ...], Dict[str, Any]],
+            Union[Response, tuple[Any, Dict[str, Any]]],
+        ],
+    ]:
         """
         Decorator for validating input data in routes.
 
@@ -72,15 +79,15 @@ class InputFilter:
             Callable[
                 [Any],
                 Callable[
-                    [Tuple[Any, ...], Dict[str, Any]],
-                    Union[Response, Tuple[Any, Dict[str, Any]]],
+                    [tuple[Any, ...], Dict[str, Any]],
+                    Union[Response, tuple[Any, Dict[str, Any]]],
                 ],
             ]
         """
 
         def decorator(
-            f,
-        ):
+            f: Callable,
+        ) -> Callable[[Any, Any], Union[Response, tuple[Any, Dict[str, Any]]]]:
             """
             Decorator function to validate input data for a Flask route.
 
@@ -92,12 +99,14 @@ class InputFilter:
                     [Any, Any],
                     Union[
                         Response,
-                        Tuple[Any, Dict[str, Any]]
+                        tuple[Any, Dict[str, Any]]
                     ]
                 ]: The wrapped function with input validation.
             """
 
-            def wrapper(*args, **kwargs):
+            def wrapper(
+                *args, **kwargs
+            ) -> Union[Response, tuple[Any, Dict[str, Any]]]:
                 """
                 Wrapper function to handle input validation and
                 error handling for the decorated route function.
@@ -107,7 +116,7 @@ class InputFilter:
                     **kwargs: Keyword arguments for the route function.
 
                 Returns:
-                    Union[Response, Tuple[Any, Dict[str, Any]]]: The response
+                    Union[Response, tuple[Any, Dict[str, Any]]]: The response
                         from the route function or an error response.
                 """
 
@@ -144,7 +153,9 @@ class InputFilter:
 
         return decorator
 
-    def validateData(self, data: Optional[Dict[str, Any]] = None):
+    def validateData(
+        self, data: Optional[Dict[str, Any]] = None
+    ) -> Union[Dict[str, Any], Type[T]]:
         """
         Validates input data against defined field rules, including applying
         filters, validators, custom logic steps, and fallback mechanisms. The
@@ -175,8 +186,8 @@ class InputFilter:
             required = field_info.required
             default = field_info.default
             fallback = field_info.fallback
-            filters = field_info.filters
-            validators = field_info.validators
+            filters = field_info.filters + self.global_filters
+            validators = field_info.validators + self.global_validators
             steps = field_info.steps
             external_api = field_info.external_api
             copy = field_info.copy
@@ -186,16 +197,17 @@ class InputFilter:
                     value = self.validated_data.get(copy)
 
                 if external_api:
-                    value = ExternalApiMixin().callExternalApi(
+                    value = ExternalApiMixin.callExternalApi(
                         external_api, fallback, self.validated_data
                     )
 
-                value = self.applyFilters(filters, value)
+                value = FieldMixin.applyFilters(filters, value)
                 value = (
-                    self.validateField(validators, fallback, value) or value
+                    FieldMixin.validateField(validators, fallback, value)
+                    or value
                 )
-                value = self.applySteps(steps, fallback, value) or value
-                value = InputFilter.checkForRequired(
+                value = FieldMixin.applySteps(steps, fallback, value) or value
+                value = FieldMixin.checkForRequired(
                     field_name, required, default, fallback, value
                 )
 
@@ -205,7 +217,7 @@ class InputFilter:
                 errors[field_name] = str(e)
 
         try:
-            self.checkConditions(self.validated_data)
+            FieldMixin.checkConditions(self.conditions, self.validated_data)
         except ValidationError as e:
             errors["_condition"] = str(e)
 
@@ -217,7 +229,7 @@ class InputFilter:
 
         return self.validated_data
 
-    def addCondition(self, condition: BaseCondition):
+    def addCondition(self, condition: BaseCondition) -> None:
         """
         Add a condition to the input filter.
 
@@ -226,7 +238,7 @@ class InputFilter:
         """
         self.conditions.append(condition)
 
-    def getConditions(self):
+    def getConditions(self) -> List[BaseCondition]:
         """
         Retrieve the list of all registered conditions.
 
@@ -240,26 +252,7 @@ class InputFilter:
         """
         return self.conditions
 
-    def checkConditions(self, validated_data: Dict[str, Any]):
-        """
-        Checks if all conditions are met.
-
-        This method iterates through all registered conditions and checks
-        if they are satisfied based on the provided validated data. If any
-        condition is not met, a ValidationError is raised with an appropriate
-        message indicating which condition failed.
-
-        Args:
-            validated_data (Dict[str, Any]):
-                The validated data to check against the conditions.
-        """
-        for condition in self.conditions:
-            if not condition.check(validated_data):
-                raise ValidationError(
-                    f"Condition '{condition.__class__.__name__}' not met."
-                )
-
-    def setData(self, data: Dict[str, Any]):
+    def setData(self, data: Dict[str, Any]) -> None:
         """
         Filters and sets the provided data into the object's internal
         storage, ensuring that only the specified fields are considered and
@@ -274,14 +267,14 @@ class InputFilter:
         self.data = {}
         for field_name, field_value in data.items():
             if field_name in self.fields:
-                field_value = self.applyFilters(
+                field_value = FieldMixin.applyFilters(
                     filters=self.fields[field_name].filters,
                     value=field_value,
                 )
 
             self.data[field_name] = field_value
 
-    def getValue(self, name: str):
+    def getValue(self, name: str) -> Any:
         """
         This method retrieves a value associated with the provided name. It
         searches for the value based on the given identifier and returns the
@@ -302,7 +295,7 @@ class InputFilter:
         """
         return self.validated_data.get(name)
 
-    def getValues(self):
+    def getValues(self) -> Dict[str, Any]:
         """
         Retrieves a dictionary of key-value pairs from the current object.
         This method provides access to the internal state or configuration of
@@ -315,7 +308,7 @@ class InputFilter:
         """
         return self.validated_data
 
-    def getRawValue(self, name: str):
+    def getRawValue(self, name: str) -> Any:
         """
         Fetches the raw value associated with the provided key.
 
@@ -332,9 +325,9 @@ class InputFilter:
         Returns:
             Any: The raw value associated with the provided key.
         """
-        return self.data.get(name) if name in self.data else None
+        return self.data.get(name)
 
-    def getRawValues(self):
+    def getRawValues(self) -> Dict[str, Any]:
         """
         Retrieves raw values from a given source and returns them as a
         dictionary.
@@ -358,7 +351,7 @@ class InputFilter:
             if field in self.data
         }
 
-    def getUnfilteredData(self):
+    def getUnfilteredData(self) -> Dict[str, Any]:
         """
         Fetches unfiltered data from the data source.
 
@@ -375,7 +368,7 @@ class InputFilter:
         """
         return self.data
 
-    def setUnfilteredData(self, data: Dict[str, Any]):
+    def setUnfilteredData(self, data: Dict[str, Any]) -> None:
         """
         Sets unfiltered data for the current instance. This method assigns a
         given dictionary of data to the instance for further processing. It
@@ -403,7 +396,7 @@ class InputFilter:
             for field_name in self.data.keys()
         )
 
-    def getErrorMessage(self, field_name: str):
+    def getErrorMessage(self, field_name: str) -> Optional[str]:
         """
         Retrieves and returns a predefined error message.
 
@@ -419,11 +412,11 @@ class InputFilter:
                 message is being retrieved.
 
         Returns:
-            str: A string representing the predefined error message.
+            Optional[str]: A string representing the predefined error message.
         """
         return self.errors.get(field_name)
 
-    def getErrorMessages(self):
+    def getErrorMessages(self) -> Dict[str, str]:
         """
         Retrieves all error messages associated with the fields in the
         input filter.
@@ -449,7 +442,7 @@ class InputFilter:
         steps: Optional[List[Union[BaseFilter, BaseValidator]]] = None,
         external_api: Optional[ExternalApiConfig] = None,
         copy: Optional[str] = None,
-    ):
+    ) -> None:
         """
         Add the field to the input filter.
 
@@ -492,7 +485,7 @@ class InputFilter:
             copy=copy,
         )
 
-    def has(self, field_name: str):
+    def has(self, field_name: str) -> bool:
         """
         This method checks the existence of a specific field within the
         input filter values, identified by its field name. It does not return a
@@ -507,7 +500,7 @@ class InputFilter:
         """
         return field_name in self.fields
 
-    def getInput(self, field_name: str):
+    def getInput(self, field_name: str) -> Optional[FieldModel]:
         """
         Represents a method to retrieve a field by its name.
 
@@ -526,7 +519,7 @@ class InputFilter:
         """
         return self.fields.get(field_name)
 
-    def getInputs(self):
+    def getInputs(self) -> Dict[str, FieldModel]:
         """
         Retrieve the dictionary of input fields associated with the object.
 
@@ -536,7 +529,7 @@ class InputFilter:
         """
         return self.fields
 
-    def remove(self, field_name: str):
+    def remove(self, field_name: str) -> Optional[FieldModel]:
         """
         Removes the specified field from the instance or collection.
 
@@ -553,7 +546,7 @@ class InputFilter:
         """
         return self.fields.pop(field_name, None)
 
-    def count(self):
+    def count(self) -> int:
         """
         Counts the total number of elements in the collection.
 
@@ -577,7 +570,7 @@ class InputFilter:
         steps: Optional[List[Union[BaseFilter, BaseValidator]]] = None,
         external_api: Optional[ExternalApiConfig] = None,
         copy: Optional[str] = None,
-    ):
+    ) -> None:
         """
         Replaces a field in the input filter.
 
@@ -617,99 +610,7 @@ class InputFilter:
             copy=copy,
         )
 
-    def applySteps(
-        self,
-        steps: List[Union[BaseFilter, BaseValidator]],
-        fallback: Any,
-        value: Any,
-    ):
-        """
-        Apply multiple filters and validators in a specific order.
-
-        This method processes a given value by sequentially applying a list of
-        filters and validators. Filters modify the value, while validators
-        ensure the value meets specific criteria. If a validation error occurs
-        and a fallback value is provided, the fallback is returned. Otherwise,
-        the validation error is raised.
-
-        Args:
-            steps (List[Union[BaseFilter, BaseValidator]]):
-                A list of filters and validators to be applied in order.
-            fallback (Any):
-                A fallback value to return if validation fails.
-            value (Any):
-                The initial value to be processed.
-
-        Returns:
-            Any: The processed value after applying all filters and validators.
-                If a validation error occurs and a fallback is provided, the
-                fallback value is returned.
-
-        Raises:
-            ValidationError: If validation fails and no fallback value is
-                provided.
-        """
-        if value is None:
-            return
-
-        try:
-            for step in steps:
-                if isinstance(step, BaseFilter):
-                    value = step.apply(value)
-                elif isinstance(step, BaseValidator):
-                    step.validate(value)
-        except ValidationError:
-            if fallback is None:
-                raise
-            return fallback
-        return value
-
-    @staticmethod
-    def checkForRequired(
-        field_name: str,
-        required: bool,
-        default: Any,
-        fallback: Any,
-        value: Any,
-    ):
-        """
-        Determine the value of the field, considering the required and
-        fallback attributes.
-
-        If the field is not required and no value is provided, the default
-        value is returned. If the field is required and no value is provided,
-        the fallback value is returned. If no of the above conditions are met,
-        a ValidationError is raised.
-
-        Args:
-            field_name (str): The name of the field being processed.
-            required (bool): Indicates whether the field is required.
-            default (Any): The default value to use if the field is not
-                provided and not required.
-            fallback (Any): The fallback value to use if the field is required
-                but not provided.
-            value (Any): The current value of the field being processed.
-
-        Returns:
-            Any: The determined value of the field after considering required,
-                default, and fallback attributes.
-
-        Raises:
-            ValidationError: If the field is required and no value or fallback
-                is provided.
-        """
-        if value is not None:
-            return value
-
-        if not required:
-            return default
-
-        if fallback is not None:
-            return fallback
-
-        raise ValidationError(f"Field '{field_name}' is required.")
-
-    def addGlobalFilter(self, filter: BaseFilter):
+    def addGlobalFilter(self, filter: BaseFilter) -> None:
         """
         Add a global filter to be applied to all fields.
 
@@ -718,7 +619,7 @@ class InputFilter:
         """
         self.global_filters.append(filter)
 
-    def getGlobalFilters(self):
+    def getGlobalFilters(self) -> List[BaseFilter]:
         """
         Retrieve all global filters associated with this InputFilter instance.
 
@@ -731,28 +632,7 @@ class InputFilter:
         """
         return self.global_filters
 
-    def applyFilters(self, filters: List[BaseFilter], value: Any):
-        """
-        Apply filters to the field value.
-
-        Args:
-            filters (List[BaseFilter]): A list of filters to apply to the
-                value.
-            value (Any): The value to be processed by the filters.
-
-        Returns:
-            Any: The processed value after applying all filters.
-                If the value is None, None is returned.
-        """
-        if value is None:
-            return
-
-        for filter in self.global_filters + filters:
-            value = filter.apply(value)
-
-        return value
-
-    def clear(self):
+    def clear(self) -> None:
         """
         Resets all fields of the InputFilter instance to
         their initial empty state.
@@ -857,32 +737,3 @@ class InputFilter:
             List[BaseValidator]: A list of global validators.
         """
         return self.global_validators
-
-    def validateField(
-        self, validators: List[BaseValidator], fallback: Any, value: Any
-    ) -> Any:
-        """
-        Validate the field value.
-
-        Args:
-            validators (List[BaseValidator]): A list of validators to apply
-                to the field value.
-            fallback (Any): A fallback value to return if validation fails.
-            value (Any): The value to be validated.
-
-        Returns:
-            Any: The validated value if all validators pass. If validation
-                fails and a fallback is provided, the fallback value is
-                returned.
-        """
-        if value is None:
-            return
-
-        try:
-            for validator in self.global_validators + validators:
-                validator.validate(value)
-        except ValidationError:
-            if fallback is None:
-                raise
-
-            return fallback

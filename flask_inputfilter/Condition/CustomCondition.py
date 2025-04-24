@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Dict
+from collections.abc import Callable
+from typing import Any, Dict
 
 from flask_inputfilter.Condition import BaseCondition
 

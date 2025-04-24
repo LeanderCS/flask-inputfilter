@@ -6,7 +6,7 @@
 # cython: initializedcheck=False
 import json
 import logging
-from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union
+from typing import Any, Dict, List, Optional, Type, TypeVar, Union
 
 from flask import Response, g, request
 
@@ -17,6 +17,13 @@ from flask_inputfilter.Mixin import ExternalApiMixin
 from flask_inputfilter.Model import ExternalApiConfig, FieldModel
 from flask_inputfilter.Validator import BaseValidator
 
+from libcpp.string cimport string
+from libcpp.vector cimport vector
+
+
+cdef extern from "helper.h":
+    vector[string] make_default_methods()
+
 T = TypeVar("T")
 
 
@@ -25,7 +32,7 @@ cdef class InputFilter:
     Base class for all input filters.
     """
 
-    cdef readonly list methods
+    cdef readonly vector[string] methods
     cdef readonly dict fields
     cdef readonly list conditions
     cdef readonly list global_filters
@@ -33,10 +40,10 @@ cdef class InputFilter:
     cdef readonly dict data
     cdef readonly dict validated_data
     cdef readonly dict errors
-    cdef readonly model_class
+    cdef readonly object model_class
 
     def __cinit__(self) -> None:
-        self.methods: List[str] = ["GET", "POST", "PATCH", "PUT", "DELETE"]
+        self.methods = make_default_methods()
         self.fields: Dict[str, FieldModel] = {}
         self.conditions: List[BaseCondition] = []
         self.global_filters: List[BaseFilter] = []
@@ -44,11 +51,12 @@ cdef class InputFilter:
         self.data: Dict[str, Any] = {}
         self.validated_data: Dict[str, Any] = {}
         self.errors: Dict[str, str] = {}
-        self.model_class: Optional = None
+        self.model_class: Optional[Type[T]] = None
 
     def __init__(self, methods: Optional[List[str]] = None) -> None:
         if methods is not None:
-            self.methods: List[str] = methods
+            self.methods.clear()
+            [self.methods.push_back(method.encode()) for method in methods]
 
     cpdef bint isValid(self):
         """
@@ -84,8 +92,8 @@ cdef class InputFilter:
             Callable[
                 [Any],
                 Callable[
-                    [Tuple[Any, ...], Dict[str, Any]],
-                    Union[Response, Tuple[Any, Dict[str, Any]]],
+                    [tuple[Any, ...], Dict[str, Any]],
+                    Union[Response, tuple[Any, Dict[str, Any]]],
                 ],
             ]
         """
@@ -99,7 +107,7 @@ cdef class InputFilter:
                 f (Callable): The Flask route function to be decorated.
 
             Returns:
-                Callable[[Any, Any], Union[Response, Tuple[Any, Dict[str, Any]]]]: The wrapped function with input validation.
+                Callable[[Any, Any], Union[Response, tuple[Any, Dict[str, Any]]]]: The wrapped function with input validation.
             """
 
             def wrapper(
@@ -114,11 +122,12 @@ cdef class InputFilter:
                     **kwargs: Keyword arguments for the route function.
 
                 Returns:
-                    Union[Response, Tuple[Any, Dict[str, Any]]]: The response from the route function or an error response.
+                    Union[Response, tuple[Any, Dict[str, Any]]]: The response from the route function or an error response.
                 """
 
                 cdef InputFilter input_filter = cls()
-                if request.method not in input_filter.methods:
+                cdef string request_method = request.method.encode()
+                if not any(request_method == method for method in input_filter.methods):
                     return Response(status=405, response="Method Not Allowed")
 
                 data = request.json if request.is_json else request.args
@@ -190,8 +199,8 @@ cdef class InputFilter:
             required = field_info.required
             default = field_info.default
             fallback = field_info.fallback
-            filters = field_info.filters
-            validators = field_info.validators
+            filters = field_info.filters + self.global_filters
+            validators = field_info.validators + self.global_validators
             steps = field_info.steps
             external_api = field_info.external_api
             copy = field_info.copy
@@ -206,16 +215,8 @@ cdef class InputFilter:
                     )
 
                 value = self.applyFilters(filters, value)
-                value = (
-                    self.validateField(
-                        validators, fallback, value
-                    )
-                    or value
-                )
-                value = (
-                    self.applySteps(steps, fallback, value)
-                    or value
-                )
+                value = self.validateField(validators, fallback, value) or value
+                value = self.applySteps(steps, fallback, value) or value
                 value = InputFilter.checkForRequired(
                     field_name, required, default, fallback, value
                 )
@@ -226,7 +227,7 @@ cdef class InputFilter:
                 errors[field_name] = str(e)
 
         try:
-            self.checkConditions(self.validated_data)
+            self.checkConditions(self.conditions, self.validated_data)
         except ValidationError as e:
             errors["_condition"] = str(e)
 
@@ -261,7 +262,7 @@ cdef class InputFilter:
         """
         return self.conditions
 
-    cdef void checkConditions(self, validated_data: Dict[str, Any]) except *:
+    cdef void checkConditions(self, conditions: List[BaseCondition], validated_data: Dict[str, Any]) except *:
         """
         Checks if all conditions are met.
 
@@ -271,10 +272,12 @@ cdef class InputFilter:
         message indicating which condition failed.
 
         Args:
+            conditions (List[BaseCondition]):
+                A list of conditions to be checked against the validated data.
             validated_data (Dict[str, Any]):
                 The validated data to check against the conditions.
         """
-        for condition in self.conditions:
+        for condition in conditions:
             if not condition.check(validated_data):
                 raise ValidationError(
                     f"Condition '{condition.__class__.__name__}' not met."
@@ -296,7 +299,7 @@ cdef class InputFilter:
         for field_name, field_value in data.items():
             if field_name in self.fields:
                 field_value = self.applyFilters(
-                    filters=self.fields[field_name].filters,
+                    filters=self.fields[field_name].filters + self.global_filters,
                     value=field_value,
                 )
 
@@ -440,7 +443,7 @@ cdef class InputFilter:
                 message is being retrieved.
 
         Returns:
-            str: A string representing the predefined error message.
+            Optional[str]: A string representing the predefined error message.
         """
         return self.errors.get(field_name)
 
@@ -500,7 +503,6 @@ cdef class InputFilter:
                 from.
         """
         if name in self.fields:
-            print(self.fields)
             raise ValueError(f"Field '{name}' already exists.")
 
         self.fields[name] = FieldModel(
@@ -765,7 +767,7 @@ cdef class InputFilter:
         if value is None:
             return
 
-        for filter in self.global_filters + filters:
+        for filter in filters:
             value = filter.apply(value)
 
         return value
@@ -897,7 +899,7 @@ cdef class InputFilter:
             return
 
         try:
-            for validator in self.global_validators + validators:
+            for validator in validators:
                 validator.validate(value)
         except ValidationError:
             if fallback is None:

@@ -64,7 +64,7 @@ cdef class ExternalApiMixin:
 
         if config.api_key:
             requestData["headers"]["Authorization"] = (
-                f"Bearer " f"{config.api_key}"
+                f"Bearer {config.api_key}"
             )
 
         if config.headers:
@@ -87,7 +87,7 @@ cdef class ExternalApiMixin:
             if fallback is None:
                 logger.exception("External API request failed unexpectedly.")
                 raise ValidationError(
-                    f"External API call failed for field " f"'{data_key}'."
+                    f"External API call failed for field '{data_key}'."
                 )
             return fallback
         except ValueError:
@@ -96,7 +96,7 @@ cdef class ExternalApiMixin:
                     "External API response could not be parsed to json."
                 )
                 raise ValidationError(
-                    f"External API call failed for field " f"'{data_key}'."
+                    f"External API call failed for field '{data_key}'."
                 )
             return fallback
 
@@ -107,7 +107,7 @@ cdef class ExternalApiMixin:
                     f"{response.status_code}: {response.text}"
                 )
                 raise ValidationError(
-                    f"External API call failed for field " f"'{data_key}'."
+                    f"External API call failed for field '{data_key}'."
                 )
             return fallback
 

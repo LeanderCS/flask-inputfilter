@@ -8,8 +8,8 @@ from flask_inputfilter.Model import ExternalApiConfig
 
 
 class ExternalApiMixin:
+    @staticmethod
     def callExternalApi(
-        self,
         config: ExternalApiConfig,
         fallback: Any,
         validated_data: Dict[str, Any],
@@ -55,39 +55,39 @@ class ExternalApiMixin:
 
         data_key = config.data_key
 
-        requestData = {
+        request_data = {
             "headers": {},
             "params": {},
         }
 
         if config.api_key:
-            requestData["headers"]["Authorization"] = (
-                f"Bearer " f"{config.api_key}"
-            )
+            request_data["headers"][
+                "Authorization"
+            ] = f"Bearer {config.api_key}"
 
         if config.headers:
-            requestData["headers"].update(config.headers)
+            request_data["headers"].update(config.headers)
 
         if config.params:
-            requestData[
+            request_data[
                 "params"
             ] = ExternalApiMixin.replacePlaceholdersInParams(
                 config.params, validated_data
             )
 
-        requestData["url"] = ExternalApiMixin.replacePlaceholders(
+        request_data["url"] = ExternalApiMixin.replacePlaceholders(
             config.url, validated_data
         )
-        requestData["method"] = config.method
+        request_data["method"] = config.method
 
         try:
-            response = requests.request(**requestData)
+            response = requests.request(**request_data)
             result = response.json()
         except requests.exceptions.RequestException:
             if fallback is None:
                 logger.exception("External API request failed unexpectedly.")
                 raise ValidationError(
-                    f"External API call failed for field " f"'{data_key}'."
+                    f"External API call failed for field'{data_key}'."
                 )
             return fallback
         except ValueError:
@@ -96,7 +96,7 @@ class ExternalApiMixin:
                     "External API response could not be parsed to json."
                 )
                 raise ValidationError(
-                    f"External API call failed for field " f"'{data_key}'."
+                    f"External API call failed for field '{data_key}'."
                 )
             return fallback
 
@@ -107,7 +107,7 @@ class ExternalApiMixin:
                     f"{response.status_code}: {response.text}"
                 )
                 raise ValidationError(
-                    f"External API call failed for field " f"'{data_key}'."
+                    f"External API call failed for field '{data_key}'."
                 )
             return fallback
 

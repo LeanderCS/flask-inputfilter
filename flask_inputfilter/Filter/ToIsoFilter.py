@@ -12,10 +12,7 @@ class ToIsoFilter(BaseFilter):
     """
 
     def apply(self, value: Any) -> Union[str, Any]:
-        if isinstance(value, datetime):
-            return value.isoformat()
-
-        elif isinstance(value, date):
+        if isinstance(value, (datetime, date)):
             return value.isoformat()
 
         return value
