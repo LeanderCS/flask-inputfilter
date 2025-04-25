@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools", "wheel", "cython"]
+requires = ["setuptools>=42", "wheel", "cython>=3.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "flask_inputfilter"
-version = "0.4.1"
+version = "0.4.2"
 description = "A library to easily filter and validate input data in Flask applications"
 readme = "README.rst"
 requires-python = ">=3.7"
