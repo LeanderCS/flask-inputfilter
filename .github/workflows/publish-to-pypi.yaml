@@ -14,7 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        os: [ windows-latest, macos-latest ] #ubuntu-latest,
         python: [ "3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14" ]
         exclude:
           - os: windows-latest
@@ -23,8 +23,8 @@ jobs:
             python: "3.8"
           - os: macos-latest
             python: "3.7"
-          - os: ubuntu-latest
-            python: "3.7"
+          #- os: ubuntu-latest
+          #  python: "3.7"
 
     steps:
       - uses: actions/checkout@v4
@@ -46,10 +46,14 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Install build tools
-        run: pip install build twine wheel
+        run: pip install build twine wheel auditwheel
 
       - name: Build wheel
         run: python -m build --wheel
+
+      - name: Repair the wheel for manylinux compatibility
+        if: ${{ runner.os == 'Linux' }}
+        run: auditwheel repair dist/*.whl -w dist/
 
       - name: Upload built packages
         uses: actions/upload-artifact@v4
