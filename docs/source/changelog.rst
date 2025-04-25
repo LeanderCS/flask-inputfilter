@@ -3,12 +3,19 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.4.3a1] - 2025-04-26
+----------------------
+
+Added
+- whl generation for linux too.
+
+
 [0.4.2] - 2025-04-25
 --------------------
 
 Added
 ^^^^^
-- .whl generation for all major versions and envs.
+- whl generation for all major versions and envs.
 
 
 [0.4.1] - 2025-04-24
