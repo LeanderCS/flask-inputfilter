@@ -1,3 +1,7 @@
-from .ImageFormatEnum import ImageFormatEnum
-from .RegexEnum import RegexEnum
-from .UnicodeFormEnum import UnicodeFormEnum
+from flask_inputfilter.enums import ImageFormatEnum, RegexEnum, UnicodeFormEnum
+
+__all__ = [
+    "ImageFormatEnum",
+    "RegexEnum",
+    "UnicodeFormEnum",
+]

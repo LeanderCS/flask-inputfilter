@@ -5,17 +5,17 @@ from unittest.mock import Mock, patch
 from flask import Flask, g, jsonify
 
 from flask_inputfilter import InputFilter
-from flask_inputfilter.Condition import BaseCondition, ExactlyOneOfCondition
-from flask_inputfilter.Exception import ValidationError
-from flask_inputfilter.Filter import (
+from flask_inputfilter.conditions import BaseCondition, ExactlyOneOfCondition
+from flask_inputfilter.exceptions import ValidationError
+from flask_inputfilter.filters import (
     StringSlugifyFilter,
     ToFloatFilter,
     ToIntegerFilter,
     ToLowerFilter,
     ToUpperFilter,
 )
-from flask_inputfilter.Model import ExternalApiConfig
-from flask_inputfilter.Validator import (
+from flask_inputfilter.models import ExternalApiConfig
+from flask_inputfilter.validators import (
     InArrayValidator,
     IsIntegerValidator,
     IsStringValidator,

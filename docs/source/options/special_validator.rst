@@ -13,7 +13,7 @@ Example
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import NotValidator, IsIntegerValidator
+    from flask_inputfilter.validators import NotValidator, IsIntegerValidator
 
     class NotIntegerInputFilter(InputFilter):
         def __init__(self):
@@ -57,7 +57,7 @@ The validator sequentially applies each validator in the provided list to the in
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import AndValidator, IsIntegerValidator, RangeValidator
+    from flask_inputfilter.validators import AndValidator, IsIntegerValidator, RangeValidator
 
     class AndInputFilter(InputFilter):
         def __init__(self):
@@ -87,7 +87,7 @@ Executes the inner validator on the input. If the inner validator does not raise
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import NotValidator, IsIntegerValidator
+    from flask_inputfilter.validators import NotValidator, IsIntegerValidator
 
     class NotIntegerInputFilter(InputFilter):
         def __init__(self):
@@ -118,7 +118,7 @@ The validator applies each validator in the provided list to the input value. If
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import OrValidator, IsIntegerValidator, IsStringValidator
+    from flask_inputfilter.validators import OrValidator, IsIntegerValidator, IsStringValidator
 
     class OrInputFilter(InputFilter):
         def __init__(self):
@@ -149,7 +149,7 @@ The validator applies each validator in the provided list to the input value and
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import XorValidator, IsIntegerValidator, IsStringValidator
+    from flask_inputfilter.validators import XorValidator, IsIntegerValidator, IsStringValidator
 
     class XorInputFilter(InputFilter):
         def __init__(self):

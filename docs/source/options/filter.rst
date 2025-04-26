@@ -16,7 +16,7 @@ Example
 .. code:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import StringTrimFilter, ToLowerFilter
+    from flask_inputfilter.filters import StringTrimFilter, ToLowerFilter
 
     class TestInputFilter(InputFilter):
         def __init__(self):
@@ -91,7 +91,7 @@ If the input value is a string, it returns a list of substrings. For non-string 
 .. code:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import ArrayExplodeFilter
+    from flask_inputfilter.filters import ArrayExplodeFilter
 
     class TagFilter(InputFilter):
         def __init__(self):
@@ -123,7 +123,7 @@ If the image (or its base64 representation) exceeds the target dimensions, the f
 .. code:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import Base64ImageDownscaleFilter
+    from flask_inputfilter.filters import Base64ImageDownscaleFilter
 
     class ImageFilter(InputFilter):
         def __init__(self):
@@ -155,7 +155,7 @@ The filter resizes and compresses the image iteratively until its size is below 
 .. code:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import Base64ImageResizeFilter
+    from flask_inputfilter.filters import Base64ImageResizeFilter
 
     class AvatarFilter(InputFilter):
         def __init__(self):
@@ -185,7 +185,7 @@ Filters out unwanted substrings or keys based on a predefined blacklist.
 .. code:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import BlacklistFilter
+    from flask_inputfilter.filters import BlacklistFilter
 
     class CommentFilter(InputFilter):
         def __init__(self):
@@ -210,7 +210,7 @@ If the input is a string, all emoji characters are removed; non-string inputs ar
 .. code:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import StringRemoveEmojisFilter
+    from flask_inputfilter.filters import StringRemoveEmojisFilter
 
     class CommentFilter(InputFilter):
         def __init__(self):
@@ -235,7 +235,7 @@ Normalizes Unicode, converts to ASCII, lowercases the string, and replaces space
 .. code:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import StringSlugifyFilter
+    from flask_inputfilter.filters import StringSlugifyFilter
 
     class PostFilter(InputFilter):
         def __init__(self):
@@ -260,7 +260,7 @@ If the input is a string, it returns the trimmed version. Otherwise, the value r
 .. code:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import StringTrimFilter
+    from flask_inputfilter.filters import StringTrimFilter
 
     class UserFilter(InputFilter):
         def __init__(self):
@@ -285,7 +285,7 @@ Strips out any character that is not a letter, digit, or underscore from the inp
 .. code:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import ToAlphaNumericFilter
+    from flask_inputfilter.filters import ToAlphaNumericFilter
 
     class CodeFilter(InputFilter):
         def __init__(self):
@@ -310,7 +310,7 @@ Uses Python’s built-in ``bool()`` conversion. Note that non-empty strings and 
 .. code:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import ToBooleanFilter
+    from flask_inputfilter.filters import ToBooleanFilter
 
     class ActiveFilter(InputFilter):
         def __init__(self):
@@ -335,7 +335,7 @@ Normalizes delimiters such as spaces, underscores, or hyphens, capitalizes each 
 .. code:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import ToCamelCaseFilter
+    from flask_inputfilter.filters import ToCamelCaseFilter
 
     class IdentifierFilter(InputFilter):
         def __init__(self):
@@ -363,7 +363,7 @@ If the input is a dictionary, it instantiates the provided dataclass using the d
 .. code:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import ToDataclassFilter
+    from flask_inputfilter.filters import ToDataclassFilter
     from my_dataclasses import MyDataClass
 
     class DataFilter(InputFilter):
@@ -391,7 +391,7 @@ Converts an input value to a ``date`` object. Supports ISO 8601 formatted string
 .. code:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import ToDateFilter
+    from flask_inputfilter.filters import ToDateFilter
 
     class BirthdateFilter(InputFilter):
         def __init__(self):
@@ -419,7 +419,7 @@ Converts an input value to a ``datetime`` object. Supports ISO 8601 formatted st
 .. code:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import ToDateTimeFilter
+    from flask_inputfilter.filters import ToDateTimeFilter
 
     class TimestampFilter(InputFilter):
         def __init__(self):
@@ -446,7 +446,7 @@ Converts a string to a numeric type (either an integer or a float).
 .. code:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import ToDigitsFilter
+    from flask_inputfilter.filters import ToDigitsFilter
 
     class QuantityFilter(InputFilter):
         def __init__(self):
@@ -477,7 +477,7 @@ Converts a value to an instance of a specified Enum.
 .. code:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import ToEnumFilter
+    from flask_inputfilter.filters import ToEnumFilter
     from my_enums import ColorEnum
 
     class ColorFilter(InputFilter):

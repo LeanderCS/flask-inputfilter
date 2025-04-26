@@ -30,7 +30,6 @@ jobs:
 
       - name: Verify library usage - Part I - installation
         run: |
-          python -c "import flask_inputfilter.InputFilter"
           python -c "from flask_inputfilter import InputFilter"
 
       - name: Verify library usage - Part II - functional test
@@ -40,7 +39,7 @@ jobs:
         run: |
           output=$(python -c "from flask_inputfilter import InputFilter; print(InputFilter)")
 
-          if [ "$output" = "<class 'flask_inputfilter.InputFilter.InputFilter'>" ]; then
+          if [ "$output" = "<class 'flask_inputfilter.input_filter.InputFilter'>" ]; then
             echo "Test passed: Correct class returned"
           else
             echo "Test failed: Unexpected output - $output"
@@ -74,7 +73,6 @@ jobs:
 
       - name: Verify library usage - Part I - installation
         run: |
-          python -c "import flask_inputfilter.InputFilter"
           python -c "from flask_inputfilter import InputFilter"
 
       - name: Verify library usage - Part II - functional test
@@ -84,7 +82,7 @@ jobs:
         run: |
           output=$(python -c "from flask_inputfilter import InputFilter; print(InputFilter)")
 
-          if [ "$output" = "<class 'flask_inputfilter._InputFilter.InputFilter'>" ]; then
+          if [ "$output" = "<class 'flask_inputfilter._input_filter.InputFilter'>" ]; then
             echo "Test passed: Correct class returned"
           else
             echo "Test failed: Unexpected output - $output"

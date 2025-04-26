@@ -3,10 +3,37 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.5.0] - 2025-04-26
+--------------------
+
+Changed
+^^^^^^^
+- Moved components to subfolders to improve readability and maintainability.
+  The following components have been moved:
+  - ``Condition`` => ``conditions``
+  - ``Enum`` => ``enums``
+  - ``Exception`` => ``exceptions``
+  - ``Filter`` => ``filters``
+  - ``Mixin`` => ``mixins``
+  - ``Model`` => ``models``
+  - ``Validator`` => ``validators``
+
+  But the old import paths are still available for backward compatibility, but
+  because the old path will be abandoned in the future, it is recommended
+  to use the new paths.
+
+- Renamed files into snake_case to follow the PEP8 standard.
+  This requires a migration if you are importing the files directly.
+  e.g. ``from flask_inputfilter.filters import Base64ImageResizeFilter`` to
+  ``from flask_inputfilter.filters.base64_image_resize_filter import Base64ImageResizeFilter``.
+
+
+
 [0.4.3a1] - 2025-04-26
 ----------------------
 
 Added
+^^^^^
 - whl generation for linux too.
 
 

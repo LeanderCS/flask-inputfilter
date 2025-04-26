@@ -1,1 +1,5 @@
-from .ValidationError import ValidationError
+from flask_inputfilter.exceptions import ValidationError
+
+__all__ = [
+    "ValidationError",
+]

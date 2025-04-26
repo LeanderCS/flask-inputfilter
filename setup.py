@@ -7,18 +7,21 @@ if shutil.which("g++") is not None:
     from setuptools.extension import Extension
 
     pyx_modules = [
-        "flask_inputfilter.Mixin._ExternalApiMixin",
-        "flask_inputfilter.Model._FieldModel",
-        "flask_inputfilter._InputFilter",
+        "flask_inputfilter.mixins._external_api_mixin",
+        "flask_inputfilter.models._field_model",
+        "flask_inputfilter._input_filter",
     ]
 
     ext_modules = cythonize(
-        module_list=[Extension(
-            name=module,
-            sources=[module.replace('.', '/') + ".pyx"],
-            extra_compile_args=["-std=c++11"],
-            language="c++"
-        ) for module in pyx_modules],
+        module_list=[
+            Extension(
+                name=module,
+                sources=[module.replace(".", "/") + ".pyx"],
+                extra_compile_args=["-std=c++11"],
+                language="c++",
+            )
+            for module in pyx_modules
+        ],
         language_level=3,
     )
     options = {

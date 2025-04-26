@@ -1,31 +1,65 @@
-from flask_inputfilter.Filter.BaseFilter import BaseFilter
+from flask_inputfilter.filters import (
+    ArrayExplodeFilter,
+    Base64ImageDownscaleFilter,
+    Base64ImageResizeFilter,
+    BaseFilter,
+    BlacklistFilter,
+    StringRemoveEmojisFilter,
+    StringSlugifyFilter,
+    StringTrimFilter,
+    ToAlphaNumericFilter,
+    ToBooleanFilter,
+    ToCamelCaseFilter,
+    ToDataclassFilter,
+    ToDateFilter,
+    ToDateTimeFilter,
+    ToDigitsFilter,
+    ToEnumFilter,
+    ToFloatFilter,
+    ToIntegerFilter,
+    ToIsoFilter,
+    ToLowerFilter,
+    ToNormalizedUnicodeFilter,
+    ToNullFilter,
+    ToPascalCaseFilter,
+    ToSnakeCaseFilter,
+    ToStringFilter,
+    ToTypedDictFilter,
+    ToUpperFilter,
+    TruncateFilter,
+    WhitelistFilter,
+    WhitespaceCollapseFilter,
+)
 
-from .ArrayExplodeFilter import ArrayExplodeFilter
-from .Base64ImageDownscaleFilter import Base64ImageDownscaleFilter
-from .Base64ImageResizeFilter import Base64ImageResizeFilter
-from .BlacklistFilter import BlacklistFilter
-from .StringRemoveEmojisFilter import StringRemoveEmojisFilter
-from .StringSlugifyFilter import StringSlugifyFilter
-from .StringTrimFilter import StringTrimFilter
-from .ToAlphaNumericFilter import ToAlphaNumericFilter
-from .ToBooleanFilter import ToBooleanFilter
-from .ToCamelCaseFilter import ToCamelCaseFilter
-from .ToDataclassFilter import ToDataclassFilter
-from .ToDateFilter import ToDateFilter
-from .ToDateTimeFilter import ToDateTimeFilter
-from .ToDigitsFilter import ToDigitsFilter
-from .ToEnumFilter import ToEnumFilter
-from .ToFloatFilter import ToFloatFilter
-from .ToIntegerFilter import ToIntegerFilter
-from .ToIsoFilter import ToIsoFilter
-from .ToLowerFilter import ToLowerFilter
-from .ToNormalizedUnicodeFilter import ToNormalizedUnicodeFilter
-from .ToNullFilter import ToNullFilter
-from .ToPascalCaseFilter import ToPascalCaseFilter
-from .ToSnakeCaseFilter import ToSnakeCaseFilter
-from .ToStringFilter import ToStringFilter
-from .ToTypedDictFilter import ToTypedDictFilter
-from .ToUpperFilter import ToUpperFilter
-from .TruncateFilter import TruncateFilter
-from .WhitelistFilter import WhitelistFilter
-from .WhitespaceCollapseFilter import WhitespaceCollapseFilter
+__all__ = [
+    "ArrayExplodeFilter",
+    "Base64ImageDownscaleFilter",
+    "Base64ImageResizeFilter",
+    "BaseFilter",
+    "BlacklistFilter",
+    "StringRemoveEmojisFilter",
+    "StringSlugifyFilter",
+    "StringTrimFilter",
+    "ToAlphaNumericFilter",
+    "ToBooleanFilter",
+    "ToCamelCaseFilter",
+    "ToDataclassFilter",
+    "ToDateFilter",
+    "ToDateTimeFilter",
+    "ToDigitsFilter",
+    "ToEnumFilter",
+    "ToFloatFilter",
+    "ToIntegerFilter",
+    "ToIsoFilter",
+    "ToLowerFilter",
+    "ToNormalizedUnicodeFilter",
+    "ToNullFilter",
+    "ToPascalCaseFilter",
+    "ToSnakeCaseFilter",
+    "ToStringFilter",
+    "ToTypedDictFilter",
+    "ToUpperFilter",
+    "TruncateFilter",
+    "WhitelistFilter",
+    "WhitespaceCollapseFilter",
+]
