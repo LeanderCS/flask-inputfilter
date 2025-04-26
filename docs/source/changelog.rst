@@ -3,6 +3,14 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.5.1] - 2025-04-26
+--------------------
+
+Added
+^^^^^
+- Added .whl for musllinux_aarch64 to the release process.
+
+
 [0.5.0] - 2025-04-26
 --------------------
 
@@ -26,7 +34,6 @@ Changed
   This requires a migration if you are importing the files directly.
   e.g. ``from flask_inputfilter.filters import Base64ImageResizeFilter`` to
   ``from flask_inputfilter.filters.base64_image_resize_filter import Base64ImageResizeFilter``.
-
 
 
 [0.4.3a1] - 2025-04-26
