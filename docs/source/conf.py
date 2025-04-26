@@ -1,7 +1,7 @@
 project = "flask-inputfilter"
 copyright = "2025, Leander Cain Slotosch"
 author = "Leander Cain Slotosch"
-release = "0.4.3a1"
+release = "0.5.0"
 
 extensions = ["sphinx_rtd_theme", "sphinx_design"]
 

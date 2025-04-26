@@ -14,9 +14,9 @@ Example
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import OneOfCondition
-    from flask_inputfilter.Filter import StringTrimFilter
-    from flask_inputfilter.Validator import IsStringValidator
+    from flask_inputfilter.conditions import OneOfCondition
+    from flask_inputfilter.filters import StringTrimFilter
+    from flask_inputfilter.validators import IsStringValidator
 
     class TestInputFilter(InputFilter):
         def __init__(self):
@@ -84,8 +84,8 @@ Validates that the length of the array from ``first_array_field`` is equal to th
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import ArrayLengthEqualCondition
-    from flask_inputfilter.Validator import IsArrayValidator
+    from flask_inputfilter.conditions import ArrayLengthEqualCondition
+    from flask_inputfilter.validators import IsArrayValidator
 
     class ArrayLengthFilter(InputFilter):
         def __init__(self):
@@ -124,8 +124,8 @@ Validates that the array in ``longer_field`` has more elements than the array in
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import ArrayLongerThanCondition
-    from flask_inputfilter.Validator import IsArrayValidator
+    from flask_inputfilter.conditions import ArrayLongerThanCondition
+    from flask_inputfilter.validators import IsArrayValidator
 
     class ArrayComparisonFilter(InputFilter):
         def __init__(self):
@@ -163,8 +163,8 @@ Executes the provided callable with the input data. The condition passes if the 
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import CustomCondition
-    from flask_inputfilter.Validator import IsIntegerValidator
+    from flask_inputfilter.conditions import CustomCondition
+    from flask_inputfilter.validators import IsIntegerValidator
 
     def my_custom_condition(data):
         return data.get('age', 0) >= 18
@@ -201,7 +201,7 @@ Validates that the values of ``first_field`` and ``second_field`` are equal. Fai
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import EqualCondition
+    from flask_inputfilter.conditions import EqualCondition
 
     class EqualFieldsFilter(InputFilter):
         def __init__(self):
@@ -238,7 +238,7 @@ Counts the number of specified fields present in the data and validates that the
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import ExactlyNOfCondition
+    from flask_inputfilter.conditions import ExactlyNOfCondition
 
     class ExactFieldsFilter(InputFilter):
         def __init__(self):
@@ -280,7 +280,7 @@ Validates that exactly ``n`` fields among the specified ones have the given valu
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import ExactlyNOfMatchesCondition
+    from flask_inputfilter.conditions import ExactlyNOfMatchesCondition
 
     class MatchFieldsFilter(InputFilter):
         def __init__(self):
@@ -316,7 +316,7 @@ Validates that only one field among the specified fields exists in the input dat
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import ExactlyOneOfCondition
+    from flask_inputfilter.conditions import ExactlyOneOfCondition
 
     class OneFieldFilter(InputFilter):
         def __init__(self):
@@ -353,7 +353,7 @@ Validates that exactly one of the specified fields has the given value.
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import ExactlyOneOfMatchesCondition
+    from flask_inputfilter.conditions import ExactlyOneOfMatchesCondition
 
     class OneMatchFilter(InputFilter):
         def __init__(self):
@@ -390,8 +390,8 @@ Validates that the integer value from ``bigger_field`` is greater than the value
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import IntegerBiggerThanCondition
-    from flask_inputfilter.Validator import IsIntegerValidator
+    from flask_inputfilter.conditions import IntegerBiggerThanCondition
+    from flask_inputfilter.validators import IsIntegerValidator
 
     class NumberComparisonFilter(InputFilter):
         def __init__(self):
@@ -430,7 +430,7 @@ Validates that the count of the specified fields present is greater than or equa
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import NOfCondition
+    from flask_inputfilter.conditions import NOfCondition
 
     class MinimumFieldsFilter(InputFilter):
         def __init__(self):
@@ -472,7 +472,7 @@ Validates that the count of fields matching the given value is greater than or e
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import NOfMatchesCondition
+    from flask_inputfilter.conditions import NOfMatchesCondition
 
     class MinimumMatchFilter(InputFilter):
         def __init__(self):
@@ -509,7 +509,7 @@ Validates that the values of ``first_field`` and ``second_field`` are not equal.
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import NotEqualCondition
+    from flask_inputfilter.conditions import NotEqualCondition
 
     class DifferenceFilter(InputFilter):
         def __init__(self):
@@ -545,7 +545,7 @@ Validates that at least one field from the specified list is present. Fails if n
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import OneOfCondition
+    from flask_inputfilter.conditions import OneOfCondition
 
     class OneFieldRequiredFilter(InputFilter):
         def __init__(self):
@@ -582,7 +582,7 @@ Validates that at least one field from the specified list has the given value.
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import OneOfMatchesCondition
+    from flask_inputfilter.conditions import OneOfMatchesCondition
 
     class OneMatchRequiredFilter(InputFilter):
         def __init__(self):
@@ -620,7 +620,7 @@ If the value of ``condition_field`` matches the specified value (or is in the sp
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import RequiredIfCondition
+    from flask_inputfilter.conditions import RequiredIfCondition
 
     class ConditionalRequiredFilter(InputFilter):
         def __init__(self):
@@ -663,7 +663,7 @@ Validates that the string in ``longer_field`` has a greater length than the stri
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import StringLongerThanCondition
+    from flask_inputfilter.conditions import StringLongerThanCondition
 
     class StringLengthFilter(InputFilter):
         def __init__(self):
@@ -700,7 +700,7 @@ Validates that the date in ``smaller_date_field`` is earlier than the date in ``
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import TemporalOrderCondition
+    from flask_inputfilter.conditions import TemporalOrderCondition
 
     class DateOrderFilter(InputFilter):
         def __init__(self):

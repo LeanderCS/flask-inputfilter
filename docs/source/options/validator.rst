@@ -17,7 +17,7 @@ Example
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsIntegerValidator, RangeValidator
+    from flask_inputfilter.validators import IsIntegerValidator, RangeValidator
 
 
     class UpdatePointsInputFilter(InputFilter):
@@ -117,7 +117,7 @@ Verifies that the input is a list and then applies the provided filter to each e
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import ArrayElementValidator
+    from flask_inputfilter.validators import ArrayElementValidator
     from my_filters import MyElementFilter
 
     class TagInputFilter(InputFilter):
@@ -149,7 +149,7 @@ Ensures that the input is a list and that its length is between the specified mi
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import ArrayLengthValidator
+    from flask_inputfilter.validators import ArrayLengthValidator
 
     class ListInputFilter(InputFilter):
         def __init__(self):
@@ -180,7 +180,7 @@ If the input is a string, it attempts to parse it as JSON. It then confirms that
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import CustomJsonValidator
+    from flask_inputfilter.validators import CustomJsonValidator
 
     class JsonInputFilter(InputFilter):
         def __init__(self):
@@ -213,7 +213,7 @@ Converts both the input and the reference date to datetime objects and verifies 
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import DateAfterValidator
+    from flask_inputfilter.validators import DateAfterValidator
 
     class EventInputFilter(InputFilter):
         def __init__(self):
@@ -243,7 +243,7 @@ Parses the input and reference date into datetime objects and checks that the in
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import DateBeforeValidator
+    from flask_inputfilter.validators import DateBeforeValidator
 
     class RegistrationInputFilter(InputFilter):
         def __init__(self):
@@ -274,7 +274,7 @@ Ensures the input date is not earlier than ``min_date`` and not later than ``max
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import DateRangeValidator
+    from flask_inputfilter.validators import DateRangeValidator
 
     class BookingInputFilter(InputFilter):
         def __init__(self):
@@ -305,7 +305,7 @@ Converts the number to a string and checks the total number of digits and the di
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import FloatPrecisionValidator
+    from flask_inputfilter.validators import FloatPrecisionValidator
 
     class PriceInputFilter(InputFilter):
         def __init__(self):
@@ -336,7 +336,7 @@ Verifies that the value is present in the list. In strict mode, type compatibili
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import InArrayValidator
+    from flask_inputfilter.validators import InArrayValidator
 
     class StatusInputFilter(InputFilter):
         def __init__(self):
@@ -367,7 +367,7 @@ Performs a case-insensitive comparison to ensure that the value matches one of t
 
     from enum import Enum
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import InEnumValidator
+    from flask_inputfilter.validators import InEnumValidator
 
     class ColorEnum(Enum):
         RED = "red"
@@ -401,7 +401,7 @@ Raises a ``ValidationError`` if the input is not a list.
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsArrayValidator
+    from flask_inputfilter.validators import IsArrayValidator
 
     class ListInputFilter(InputFilter):
         def __init__(self):
@@ -432,7 +432,7 @@ Decodes the Base64 string to determine the image size and raises a ``ValidationE
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsBase64ImageCorrectSizeValidator
+    from flask_inputfilter.validators import IsBase64ImageCorrectSizeValidator
 
     class ImageInputFilter(InputFilter):
         def __init__(self):
@@ -461,7 +461,7 @@ Attempts to decode the Base64 string and open the image using the PIL library. I
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsBase64ImageValidator
+    from flask_inputfilter.validators import IsBase64ImageValidator
 
     class AvatarInputFilter(InputFilter):
         def __init__(self):
@@ -490,7 +490,7 @@ Raises a ``ValidationError`` if the input value is not of type bool.
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsBooleanValidator
+    from flask_inputfilter.validators import IsBooleanValidator
 
     class FlagInputFilter(InputFilter):
         def __init__(self):
@@ -521,7 +521,7 @@ Ensures the input is a dictionary and, that all expected keys are present. Raise
 
     from dataclasses import dataclass
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsDataclassValidator
+    from flask_inputfilter.validators import IsDataclassValidator
 
     @dataclass
     class User:
@@ -555,7 +555,7 @@ Raises a ``ValidationError`` if the input value is not of type float.
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsFloatValidator
+    from flask_inputfilter.validators import IsFloatValidator
 
     class MeasurementInputFilter(InputFilter):
         def __init__(self):
@@ -584,7 +584,7 @@ Parses the input date and compares it to the current date and time. If the input
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsFutureDateValidator
+    from flask_inputfilter.validators import IsFutureDateValidator
 
     class AppointmentInputFilter(InputFilter):
         def __init__(self):
@@ -613,7 +613,7 @@ Verifies that the input is a string and attempts to convert it to an integer usi
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsHexadecimalValidator
+    from flask_inputfilter.validators import IsHexadecimalValidator
 
     class HexInputFilter(InputFilter):
         def __init__(self):
@@ -641,7 +641,7 @@ Decodes the image (if provided as a string) and checks that its width is greater
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsHorizontalImageValidator
+    from flask_inputfilter.validators import IsHorizontalImageValidator
 
     class HorizontalImageInputFilter(InputFilter):
         def __init__(self):
@@ -670,7 +670,7 @@ Verifies that the input is a string and checks for HTML tags using a regular exp
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsHtmlValidator
+    from flask_inputfilter.validators import IsHtmlValidator
 
     class HtmlInputFilter(InputFilter):
         def __init__(self):
@@ -699,7 +699,7 @@ Raises a ``ValidationError`` if the input is not an instance of the specified cl
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsInstanceValidator
+    from flask_inputfilter.validators import IsInstanceValidator
 
     class MyClass:
         pass
@@ -730,7 +730,7 @@ Raises a ``ValidationError`` if the input value is not of type int.
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsIntegerValidator
+    from flask_inputfilter.validators import IsIntegerValidator
 
     class NumberInputFilter(InputFilter):
         def __init__(self):
@@ -758,7 +758,7 @@ Attempts to parse the input using JSON decoding. Raises a ``ValidationError`` if
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsJsonValidator
+    from flask_inputfilter.validators import IsJsonValidator
 
     class JsonInputFilter(InputFilter):
         def __init__(self):
@@ -787,7 +787,7 @@ Confirms that the input is a string and verifies that all characters are lowerca
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsLowercaseValidator
+    from flask_inputfilter.validators import IsLowercaseValidator
 
     class LowercaseInputFilter(InputFilter):
         def __init__(self):
@@ -817,7 +817,7 @@ Ensures the input is a string and matches a regular expression pattern for MAC a
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsMacAddressValidator
+    from flask_inputfilter.validators import IsMacAddressValidator
 
     class NetworkInputFilter(InputFilter):
         def __init__(self):
@@ -845,7 +845,7 @@ Parses the input date and verifies that it is earlier than the current date and 
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsPastDateValidator
+    from flask_inputfilter.validators import IsPastDateValidator
 
     class HistoryInputFilter(InputFilter):
         def __init__(self):
@@ -874,7 +874,7 @@ Ensures that the input is an integer and that it lies within the valid range for
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsPortValidator
+    from flask_inputfilter.validators import IsPortValidator
 
     class PortInputFilter(InputFilter):
         def __init__(self):
@@ -904,7 +904,7 @@ Verifies that the input is a string, matches the RGB color format using a regula
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsRgbColorValidator
+    from flask_inputfilter.validators import IsRgbColorValidator
 
     class ColorInputFilter(InputFilter):
         def __init__(self):
@@ -933,7 +933,7 @@ Ensures that the input is a string and matches the expected slug pattern (e.g., 
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsSlugValidator
+    from flask_inputfilter.validators import IsSlugValidator
 
     class SlugInputFilter(InputFilter):
         def __init__(self):
@@ -961,7 +961,7 @@ Raises a ``ValidationError`` if the input is not of type str.
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsStringValidator
+    from flask_inputfilter.validators import IsStringValidator
 
     class TextInputFilter(InputFilter):
         def __init__(self):
@@ -991,7 +991,7 @@ Ensures the input is a dictionary and, that all expected keys are present. Raise
 
     from typing import TypedDict
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsTypedDictValidator
+    from flask_inputfilter.validators import IsTypedDictValidator
 
     class PersonDict(TypedDict):
         name: str
@@ -1024,7 +1024,7 @@ Ensures that the input is a string and that all characters are uppercase using t
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsUppercaseValidator
+    from flask_inputfilter.validators import IsUppercaseValidator
 
     class UppercaseInputFilter(InputFilter):
         def __init__(self):
@@ -1054,7 +1054,7 @@ Verifies that the input is a string and uses URL parsing (via ``urllib.parse.url
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsUrlValidator
+    from flask_inputfilter.validators import IsUrlValidator
 
     class UrlInputFilter(InputFilter):
         def __init__(self):
@@ -1082,7 +1082,7 @@ Verifies that the input is a string and attempts to parse it as a UUID. Raises a
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsUUIDValidator
+    from flask_inputfilter.validators import IsUUIDValidator
 
     class UUIDInputFilter(InputFilter):
         def __init__(self):
@@ -1110,7 +1110,7 @@ Decodes the image (if provided as a string) and checks that its height is greate
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsVerticalImageValidator
+    from flask_inputfilter.validators import IsVerticalImageValidator
 
     class VerticalImageInputFilter(InputFilter):
         def __init__(self):
@@ -1138,7 +1138,7 @@ Parses the input date and verifies that it corresponds to a weekday. Raises a ``
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsWeekdayValidator
+    from flask_inputfilter.validators import IsWeekdayValidator
 
     class WorkdayInputFilter(InputFilter):
         def __init__(self):
@@ -1166,7 +1166,7 @@ Parses the input date and confirms that it corresponds to a weekend day. Raises 
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import IsWeekendValidator
+    from flask_inputfilter.validators import IsWeekendValidator
 
     class WeekendInputFilter(InputFilter):
         def __init__(self):
@@ -1196,7 +1196,7 @@ Checks the length of the input string and raises a ``ValidationError`` if it is 
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import LengthValidator
+    from flask_inputfilter.validators import LengthValidator
 
     class TextLengthInputFilter(InputFilter):
         def __init__(self):
@@ -1227,7 +1227,7 @@ Raises a ``ValidationError`` if the value is found in the disallowed list, or if
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import NotInArrayValidator
+    from flask_inputfilter.validators import NotInArrayValidator
 
     class UsernameInputFilter(InputFilter):
         def __init__(self):
@@ -1257,7 +1257,7 @@ Verifies that the numeric input is not less than ``min_value`` and not greater t
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import RangeValidator
+    from flask_inputfilter.validators import RangeValidator
 
     class ScoreInputFilter(InputFilter):
         def __init__(self):
@@ -1286,7 +1286,7 @@ Uses the Python ``re`` module to compare the input string against the provided p
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Validator import RegexValidator
+    from flask_inputfilter.validators import RegexValidator
 
     class EmailInputFilter(InputFilter):
         def __init__(self):

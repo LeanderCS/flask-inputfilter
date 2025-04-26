@@ -1,5 +1,5 @@
 try:
-    from ._InputFilter import InputFilter
+    from ._input_filter import InputFilter
 
 except ImportError:
     import shutil
@@ -21,7 +21,7 @@ except ImportError:
             reload_support=True,
         )
 
-        from ._InputFilter import InputFilter
+        from ._input_filter import InputFilter
 
     else:
         import logging
@@ -30,4 +30,4 @@ except ImportError:
             "Cython or g++ not available. Falling back to pure Python implementation.\n"
             "Consult docs for better performance: https://leandercs.github.io/flask-inputfilter/guides/compile.html"
         )
-        from .InputFilter import InputFilter
+        from .input_filter import InputFilter

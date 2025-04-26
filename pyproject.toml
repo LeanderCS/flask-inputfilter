@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "flask_inputfilter"
-version = "0.4.3a1"
+version = "0.5.0"
 description = "A library to easily filter and validate input data in Flask applications"
 readme = "README.rst"
 requires-python = ">=3.7"
@@ -74,6 +74,7 @@ include = ["flask_inputfilter"]
 filterwarnings = [
     "ignore::DeprecationWarning"
 ]
+addopts = "--tb=short -q"
 
 [tool.tox]
 legacy_tox_ini = """
@@ -105,9 +106,9 @@ line-length = 79
 profile = 'black'
 line_length = 79
 known_first_party = [
-    "flask_inputfilter/Condition/BaseCondition",
-    "flask_inputfilter/Filter/BaseFilter",
-    "flask_inputfilter/Validator/BaseValidator"
+    "flask_inputfilter/conditions/base_condition",
+    "flask_inputfilter/filters/base_filter",
+    "flask_inputfilter/validators/base_validator"
 ]
 
 [tool.docformatter]

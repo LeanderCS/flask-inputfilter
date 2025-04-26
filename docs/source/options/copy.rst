@@ -20,7 +20,7 @@ Basic Copy Integration
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import StringSlugifyFilter
+    from flask_inputfilter.filters import StringSlugifyFilter
 
     class MyInputFilter(InputFilter):
         def __init__(self):
@@ -53,7 +53,7 @@ The coping can also be used as a chain.
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Filter import StringSlugifyFilter, ToUpperFilter, ToLowerFilter
+    from flask_inputfilter.filters import StringSlugifyFilter, ToUpperFilter, ToLowerFilter
 
     class MyInputFilter(InputFilter):
         def __init__(self):

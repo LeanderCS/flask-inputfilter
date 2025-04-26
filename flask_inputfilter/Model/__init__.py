@@ -1,9 +1,6 @@
-import shutil
+from flask_inputfilter.models import ExternalApiConfig, FieldModel
 
-from .ExternalApiConfig import ExternalApiConfig
-
-if shutil.which("g++") is not None:
-    from ._FieldModel import FieldModel
-
-else:
-    from .FieldModel import FieldModel
+__all__ = [
+    "FieldModel",
+    "ExternalApiConfig",
+]

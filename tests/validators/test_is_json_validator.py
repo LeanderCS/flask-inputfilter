@@ -1,0 +1,29 @@
+import unittest
+
+from flask_inputfilter import InputFilter
+from flask_inputfilter.exceptions import ValidationError
+from flask_inputfilter.validators import IsJsonValidator
+
+
+class TestIsJsonValidator(unittest.TestCase):
+    def setUp(self) -> None:
+        self.input_filter = InputFilter()
+
+    def test_valid_json(self) -> None:
+        self.input_filter.add("data", validators=[IsJsonValidator()])
+        self.input_filter.validateData(
+            {"data": '{"name": "Alice", "age": 25}'}
+        )
+
+    def test_invalid_json(self) -> None:
+        self.input_filter.add("data", validators=[IsJsonValidator()])
+        with self.assertRaises(ValidationError):
+            self.input_filter.validateData({"data": "not json"})
+
+    def test_custom_error_message(self) -> None:
+        self.input_filter.add(
+            "data2", validators=[IsJsonValidator(error_message="Custom error")]
+        )
+        with self.assertRaises(ValidationError) as context:
+            self.input_filter.validateData({"data2": "not json"})
+        self.assertEqual(context.exception.args[0]["data2"], "Custom error")

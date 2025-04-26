@@ -56,10 +56,10 @@ Definition
 .. code-block:: python
 
     from flask_inputfilter import InputFilter
-    from flask_inputfilter.Condition import ExactlyOneOfCondition
-    from flask_inputfilter.Enum import RegexEnum
-    from flask_inputfilter.Filter import StringTrimFilter, ToIntegerFilter, ToNullFilter
-    from flask_inputfilter.Validator import IsIntegerValidator, IsStringValidator, RegexValidator
+    from flask_inputfilter.conditions import ExactlyOneOfCondition
+    from flask_inputfilter.enums import RegexEnum
+    from flask_inputfilter.filters import StringTrimFilter, ToIntegerFilter, ToNullFilter
+    from flask_inputfilter.validators import IsIntegerValidator, IsStringValidator, RegexValidator
 
     class UpdateZipcodeInputFilter(InputFilter):
         def __init__(self):
