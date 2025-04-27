@@ -5,4 +5,4 @@ rm -rf *.egg-info
 
 python -m build
 
-python -c "import flask_inputfilter.InputFilter"
+python -c "from flask_inputfilter import InputFilter"

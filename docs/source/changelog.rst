@@ -3,6 +3,19 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.5.2] - 2025-04-27
+--------------------
+
+Changed
+^^^^^^^
+- Moved multiple internal methods to own ``FieldMixin``
+  - ``applyFilters``
+  - ``applySteps``
+  - ``checkConditions``
+  - ``checkForRequired``
+  - ``validateField``
+
+
 [0.5.1] - 2025-04-26
 --------------------
 

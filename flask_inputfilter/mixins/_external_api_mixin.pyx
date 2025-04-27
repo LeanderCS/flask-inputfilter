@@ -13,8 +13,56 @@ from flask_inputfilter.models import ExternalApiConfig
 
 cdef class ExternalApiMixin:
 
-    cpdef object callExternalApi(
-            self, config: ExternalApiConfig, fallback: Any, validated_data: Dict[str, Any]
+    @staticmethod
+    cdef str replacePlaceholders(
+            value: str,
+            validated_data: Dict[str, Any]
+    ):
+        """
+        Replace all placeholders, marked with '{{ }}' in value
+        with the corresponding values from validated_data.
+
+        Params:
+            value (str): The string containing placeholders to be replaced.
+            validated_data (Dict[str, Any]): The dictionary containing 
+                the values to replace the placeholders with.
+
+        Returns:
+            str: The value with all placeholders replaced with
+                 the corresponding values from validated_data.
+        """
+        return re.compile(r"{{(.*?)}}").sub(
+            lambda match: str(validated_data.get(match.group(1))),
+            value,
+        )
+
+    @staticmethod
+    cdef dict replacePlaceholdersInParams(
+            params: dict, validated_data: Dict[str, Any]
+    ):
+        """
+        Replace all placeholders in params with the corresponding
+        values from validated_data.
+
+        Params:
+            params (dict): The params dictionary containing placeholders.
+            validated_data (Dict[str, Any]): The dictionary containing 
+                the values to replace the placeholders with.
+
+        Returns:
+            dict: The params dictionary with all placeholders replaced
+                  with the corresponding values from validated_data.
+        """
+        return {
+            key: ExternalApiMixin.replacePlaceholders(value, validated_data)
+            if isinstance(value, str)
+            else value
+            for key, value in params.items()
+        }
+
+    @staticmethod
+    cdef object callExternalApi(
+        config: ExternalApiConfig, fallback: Any, validated_data: Dict[str, Any]
     ):
         """
         Makes a call to an external API using provided configuration and
@@ -112,50 +160,3 @@ cdef class ExternalApiMixin:
             return fallback
 
         return result.get(data_key) if data_key else result
-
-    @staticmethod
-    cdef str replacePlaceholders(
-            value: str,
-            validated_data: Dict[str, Any]
-    ):
-        """
-        Replace all placeholders, marked with '{{ }}' in value
-        with the corresponding values from validated_data.
-
-        Params:
-            value (str): The string containing placeholders to be replaced.
-            validated_data (Dict[str, Any]): The dictionary containing 
-                the values to replace the placeholders with.
-
-        Returns:
-            str: The value with all placeholders replaced with
-                 the corresponding values from validated_data.
-        """
-        return re.compile(r"{{(.*?)}}").sub(
-            lambda match: str(validated_data.get(match.group(1))),
-            value,
-        )
-
-    @staticmethod
-    cdef dict replacePlaceholdersInParams(
-            params: dict, validated_data: Dict[str, Any]
-    ):
-        """
-        Replace all placeholders in params with the corresponding
-        values from validated_data.
-
-        Params:
-            params (dict): The params dictionary containing placeholders.
-            validated_data (Dict[str, Any]): The dictionary containing 
-                the values to replace the placeholders with.
-
-        Returns:
-            dict: The params dictionary with all placeholders replaced
-                  with the corresponding values from validated_data.
-        """
-        return {
-            key: ExternalApiMixin.replacePlaceholders(value, validated_data)
-            if isinstance(value, str)
-            else value
-            for key, value in params.items()
-        }
