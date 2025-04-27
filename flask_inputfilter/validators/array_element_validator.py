@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import BaseValidator
@@ -31,6 +31,9 @@ class ArrayElementValidator(BaseValidator):
 
         for i, element in enumerate(value):
             try:
+                if not isinstance(element, Dict):
+                    raise ValidationError
+
                 value[i] = deepcopy(self.elementFilter.validateData(element))
 
             except ValidationError:

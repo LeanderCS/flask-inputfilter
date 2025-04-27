@@ -1,14 +1,9 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsArrayValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestIsArrayValidator(unittest.TestCase):
-    def setUp(self) -> None:
-        self.input_filter = InputFilter()
-
+class TestIsArrayValidator(BaseValidatorTest):
     def test_valid_array(self) -> None:
         self.input_filter.add("tags", validators=[IsArrayValidator()])
         self.input_filter.validateData({"tags": ["tag1", "tag2"]})
@@ -25,5 +20,6 @@ class TestIsArrayValidator(unittest.TestCase):
                 IsArrayValidator(error_message="Custom error message")
             ],
         )
-        with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"tags2": "not_an_array"})
+        self.assertValidationError(
+            "tags2", "not_an_array", "Custom error message"
+        )

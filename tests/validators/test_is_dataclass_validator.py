@@ -1,9 +1,8 @@
-import unittest
 from dataclasses import dataclass
 
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsDataclassValidator
+from tests.validators import BaseValidatorTest
 
 
 @dataclass
@@ -11,10 +10,7 @@ class User:
     id: int
 
 
-class TestIsDataclassValidator(unittest.TestCase):
-    def setUp(self) -> None:
-        self.input_filter = InputFilter()
-
+class TestIsDataclassValidator(BaseValidatorTest):
     def test_valid_dataclass(self) -> None:
         self.input_filter.add("data", validators=[IsDataclassValidator(User)])
         self.input_filter.validateData({"data": {"id": 1}})
@@ -31,6 +27,4 @@ class TestIsDataclassValidator(unittest.TestCase):
                 IsDataclassValidator(User, error_message="Custom error")
             ],
         )
-        with self.assertRaises(ValidationError) as context:
-            self.input_filter.validateData({"data2": "wrong"})
-        self.assertEqual(context.exception.args[0]["data2"], "Custom error")
+        self.assertValidationError("data2", "wrong", "Custom error")

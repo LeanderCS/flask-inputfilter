@@ -1,14 +1,9 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import LengthValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestLengthValidator(unittest.TestCase):
-    def setUp(self):
-        self.input_filter = InputFilter()
-
+class TestLengthValidator(BaseValidatorTest):
     def test_valid_length(self):
         self.input_filter.add(
             "name", validators=[LengthValidator(min_length=2, max_length=5)]
@@ -35,7 +30,7 @@ class TestLengthValidator(unittest.TestCase):
                 )
             ],
         )
-        with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"name": "this_is_too_long"})
-        with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"name": "a"})
+        self.assertValidationError(
+            "name", "this_is_too_long", "Custom error message"
+        )
+        self.assertValidationError("name", "a", "Custom error message")

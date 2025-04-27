@@ -1,14 +1,9 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsStringValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestIsStringValidator(unittest.TestCase):
-    def setUp(self):
-        self.input_filter = InputFilter()
-
+class TestIsStringValidator(BaseValidatorTest):
     def test_valid_string(self):
         self.input_filter.add("name", validators=[IsStringValidator()])
         self.input_filter.validateData({"name": "obviously an string"})
@@ -25,5 +20,4 @@ class TestIsStringValidator(unittest.TestCase):
                 IsStringValidator(error_message="Custom error message")
             ],
         )
-        with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"name": 123})
+        self.assertValidationError("name", 123, "Custom error message")

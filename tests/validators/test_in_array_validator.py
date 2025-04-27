@@ -1,14 +1,9 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import InArrayValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestInArrayValidator(unittest.TestCase):
-    def setUp(self) -> None:
-        self.input_filter = InputFilter()
-
+class TestInArrayValidator(BaseValidatorTest):
     def test_valid_in_array(self) -> None:
         self.input_filter.add(
             "color", validators=[InArrayValidator(["red", "green", "blue"])]
@@ -43,5 +38,6 @@ class TestInArrayValidator(unittest.TestCase):
                 )
             ],
         )
-        with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"custom_error2": "yellow"})
+        self.assertValidationError(
+            "custom_error2", "yellow", "Custom error message"
+        )

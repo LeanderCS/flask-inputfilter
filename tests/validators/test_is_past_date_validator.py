@@ -1,15 +1,11 @@
-import unittest
 from datetime import date, datetime, timedelta
 
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsPastDateValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestIsPastDateValidator(unittest.TestCase):
-    def setUp(self) -> None:
-        self.input_filter = InputFilter()
-
+class TestIsPastDateValidator(BaseValidatorTest):
     def test_valid_past_date(self) -> None:
         self.input_filter.add("date", validators=[IsPastDateValidator()])
         self.input_filter.validateData({"date": date(2020, 1, 1)})
@@ -50,7 +46,5 @@ class TestIsPastDateValidator(unittest.TestCase):
             "date2",
             validators=[IsPastDateValidator(error_message="Custom error")],
         )
-        with self.assertRaises(ValidationError):
-            self.input_filter.validateData(
-                {"date2": (datetime.now() + timedelta(days=10))}
-            )
+        future_date = datetime.now() + timedelta(days=10)
+        self.assertValidationError("date2", future_date, "Custom error")

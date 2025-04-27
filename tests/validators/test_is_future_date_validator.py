@@ -1,15 +1,11 @@
-import unittest
 from datetime import date, datetime, timedelta
 
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsFutureDateValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestIsFutureDateValidator(unittest.TestCase):
-    def setUp(self) -> None:
-        self.input_filter = InputFilter()
-
+class TestIsFutureDateValidator(BaseValidatorTest):
     def test_valid_future_date(self) -> None:
         self.input_filter.add(
             "future_date", validators=[IsFutureDateValidator()]
@@ -66,11 +62,8 @@ class TestIsFutureDateValidator(unittest.TestCase):
                 IsFutureDateValidator(error_message="Custom error message")
             ],
         )
-        with self.assertRaises(ValidationError):
-            self.input_filter.validateData(
-                {
-                    "future_date_custom": (
-                        date.today() - timedelta(days=1)
-                    ).isoformat()
-                }
-            )
+        self.assertValidationError(
+            "future_date_custom",
+            (date.today() - timedelta(days=1)).isoformat(),
+            "Custom error message",
+        )

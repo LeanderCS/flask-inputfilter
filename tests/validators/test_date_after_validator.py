@@ -1,15 +1,11 @@
-import unittest
 from datetime import date, datetime
 
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import DateAfterValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestDateAfterValidator(unittest.TestCase):
-    def setUp(self) -> None:
-        self.input_filter = InputFilter()
-
+class TestDateAfterValidator(BaseValidatorTest):
     def test_valid_date_after_reference(self) -> None:
         self.input_filter.add(
             "date",
@@ -45,3 +41,17 @@ class TestDateAfterValidator(unittest.TestCase):
         )
         with self.assertRaises(ValidationError):
             self.input_filter.validateData({"date": "unparseable date"})
+
+    def test_custom_error_message(self) -> None:
+        self.input_filter.add(
+            "date",
+            validators=[
+                DateAfterValidator(
+                    reference_date=date(2021, 1, 1),
+                    error_message="Custom error message",
+                )
+            ],
+        )
+        self.assertValidationError(
+            "date", date(2020, 12, 31), "Custom error message"
+        )

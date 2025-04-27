@@ -1,14 +1,9 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsUrlValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestIsUrlValidator(unittest.TestCase):
-    def setUp(self):
-        self.input_filter = InputFilter()
-
+class TestIsUrlValidator(BaseValidatorTest):
     def test_valid_url(self):
         self.input_filter.add("url", validators=[IsUrlValidator()])
         self.input_filter.validateData({"url": "http://example.com"})
@@ -25,5 +20,4 @@ class TestIsUrlValidator(unittest.TestCase):
             "url2",
             validators=[IsUrlValidator(error_message="Custom error message")],
         )
-        with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"url2": "not_a_url"})
+        self.assertValidationError("url2", "not_a_url", "Custom error message")

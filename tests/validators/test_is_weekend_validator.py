@@ -1,15 +1,11 @@
-import unittest
 from datetime import date, datetime
 
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsWeekendValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestIsWeekendValidator(unittest.TestCase):
-    def setUp(self):
-        self.input_filter = InputFilter()
-
+class TestIsWeekendValidator(BaseValidatorTest):
     def test_valid_weekend(self):
         self.input_filter.add("date", validators=[IsWeekendValidator()])
         self.input_filter.validateData({"date": date(2021, 1, 2)})
@@ -32,5 +28,6 @@ class TestIsWeekendValidator(unittest.TestCase):
                 IsWeekendValidator(error_message="Custom error message")
             ],
         )
-        with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"date": date(2021, 1, 1)})
+        self.assertValidationError(
+            "date", date(2021, 1, 1), "Custom error message"
+        )

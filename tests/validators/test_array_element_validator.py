@@ -1,5 +1,3 @@
-import unittest
-
 from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.filters import ToIntegerFilter
@@ -7,11 +5,12 @@ from flask_inputfilter.validators import (
     ArrayElementValidator,
     IsIntegerValidator,
 )
+from tests.validators import BaseValidatorTest
 
 
-class TestArrayElementValidator(unittest.TestCase):
+class TestArrayElementValidator(BaseValidatorTest):
     def setUp(self) -> None:
-        self.input_filter = InputFilter()
+        super().setUp()
         self.element_filter = InputFilter()
         self.element_filter.add(
             "id",
@@ -41,5 +40,19 @@ class TestArrayElementValidator(unittest.TestCase):
         self.input_filter.add(
             "items", validators=[ArrayElementValidator(self.element_filter)]
         )
-        with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"items": "not an array"})
+        self.assertValidationError(
+            "items", "not an array", "Value 'not an array' is not an array"
+        )
+
+    def test_custom_error_message(self) -> None:
+        self.input_filter.add(
+            "items",
+            validators=[
+                ArrayElementValidator(
+                    self.element_filter, error_message="Custom error message"
+                )
+            ],
+        )
+        self.assertValidationError(
+            "items", ["not an array"], "Custom error message"
+        )

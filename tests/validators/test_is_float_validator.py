@@ -1,14 +1,9 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsFloatValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestIsFloatValidator(unittest.TestCase):
-    def setUp(self) -> None:
-        self.input_filter = InputFilter()
-
+class TestIsFloatValidator(BaseValidatorTest):
     def test_valid_float(self) -> None:
         self.input_filter.add("price", validators=[IsFloatValidator()])
         self.input_filter.validateData({"price": 19.99})
@@ -17,3 +12,14 @@ class TestIsFloatValidator(unittest.TestCase):
         self.input_filter.add("price", validators=[IsFloatValidator()])
         with self.assertRaises(ValidationError):
             self.input_filter.validateData({"price": "not_a_float"})
+
+    def test_custom_error_message(self) -> None:
+        self.input_filter.add(
+            "price2",
+            validators=[
+                IsFloatValidator(error_message="Custom error message")
+            ],
+        )
+        self.assertValidationError(
+            "price2", "not_a_float", "Custom error message"
+        )

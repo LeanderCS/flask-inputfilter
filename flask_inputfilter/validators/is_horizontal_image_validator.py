@@ -39,7 +39,7 @@ class IsHorizontalImageValidator(BaseValidator):
             if value.width < value.height:
                 raise ValidationError
 
-        except (binascii.Error, OSError):
+        except (ValidationError, binascii.Error, OSError):
             raise ValidationError(
                 self.error_message or "The image is not horizontally oriented."
             )

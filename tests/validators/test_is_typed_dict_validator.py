@@ -1,8 +1,6 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsTypedDictValidator
+from tests.validators import BaseValidatorTest
 
 # TODO: Readd when Python 3.7 support is dropped
 # class User(TypedDict):
@@ -21,10 +19,7 @@ class User:
         return NotImplemented
 
 
-class TestIsTypedDictValidator(unittest.TestCase):
-    def setUp(self):
-        self.input_filter = InputFilter()
-
+class TestIsTypedDictValidator(BaseValidatorTest):
     def test_valid_typed_dict(self):
         self.input_filter.add("data", validators=[IsTypedDictValidator(User)])
         self.input_filter.validateData({"data": {"id": 123}})
@@ -43,5 +38,6 @@ class TestIsTypedDictValidator(unittest.TestCase):
                 )
             ],
         )
-        with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"data2": "not a dict"})
+        self.assertValidationError(
+            "data2", "not a dict", "Custom error message"
+        )

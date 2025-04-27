@@ -1,14 +1,9 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import FloatPrecisionValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestFloatPrecisionValidator(unittest.TestCase):
-    def setUp(self) -> None:
-        self.input_filter = InputFilter()
-
+class TestFloatPrecisionValidator(BaseValidatorTest):
     def test_valid_float_precision(self) -> None:
         self.input_filter.add(
             "price", validators=[FloatPrecisionValidator(precision=5, scale=2)]
@@ -42,5 +37,6 @@ class TestFloatPrecisionValidator(unittest.TestCase):
                 )
             ],
         )
-        with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"custom_message2": 19.999})
+        self.assertValidationError(
+            "custom_message2", 19.999, "Custom error message"
+        )

@@ -1,14 +1,9 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsBase64ImageCorrectSizeValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestIsBase64ImageCorrectSizeValidator(unittest.TestCase):
-    def setUp(self) -> None:
-        self.input_filter = InputFilter()
-
+class TestIsBase64ImageCorrectSizeValidator(BaseValidatorTest):
     def test_valid_base64_size(self) -> None:
         self.input_filter.add(
             "image",
@@ -39,6 +34,4 @@ class TestIsBase64ImageCorrectSizeValidator(unittest.TestCase):
                 )
             ],
         )
-        with self.assertRaises(ValidationError) as context:
-            self.input_filter.validateData({"image2": "too_small"})
-        self.assertEqual(context.exception.args[0]["image2"], "Custom error")
+        self.assertValidationError("image2", "too_small", "Custom error")

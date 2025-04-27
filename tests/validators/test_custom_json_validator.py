@@ -1,13 +1,11 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import CustomJsonValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestCustomJsonValidator(unittest.TestCase):
+class TestCustomJsonValidator(BaseValidatorTest):
     def setUp(self) -> None:
-        self.input_filter = InputFilter()
+        super().setUp()
 
     def test_valid_json_structure(self) -> None:
         self.input_filter.add(
@@ -59,3 +57,18 @@ class TestCustomJsonValidator(unittest.TestCase):
         )
         with self.assertRaises(ValidationError):
             self.input_filter.validateData({"data": "not a json"})
+
+    def test_custom_error_message(self) -> None:
+        self.input_filter.add(
+            "data",
+            validators=[
+                CustomJsonValidator(
+                    required_fields=["age"],
+                    schema={"age": int},
+                    error_message="Custom error message",
+                )
+            ],
+        )
+        self.assertValidationError(
+            "data", {"age": "invalid"}, "Custom error message"
+        )

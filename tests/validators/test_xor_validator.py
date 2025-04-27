@@ -1,18 +1,13 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import (
     IsIntegerValidator,
     RangeValidator,
     XorValidator,
 )
+from tests.validators import BaseValidatorTest
 
 
-class TestXorValidator(unittest.TestCase):
-    def setUp(self):
-        self.input_filter = InputFilter()
-
+class TestXorValidator(BaseValidatorTest):
     def test_valid_xor(self):
         self.input_filter.add(
             "age",
@@ -49,7 +44,7 @@ class TestXorValidator(unittest.TestCase):
                 )
             ],
         )
-        with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"age": "not a number"})
-        with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"age": 5})
+        self.assertValidationError(
+            "age", "not a number", "Custom error message"
+        )
+        self.assertValidationError("age", 5, "Custom error message")

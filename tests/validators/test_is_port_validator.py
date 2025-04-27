@@ -1,14 +1,9 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsPortValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestIsPortValidator(unittest.TestCase):
-    def setUp(self):
-        self.input_filter = InputFilter()
-
+class TestIsPortValidator(BaseValidatorTest):
     def test_valid_port(self):
         self.input_filter.add("port", validators=[IsPortValidator()])
         self.input_filter.validateData({"port": 80})
@@ -23,5 +18,4 @@ class TestIsPortValidator(unittest.TestCase):
             "port2",
             validators=[IsPortValidator(error_message="Custom error message")],
         )
-        with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"port2": 65536})
+        self.assertValidationError("port2", 65536, "Custom error message")

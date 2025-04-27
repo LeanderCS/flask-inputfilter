@@ -1,14 +1,9 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsBase64ImageValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestIsBase64ImageValidator(unittest.TestCase):
-    def setUp(self) -> None:
-        self.input_filter = InputFilter()
-
+class TestIsBase64ImageValidator(BaseValidatorTest):
     def test_valid_base64_image(self) -> None:
         self.input_filter.add("image", validators=[IsBase64ImageValidator()])
         with open("tests/data/base64_image.txt", "r") as file:
@@ -24,6 +19,4 @@ class TestIsBase64ImageValidator(unittest.TestCase):
             "image2",
             validators=[IsBase64ImageValidator(error_message="Custom error")],
         )
-        with self.assertRaises(ValidationError) as context:
-            self.input_filter.validateData({"image2": "not_base64"})
-        self.assertEqual(context.exception.args[0]["image2"], "Custom error")
+        self.assertValidationError("image2", "not_base64", "Custom error")

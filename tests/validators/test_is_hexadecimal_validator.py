@@ -1,14 +1,9 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsHexadecimalValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestIsHexadecimalValidator(unittest.TestCase):
-    def setUp(self) -> None:
-        self.input_filter = InputFilter()
-
+class TestIsHexadecimalValidator(BaseValidatorTest):
     def test_valid_hexadecimal(self) -> None:
         self.input_filter.add("color", validators=[IsHexadecimalValidator()])
         self.input_filter.validateData({"color": "FFAABB"})
@@ -25,5 +20,4 @@ class TestIsHexadecimalValidator(unittest.TestCase):
                 IsHexadecimalValidator(error_message="Custom error message")
             ],
         )
-        with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"color2": "NotHex"})
+        self.assertValidationError("color2", "NotHex", "Custom error message")

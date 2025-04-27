@@ -1,9 +1,10 @@
 flask-inputfilter
 =================
 
-The ``InputFilter`` class is used to validate and filter input data in Flask applications.
-It provides a modular way to clean and ensure that incoming data meets expected format
-and type requirements before being processed.
+This library is a Flask extension that provides a simple way to validate and filter input data.
+It allows you to define a set of rules for each field in your input data, including filters and validators.
+The library also supports conditions that can be used to enforce complex validation rules.
+It is designed to be easy to use and flexible, allowing you to create custom filters and validators as needed.
 
 Thank you for using ``flask-inputfilter``!
 ==========================================

@@ -1,14 +1,9 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsBooleanValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestIsBooleanValidator(unittest.TestCase):
-    def setUp(self) -> None:
-        self.input_filter = InputFilter()
-
+class TestIsBooleanValidator(BaseValidatorTest):
     def test_valid_boolean(self) -> None:
         self.input_filter.add("flag", validators=[IsBooleanValidator()])
         self.input_filter.validateData({"flag": True})
@@ -23,6 +18,4 @@ class TestIsBooleanValidator(unittest.TestCase):
             "flag2",
             validators=[IsBooleanValidator(error_message="Custom error")],
         )
-        with self.assertRaises(ValidationError) as context:
-            self.input_filter.validateData({"flag2": "notbool"})
-        self.assertEqual(context.exception.args[0]["flag2"], "Custom error")
+        self.assertValidationError("flag2", "notbool", "Custom error")

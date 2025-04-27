@@ -1,18 +1,14 @@
 import base64
 import io
-import unittest
 
 from PIL import Image
 
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsHorizontalImageValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestIsHorizontalImageValidator(unittest.TestCase):
-    def setUp(self) -> None:
-        self.input_filter = InputFilter()
-
+class TestIsHorizontalImageValidator(BaseValidatorTest):
     def _create_base64_image(self, width, height) -> str:
         img = Image.new("RGB", (width, height), color="red")
         buffered = io.BytesIO()
@@ -42,5 +38,4 @@ class TestIsHorizontalImageValidator(unittest.TestCase):
             ],
         )
         img_data = self._create_base64_image(50, 100)
-        with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"image2": img_data})
+        self.assertValidationError("image2", img_data, "Custom error")

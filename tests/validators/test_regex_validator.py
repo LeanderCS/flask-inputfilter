@@ -1,15 +1,10 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.enums import RegexEnum
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import RegexValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestRegexValidator(unittest.TestCase):
-    def setUp(self):
-        self.input_filter = InputFilter()
-
+class TestRegexValidator(BaseValidatorTest):
     def test_valid_regex(self):
         self.input_filter.add(
             "email", validators=[RegexValidator(RegexEnum.EMAIL.value)]
@@ -35,5 +30,6 @@ class TestRegexValidator(unittest.TestCase):
                 )
             ],
         )
-        with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"email": "invalid_email"})
+        self.assertValidationError(
+            "email", "invalid_email", "Custom error message"
+        )

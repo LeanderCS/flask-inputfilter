@@ -1,14 +1,9 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsIntegerValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestIsIntegerValidator(unittest.TestCase):
-    def setUp(self) -> None:
-        self.input_filter = InputFilter()
-
+class TestIsIntegerValidator(BaseValidatorTest):
     def test_valid_integer(self) -> None:
         self.input_filter.add("age", validators=[IsIntegerValidator()])
         self.input_filter.validateData({"age": 25})
@@ -23,6 +18,4 @@ class TestIsIntegerValidator(unittest.TestCase):
             "age2",
             validators=[IsIntegerValidator(error_message="Custom error")],
         )
-        with self.assertRaises(ValidationError) as context:
-            self.input_filter.validateData({"age2": "not a number"})
-        self.assertEqual(context.exception.args[0]["age2"], "Custom error")
+        self.assertValidationError("age2", "not a number", "Custom error")

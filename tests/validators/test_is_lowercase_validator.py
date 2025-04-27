@@ -1,14 +1,9 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsLowercaseValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestIsLowercaseValidator(unittest.TestCase):
-    def setUp(self) -> None:
-        self.input_filter = InputFilter()
-
+class TestIsLowercaseValidator(BaseValidatorTest):
     def test_valid_lowercase(self) -> None:
         self.input_filter.add("text", validators=[IsLowercaseValidator()])
         self.input_filter.validateData({"text": "hello"})
@@ -23,6 +18,4 @@ class TestIsLowercaseValidator(unittest.TestCase):
             "text2",
             validators=[IsLowercaseValidator(error_message="Custom error")],
         )
-        with self.assertRaises(ValidationError) as context:
-            self.input_filter.validateData({"text2": "Hello"})
-        self.assertEqual(context.exception.args[0]["text2"], "Custom error")
+        self.assertValidationError("text2", "Hello", "Custom error")

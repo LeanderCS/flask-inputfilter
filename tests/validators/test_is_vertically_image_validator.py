@@ -1,15 +1,10 @@
-import unittest
-
-from flask_inputfilter import InputFilter
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.filters import Base64ImageDownscaleFilter
 from flask_inputfilter.validators import IsVerticalImageValidator
+from tests.validators import BaseValidatorTest
 
 
-class TestIsVerticalImageValidator(unittest.TestCase):
-    def setUp(self):
-        self.input_filter = InputFilter()
-
+class TestIsVerticalImageValidator(BaseValidatorTest):
     def test_valid_vertical_image(self):
         self.input_filter.add(
             "vertically_image",
@@ -50,3 +45,14 @@ class TestIsVerticalImageValidator(unittest.TestCase):
         )
         with self.assertRaises(ValidationError):
             self.input_filter.validateData({"vertically_image": 123})
+
+    def test_custom_error_message(self):
+        self.input_filter.add(
+            "vertically_image",
+            validators=[
+                IsVerticalImageValidator(error_message="Custom error message")
+            ],
+        )
+        self.assertValidationError(
+            "vertically_image", "not_a_base64_image", "Custom error message"
+        )
