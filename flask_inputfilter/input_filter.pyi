@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import Any, Dict, List, Optional, Type, TypeVar, Union
+from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union
 
 from flask import Response
 
@@ -31,8 +31,8 @@ class InputFilter:
     ) -> Callable[
         [Any],
         Callable[
-            [tuple[Any, ...], Dict[str, Any]],
-            Union[Response, tuple[Any, Dict[str, Any]]],
+            [Tuple[Any, ...], Dict[str, Any]],
+            Union[Response, Tuple[Any, Dict[str, Any]]],
         ],
     ]: ...
     def validateData(
