@@ -7,7 +7,7 @@ They ensure that the input data meets the required conditions before further pro
 Overview
 --------
 
-Validators can be added into the ``add`` method for a specific field or as a global validator for all fields in ``addGlobalValidator``.
+Validators can be added into the ``add`` method for a specific field or as a global validator for all fields in ``add_global_validator``.
 
 The global validation will be executed before the specific field validation.
 
@@ -35,7 +35,7 @@ Example
                 validators=[RangeValidator(min_value=0, max_value=10)]
             )
 
-            self.addGlobalValidator(IsIntegerValidator())
+            self.add_global_validator(IsIntegerValidator())
 
 Available Validators
 --------------------

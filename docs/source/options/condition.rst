@@ -6,7 +6,7 @@ Condition
 Overview
 --------
 
-Conditions are added using the ``addCondition`` method. They evaluate the combined input data, ensuring that inter-field dependencies and relationships (such as equality, ordering, or presence) meet predefined rules.
+Conditions are added using the ``add_condition`` method. They evaluate the combined input data, ensuring that inter-field dependencies and relationships (such as equality, ordering, or presence) meet predefined rules.
 
 Example
 -------
@@ -34,7 +34,7 @@ Example
                 validators=[IsStringValidator()]
             )
 
-            self.addCondition(
+            self.add_condition(
                 OneOfCondition(['id', 'name'])
             )
 
@@ -101,7 +101,7 @@ Validates that the length of the array from ``first_array_field`` is equal to th
                 validators=[IsArrayValidator()]
             )
 
-            self.addCondition(ArrayLengthEqualCondition('list1', 'list2'))
+            self.add_condition(ArrayLengthEqualCondition('list1', 'list2'))
 
 
 ArrayLongerThanCondition
@@ -141,7 +141,7 @@ Validates that the array in ``longer_field`` has more elements than the array in
                 validators=[IsArrayValidator()]
             )
 
-            self.addCondition(ArrayLongerThanCondition('list1', 'list2'))
+            self.add_condition(ArrayLongerThanCondition('list1', 'list2'))
 
 
 CustomCondition
@@ -178,7 +178,7 @@ Executes the provided callable with the input data. The condition passes if the 
                 validators=[IsIntegerValidator()]
             )
 
-            self.addCondition(CustomCondition(my_custom_condition))
+            self.add_condition(CustomCondition(my_custom_condition))
 
 
 EqualCondition
@@ -215,7 +215,7 @@ Validates that the values of ``first_field`` and ``second_field`` are equal. Fai
                 'confirm_password'
             )
 
-            self.addCondition(EqualCondition('password', 'confirm_password'))
+            self.add_condition(EqualCondition('password', 'confirm_password'))
 
 
 ExactlyNOfCondition
@@ -256,7 +256,7 @@ Counts the number of specified fields present in the data and validates that the
                 'field3'
             )
 
-            self.addCondition(ExactlyNOfCondition(['field1', 'field2', 'field3'], 2))
+            self.add_condition(ExactlyNOfCondition(['field1', 'field2', 'field3'], 2))
 
 
 ExactlyNOfMatchesCondition
@@ -294,7 +294,7 @@ Validates that exactly ``n`` fields among the specified ones have the given valu
                 'field2'
             )
 
-            self.addCondition(ExactlyNOfMatchesCondition(['field1', 'field2'], 1, 'expected_value'))
+            self.add_condition(ExactlyNOfMatchesCondition(['field1', 'field2'], 1, 'expected_value'))
 
 
 ExactlyOneOfCondition
@@ -330,7 +330,7 @@ Validates that only one field among the specified fields exists in the input dat
                 'phone'
             )
 
-            self.addCondition(ExactlyOneOfCondition(['email', 'phone']))
+            self.add_condition(ExactlyOneOfCondition(['email', 'phone']))
 
 
 ExactlyOneOfMatchesCondition
@@ -367,7 +367,7 @@ Validates that exactly one of the specified fields has the given value.
                 'option2'
             )
 
-            self.addCondition(ExactlyOneOfMatchesCondition(['option1', 'option2'], 'yes'))
+            self.add_condition(ExactlyOneOfMatchesCondition(['option1', 'option2'], 'yes'))
 
 
 IntegerBiggerThanCondition
@@ -407,7 +407,7 @@ Validates that the integer value from ``bigger_field`` is greater than the value
                 validators=[IsIntegerValidator()]
             )
 
-            self.addCondition(IntegerBiggerThanCondition('field_should_be_better', 'field_should_be_smaller'))
+            self.add_condition(IntegerBiggerThanCondition('field_should_be_better', 'field_should_be_smaller'))
 
 
 NOfCondition
@@ -448,7 +448,7 @@ Validates that the count of the specified fields present is greater than or equa
                 'field3'
             )
 
-            self.addCondition(NOfCondition(['field1', 'field2', 'field3'], 2))
+            self.add_condition(NOfCondition(['field1', 'field2', 'field3'], 2))
 
 
 NOfMatchesCondition
@@ -486,7 +486,7 @@ Validates that the count of fields matching the given value is greater than or e
                 'field2'
             )
 
-            self.addCondition(NOfMatchesCondition(['field1', 'field2'], 1, 'value'))
+            self.add_condition(NOfMatchesCondition(['field1', 'field2'], 1, 'value'))
 
 
 NotEqualCondition
@@ -523,7 +523,7 @@ Validates that the values of ``first_field`` and ``second_field`` are not equal.
                 'field2'
             )
 
-            self.addCondition(NotEqualCondition('field1', 'field2'))
+            self.add_condition(NotEqualCondition('field1', 'field2'))
 
 
 OneOfCondition
@@ -559,7 +559,7 @@ Validates that at least one field from the specified list is present. Fails if n
                 'phone'
             )
 
-            self.addCondition(OneOfCondition(['email', 'phone']))
+            self.add_condition(OneOfCondition(['email', 'phone']))
 
 
 OneOfMatchesCondition
@@ -596,7 +596,7 @@ Validates that at least one field from the specified list has the given value.
                 'option2'
             )
 
-            self.addCondition(OneOfMatchesCondition(['option1', 'option2'], 'yes'))
+            self.add_condition(OneOfMatchesCondition(['option1', 'option2'], 'yes'))
 
 
 RequiredIfCondition
@@ -634,7 +634,7 @@ If the value of ``condition_field`` matches the specified value (or is in the sp
                 'activation_date'
             )
 
-            self.addCondition(
+            self.add_condition(
                 RequiredIfCondition(
                     condition_field='status',
                     value='active',
@@ -677,7 +677,7 @@ Validates that the string in ``longer_field`` has a greater length than the stri
                 'summary'
             )
 
-            self.addCondition(StringLongerThanCondition('description', 'summary'))
+            self.add_condition(StringLongerThanCondition('description', 'summary'))
 
 
 TemporalOrderCondition
@@ -714,4 +714,4 @@ Validates that the date in ``smaller_date_field`` is earlier than the date in ``
                 'end_date'
             )
 
-            self.addCondition(TemporalOrderCondition('start_date', 'end_date'))
+            self.add_condition(TemporalOrderCondition('start_date', 'end_date'))

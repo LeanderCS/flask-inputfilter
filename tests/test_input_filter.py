@@ -251,7 +251,7 @@ class TestInputFilter(unittest.TestCase):
 
     def test_get_error_message(self) -> None:
         self.inputFilter.add("field", required=True)
-        self.inputFilter.isValid()
+        self.inputFilter.is_valid()
 
         self.assertEqual(
             self.inputFilter.get_error_message("field"),
@@ -266,7 +266,7 @@ class TestInputFilter(unittest.TestCase):
             "field2", required=True, validators=[IsIntegerValidator()]
         )
         self.inputFilter.set_data({"field2": "value2"})
-        self.inputFilter.isValid()
+        self.inputFilter.is_valid()
 
         self.assertEqual(
             self.inputFilter.get_error_messages().get("field"),
@@ -283,7 +283,7 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.set_data({"field2": "value2"})
         self.inputFilter.add_global_validator(IsIntegerValidator())
 
-        self.inputFilter.isValid()
+        self.inputFilter.is_valid()
 
         self.assertEqual(
             self.inputFilter.get_error_messages().get("field"),
@@ -301,12 +301,12 @@ class TestInputFilter(unittest.TestCase):
             ExactlyOneOfCondition(["field", "field2"])
         )
         self.inputFilter.set_data({"field2": "value2"})
-        self.inputFilter.isValid()
+        self.inputFilter.is_valid()
 
         self.assertEqual(self.inputFilter.get_error_messages(), {})
 
         self.inputFilter.set_data({"field": "value", "field2": "value2"})
-        self.inputFilter.isValid()
+        self.inputFilter.is_valid()
 
         self.assertEqual(
             self.inputFilter.get_error_messages().get("_condition"),
@@ -376,7 +376,7 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.add("field")
         self.inputFilter.set_data({"field": "value"})
 
-        self.inputFilter.isValid()
+        self.inputFilter.is_valid()
         self.assertEqual(self.inputFilter.get_value("field"), "value")
 
     def test_get_values(self) -> None:
@@ -386,7 +386,7 @@ class TestInputFilter(unittest.TestCase):
             {"field1": "value1", "field2": "value2", "field3": "value3"}
         )
 
-        self.inputFilter.isValid()
+        self.inputFilter.is_valid()
         self.assertEqual(
             self.inputFilter.get_values(),
             {"field1": "value1", "field2": "value2"},
@@ -436,10 +436,10 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.add("field", required=True)
 
         self.inputFilter.set_data({"field": "value"})
-        self.assertTrue(self.inputFilter.isValid())
+        self.assertTrue(self.inputFilter.is_valid())
 
         self.inputFilter.set_data({})
-        self.assertFalse(self.inputFilter.isValid())
+        self.assertFalse(self.inputFilter.is_valid())
 
     def test_merge(self) -> None:
         self.inputFilter.add("field1")
@@ -449,7 +449,7 @@ class TestInputFilter(unittest.TestCase):
         input_filter.add("field2")
         self.inputFilter.merge(input_filter)
 
-        self.inputFilter.isValid()
+        self.inputFilter.is_valid()
         self.assertEqual(
             self.inputFilter.get_values(), {"field1": "value1", "field2": None}
         )
@@ -465,7 +465,7 @@ class TestInputFilter(unittest.TestCase):
         input_filter.add("field1", filters=[filter_])
         self.inputFilter.merge(input_filter)
 
-        self.inputFilter.isValid()
+        self.inputFilter.is_valid()
         self.assertEqual(
             self.inputFilter.get_input("field1").filters, [filter_]
         )
@@ -561,7 +561,7 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.add("field")
         self.inputFilter.set_data({"field": "value"})
 
-        self.inputFilter.isValid()
+        self.inputFilter.is_valid()
         self.assertEqual(self.inputFilter.get_value("field"), "value")
 
         self.inputFilter.clear()
@@ -984,7 +984,7 @@ class TestInputFilter(unittest.TestCase):
         self.inputFilter.add("username")
         self.inputFilter.set_data({"username": "test user"})
 
-        self.inputFilter.isValid()
+        self.inputFilter.is_valid()
 
         self.inputFilter.set_model(User)
         self.assertEqual(self.inputFilter.serialize().username, "test user")

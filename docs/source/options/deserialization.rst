@@ -11,7 +11,7 @@ Overview
 
 The deserialization process is handled through two main methods:
 
-- ``setModel()``: Sets the model class to be used for deserialization
+- ``set_model()``: Sets the model class to be used for deserialization
 - ``serialize()``: Converts the validated data into an instance of the 
   specified model class or returns the raw data as a dictionary
 
@@ -37,7 +37,7 @@ into an instance of the model class, if there is a model class set.
         def __init__(self):
             super().__init__()
 
-            self.setModel(User)
+            self.set_model(User)
 
 Examples
 --------
@@ -62,7 +62,7 @@ You can also use deserialization in your Flask routes:
         def __init__(self):
             super().__init__(methods=["GET"])
             self.add("username")
-            self.setModel(User)
+            self.set_model(User)
 
 
     app = Flask(__name__)
@@ -94,16 +94,16 @@ You can also use deserialization outside of Flask routes:
         def __init__(self):
             super().__init__(methods=["GET"])
             self.add("username")
-            self.setModel(User)
+            self.set_model(User)
 
     app = Flask(__name__)
 
     @app.route("/test", methods=["GET"])
     def test_route():
         input_filter = MyInputFilter()
-        input_filter.setData({"username": "test user"})
+        input_filter.set_data({"username": "test user"})
 
-        if not input_filter.isValid():
+        if not input_filter.is_valid():
             return jsonify({"error": "Invalid data"}), 400
 
         validated_data: User = input_filter.serialize()

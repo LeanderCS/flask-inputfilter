@@ -6,7 +6,7 @@ Filter
 Overview
 --------
 
-Filters can be added into the ``add`` method for a specific field or as a global filter for all fields in ``addGlobalFilter``.
+Filters can be added into the ``add`` method for a specific field or as a global filter for all fields in ``add_global_filter``.
 
 The global filters will be executed before the specific field filtering.
 
@@ -34,7 +34,7 @@ Example
                 filters=[StringTrimFilter()]
             )
 
-            self.addGlobalFilter(ToLowerFilter())
+            self.add_global_filter(ToLowerFilter())
 
 Available Filters
 -----------------
