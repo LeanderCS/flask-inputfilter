@@ -7,8 +7,42 @@ from flask_inputfilter.conditions import BaseCondition
 
 class ExactlyNOfCondition(BaseCondition):
     """
-    Condition that checks if exactly n of the given
-    fields are present in the data.
+    Checks that exactly ``n`` of the specified fields are present in
+    the input data.
+
+    **Parameters:**
+
+    - **fields** (*List[str]*): A list of fields to check.
+    - **n** (*int*): The exact number of fields that must be present.
+
+    **Expected Behavior:**
+
+    Counts the number of specified fields present in the data and validates that the count equals ``n``.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        from flask_inputfilter import InputFilter
+        from flask_inputfilter.conditions import ExactlyNOfCondition
+
+        class ExactFieldsFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add(
+                    'field1'
+                )
+
+                self.add(
+                    'field2'
+                )
+
+                self.add(
+                    'field3'
+                )
+
+                self.add_condition(ExactlyNOfCondition(['field1', 'field2', 'field3'], 2))
     """
 
     __slots__ = ("fields", "n")

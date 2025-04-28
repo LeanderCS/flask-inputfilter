@@ -8,7 +8,29 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsStringValidator(BaseValidator):
     """
-    Validator that checks if a value is a string.
+    Validates that the provided value is a string.
+
+    **Parameters:**
+
+    - **error_message** (*Optional[str]*): Custom error message if the value is not a string.
+
+    **Expected Behavior:**
+
+    Raises a ``ValidationError`` if the input is not of type str.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        from flask_inputfilter import InputFilter
+        from flask_inputfilter.validators import IsStringValidator
+
+        class TextInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add('text', validators=[
+                    IsStringValidator()
+                ])
     """
 
     __slots__ = ("error_message",)

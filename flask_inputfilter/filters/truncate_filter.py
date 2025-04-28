@@ -7,7 +7,28 @@ from flask_inputfilter.filters import BaseFilter
 
 class TruncateFilter(BaseFilter):
     """
-    Filter that truncates a string to a specified maximum length.
+    Truncates a string to a specified maximum length.
+
+    **Parameters:**
+
+    - **max_length** (*int*): The maximum allowed length of the string.
+
+    **Expected Behavior:**
+
+    - If the string exceeds the specified length, it is truncated.
+    - Non-string inputs are returned unchanged.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class DescriptionFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('description', filters=[
+                    TruncateFilter(max_length=100)
+                ])
     """
 
     __slots__ = ("max_length",)

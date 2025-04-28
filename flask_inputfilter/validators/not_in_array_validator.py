@@ -8,7 +8,36 @@ from flask_inputfilter.validators import BaseValidator
 
 class NotInArrayValidator(BaseValidator):
     """
-    Validator that checks if a value is in a given list of disallowed values.
+    Ensures that the provided value is not present in a specified
+    list of disallowed values.
+
+    **Parameters:**
+
+    - **haystack** (*List[Any]*): A list of disallowed values.
+    - **strict** (*bool*, default: False): If ``True``, the type of the
+        value is also validated against the disallowed list.
+    - **error_message** (*Optional[str]*): Custom error message if the
+        validation fails.
+
+    **Expected Behavior:**
+
+    Raises a ``ValidationError`` if the value is found in the disallowed list,
+    or if strict type checking is enabled and the value's type does not match
+    any allowed type.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        from flask_inputfilter import InputFilter
+        from flask_inputfilter.validators import NotInArrayValidator
+
+        class UsernameInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add('username', validators=[
+                    NotInArrayValidator(haystack=["admin", "root"])
+                ])
     """
 
     __slots__ = ("haystack", "strict", "error_message")

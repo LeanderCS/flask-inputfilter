@@ -7,7 +7,29 @@ from flask_inputfilter.filters import BaseFilter
 
 class ArrayExplodeFilter(BaseFilter):
     """
-    Filter that splits a string into an array based on a specified delimiter.
+    Splits a string into an array based on a specified delimiter.
+
+    **Parameters:**
+
+    - **delimiter** (*str*, default: ``","``): The delimiter used to split
+        the string.
+
+    **Expected Behavior:**
+
+    If the input value is a string, it returns a list of substrings. For
+    non-string values, it returns the value unchanged.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class TagFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('tags', filters=[
+                    ArrayExplodeFilter(delimiter=";")
+                ])
     """
 
     __slots__ = ("delimiter",)

@@ -7,7 +7,37 @@ from flask_inputfilter.conditions import BaseCondition
 
 class NotEqualCondition(BaseCondition):
     """
-    Condition that checks if two fields are not equal.
+    Checks if two specified fields are not equal.
+
+    **Parameters:**
+
+    - **first_field** (*str*): The first field to compare.
+    - **second_field** (*str*): The second field to compare.
+
+    **Expected Behavior:**
+
+    Validates that the values of ``first_field`` and ``second_field`` are not equal.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        from flask_inputfilter import InputFilter
+        from flask_inputfilter.conditions import NotEqualCondition
+
+        class DifferenceFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add(
+                    'field1'
+                )
+
+                self.add(
+                    'field2'
+                )
+
+                self.add_condition(NotEqualCondition('field1', 'field2'))
     """
 
     __slots__ = ("first_field", "second_field")

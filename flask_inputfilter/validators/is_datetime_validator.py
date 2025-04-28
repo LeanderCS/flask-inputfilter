@@ -9,7 +9,30 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsDateTimeValidator(BaseValidator):
     """
-    Validator that checks if a value is a date.
+    Checks if the provided value is a datetime object.
+
+    **Parameters:**
+
+    - **error_message** (*Optional[str]*): Custom error message if the value is not a datetime.
+
+    **Expected Behavior:**
+
+    Raises a ``ValidationError`` if the input value is not of type datetime.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        from flask_inputfilter import InputFilter
+        from flask_inputfilter.validators import IsDateTimeValidator
+
+        class TimestampInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('timestamp', validators=[
+                    IsDateTimeValidator()
+                ])
     """
 
     __slots__ = ("error_message",)

@@ -8,8 +8,26 @@ from flask_inputfilter.filters import BaseFilter
 
 class ToDateFilter(BaseFilter):
     """
-    Filter that converts a value to a date object.
-    Supports ISO 8601 formatted strings and datetime objects.
+    Converts an input value to a ``date`` object. Supports ISO 8601
+    formatted strings and datetime objects.
+
+    **Expected Behavior:**
+
+    - If the input is a datetime, returns the date portion.
+    - If the input is a string, attempts to parse it as an ISO 8601 date.
+    - Returns the original value if conversion fails.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class BirthdateFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('birthdate', filters=[
+                    ToDateFilter()
+                ])
     """
 
     def apply(self, value: Any) -> Union[date, Any]:

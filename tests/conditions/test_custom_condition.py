@@ -16,12 +16,14 @@ class TestCustomCondition(unittest.TestCase):
         )
 
     def test_validates_when_custom_condition_is_true(self) -> None:
-        """Test that CustomCondition works when the condition is true."""
+        """Test that CustomCondition works when the condition is
+        true."""
         self.input_filter.validate_data({"field": "value"})
 
     def test_raises_validation_error_when_custom_condition_is_false(
         self,
     ) -> None:
-        """Test that CustomCondition raises a ValidationError when false."""
+        """Test that CustomCondition raises a ValidationError when
+        false."""
         with self.assertRaises(ValidationError):
             self.input_filter.validate_data({})

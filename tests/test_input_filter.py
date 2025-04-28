@@ -26,16 +26,12 @@ from flask_inputfilter.validators import (
 
 class TestInputFilter(unittest.TestCase):
     def setUp(self) -> None:
-        """
-        Set up a basic InputFilter instance for testing.
-        """
+        """Set up a basic InputFilter instance for testing."""
 
         self.inputFilter = InputFilter()
 
     def test_validate_decorator(self) -> None:
-        """
-        Test that the validate decorator works.
-        """
+        """Test that the validate decorator works."""
 
         class MyInputFilter(InputFilter):
             def __init__(self):
@@ -83,9 +79,7 @@ class TestInputFilter(unittest.TestCase):
             self.assertEqual(response.status_code, 400)
 
     def test_route_params(self) -> None:
-        """
-        Test that route parameters are validated correctly.
-        """
+        """Test that route parameters are validated correctly."""
 
         class MyInputFilter(InputFilter):
             def __init__(self):
@@ -109,10 +103,8 @@ class TestInputFilter(unittest.TestCase):
             self.assertEqual(response.json, {"username": "test_user"})
 
     def test_custom_method(self) -> None:
-        """
-        Test that a method not supported by the InputFilter instance raises
-        a TypeError.
-        """
+        """Test that a method not supported by the InputFilter
+        instance raises a TypeError."""
 
         class MyInputFilter(InputFilter):
             def __init__(self):
@@ -134,10 +126,8 @@ class TestInputFilter(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
 
     def test_validation_error_response(self):
-        """
-        Tests the behavior of the application when a validation error occurs
-        due to invalid input data.
-        """
+        """Tests the behavior of the application when a validation
+        error occurs due to invalid input data."""
 
         class MyInputFilter(InputFilter):
             def __init__(self):
@@ -166,9 +156,7 @@ class TestInputFilter(unittest.TestCase):
         self.assertEqual(response.json.get("age"), "Invalid data")
 
     def test_optional(self) -> None:
-        """
-        Test that optional field validation works.
-        """
+        """Test that optional field validation works."""
 
         self.inputFilter.add("name", required=True)
 
@@ -178,9 +166,7 @@ class TestInputFilter(unittest.TestCase):
             self.inputFilter.validate_data({})
 
     def test_default(self) -> None:
-        """
-        Test that default field works.
-        """
+        """Test that default field works."""
 
         self.inputFilter.add("available", default=True)
 
@@ -191,9 +177,7 @@ class TestInputFilter(unittest.TestCase):
         self.assertFalse(validated_data["available"])
 
     def test_fallback(self) -> None:
-        """
-        Test that fallback field works.
-        """
+        """Test that fallback field works."""
         self.inputFilter.add("available", required=True, fallback=True)
         self.inputFilter.add(
             "color",
@@ -215,9 +199,7 @@ class TestInputFilter(unittest.TestCase):
         self.assertEqual(validated_data["color"], "green")
 
     def test_fallback_with_default(self) -> None:
-        """
-        Test that fallback field works.
-        """
+        """Test that fallback field works."""
 
         self.inputFilter.add(
             "available", required=True, default=True, fallback=False
@@ -573,9 +555,7 @@ class TestInputFilter(unittest.TestCase):
         self.assertEqual(self.inputFilter.get_raw_value("field"), "raw_value")
 
     def test_steps(self) -> None:
-        """
-        Test that custom steps works.
-        """
+        """Test that custom steps works."""
         self.inputFilter.add(
             "name_upper",
             steps=[
@@ -659,9 +639,7 @@ class TestInputFilter(unittest.TestCase):
 
     @patch("requests.request")
     def test_external_api(self, mock_request: Mock) -> None:
-        """
-        Test that external API calls work.
-        """
+        """Test that external API calls work."""
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.json.return_value = {"is_valid": True}
@@ -696,9 +674,7 @@ class TestInputFilter(unittest.TestCase):
 
     @patch("requests.request")
     def test_external_api_params(self, mock_request: Mock) -> None:
-        """
-        Test that external API calls work.
-        """
+        """Test that external API calls work."""
 
         mock_response = Mock()
         mock_response.status_code = 200
@@ -829,9 +805,8 @@ class TestInputFilter(unittest.TestCase):
 
     @patch("requests.request")
     def test_external_invalid_api_response(self, mock_request: Mock) -> None:
-        """
-        Test that a non-JSON API response raises a ValidationError.
-        """
+        """Test that a non-JSON API response raises a
+        ValidationError."""
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.json.side_effect = ValueError("Invalid JSON")
@@ -852,9 +827,8 @@ class TestInputFilter(unittest.TestCase):
     def test_external_api_response_with_no_data_key(
         self, mock_request: Mock
     ) -> None:
-        """
-        Test that an API response with no data key raises a ValidationError.
-        """
+        """Test that an API response with no data key raises a
+        ValidationError."""
         mock_response = Mock()
         mock_response.status_code = 400
         mock_response.json.return_value = {}
@@ -872,9 +846,7 @@ class TestInputFilter(unittest.TestCase):
             self.inputFilter.validate_data({})
 
     def test_multiple_validators(self) -> None:
-        """
-        Test that multiple validators are applied correctly.
-        """
+        """Test that multiple validators are applied correctly."""
         self.inputFilter.add(
             "username",
             required=True,
@@ -893,9 +865,7 @@ class TestInputFilter(unittest.TestCase):
             self.inputFilter.validate_data({"username": "no"})
 
     def test_conditions(self) -> None:
-        """
-        Test that conditions are checked correctly.
-        """
+        """Test that conditions are checked correctly."""
 
         class MockCondition(BaseCondition):
             def check(self, data: dict) -> bool:
@@ -953,10 +923,8 @@ class TestInputFilter(unittest.TestCase):
         self.assertEqual(validated_data, {})
 
     def test_copy(self) -> None:
-        """
-        Test that InputFilter.copy() creates a deep copy
-        of the InputFilter instance.
-        """
+        """Test that InputFilter.copy() creates a deep copy of the
+        InputFilter instance."""
         self.inputFilter.add("username")
 
         self.inputFilter.add(
@@ -969,9 +937,8 @@ class TestInputFilter(unittest.TestCase):
         self.assertEqual(validated_data["escapedUsername"], "test-user")
 
     def test_serialize_and_set_model(self) -> None:
-        """
-        Test that InputFilter.serialize() serializes the validated data.
-        """
+        """Test that InputFilter.serialize() serializes the validated
+        data."""
 
         class User:
             def __init__(self, username: str):
@@ -998,9 +965,7 @@ class TestInputFilter(unittest.TestCase):
         self.assertEqual(self.inputFilter.serialize().username, "test user")
 
     def test_model_class_serialisation(self) -> None:
-        """
-        Test that the model class is serialized correctly.
-        """
+        """Test that the model class is serialized correctly."""
 
         class User:
             def __init__(self, username: str):

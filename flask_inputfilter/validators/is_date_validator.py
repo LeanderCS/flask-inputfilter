@@ -9,7 +9,30 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsDateValidator(BaseValidator):
     """
-    Validator that checks if a value is a date.
+    Checks if the provided value is a date object.
+
+    **Parameters:**
+
+    - **error_message** (*Optional[str]*): Custom error message if the value is not a date.
+
+    **Expected Behavior:**
+
+    Raises a ``ValidationError`` if the input value is not of type date.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        from flask_inputfilter import InputFilter
+        from flask_inputfilter.validators import IsDateValidator
+
+        class DateInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('event_date', validators=[
+                    IsDateValidator()
+                ])
     """
 
     __slots__ = ("error_message",)

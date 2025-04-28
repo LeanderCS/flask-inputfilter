@@ -28,7 +28,8 @@ class TestArrayLengthEqualCondition(unittest.TestCase):
             self.input_filter.validate_data({"field1": [1, 2]})
 
     def test_invalidates_when_array_lengths_differ(self) -> None:
-        """Test that differing array lengths raise a ValidationError."""
+        """Test that differing array lengths raise a
+        ValidationError."""
         with self.assertRaises(ValidationError):
             self.input_filter.validate_data({"field1": [1, 2], "field2": [1]})
         with self.assertRaises(ValidationError):

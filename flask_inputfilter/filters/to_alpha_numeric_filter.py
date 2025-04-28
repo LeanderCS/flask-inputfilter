@@ -8,7 +8,24 @@ from flask_inputfilter.filters import BaseFilter
 
 class ToAlphaNumericFilter(BaseFilter):
     """
-    Filter that ensures a string contains only alphanumeric characters.
+    Ensures that a string contains only alphanumeric characters by
+    removing all non-word characters.
+
+    **Expected Behavior:**
+
+    Strips out any character that is not a letter, digit, or underscore from the input string.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class CodeFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('code', filters=[
+                    ToAlphaNumericFilter()
+                ])
     """
 
     def apply(self, value: Any) -> Union[Optional[str], Any]:

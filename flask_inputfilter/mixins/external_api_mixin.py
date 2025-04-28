@@ -15,8 +15,8 @@ class ExternalApiMixin:
         validated_data: Dict[str, Any],
     ) -> Optional[Any]:
         """
-        Makes a call to an external API using provided configuration and
-        returns the response.
+        Makes a call to an external API using provided configuration
+        and returns the response.
 
         Summary:
         The function constructs a request based on the given API
@@ -118,8 +118,8 @@ class ExternalApiMixin:
         value: str, validated_data: Dict[str, Any]
     ) -> str:
         """
-        Replace all placeholders, marked with '{{ }}' in value
-        with the corresponding values from validated_data.
+        Replace all placeholders, marked with '{{ }}' in value with
+        the corresponding values from validated_data.
 
         Params:
             value (str): The string containing placeholders to be replaced.

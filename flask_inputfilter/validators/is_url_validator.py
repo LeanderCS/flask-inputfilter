@@ -9,7 +9,28 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsUrlValidator(BaseValidator):
     """
-    Validator that checks if a value is a valid URL.
+    Checks if a value is a valid URL. The validator uses URL parsing
+    to ensure that the input string contains a valid scheme and
+    network location.
+
+    **Parameters:**
+
+    - **error_message** (*Optional[str]*): Custom error message if the value is not a valid URL.
+
+    **Expected Behavior:**
+
+    Verifies that the input is a string and uses URL parsing (via ``urllib.parse.urlparse``) to confirm that both the scheme and network location are present. Raises a ``ValidationError`` if the URL is invalid.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class UrlInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add('website', validators=[
+                    IsUrlValidator()
+                ])
     """
 
     __slots__ = ("error_message",)

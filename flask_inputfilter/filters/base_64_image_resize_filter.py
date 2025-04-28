@@ -12,8 +12,31 @@ from flask_inputfilter.filters import BaseFilter
 
 class Base64ImageResizeFilter(BaseFilter):
     """
-    A filter to reduce the file size of a base64-encoded
-    image by resizing and compressing it.
+    Reduces the file size of a base64-encoded image by resizing and
+    compressing it.
+
+    **Parameters:**
+
+    - **max_size** (*int*, default: ``4 * 1024 * 1024``): The maximum allowed file size in bytes.
+    - **format** (*ImageFormatEnum*, default: ``ImageFormatEnum.JPEG``): The output image format.
+    - **preserve_icc_profile** (*bool*, default: ``False``): If set to ``True``, the ICC profile is preserved.
+    - **preserve_metadata** (*bool*, default: ``False``): If set to ``True``, image metadata is preserved.
+
+    **Expected Behavior:**
+
+    The filter resizes and compresses the image iteratively until its size is below the specified maximum. The final output is a base64-encoded string of the resized image. If the input is invalid, the original value is returned.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class AvatarFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('avatar', filters=[
+                    Base64ImageResizeFilter(max_size=4*1024*1024)
+                ])
     """
 
     __slots__ = (
@@ -49,9 +72,8 @@ class Base64ImageResizeFilter(BaseFilter):
             return value
 
     def reduce_image(self, image: Image) -> Image:
-        """
-        Reduce the size of an image by resizing and compressing it.
-        """
+        """Reduce the size of an image by resizing and compressing
+        it."""
 
         is_animated = getattr(image, "is_animated", False)
 
@@ -85,9 +107,8 @@ class Base64ImageResizeFilter(BaseFilter):
     def save_image_to_buffer(
         self, image: Image.Image, quality: int
     ) -> io.BytesIO:
-        """
-        Save the image to an in-memory buffer with the specified quality.
-        """
+        """Save the image to an in-memory buffer with the specified
+        quality."""
 
         buffer = io.BytesIO()
         image.save(buffer, format=self.format.value, quality=quality)
@@ -96,9 +117,7 @@ class Base64ImageResizeFilter(BaseFilter):
         return buffer
 
     def image_to_base64(self, image: Image) -> str:
-        """
-        Convert an image to a base64-encoded string.
-        """
+        """Convert an image to a base64-encoded string."""
 
         buffered = io.BytesIO()
         options = {

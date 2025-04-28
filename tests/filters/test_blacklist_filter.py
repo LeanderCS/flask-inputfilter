@@ -6,15 +6,11 @@ from flask_inputfilter.filters import BlacklistFilter
 
 class TestBlacklistFilter(unittest.TestCase):
     def setUp(self) -> None:
-        """
-        Set up a new InputFilter instance before each test.
-        """
+        """Set up a new InputFilter instance before each test."""
         self.input_filter = InputFilter()
 
     def test_blacklists_string_values(self) -> None:
-        """
-        Should remove blacklisted words from a string.
-        """
+        """Should remove blacklisted words from a string."""
         self.input_filter.add(
             "blacklisted_field",
             required=False,
@@ -26,9 +22,7 @@ class TestBlacklistFilter(unittest.TestCase):
         self.assertEqual(validated_data["blacklisted_field"], "")
 
     def test_blacklists_array_values(self) -> None:
-        """
-        Should remove blacklisted values from an array.
-        """
+        """Should remove blacklisted values from an array."""
         self.input_filter.add(
             "blacklisted_field",
             required=False,
@@ -40,9 +34,7 @@ class TestBlacklistFilter(unittest.TestCase):
         self.assertEqual(validated_data["blacklisted_field"], ["admin"])
 
     def test_blacklists_dict_keys(self) -> None:
-        """
-        Should remove blacklisted keys from a dictionary.
-        """
+        """Should remove blacklisted keys from a dictionary."""
         self.input_filter.add(
             "blacklisted_field",
             required=False,
@@ -56,9 +48,8 @@ class TestBlacklistFilter(unittest.TestCase):
         )
 
     def test_non_string_array_dict_remains_unchanged(self) -> None:
-        """
-        Should leave non-string, non-array, non-dict values unchanged.
-        """
+        """Should leave non-string, non-array, non-dict values
+        unchanged."""
         self.input_filter.add(
             "blacklisted_field",
             required=False,

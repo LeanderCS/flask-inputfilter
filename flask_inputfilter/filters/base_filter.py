@@ -6,7 +6,9 @@ from typing import Any
 
 class BaseFilter(ABC):
     """
-    BaseFilter-Class. Every filter should inherit from it.
+    BaseFilter-Class.
+
+    Every filter should inherit from it.
     """
 
     @abstractmethod

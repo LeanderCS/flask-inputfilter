@@ -7,8 +7,38 @@ from flask_inputfilter.conditions import BaseCondition
 
 class OneOfMatchesCondition(BaseCondition):
     """
-    Condition that ensures at least one of the specified
-    fields matches the value.
+    Ensures that at least one of the specified fields matches a given
+    value.
+
+    **Parameters:**
+
+    - **fields** (*List[str]*): A list of fields to check.
+    - **value** (*Any*): The value to match against.
+
+    **Expected Behavior:**
+
+    Validates that at least one field from the specified list has the given value.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        from flask_inputfilter import InputFilter
+        from flask_inputfilter.conditions import OneOfMatchesCondition
+
+        class OneMatchRequiredFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add(
+                    'option1'
+                )
+
+                self.add(
+                    'option2'
+                )
+
+                self.add_condition(OneOfMatchesCondition(['option1', 'option2'], 'yes'))
     """
 
     __slots__ = ("fields", "value")

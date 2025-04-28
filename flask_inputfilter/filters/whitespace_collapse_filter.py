@@ -8,8 +8,25 @@ from flask_inputfilter.filters import BaseFilter
 
 class WhitespaceCollapseFilter(BaseFilter):
     """
-    Filter that collapses multiple consecutive whitespace
-    characters into a single space.
+    Collapses multiple consecutive whitespace characters into a
+    single space.
+
+    **Expected Behavior:**
+
+    - Replaces sequences of whitespace with a single space and trims the result.
+    - Non-string inputs are returned unchanged.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class AddressFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('address', filters=[
+                    WhitespaceCollapseFilter()
+                ])
     """
 
     def apply(self, value: Any) -> Union[str, Any]:

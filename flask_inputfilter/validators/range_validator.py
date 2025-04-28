@@ -8,7 +8,31 @@ from flask_inputfilter.validators import BaseValidator
 
 class RangeValidator(BaseValidator):
     """
-    Validator that checks if a numeric value is within a specified range.
+    Checks whether a numeric value falls within a specified range.
+
+    **Parameters:**
+
+    - **min_value** (*Optional[float]*): The minimum allowed value.
+    - **max_value** (*Optional[float]*): The maximum allowed value.
+    - **error_message** (*Optional[str]*): Custom error message if the
+        validation fails.
+
+    **Expected Behavior:**
+
+    Verifies that the numeric input is not less than ``min_value`` and
+    not greater than ``max_value``. Raises a ``ValidationError`` if the
+    value is outside this range.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class ScoreInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add('score', validators=[
+                    RangeValidator(min_value=0, max_value=100)
+                ])
     """
 
     __slots__ = ("min_value", "max_value", "error_message")

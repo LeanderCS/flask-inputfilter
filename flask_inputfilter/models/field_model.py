@@ -8,9 +8,8 @@ from flask_inputfilter.validators import BaseValidator
 
 
 class FieldModel:
-    """
-    FieldModel is a dataclass that represents a field in the input data.
-    """
+    """FieldModel is a dataclass that represents a field in the input
+    data."""
 
     def __init__(
         self,

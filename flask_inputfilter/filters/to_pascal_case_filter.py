@@ -8,7 +8,25 @@ from flask_inputfilter.filters import BaseFilter
 
 class ToPascalCaseFilter(BaseFilter):
     """
-    Filter that converts a string to PascalCase.
+    Converts a string to PascalCase.
+
+    **Expected Behavior:**
+
+    - Capitalizes the first letter of each word and concatenates
+        them without spaces.
+    - Returns non-string inputs unchanged.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class ClassNameFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('class_name', filters=[
+                    ToPascalCaseFilter()
+                ])
     """
 
     def apply(self, value: Any) -> Union[Optional[str], Any]:

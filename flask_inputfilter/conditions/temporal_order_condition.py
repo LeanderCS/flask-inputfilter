@@ -9,8 +9,39 @@ from flask_inputfilter.exceptions import ValidationError
 
 class TemporalOrderCondition(BaseCondition):
     """
-    Condition to check if the first date is before the second date.
-    Supports datetime, date, and ISO 8601 formatted strings.
+    Checks if one date is before another, ensuring the correct
+    temporal order. Supports datetime objects, date objects, and ISO
+    8601 formatted strings.
+
+    **Parameters:**
+
+    - **smaller_date_field** (*str*): The field containing the earlier date.
+    - **larger_date_field** (*str*): The field containing the later date.
+
+    **Expected Behavior:**
+
+    Validates that the date in ``smaller_date_field`` is earlier than the date in ``larger_date_field``. Raises a ``ValidationError`` if the dates are not in the correct order.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        from flask_inputfilter import InputFilter
+        from flask_inputfilter.conditions import TemporalOrderCondition
+
+        class DateOrderFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add(
+                    'start_date'
+                )
+
+                self.add(
+                    'end_date'
+                )
+
+                self.add_condition(TemporalOrderCondition('start_date', 'end_date'))
     """
 
     __slots__ = ("smaller_date_field", "larger_date_field")

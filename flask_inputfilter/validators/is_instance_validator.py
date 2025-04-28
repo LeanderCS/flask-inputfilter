@@ -8,7 +8,34 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsInstanceValidator(BaseValidator):
     """
-    Validator that checks if a value is an instance of a given class.
+    Validates that the provided value is an instance of a specified
+    class.
+
+    **Parameters:**
+
+    - **classType** (*Type[Any]*): The class against which the value is validated.
+    - **error_message** (*Optional[str]*): Custom error message if the validation fails.
+
+    **Expected Behavior:**
+
+    Raises a ``ValidationError`` if the input is not an instance of the specified class.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        from flask_inputfilter import InputFilter
+        from flask_inputfilter.validators import IsInstanceValidator
+
+        class MyClass:
+            pass
+
+        class InstanceInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add('object', validators=[
+                    IsInstanceValidator(classType=MyClass)
+                ])
     """
 
     __slots__ = ("class_type", "error_message")

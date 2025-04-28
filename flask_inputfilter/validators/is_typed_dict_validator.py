@@ -8,7 +8,34 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsTypedDictValidator(BaseValidator):
     """
-    Validator that checks if a value is a TypedDict.
+    Validates that the provided value conforms to a specified
+    TypedDict structure.
+
+    **Parameters:**
+
+    - **typed_dict_type** (*Type[TypedDict]*): The TypedDict class that defines the expected structure.
+    - **error_message** (*Optional[str]*): Custom error message if the validation fails.
+
+    **Expected Behavior:**
+
+    Ensures the input is a dictionary and, that all expected keys are present. Raises a ``ValidationError`` if the structure does not match.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        from typing import TypedDict
+
+        class PersonDict(TypedDict):
+            name: str
+            age: int
+
+        class PersonInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add('person', validators=[
+                    IsTypedDictValidator(typed_dict_type=PersonDict)
+                ])
     """
 
     __slots__ = ("typed_dict_type", "error_message")

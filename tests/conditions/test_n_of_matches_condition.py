@@ -23,7 +23,8 @@ class TestNOfMatchesCondition(unittest.TestCase):
         )
 
     def test_invalidates_when_less_than_n_fields_match(self) -> None:
-        """Test that less than N matching fields raise a ValidationError."""
+        """Test that less than N matching fields raise a
+        ValidationError."""
         self.input_filter.add("field1")
         self.input_filter.add("field2")
         self.input_filter.add("field3")

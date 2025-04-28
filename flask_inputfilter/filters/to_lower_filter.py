@@ -7,7 +7,24 @@ from flask_inputfilter.filters import BaseFilter
 
 class ToLowerFilter(BaseFilter):
     """
-    Filter that converts a string to lowercase.
+    Converts a string to lowercase.
+
+    **Expected Behavior:**
+
+    - For string inputs, returns the lowercase version.
+    - Non-string inputs are returned unchanged.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class UsernameFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('username', filters=[
+                    ToLowerFilter()
+                ])
     """
 
     def apply(self, value: Any) -> Union[str, Any]:

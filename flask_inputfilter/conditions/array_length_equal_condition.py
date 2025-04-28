@@ -7,7 +7,40 @@ from flask_inputfilter.conditions import BaseCondition
 
 class ArrayLengthEqualCondition(BaseCondition):
     """
-    Condition that checks if the array is of the specified length.
+    Checks if two array fields have equal length.
+
+    **Parameters:**
+
+    - **first_array_field** (*str*): The first field containing an array.
+    - **second_array_field** (*str*): The second field containing an array.
+
+    **Expected Behavior:**
+
+    Validates that the length of the array from ``first_array_field`` is equal to the length of the array from ``second_array_field``. If not, the condition fails.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        from flask_inputfilter import InputFilter
+        from flask_inputfilter.conditions import ArrayLengthEqualCondition
+        from flask_inputfilter.validators import IsArrayValidator
+
+        class ArrayLengthFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add(
+                    'list1',
+                    validators=[IsArrayValidator()]
+                )
+
+                self.add(
+                    'list2',
+                    validators=[IsArrayValidator()]
+                )
+
+                self.add_condition(ArrayLengthEqualCondition('list1', 'list2'))
     """
 
     __slots__ = ("first_array_field", "second_array_field")

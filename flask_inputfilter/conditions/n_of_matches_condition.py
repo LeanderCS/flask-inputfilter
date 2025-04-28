@@ -7,8 +7,39 @@ from flask_inputfilter.conditions import BaseCondition
 
 class NOfMatchesCondition(BaseCondition):
     """
-    Condition that ensures at least N of the specified
-    fields matches the value.
+    Checks that at least ``n`` of the specified fields match a given
+    value.
+
+    **Parameters:**
+
+    - **fields** (*List[str]*): A list of fields to check.
+    - **n** (*int*): The minimum number of fields that must match the value.
+    - **value** (*Any*): The value to match against.
+
+    **Expected Behavior:**
+
+    Validates that the count of fields matching the given value is greater than or equal to ``n``.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        from flask_inputfilter import InputFilter
+        from flask_inputfilter.conditions import NOfMatchesCondition
+
+        class MinimumMatchFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add(
+                    'field1'
+                )
+
+                self.add(
+                    'field2'
+                )
+
+                self.add_condition(NOfMatchesCondition(['field1', 'field2'], 1, 'value'))
     """
 
     __slots__ = ("fields", "n", "value")

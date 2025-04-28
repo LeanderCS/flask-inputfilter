@@ -8,7 +8,30 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsArrayValidator(BaseValidator):
     """
-    Validator that checks if a value is an array.
+    Checks if the provided value is an array (i.e. a list).
+
+    **Parameters:**
+
+    - **error_message** (*Optional[str]*): Custom error message if validation fails.
+
+    **Expected Behavior:**
+
+    Raises a ``ValidationError`` if the input is not a list.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        from flask_inputfilter import InputFilter
+        from flask_inputfilter.validators import IsArrayValidator
+
+        class ListInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('items', validators=[
+                    IsArrayValidator()
+                ])
     """
 
     __slots__ = ("error_message",)

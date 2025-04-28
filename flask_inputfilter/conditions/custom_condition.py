@@ -8,7 +8,38 @@ from flask_inputfilter.conditions import BaseCondition
 
 class CustomCondition(BaseCondition):
     """
-    Allows users to define their own condition as a callable.
+    Allows defining a custom condition using a user-provided
+    callable.
+
+    **Parameters:**
+
+    - **condition** (*Callable[[Dict[str, Any]], bool]*): A function that takes the input data and returns a boolean indicating whether the condition is met.
+
+    **Expected Behavior:**
+
+    Executes the provided callable with the input data. The condition passes if the callable returns ``True``, and fails otherwise.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        from flask_inputfilter import InputFilter
+        from flask_inputfilter.conditions import CustomCondition
+        from flask_inputfilter.validators import IsIntegerValidator
+
+        def my_custom_condition(data):
+            return data.get('age', 0) >= 18
+
+        class CustomFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add(
+                    'age',
+                    validators=[IsIntegerValidator()]
+                )
+
+                self.add_condition(CustomCondition(my_custom_condition))
     """
 
     __slots__ = ("condition",)

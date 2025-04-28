@@ -8,7 +8,33 @@ from flask_inputfilter.validators import BaseValidator
 
 class NotValidator(BaseValidator):
     """
-    Validator that inverts another validator.
+    Inverts the result of another validator. The validation passes if
+    the inner validator fails, and vice versa.
+
+    **Parameters:**
+
+    - **validator** (*BaseValidator*): The validator whose outcome is to be
+        inverted.
+    - **error_message** (*Optional[str]*): Custom error message if the
+        inverted validation does not behave as expected.
+
+    **Expected Behavior:**
+
+    Executes the inner validator on the input. If the inner validator does
+    not raise a ``ValidationError``, then the NotValidator raises one
+    instead.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class NotIntegerInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('value', validators=[
+                    NotValidator(validator=IsIntegerValidator())
+                ])
     """
 
     __slots__ = ("validator", "error_message")

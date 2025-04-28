@@ -13,7 +13,31 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsBase64ImageValidator(BaseValidator):
     """
-    Validator that checks if a Base64 string is a valid image.
+    Validates that a Base64 encoded string represents a valid image
+    by decoding it and verifying its integrity.
+
+    **Parameters:**
+
+    - **error_message** (*Optional[str]*): Custom error message if
+        validation fails.
+
+    **Expected Behavior:**
+
+    Attempts to decode the Base64 string and open the image using the
+    PIL library. If the image is invalid or corrupted, a
+    ``ValidationError`` is raised.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class AvatarInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('avatar', validators=[
+                    IsBase64ImageValidator()
+                ])
     """
 
     __slots__ = ("error_message",)

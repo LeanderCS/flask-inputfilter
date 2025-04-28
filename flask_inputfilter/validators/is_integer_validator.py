@@ -8,7 +8,26 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsIntegerValidator(BaseValidator):
     """
-    Validator that checks if a value is an integer.
+    Checks whether the provided value is an integer.
+
+    **Parameters:**
+
+    - **error_message** (*Optional[str]*): Custom error message if the value is not an integer.
+
+    **Expected Behavior:**
+
+    Raises a ``ValidationError`` if the input value is not of type int.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class NumberInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add('number', validators=[
+                    IsIntegerValidator()
+                ])
     """
 
     __slots__ = ("error_message",)
