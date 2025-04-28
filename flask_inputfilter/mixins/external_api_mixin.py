@@ -9,7 +9,7 @@ from flask_inputfilter.models import ExternalApiConfig
 
 class ExternalApiMixin:
     @staticmethod
-    def callExternalApi(
+    def call_external_api(
         config: ExternalApiConfig,
         fallback: Any,
         validated_data: Dict[str, Any],
@@ -71,11 +71,11 @@ class ExternalApiMixin:
         if config.params:
             request_data[
                 "params"
-            ] = ExternalApiMixin.replacePlaceholdersInParams(
+            ] = ExternalApiMixin.replace_placeholders_in_params(
                 config.params, validated_data
             )
 
-        request_data["url"] = ExternalApiMixin.replacePlaceholders(
+        request_data["url"] = ExternalApiMixin.replace_placeholders(
             config.url, validated_data
         )
         request_data["method"] = config.method
@@ -114,7 +114,9 @@ class ExternalApiMixin:
         return result.get(data_key) if data_key else result
 
     @staticmethod
-    def replacePlaceholders(value: str, validated_data: Dict[str, Any]) -> str:
+    def replace_placeholders(
+        value: str, validated_data: Dict[str, Any]
+    ) -> str:
         """
         Replace all placeholders, marked with '{{ }}' in value
         with the corresponding values from validated_data.
@@ -134,7 +136,7 @@ class ExternalApiMixin:
         )
 
     @staticmethod
-    def replacePlaceholdersInParams(
+    def replace_placeholders_in_params(
         params: dict, validated_data: Dict[str, Any]
     ) -> dict:
         """
@@ -151,7 +153,7 @@ class ExternalApiMixin:
                   with the corresponding values from validated_data.
         """
         return {
-            key: ExternalApiMixin.replacePlaceholders(value, validated_data)
+            key: ExternalApiMixin.replace_placeholders(value, validated_data)
             if isinstance(value, str)
             else value
             for key, value in params.items()

@@ -6,12 +6,12 @@ from tests.validators import BaseValidatorTest
 class TestIsBooleanValidator(BaseValidatorTest):
     def test_valid_boolean(self) -> None:
         self.input_filter.add("flag", validators=[IsBooleanValidator()])
-        self.input_filter.validateData({"flag": True})
+        self.input_filter.validate_data({"flag": True})
 
     def test_invalid_boolean(self) -> None:
         self.input_filter.add("flag", validators=[IsBooleanValidator()])
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"flag": "yes"})
+            self.input_filter.validate_data({"flag": "yes"})
 
     def test_custom_error_message(self) -> None:
         self.input_filter.add(

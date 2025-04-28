@@ -7,12 +7,12 @@ class TestIsBase64ImageValidator(BaseValidatorTest):
     def test_valid_base64_image(self) -> None:
         self.input_filter.add("image", validators=[IsBase64ImageValidator()])
         with open("tests/data/base64_image.txt", "r") as file:
-            self.input_filter.validateData({"image": file.read()})
+            self.input_filter.validate_data({"image": file.read()})
 
     def test_invalid_base64_image(self) -> None:
         self.input_filter.add("image", validators=[IsBase64ImageValidator()])
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"image": "not_base64"})
+            self.input_filter.validate_data({"image": "not_base64"})
 
     def test_custom_error_message(self) -> None:
         self.input_filter.add(

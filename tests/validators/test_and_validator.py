@@ -17,7 +17,7 @@ class TestAndValidator(BaseValidatorTest):
                 )
             ],
         )
-        self.input_filter.validateData({"age": 25})
+        self.input_filter.validate_data({"age": 25})
 
     def test_invalid_when_first_validator_fails(self) -> None:
         self.input_filter.add(
@@ -29,7 +29,7 @@ class TestAndValidator(BaseValidatorTest):
             ],
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"age": "not a number"})
+            self.input_filter.validate_data({"age": "not a number"})
 
     def test_invalid_when_second_validator_fails(self) -> None:
         self.input_filter.add(
@@ -41,7 +41,7 @@ class TestAndValidator(BaseValidatorTest):
             ],
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"age": 4})
+            self.input_filter.validate_data({"age": 4})
 
     def test_custom_error_message(self) -> None:
         self.input_filter.add(

@@ -14,7 +14,7 @@ class TestStringTrimFilter(unittest.TestCase):
             required=False,
             filters=[StringTrimFilter()],
         )
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"trimmed_field": "   Hello World   "}
         )
         self.assertEqual(validated_data["trimmed_field"], "Hello World")

@@ -30,7 +30,7 @@ class TestToTypedDictFilter(unittest.TestCase):
             "person", required=True, filters=[ToTypedDictFilter(Person)]
         )
 
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"person": {"name": "John", "age": 25}}
         )
         self.assertEqual(validated_data["person"], {"name": "John", "age": 25})
@@ -47,5 +47,5 @@ class TestToTypedDictFilter(unittest.TestCase):
             "person", required=True, filters=[ToTypedDictFilter(Person)]
         )
 
-        validated_data = self.input_filter.validateData({"person": 123})
+        validated_data = self.input_filter.validate_data({"person": 123})
         self.assertEqual(validated_data["person"], 123)

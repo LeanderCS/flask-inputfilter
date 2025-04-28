@@ -20,7 +20,7 @@ class TestToDataclassFilter(unittest.TestCase):
             required=True,
             filters=[ToDataclassFilter(Person)],
         )
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"person": {"name": "John", "age": 25}}
         )
         self.assertEqual(validated_data["person"], Person("John", 25))
@@ -36,5 +36,5 @@ class TestToDataclassFilter(unittest.TestCase):
             required=True,
             filters=[ToDataclassFilter(Person)],
         )
-        validated_data = self.input_filter.validateData({"person": 123})
+        validated_data = self.input_filter.validate_data({"person": 123})
         self.assertEqual(validated_data["person"], 123)

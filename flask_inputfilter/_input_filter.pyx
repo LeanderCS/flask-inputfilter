@@ -6,6 +6,7 @@
 # cython: initializedcheck=False
 import json
 import logging
+import warnings
 from typing import Any, Dict, List, Optional, Type, TypeVar, Union
 
 from flask import Response, g, request
@@ -60,6 +61,14 @@ cdef class InputFilter:
             [self.methods.push_back(method.encode()) for method in methods]
 
     cpdef bint isValid(self):
+        warnings.warn(
+            "isValid() is deprecated, use is_valid() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return self.is_valid()
+
+    cpdef bint is_valid(self):
         """
         Checks if the object's state or its attributes meet certain
         conditions to be considered valid. This function is typically used to
@@ -163,6 +172,16 @@ cdef class InputFilter:
     cpdef object validateData(
         self, data: Optional[Dict[str, Any]] = None
     ):
+        warnings.warn(
+            "validateData() is deprecated, use validate_data() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return self.validate_data(data)
+
+    cpdef object validate_data(
+        self, data: Optional[Dict[str, Any]] = None
+    ):
         """
         Validates input data against defined field rules, including applying
         filters, validators, custom logic steps, and fallback mechanisms. The
@@ -211,14 +230,14 @@ cdef class InputFilter:
                     value = self.validated_data.get(copy)
 
                 if external_api:
-                    value = ExternalApiMixin.callExternalApi(
+                    value = ExternalApiMixin.call_external_api(
                         external_api, fallback, self.validated_data
                     )
 
-                value = FieldMixin.applyFilters(filters, value)
-                value = FieldMixin.validateField(validators, fallback, value) or value
-                value = FieldMixin.applySteps(steps, fallback, value) or value
-                value = FieldMixin.checkForRequired(
+                value = FieldMixin.apply_filters(filters, value)
+                value = FieldMixin.validate_field(validators, fallback, value) or value
+                value = FieldMixin.apply_steps(steps, fallback, value) or value
+                value = FieldMixin.check_for_required(
                     field_name, required, default, fallback, value
                 )
 
@@ -228,7 +247,7 @@ cdef class InputFilter:
                 errors[field_name] = str(e)
 
         try:
-            FieldMixin.checkConditions(self.conditions, self.validated_data)
+            FieldMixin.check_conditions(self.conditions, self.validated_data)
         except ValidationError as e:
             errors["_condition"] = str(e)
 
@@ -241,6 +260,14 @@ cdef class InputFilter:
         return self.validated_data
 
     cpdef void addCondition(self, condition: BaseCondition):
+        warnings.warn(
+            "addCondition() is deprecated, use add_condition() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        self.add_condition(condition)
+
+    cpdef void add_condition(self, condition: BaseCondition):
         """
         Add a condition to the input filter.
 
@@ -250,6 +277,14 @@ cdef class InputFilter:
         self.conditions.append(condition)
 
     cpdef list getConditions(self):
+        warnings.warn(
+            "getConditions() is deprecated, use get_conditions() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return self.get_conditions()
+
+    cpdef list get_conditions(self):
         """
         Retrieve the list of all registered conditions.
 
@@ -264,6 +299,14 @@ cdef class InputFilter:
         return self.conditions
 
     cpdef void setData(self, data: Dict[str, Any]):
+        warnings.warn(
+            "setData() is deprecated, use set_data() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        self.set_data(data)
+
+    cpdef void set_data(self, data: Dict[str, Any]):
         """
         Filters and sets the provided data into the object's internal
         storage, ensuring that only the specified fields are considered and
@@ -278,7 +321,7 @@ cdef class InputFilter:
         self.data = {}
         for field_name, field_value in data.items():
             if field_name in self.fields:
-                field_value = FieldMixin.applyFilters(
+                field_value = FieldMixin.apply_filters(
                     filters=self.fields[field_name].filters + self.global_filters,
                     value=field_value,
                 )
@@ -286,6 +329,14 @@ cdef class InputFilter:
             self.data[field_name] = field_value
 
     cpdef object getValue(self, name: str):
+        warnings.warn(
+            "getValue() is deprecated, use get_value() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return self.get_value(name)
+
+    cpdef object get_value(self, name: str):
         """
         This method retrieves a value associated with the provided name. It
         searches for the value based on the given identifier and returns the
@@ -307,6 +358,14 @@ cdef class InputFilter:
         return self.validated_data.get(name)
 
     cpdef dict getValues(self):
+        warnings.warn(
+            "getValues() is deprecated, use get_values() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return self.get_values()
+
+    cpdef dict get_values(self):
         """
         Retrieves a dictionary of key-value pairs from the current object.
         This method provides access to the internal state or configuration of
@@ -320,6 +379,14 @@ cdef class InputFilter:
         return self.validated_data
 
     cpdef object getRawValue(self, name: str):
+        warnings.warn(
+            "getRawValue() is deprecated, use get_raw_value() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return self.get_raw_value(name)
+
+    cpdef object get_raw_value(self, name: str):
         """
         Fetches the raw value associated with the provided key.
 
@@ -339,6 +406,14 @@ cdef class InputFilter:
         return self.data.get(name) if name in self.data else None
 
     cpdef dict getRawValues(self):
+        warnings.warn(
+            "getRawValues() is deprecated, use get_raw_values() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return self.get_raw_values()
+
+    cpdef dict get_raw_values(self):
         """
         Retrieves raw values from a given source and returns them as a
         dictionary.
@@ -363,6 +438,14 @@ cdef class InputFilter:
         }
 
     cpdef dict getUnfilteredData(self):
+        warnings.warn(
+            "getUnfilteredData() is deprecated, use get_unfiltered_data() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return self.get_unfiltered_data()
+
+    cpdef dict get_unfiltered_data(self):
         """
         Fetches unfiltered data from the data source.
 
@@ -380,6 +463,14 @@ cdef class InputFilter:
         return self.data
 
     cpdef void setUnfilteredData(self, data: Dict[str, Any]):
+        warnings.warn(
+            "setUnfilteredData() is deprecated, use set_unfiltered_data() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        self.set_unfiltered_data(data)
+
+    cpdef void set_unfiltered_data(self, data: Dict[str, Any]):
         """
         Sets unfiltered data for the current instance. This method assigns a
         given dictionary of data to the instance for further processing. It
@@ -392,6 +483,14 @@ cdef class InputFilter:
         self.data = data
 
     cpdef bint hasUnknown(self):
+        warnings.warn(
+            "hasUnknown() is deprecated, use has_unknown() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return self.has_unknown()
+
+    cpdef bint has_unknown(self):
         """
         Checks whether any values in the current data do not have
         corresponding configurations in the defined fields.
@@ -409,6 +508,14 @@ cdef class InputFilter:
         return False
 
     cpdef str getErrorMessage(self, field_name: str):
+        warnings.warn(
+            "getErrorMessage() is deprecated, use get_error_message() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return self.get_error_message(field_name)
+
+    cpdef str get_error_message(self, field_name: str):
         """
         Retrieves and returns a predefined error message.
 
@@ -429,6 +536,14 @@ cdef class InputFilter:
         return self.errors.get(field_name)
 
     cpdef dict getErrorMessages(self):
+        warnings.warn(
+            "getErrorMessages() is deprecated, use get_error_messages() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return self.get_error_messages()
+
+    cpdef dict get_error_messages(self):
         """
         Retrieves all error messages associated with the fields in the
         input filter.
@@ -460,26 +575,26 @@ cdef class InputFilter:
 
         Args:
             name (str): The name of the field.
-            
+
             required (Optional[bool]): Whether the field is required.
-            
+
             default (Optional[Any]): The default value of the field.
-            
+
             fallback (Optional[Any]): The fallback value of the field, if 
                 validations fails or field None, although it is required.
-                
+
             filters (Optional[List[BaseFilter]]): The filters to apply to 
                 the field value.
-            
+
             validators (Optional[List[BaseValidator]]): The validators to 
                 apply to the field value.
-                
+
             steps (Optional[List[Union[BaseFilter, BaseValidator]]]): Allows 
                 to apply multiple filters and validators in a specific order.
-                
+
             external_api (Optional[ExternalApiConfig]): Configuration for an 
                 external API call.
-            
+
             copy (Optional[str]): The name of the field to copy the value 
                 from.
         """
@@ -513,6 +628,14 @@ cdef class InputFilter:
         return field_name in self.fields
 
     cpdef object getInput(self, field_name: str):
+        warnings.warn(
+            "getInput() is deprecated, use get_input() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return self.get_input(field_name)
+
+    cpdef object get_input(self, field_name: str):
         """
         Represents a method to retrieve a field by its name.
 
@@ -532,6 +655,14 @@ cdef class InputFilter:
         return self.fields.get(field_name)
 
     cpdef dict getInputs(self):
+        warnings.warn(
+            "getInputs() is deprecated, use get_inputs() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return self.get_inputs()
+
+    cpdef dict get_inputs(self):
         """
         Retrieve the dictionary of input fields associated with the object.
 
@@ -587,27 +718,27 @@ cdef class InputFilter:
         Replaces a field in the input filter.
 
         Args:
-             name (str): The name of the field.
-            
+            name (str): The name of the field.
+
             required (Optional[bool]): Whether the field is required.
-            
+
             default (Optional[Any]): The default value of the field.
-            
+
             fallback (Optional[Any]): The fallback value of the field, if 
                 validations fails or field None, although it is required.
-                
+
             filters (Optional[List[BaseFilter]]): The filters to apply to 
                 the field value.
-            
+
             validators (Optional[List[BaseValidator]]): The validators to 
                 apply to the field value.
-                
+
             steps (Optional[List[Union[BaseFilter, BaseValidator]]]): Allows 
                 to apply multiple filters and validators in a specific order.
-                
+
             external_api (Optional[ExternalApiConfig]): Configuration for an 
                 external API call.
-            
+
             copy (Optional[str]): The name of the field to copy the value 
                 from.
         """
@@ -623,6 +754,14 @@ cdef class InputFilter:
         )
 
     cpdef void addGlobalFilter(self, filter: BaseFilter):
+        warnings.warn(
+            "addGlobalFilter() is deprecated, use add_global_filter() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        self.add_global_filter(filter)
+
+    cpdef void add_global_filter(self, filter: BaseFilter):
         """
         Add a global filter to be applied to all fields.
 
@@ -632,6 +771,14 @@ cdef class InputFilter:
         self.global_filters.append(filter)
 
     cpdef list getGlobalFilters(self):
+        warnings.warn(
+            "getGlobalFilters() is deprecated, use get_global_filters() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return self.get_global_filters()
+
+    cpdef list get_global_filters(self):
         """
         Retrieve all global filters associated with this InputFilter instance.
 
@@ -705,6 +852,14 @@ cdef class InputFilter:
                 self.global_validators.append(validator)
 
     cpdef void setModel(self, model_class: Type[T]):
+        warnings.warn(
+            "setModel() is deprecated, use set_model() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        self.set_model(model_class)
+
+    cpdef void set_model(self, model_class: Type[T]):
         """
         Set the model class for serialization.
 
@@ -728,6 +883,14 @@ cdef class InputFilter:
         return self.model_class(**self.validated_data)
 
     cpdef void addGlobalValidator(self, validator: BaseValidator):
+        warnings.warn(
+            "addGlobalValidator() is deprecated, use add_global_validator() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        self.add_global_validator(validator)
+
+    cpdef void add_global_validator(self, validator: BaseValidator):
         """
         Add a global validator to be applied to all fields.
 
@@ -737,6 +900,14 @@ cdef class InputFilter:
         self.global_validators.append(validator)
 
     cpdef list getGlobalValidators(self):
+        warnings.warn(
+            "getGlobalValidators() is deprecated, use get_global_validators() instead",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return self.global_validators
+
+    cpdef list get_global_validators(self):
         """
         Retrieve all global validators associated with this
         InputFilter instance.

@@ -13,10 +13,10 @@ class TestToIntegerFilter(unittest.TestCase):
             "age", required=True, filters=[ToIntegerFilter()]
         )
 
-        validated_data = self.input_filter.validateData({"age": "25"})
+        validated_data = self.input_filter.validate_data({"age": "25"})
         self.assertEqual(validated_data["age"], 25)
 
-        validated_data = self.input_filter.validateData({"age": 25.3})
+        validated_data = self.input_filter.validate_data({"age": 25.3})
         self.assertEqual(validated_data["age"], 25)
 
     def test_non_convertible_or_false_value_remains(self) -> None:
@@ -24,8 +24,8 @@ class TestToIntegerFilter(unittest.TestCase):
             "age", required=True, filters=[ToIntegerFilter()]
         )
 
-        validated_data = self.input_filter.validateData({"age": False})
+        validated_data = self.input_filter.validate_data({"age": False})
         self.assertFalse(validated_data["age"])
 
-        validated_data = self.input_filter.validateData({"age": "no integer"})
+        validated_data = self.input_filter.validate_data({"age": "no integer"})
         self.assertEqual(validated_data["age"], "no integer")

@@ -6,12 +6,12 @@ from tests.validators import BaseValidatorTest
 class TestIsPortValidator(BaseValidatorTest):
     def test_valid_port(self):
         self.input_filter.add("port", validators=[IsPortValidator()])
-        self.input_filter.validateData({"port": 80})
+        self.input_filter.validate_data({"port": 80})
 
     def test_invalid_port(self):
         self.input_filter.add("port", validators=[IsPortValidator()])
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"port": 65536})
+            self.input_filter.validate_data({"port": 65536})
 
     def test_custom_error_message(self):
         self.input_filter.add(

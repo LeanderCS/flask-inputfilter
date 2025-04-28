@@ -23,5 +23,5 @@ class IsHtmlValidator(BaseValidator):
         if not isinstance(value, str):
             raise ValidationError("Value must be a string.")
 
-        if not re.search(r"<\s*\w+.*?>", value):
+        if not re.search(r"<\s*\w+[^>]*", value):
             raise ValidationError(self.error_message)

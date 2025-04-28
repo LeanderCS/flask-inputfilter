@@ -13,5 +13,7 @@ class TestToNullFilter(unittest.TestCase):
             "optional_field", required=False, filters=[ToNullFilter()]
         )
 
-        validated_data = self.input_filter.validateData({"optional_field": ""})
+        validated_data = self.input_filter.validate_data(
+            {"optional_field": ""}
+        )
         self.assertIsNone(validated_data["optional_field"])

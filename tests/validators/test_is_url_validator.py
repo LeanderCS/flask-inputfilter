@@ -6,14 +6,14 @@ from tests.validators import BaseValidatorTest
 class TestIsUrlValidator(BaseValidatorTest):
     def test_valid_url(self):
         self.input_filter.add("url", validators=[IsUrlValidator()])
-        self.input_filter.validateData({"url": "http://example.com"})
+        self.input_filter.validate_data({"url": "http://example.com"})
 
     def test_invalid_url(self):
         self.input_filter.add("url", validators=[IsUrlValidator()])
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"url": "not_a_url"})
+            self.input_filter.validate_data({"url": "not_a_url"})
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"url": 100})
+            self.input_filter.validate_data({"url": 100})
 
     def test_custom_error_message(self):
         self.input_filter.add(

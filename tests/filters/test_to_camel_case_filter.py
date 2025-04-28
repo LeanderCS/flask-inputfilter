@@ -14,7 +14,7 @@ class TestToCamelCaseFilter(unittest.TestCase):
             required=True,
             filters=[ToCamelCaseFilter()],
         )
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"username": "test user"}
         )
         self.assertEqual(validated_data["username"], "testUser")
@@ -25,5 +25,5 @@ class TestToCamelCaseFilter(unittest.TestCase):
             required=True,
             filters=[ToCamelCaseFilter()],
         )
-        validated_data = self.input_filter.validateData({"username": 123})
+        validated_data = self.input_filter.validate_data({"username": 123})
         self.assertEqual(validated_data["username"], 123)

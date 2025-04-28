@@ -13,10 +13,10 @@ class TestToDigitsFilter(unittest.TestCase):
             "number", required=True, filters=[ToDigitsFilter()]
         )
 
-        validated_data = self.input_filter.validateData({"number": "25"})
+        validated_data = self.input_filter.validate_data({"number": "25"})
         self.assertEqual(validated_data["number"], 25)
 
-        validated_data = self.input_filter.validateData({"number": "25.3"})
+        validated_data = self.input_filter.validate_data({"number": "25.3"})
         self.assertEqual(validated_data["number"], 25.3)
 
     def test_invalid_number_string_remains_string(self) -> None:
@@ -24,10 +24,10 @@ class TestToDigitsFilter(unittest.TestCase):
             "number", required=True, filters=[ToDigitsFilter()]
         )
 
-        validated_data = self.input_filter.validateData({"number": "25.3.3"})
+        validated_data = self.input_filter.validate_data({"number": "25.3.3"})
         self.assertIsInstance(validated_data["number"], str)
 
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"number": "no number"}
         )
         self.assertIsInstance(validated_data["number"], str)
@@ -37,5 +37,5 @@ class TestToDigitsFilter(unittest.TestCase):
             "number", required=True, filters=[ToDigitsFilter()]
         )
 
-        validated_data = self.input_filter.validateData({"number": 1.23})
+        validated_data = self.input_filter.validate_data({"number": 1.23})
         self.assertEqual(validated_data["number"], 1.23)

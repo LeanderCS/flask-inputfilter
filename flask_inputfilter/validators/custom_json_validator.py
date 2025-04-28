@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Optional
+from typing import Any, List, Optional
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import BaseValidator
@@ -21,7 +21,7 @@ class CustomJsonValidator(BaseValidator):
 
     def __init__(
         self,
-        required_fields: list = None,
+        required_fields: List[str] = None,
         schema: dict = None,
         error_message: Optional[str] = None,
     ) -> None:
@@ -29,7 +29,7 @@ class CustomJsonValidator(BaseValidator):
         self.schema = schema or {}
         self.error_message = error_message
 
-    def validate(self, value: Any) -> bool:
+    def validate(self, value: Any) -> None:
         if isinstance(value, str):
             try:
                 value = json.loads(value)
@@ -44,7 +44,7 @@ class CustomJsonValidator(BaseValidator):
                 raise ValidationError(f"Missing required field '{field}'.")
 
         if not self.schema:
-            return True
+            return
 
         for field, expected_type in self.schema.items():
             if field in value and not isinstance(value[field], expected_type):
@@ -53,5 +53,3 @@ class CustomJsonValidator(BaseValidator):
                     or f"Field '{field}' has to be of type "
                     f"'{expected_type.__name__}'."
                 )
-
-        return True

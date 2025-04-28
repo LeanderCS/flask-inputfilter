@@ -16,12 +16,12 @@ class TestIsVerticalImageValidator(BaseValidatorTest):
             validators=[IsVerticalImageValidator()],
         )
         with open("tests/data/base64_image.txt", "r") as file:
-            self.input_filter.validateData({"vertically_image": file.read()})
+            self.input_filter.validate_data({"vertically_image": file.read()})
 
     def test_invalid_not_base64(self):
         self.input_filter.add("image", validators=[IsVerticalImageValidator()])
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"image": "not_a_base64_image"})
+            self.input_filter.validate_data({"image": "not_a_base64_image"})
 
     def test_invalid_horizontal_image(self):
         self.input_filter.add(
@@ -35,7 +35,7 @@ class TestIsVerticalImageValidator(BaseValidatorTest):
         )
         with open("tests/data/base64_image.txt", "r") as file:
             with self.assertRaises(ValidationError):
-                self.input_filter.validateData(
+                self.input_filter.validate_data(
                     {"horizontally_image": file.read()}
                 )
 
@@ -44,7 +44,7 @@ class TestIsVerticalImageValidator(BaseValidatorTest):
             "vertically_image", validators=[IsVerticalImageValidator()]
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"vertically_image": 123})
+            self.input_filter.validate_data({"vertically_image": 123})
 
     def test_custom_error_message(self):
         self.input_filter.add(

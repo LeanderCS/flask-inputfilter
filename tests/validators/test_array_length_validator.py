@@ -12,7 +12,7 @@ class TestArrayLengthValidator(BaseValidatorTest):
             "items",
             validators=[ArrayLengthValidator(min_length=2, max_length=5)],
         )
-        self.input_filter.validateData({"items": [1, 2, 3, 4]})
+        self.input_filter.validate_data({"items": [1, 2, 3, 4]})
 
     def test_invalid_too_short_array(self) -> None:
         self.input_filter.add(
@@ -20,7 +20,7 @@ class TestArrayLengthValidator(BaseValidatorTest):
             validators=[ArrayLengthValidator(min_length=2, max_length=5)],
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"items": [1]})
+            self.input_filter.validate_data({"items": [1]})
 
     def test_invalid_too_long_array(self) -> None:
         self.input_filter.add(
@@ -28,7 +28,7 @@ class TestArrayLengthValidator(BaseValidatorTest):
             validators=[ArrayLengthValidator(min_length=2, max_length=5)],
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"items": [1, 2, 3, 4, 5, 6]})
+            self.input_filter.validate_data({"items": [1, 2, 3, 4, 5, 6]})
 
     def test_invalid_non_array_input(self) -> None:
         self.input_filter.add(

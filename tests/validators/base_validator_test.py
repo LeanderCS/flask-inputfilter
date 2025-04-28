@@ -33,7 +33,7 @@ class BaseValidatorTest(unittest.TestCase):
             expected_message (Optional[str]): Optional expected error message
         """
         with self.assertRaises(ValidationError) as context:
-            self.input_filter.validateData({field_name: invalid_value})
+            self.input_filter.validate_data({field_name: invalid_value})
 
         errors = context.exception.args[0]
 

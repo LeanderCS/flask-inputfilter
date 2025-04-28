@@ -11,7 +11,7 @@ class TestIsDateTimeValidator(BaseValidatorTest):
             filters=[ToDateTimeFilter()],
             validators=[IsDateTimeValidator()],
         )
-        self.input_filter.validateData({"datetime": "2024-01-01T12:00:00"})
+        self.input_filter.validate_data({"datetime": "2024-01-01T12:00:00"})
 
     def test_invalid_datetime(self) -> None:
         self.input_filter.add(
@@ -20,7 +20,7 @@ class TestIsDateTimeValidator(BaseValidatorTest):
             validators=[IsDateTimeValidator()],
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"datetime": "wrong"})
+            self.input_filter.validate_data({"datetime": "wrong"})
 
     def test_custom_error_message(self) -> None:
         self.input_filter.add(

@@ -13,12 +13,12 @@ class User:
 class TestIsDataclassValidator(BaseValidatorTest):
     def test_valid_dataclass(self) -> None:
         self.input_filter.add("data", validators=[IsDataclassValidator(User)])
-        self.input_filter.validateData({"data": {"id": 1}})
+        self.input_filter.validate_data({"data": {"id": 1}})
 
     def test_invalid_dataclass(self) -> None:
         self.input_filter.add("data", validators=[IsDataclassValidator(User)])
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"data": "not_dict"})
+            self.input_filter.validate_data({"data": "not_dict"})
 
     def test_custom_error_message(self) -> None:
         self.input_filter.add(

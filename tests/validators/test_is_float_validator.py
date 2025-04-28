@@ -6,12 +6,12 @@ from tests.validators import BaseValidatorTest
 class TestIsFloatValidator(BaseValidatorTest):
     def test_valid_float(self) -> None:
         self.input_filter.add("price", validators=[IsFloatValidator()])
-        self.input_filter.validateData({"price": 19.99})
+        self.input_filter.validate_data({"price": 19.99})
 
     def test_invalid_float(self) -> None:
         self.input_filter.add("price", validators=[IsFloatValidator()])
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"price": "not_a_float"})
+            self.input_filter.validate_data({"price": "not_a_float"})
 
     def test_custom_error_message(self) -> None:
         self.input_filter.add(

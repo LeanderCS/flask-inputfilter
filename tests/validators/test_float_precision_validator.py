@@ -8,25 +8,25 @@ class TestFloatPrecisionValidator(BaseValidatorTest):
         self.input_filter.add(
             "price", validators=[FloatPrecisionValidator(precision=5, scale=2)]
         )
-        self.input_filter.validateData({"price": 19.99})
+        self.input_filter.validate_data({"price": 19.99})
 
     def test_invalid_float_precision_and_scale(self) -> None:
         self.input_filter.add(
             "price", validators=[FloatPrecisionValidator(precision=5, scale=2)]
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"price": 19.999})
+            self.input_filter.validate_data({"price": 19.999})
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"price": 1999.99})
+            self.input_filter.validate_data({"price": 1999.99})
 
     def test_invalid_not_a_float(self) -> None:
         self.input_filter.add(
             "price", validators=[FloatPrecisionValidator(precision=5, scale=2)]
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"price": "not a float"})
+            self.input_filter.validate_data({"price": "not a float"})
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"price": float("inf")})
+            self.input_filter.validate_data({"price": float("inf")})
 
     def test_custom_error_message(self) -> None:
         self.input_filter.add(

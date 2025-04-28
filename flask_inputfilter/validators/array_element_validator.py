@@ -15,14 +15,14 @@ class ArrayElementValidator(BaseValidator):
     Validator to validate each element in an array.
     """
 
-    __slots__ = ("elementFilter", "error_message")
+    __slots__ = ("element_filter", "error_message")
 
     def __init__(
         self,
         elementFilter: "InputFilter",
         error_message: Optional[str] = None,
     ) -> None:
-        self.elementFilter = elementFilter
+        self.element_filter = elementFilter
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
@@ -34,10 +34,10 @@ class ArrayElementValidator(BaseValidator):
                 if not isinstance(element, Dict):
                     raise ValidationError
 
-                value[i] = deepcopy(self.elementFilter.validateData(element))
+                value[i] = deepcopy(self.element_filter.validateData(element))
 
             except ValidationError:
                 raise ValidationError(
                     self.error_message
-                    or f"Value '{element}' is not in '{self.elementFilter}'"
+                    or f"Value '{element}' is not in '{self.element_filter}'"
                 )

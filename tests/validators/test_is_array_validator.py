@@ -6,12 +6,12 @@ from tests.validators import BaseValidatorTest
 class TestIsArrayValidator(BaseValidatorTest):
     def test_valid_array(self) -> None:
         self.input_filter.add("tags", validators=[IsArrayValidator()])
-        self.input_filter.validateData({"tags": ["tag1", "tag2"]})
+        self.input_filter.validate_data({"tags": ["tag1", "tag2"]})
 
     def test_invalid_not_array(self) -> None:
         self.input_filter.add("tags", validators=[IsArrayValidator()])
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"tags": "not_an_array"})
+            self.input_filter.validate_data({"tags": "not_an_array"})
 
     def test_custom_error_message(self) -> None:
         self.input_filter.add(

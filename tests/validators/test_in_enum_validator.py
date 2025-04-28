@@ -14,12 +14,12 @@ class Color(Enum):
 class TestInEnumValidator(BaseValidatorTest):
     def test_valid_enum_value(self) -> None:
         self.input_filter.add("color", validators=[InEnumValidator(Color)])
-        self.input_filter.validateData({"color": "red"})
+        self.input_filter.validate_data({"color": "red"})
 
     def test_invalid_enum_value(self) -> None:
         self.input_filter.add("color", validators=[InEnumValidator(Color)])
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"color": "yellow"})
+            self.input_filter.validate_data({"color": "yellow"})
 
     def test_custom_error_message(self) -> None:
         self.input_filter.add(

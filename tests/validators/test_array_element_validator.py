@@ -22,7 +22,7 @@ class TestArrayElementValidator(BaseValidatorTest):
         self.input_filter.add(
             "items", validators=[ArrayElementValidator(self.element_filter)]
         )
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"items": [{"id": 1}, {"id": 2}]}
         )
         self.assertEqual(validated_data["items"], [{"id": 1}, {"id": 2}])
@@ -32,7 +32,7 @@ class TestArrayElementValidator(BaseValidatorTest):
             "items", validators=[ArrayElementValidator(self.element_filter)]
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData(
+            self.input_filter.validate_data(
                 {"items": [{"id": 1}, {"id": "invalid"}]}
             )
 

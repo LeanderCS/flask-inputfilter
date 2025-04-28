@@ -11,7 +11,7 @@ class TestIsBase64ImageCorrectSizeValidator(BaseValidatorTest):
                 IsBase64ImageCorrectSizeValidator(minSize=10, maxSize=50)
             ],
         )
-        self.input_filter.validateData(
+        self.input_filter.validate_data(
             {"image": "iVBORw0KGgoAAAANSUhEUgAAAAUA"}
         )
 
@@ -23,7 +23,7 @@ class TestIsBase64ImageCorrectSizeValidator(BaseValidatorTest):
             ],
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"image": "short"})
+            self.input_filter.validate_data({"image": "short"})
 
     def test_custom_error_message(self) -> None:
         self.input_filter.add(

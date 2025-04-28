@@ -12,18 +12,18 @@ class TestIntegerBiggerThanCondition(unittest.TestCase):
         self.input_filter.add("field2")
 
     def test_validates_when_first_integer_is_bigger(self) -> None:
-        self.input_filter.addCondition(
+        self.input_filter.add_condition(
             IntegerBiggerThanCondition("field", "field2")
         )
-        self.input_filter.validateData({"field": 11, "field2": 10})
+        self.input_filter.validate_data({"field": 11, "field2": 10})
 
     def test_invalidates_when_first_integer_is_equal_or_smaller(self) -> None:
-        self.input_filter.addCondition(
+        self.input_filter.add_condition(
             IntegerBiggerThanCondition("field", "field2")
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"field": 10, "field2": 10})
+            self.input_filter.validate_data({"field": 10, "field2": 10})
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"field": 10, "field2": 11})
+            self.input_filter.validate_data({"field": 10, "field2": 11})
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"field": 10})
+            self.input_filter.validate_data({"field": 10})

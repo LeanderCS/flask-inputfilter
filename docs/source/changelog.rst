@@ -3,6 +3,14 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.5.3] - 2025-04-28
+--------------------
+
+Changed
+^^^^^^^
+- Migrated methods from camel to snake case
+
+
 [0.5.2] - 2025-04-27
 --------------------
 

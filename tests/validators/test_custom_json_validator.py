@@ -16,7 +16,7 @@ class TestCustomJsonValidator(BaseValidatorTest):
                 )
             ],
         )
-        self.input_filter.validateData(
+        self.input_filter.validate_data(
             {"data": '{"name": "Alice", "age": 25}'}
         )
 
@@ -30,7 +30,7 @@ class TestCustomJsonValidator(BaseValidatorTest):
             ],
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"data": '{"name": "Alice"}'})
+            self.input_filter.validate_data({"data": '{"name": "Alice"}'})
 
     def test_invalid_wrong_type(self) -> None:
         self.input_filter.add(
@@ -42,7 +42,7 @@ class TestCustomJsonValidator(BaseValidatorTest):
             ],
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData(
+            self.input_filter.validate_data(
                 {"data": '{"name": "Alice", "age": "25"}'}
             )
 
@@ -56,7 +56,7 @@ class TestCustomJsonValidator(BaseValidatorTest):
             ],
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"data": "not a json"})
+            self.input_filter.validate_data({"data": "not a json"})
 
     def test_custom_error_message(self) -> None:
         self.input_filter.add(

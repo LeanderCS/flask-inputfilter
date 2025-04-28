@@ -8,7 +8,7 @@ from flask_inputfilter.validators import BaseValidator
 
 cdef class FieldMixin:
     @staticmethod
-    cdef object applyFilters(filters: List[BaseFilter], value: Any):
+    cdef object apply_filters(filters: List[BaseFilter], value: Any):
         """
         Apply filters to the field value.
 
@@ -30,7 +30,7 @@ cdef class FieldMixin:
         return value
 
     @staticmethod
-    cdef object applySteps(
+    cdef object apply_steps(
             steps: List[Union[BaseFilter, BaseValidator]],
             fallback: Any,
             value: Any
@@ -77,7 +77,7 @@ cdef class FieldMixin:
         return value
 
     @staticmethod
-    cdef void checkConditions(conditions: List[BaseCondition], validated_data: Dict[str, Any]) except *:
+    cdef void check_conditions(conditions: List[BaseCondition], validated_data: Dict[str, Any]) except *:
         """
         Checks if all conditions are met.
 
@@ -99,7 +99,7 @@ cdef class FieldMixin:
                 )
 
     @staticmethod
-    cdef object checkForRequired(
+    cdef object check_for_required(
             field_name: str,
             required: bool,
             default: Any,
@@ -140,7 +140,7 @@ cdef class FieldMixin:
         raise ValidationError(f"Field '{field_name}' is required.")
 
     @staticmethod
-    cdef object validateField(
+    cdef object validate_field(
             validators: List[BaseValidator], fallback: Any, value: Any
     ):
         """

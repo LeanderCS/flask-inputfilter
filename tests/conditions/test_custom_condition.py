@@ -9,7 +9,7 @@ class TestCustomCondition(unittest.TestCase):
     def setUp(self) -> None:
         self.input_filter = InputFilter()
         self.input_filter.add("field")
-        self.input_filter.addCondition(
+        self.input_filter.add_condition(
             CustomCondition(
                 lambda data: "field" in data and data["field"] == "value"
             )
@@ -17,11 +17,11 @@ class TestCustomCondition(unittest.TestCase):
 
     def test_validates_when_custom_condition_is_true(self) -> None:
         """Test that CustomCondition works when the condition is true."""
-        self.input_filter.validateData({"field": "value"})
+        self.input_filter.validate_data({"field": "value"})
 
     def test_raises_validation_error_when_custom_condition_is_false(
         self,
     ) -> None:
         """Test that CustomCondition raises a ValidationError when false."""
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({})
+            self.input_filter.validate_data({})

@@ -8,14 +8,14 @@ class TestNotValidator(BaseValidatorTest):
         self.input_filter.add(
             "age", validators=[NotValidator(IsIntegerValidator())]
         )
-        self.input_filter.validateData({"age": "not an integer"})
+        self.input_filter.validate_data({"age": "not an integer"})
 
     def test_invalid_integer(self):
         self.input_filter.add(
             "age", validators=[NotValidator(IsIntegerValidator())]
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"age": 25})
+            self.input_filter.validate_data({"age": 25})
 
     def test_custom_error_message(self):
         self.input_filter.add(
@@ -26,5 +26,5 @@ class TestNotValidator(BaseValidatorTest):
                 )
             ],
         )
-        self.input_filter.validateData({"age": "not an integer"})
+        self.input_filter.validate_data({"age": "not an integer"})
         self.assertValidationError("age", 25, "Custom error message")

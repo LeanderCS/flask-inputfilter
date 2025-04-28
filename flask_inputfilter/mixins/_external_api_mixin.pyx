@@ -14,7 +14,7 @@ from flask_inputfilter.models import ExternalApiConfig
 cdef class ExternalApiMixin:
 
     @staticmethod
-    cdef str replacePlaceholders(
+    cdef str replace_placeholders(
             value: str,
             validated_data: Dict[str, Any]
     ):
@@ -37,7 +37,7 @@ cdef class ExternalApiMixin:
         )
 
     @staticmethod
-    cdef dict replacePlaceholdersInParams(
+    cdef dict replace_placeholders_in_params(
             params: dict, validated_data: Dict[str, Any]
     ):
         """
@@ -54,14 +54,14 @@ cdef class ExternalApiMixin:
                   with the corresponding values from validated_data.
         """
         return {
-            key: ExternalApiMixin.replacePlaceholders(value, validated_data)
+            key: ExternalApiMixin.replace_placeholders(value, validated_data)
             if isinstance(value, str)
             else value
             for key, value in params.items()
         }
 
     @staticmethod
-    cdef object callExternalApi(
+    cdef object call_external_api(
         config: ExternalApiConfig, fallback: Any, validated_data: Dict[str, Any]
     ):
         """
@@ -119,11 +119,11 @@ cdef class ExternalApiMixin:
             requestData["headers"].update(config.headers)
 
         if config.params:
-            requestData["params"] = ExternalApiMixin.replacePlaceholdersInParams(
+            requestData["params"] = ExternalApiMixin.replace_placeholders_in_params(
                 config.params, validated_data
             )
 
-        requestData["url"] = ExternalApiMixin.replacePlaceholders(
+        requestData["url"] = ExternalApiMixin.replace_placeholders(
             config.url, validated_data
         )
         requestData["method"] = config.method

@@ -20,7 +20,7 @@ class TestBlacklistFilter(unittest.TestCase):
             required=False,
             filters=[BlacklistFilter(["test", "user"])],
         )
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"blacklisted_field": "test user"}
         )
         self.assertEqual(validated_data["blacklisted_field"], "")
@@ -34,7 +34,7 @@ class TestBlacklistFilter(unittest.TestCase):
             required=False,
             filters=[BlacklistFilter(["test", "user"])],
         )
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"blacklisted_field": ["test", "user", "admin"]}
         )
         self.assertEqual(validated_data["blacklisted_field"], ["admin"])
@@ -48,7 +48,7 @@ class TestBlacklistFilter(unittest.TestCase):
             required=False,
             filters=[BlacklistFilter(["test", "user"])],
         )
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"blacklisted_field": {"test": "user", "admin": "admin"}}
         )
         self.assertEqual(
@@ -64,7 +64,7 @@ class TestBlacklistFilter(unittest.TestCase):
             required=False,
             filters=[BlacklistFilter(["test", "user"])],
         )
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"blacklisted_field": 123}
         )
         self.assertEqual(validated_data["blacklisted_field"], 123)

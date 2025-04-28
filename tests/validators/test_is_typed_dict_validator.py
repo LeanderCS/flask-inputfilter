@@ -22,12 +22,12 @@ class User:
 class TestIsTypedDictValidator(BaseValidatorTest):
     def test_valid_typed_dict(self):
         self.input_filter.add("data", validators=[IsTypedDictValidator(User)])
-        self.input_filter.validateData({"data": {"id": 123}})
+        self.input_filter.validate_data({"data": {"id": 123}})
 
     def test_invalid_typed_dict(self):
         self.input_filter.add("data", validators=[IsTypedDictValidator(User)])
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"data": "not a dict"})
+            self.input_filter.validate_data({"data": "not a dict"})
 
     def test_custom_error_message(self):
         self.input_filter.add(
