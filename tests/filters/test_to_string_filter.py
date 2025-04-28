@@ -11,5 +11,5 @@ class TestToStringFilter(unittest.TestCase):
     def test_converts_to_string(self) -> None:
         self.input_filter.add("age", required=True, filters=[ToStringFilter()])
 
-        validated_data = self.input_filter.validateData({"age": 25})
+        validated_data = self.input_filter.validate_data({"age": 25})
         self.assertEqual(validated_data["age"], "25")

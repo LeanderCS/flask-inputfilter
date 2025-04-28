@@ -13,7 +13,7 @@ class TestToSnakeCaseFilter(unittest.TestCase):
             "username", required=True, filters=[ToSnakeCaseFilter()]
         )
 
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"username": "TestUser"}
         )
         self.assertEqual(validated_data["username"], "test_user")
@@ -23,5 +23,5 @@ class TestToSnakeCaseFilter(unittest.TestCase):
             "username", required=True, filters=[ToSnakeCaseFilter()]
         )
 
-        validated_data = self.input_filter.validateData({"username": 123})
+        validated_data = self.input_filter.validate_data({"username": 123})
         self.assertEqual(validated_data["username"], 123)

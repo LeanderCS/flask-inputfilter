@@ -15,7 +15,7 @@ class TestToNormalizedUnicodeFilter(unittest.TestCase):
             filters=[ToNormalizedUnicodeFilter()],
         )
 
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"unicode_field": "Héllô Wôrld"}
         )
         self.assertEqual(validated_data["unicode_field"], "Hello World")
@@ -27,5 +27,7 @@ class TestToNormalizedUnicodeFilter(unittest.TestCase):
             filters=[ToNormalizedUnicodeFilter()],
         )
 
-        validated_data = self.input_filter.validateData({"unicode_field": 123})
+        validated_data = self.input_filter.validate_data(
+            {"unicode_field": 123}
+        )
         self.assertEqual(validated_data["unicode_field"], 123)

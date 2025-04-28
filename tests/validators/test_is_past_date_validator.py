@@ -8,36 +8,36 @@ from tests.validators import BaseValidatorTest
 class TestIsPastDateValidator(BaseValidatorTest):
     def test_valid_past_date(self) -> None:
         self.input_filter.add("date", validators=[IsPastDateValidator()])
-        self.input_filter.validateData({"date": date(2020, 1, 1)})
+        self.input_filter.validate_data({"date": date(2020, 1, 1)})
 
     def test_valid_past_datetime(self) -> None:
         self.input_filter.add("date", validators=[IsPastDateValidator()])
-        self.input_filter.validateData(
+        self.input_filter.validate_data(
             {"date": datetime(2020, 1, 1, 12, 0, 0)}
         )
 
     def test_valid_past_isodatetime(self) -> None:
         self.input_filter.add("date", validators=[IsPastDateValidator()])
-        self.input_filter.validateData({"date": "2020-01-01T12:00:00"})
+        self.input_filter.validate_data({"date": "2020-01-01T12:00:00"})
 
     def test_invalid_past_date(self) -> None:
         self.input_filter.add("date", validators=[IsPastDateValidator()])
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData(
+            self.input_filter.validate_data(
                 {"date": (date.today() + timedelta(days=10))}
             )
 
     def test_invalid_past_datetime(self) -> None:
         self.input_filter.add("date", validators=[IsPastDateValidator()])
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData(
+            self.input_filter.validate_data(
                 {"date": datetime.now() + timedelta(days=10)}
             )
 
     def test_invalid_past_isodatetime(self) -> None:
         self.input_filter.add("date", validators=[IsPastDateValidator()])
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData(
+            self.input_filter.validate_data(
                 {"date": (datetime.now() + timedelta(days=10)).isoformat()}
             )
 

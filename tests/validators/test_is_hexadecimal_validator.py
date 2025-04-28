@@ -6,12 +6,12 @@ from tests.validators import BaseValidatorTest
 class TestIsHexadecimalValidator(BaseValidatorTest):
     def test_valid_hexadecimal(self) -> None:
         self.input_filter.add("color", validators=[IsHexadecimalValidator()])
-        self.input_filter.validateData({"color": "FFAABB"})
+        self.input_filter.validate_data({"color": "FFAABB"})
 
     def test_invalid_hexadecimal(self) -> None:
         self.input_filter.add("color", validators=[IsHexadecimalValidator()])
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"color": "NotHex"})
+            self.input_filter.validate_data({"color": "NotHex"})
 
     def test_custom_error_message(self) -> None:
         self.input_filter.add(

@@ -21,16 +21,16 @@ class TestToEnumFilter(unittest.TestCase):
             filters=[ToEnumFilter(ColorEnum)],
         )
 
-        validated_data = self.input_filter.validateData({"color": "red"})
+        validated_data = self.input_filter.validate_data({"color": "red"})
         self.assertEqual(validated_data["color"], ColorEnum.RED)
 
-        validated_data = self.input_filter.validateData({"color": "yellow"})
+        validated_data = self.input_filter.validate_data({"color": "yellow"})
         self.assertEqual(validated_data["color"], "yellow")
 
-        validated_data = self.input_filter.validateData({"color": 123})
+        validated_data = self.input_filter.validate_data({"color": 123})
         self.assertEqual(validated_data["color"], 123)
 
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"color": ColorEnum.RED}
         )
         self.assertEqual(validated_data["color"], ColorEnum.RED)

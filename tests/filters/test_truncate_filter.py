@@ -13,7 +13,7 @@ class TestTruncateFilter(unittest.TestCase):
             "truncated_field", required=False, filters=[TruncateFilter(5)]
         )
 
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"truncated_field": "Hello World"}
         )
         self.assertEqual(validated_data["truncated_field"], "Hello")
@@ -23,7 +23,7 @@ class TestTruncateFilter(unittest.TestCase):
             "truncated_field", required=False, filters=[TruncateFilter(5)]
         )
 
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"truncated_field": 123}
         )
         self.assertEqual(validated_data["truncated_field"], 123)

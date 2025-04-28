@@ -24,7 +24,7 @@ class TestBase64ImageDownscaleFilter(unittest.TestCase):
             filters=[Base64ImageDownscaleFilter(size=144)],
         )
         with open("tests/data/base64_image.txt", "r") as file:
-            validated_data = self.input_filter.validateData(
+            validated_data = self.input_filter.validate_data(
                 {"image": file.read()}
             )
             size = Image.open(
@@ -41,7 +41,7 @@ class TestBase64ImageDownscaleFilter(unittest.TestCase):
             filters=[Base64ImageDownscaleFilter(size=144)],
         )
         with open("tests/data/base64_image.txt", "r") as file:
-            validated_data = self.input_filter.validateData(
+            validated_data = self.input_filter.validate_data(
                 {
                     "image": Image.open(
                         io.BytesIO(base64.b64decode(file.read()))
@@ -61,8 +61,8 @@ class TestBase64ImageDownscaleFilter(unittest.TestCase):
             "image",
             filters=[Base64ImageDownscaleFilter(size=144)],
         )
-        validated_data = self.input_filter.validateData({"image": 123})
+        validated_data = self.input_filter.validate_data({"image": 123})
         self.assertEqual(validated_data["image"], 123)
 
-        validated_data = self.input_filter.validateData({"image": "no image"})
+        validated_data = self.input_filter.validate_data({"image": "no image"})
         self.assertEqual(validated_data["image"], "no image")

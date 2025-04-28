@@ -14,5 +14,5 @@ class TestToBooleanFilter(unittest.TestCase):
             required=True,
             filters=[ToBooleanFilter()],
         )
-        validated_data = self.input_filter.validateData({"is_active": "true"})
+        validated_data = self.input_filter.validate_data({"is_active": "true"})
         self.assertTrue(validated_data["is_active"])

@@ -11,7 +11,7 @@ class TestDateRangeValidator(BaseValidatorTest):
             "date",
             validators=[DateRangeValidator(max_date=date(2021, 12, 31))],
         )
-        self.input_filter.validateData({"date": date(2021, 6, 1)})
+        self.input_filter.validate_data({"date": date(2021, 6, 1)})
 
     def test_invalid_date_out_of_range(self) -> None:
         self.input_filter.add(
@@ -19,7 +19,7 @@ class TestDateRangeValidator(BaseValidatorTest):
             validators=[DateRangeValidator(max_date=date(2021, 12, 31))],
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"date": date(2022, 6, 1)})
+            self.input_filter.validate_data({"date": date(2022, 6, 1)})
 
     def test_datetime_min_date(self) -> None:
         self.input_filter.add(
@@ -28,9 +28,9 @@ class TestDateRangeValidator(BaseValidatorTest):
                 DateRangeValidator(min_date=datetime(2021, 1, 1, 0, 0))
             ],
         )
-        self.input_filter.validateData({"datetime": date(2021, 6, 1)})
+        self.input_filter.validate_data({"datetime": date(2021, 6, 1)})
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"datetime": date(2020, 6, 1)})
+            self.input_filter.validate_data({"datetime": date(2020, 6, 1)})
 
     def test_iso_date_range(self) -> None:
         self.input_filter.add(
@@ -42,11 +42,11 @@ class TestDateRangeValidator(BaseValidatorTest):
                 )
             ],
         )
-        self.input_filter.validateData(
+        self.input_filter.validate_data(
             {"iso_date": "2021-01-15T22:26:08.542945"}
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData(
+            self.input_filter.validate_data(
                 {"iso_date": "2022-01-15T22:26:08.542945"}
             )
 

@@ -20,7 +20,7 @@ class TestIsHorizontalImageValidator(BaseValidatorTest):
             "image", validators=[IsHorizontalImageValidator()]
         )
         img_data = self._create_base64_image(100, 50)
-        self.input_filter.validateData({"image": img_data})
+        self.input_filter.validate_data({"image": img_data})
 
     def test_invalid_vertical_image(self) -> None:
         self.input_filter.add(
@@ -28,7 +28,7 @@ class TestIsHorizontalImageValidator(BaseValidatorTest):
         )
         img_data = self._create_base64_image(50, 100)
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"image": img_data})
+            self.input_filter.validate_data({"image": img_data})
 
     def test_custom_error_message(self) -> None:
         self.input_filter.add(

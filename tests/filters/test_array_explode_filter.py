@@ -20,7 +20,7 @@ class TestArrayExplodeFilter(unittest.TestCase):
             required=False,
             filters=[ArrayExplodeFilter()],
         )
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"tags": "tag1,tag2,tag3"}
         )
         self.assertEqual(validated_data["tags"], ["tag1", "tag2", "tag3"])
@@ -34,7 +34,7 @@ class TestArrayExplodeFilter(unittest.TestCase):
             required=False,
             filters=[ArrayExplodeFilter(";")],
         )
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"items": "item1;item2;item3"}
         )
         self.assertEqual(validated_data["items"], ["item1", "item2", "item3"])
@@ -48,5 +48,5 @@ class TestArrayExplodeFilter(unittest.TestCase):
             required=False,
             filters=[ArrayExplodeFilter(";")],
         )
-        validated_data = self.input_filter.validateData({"items": 123})
+        validated_data = self.input_filter.validate_data({"items": 123})
         self.assertEqual(validated_data["items"], 123)

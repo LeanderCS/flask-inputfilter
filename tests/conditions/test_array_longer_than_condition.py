@@ -13,19 +13,19 @@ class TestArrayLongerThanCondition(unittest.TestCase):
         """Test that the first array is longer than the second."""
         self.input_filter.add("field1")
         self.input_filter.add("field2")
-        self.input_filter.addCondition(
+        self.input_filter.add_condition(
             ArrayLongerThanCondition("field1", "field2")
         )
-        self.input_filter.validateData({"field1": [1, 2], "field2": [1]})
+        self.input_filter.validate_data({"field1": [1, 2], "field2": [1]})
 
     def test_invalidates_when_arrays_are_equal(self) -> None:
         """Test that equal arrays fail validation."""
         self.input_filter.add("field1")
         self.input_filter.add("field2")
-        self.input_filter.addCondition(
+        self.input_filter.add_condition(
             ArrayLongerThanCondition("field1", "field2")
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData(
+            self.input_filter.validate_data(
                 {"field1": [1, 2], "field2": [1, 2]}
             )

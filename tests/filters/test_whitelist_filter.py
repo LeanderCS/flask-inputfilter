@@ -15,7 +15,7 @@ class TestWhitelistFilter(unittest.TestCase):
             filters=[WhitelistFilter(["test", "user"])],
         )
 
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"whitelisted_field": "test user admin"}
         )
         self.assertEqual(validated_data["whitelisted_field"], "test user")
@@ -27,7 +27,7 @@ class TestWhitelistFilter(unittest.TestCase):
             filters=[WhitelistFilter(["test", "user"])],
         )
 
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"whitelisted_field": ["test", "user", "admin"]}
         )
         self.assertEqual(validated_data["whitelisted_field"], ["test", "user"])
@@ -39,7 +39,7 @@ class TestWhitelistFilter(unittest.TestCase):
             filters=[WhitelistFilter(["test", "user"])],
         )
 
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"whitelisted_field": {"test": "user", "admin": "admin"}}
         )
         self.assertEqual(validated_data["whitelisted_field"], {"test": "user"})
@@ -51,7 +51,7 @@ class TestWhitelistFilter(unittest.TestCase):
             filters=[WhitelistFilter(["test", "user"])],
         )
 
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"whitelisted_field": 123}
         )
         self.assertEqual(validated_data["whitelisted_field"], 123)

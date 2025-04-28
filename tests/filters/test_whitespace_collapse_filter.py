@@ -15,7 +15,7 @@ class TestWhitespaceCollapseFilter(unittest.TestCase):
             filters=[WhitespaceCollapseFilter()],
         )
 
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"collapsed_field": "Hello    World"}
         )
         self.assertEqual(validated_data["collapsed_field"], "Hello World")
@@ -27,7 +27,7 @@ class TestWhitespaceCollapseFilter(unittest.TestCase):
             filters=[WhitespaceCollapseFilter()],
         )
 
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"collapsed_field": 123}
         )
         self.assertEqual(validated_data["collapsed_field"], 123)

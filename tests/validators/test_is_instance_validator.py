@@ -6,12 +6,12 @@ from tests.validators import BaseValidatorTest
 class TestIsInstanceValidator(BaseValidatorTest):
     def test_valid_instance(self) -> None:
         self.input_filter.add("value", validators=[IsInstanceValidator(int)])
-        self.input_filter.validateData({"value": 123})
+        self.input_filter.validate_data({"value": 123})
 
     def test_invalid_instance(self) -> None:
         self.input_filter.add("value", validators=[IsInstanceValidator(int)])
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"value": "not an int"})
+            self.input_filter.validate_data({"value": "not an int"})
 
     def test_custom_error_message(self) -> None:
         self.input_filter.add(

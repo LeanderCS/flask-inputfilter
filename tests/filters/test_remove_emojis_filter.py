@@ -14,7 +14,7 @@ class TestStringRemoveEmojisFilter(unittest.TestCase):
             required=False,
             filters=[StringRemoveEmojisFilter()],
         )
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"text": "Hello World! 😊"}
         )
         self.assertEqual(validated_data["text"], "Hello World! ")
@@ -25,5 +25,5 @@ class TestStringRemoveEmojisFilter(unittest.TestCase):
             required=False,
             filters=[StringRemoveEmojisFilter()],
         )
-        validated_data = self.input_filter.validateData({"text": 123})
+        validated_data = self.input_filter.validate_data({"text": 123})
         self.assertEqual(validated_data["text"], 123)

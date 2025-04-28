@@ -6,12 +6,12 @@ from tests.validators import BaseValidatorTest
 class TestIsHtmlValidator(BaseValidatorTest):
     def test_valid_html(self) -> None:
         self.input_filter.add("html_content", validators=[IsHtmlValidator()])
-        self.input_filter.validateData({"html_content": "<div>Hello</div>"})
+        self.input_filter.validate_data({"html_content": "<div>Hello</div>"})
 
     def test_invalid_html(self) -> None:
         self.input_filter.add("html_content", validators=[IsHtmlValidator()])
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"html_content": "no html here"})
+            self.input_filter.validate_data({"html_content": "no html here"})
 
     def test_custom_error_message(self) -> None:
         self.input_filter.add(

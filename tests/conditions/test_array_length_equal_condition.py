@@ -10,28 +10,28 @@ class TestArrayLengthEqualCondition(unittest.TestCase):
         self.input_filter = InputFilter()
         self.input_filter.add("field1")
         self.input_filter.add("field2")
-        self.input_filter.addCondition(
+        self.input_filter.add_condition(
             ArrayLengthEqualCondition("field1", "field2")
         )
 
     def test_validates_equal_array_length(self) -> None:
         """Test that arrays with equal lengths pass validation."""
-        self.input_filter.validateData({"field1": [1, 2], "field2": [1, 2]})
+        self.input_filter.validate_data({"field1": [1, 2], "field2": [1, 2]})
 
     def test_validates_empty_arrays(self) -> None:
         """Test that empty arrays pass validation."""
-        self.input_filter.validateData({"field1": [], "field2": []})
+        self.input_filter.validate_data({"field1": [], "field2": []})
 
     def test_invalidates_when_field_is_missing(self) -> None:
         """Test that a missing field raises a ValidationError."""
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"field1": [1, 2]})
+            self.input_filter.validate_data({"field1": [1, 2]})
 
     def test_invalidates_when_array_lengths_differ(self) -> None:
         """Test that differing array lengths raise a ValidationError."""
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"field1": [1, 2], "field2": [1]})
+            self.input_filter.validate_data({"field1": [1, 2], "field2": [1]})
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData(
+            self.input_filter.validate_data(
                 {"field1": [1, 2], "field2": [1, 2, 3]}
             )

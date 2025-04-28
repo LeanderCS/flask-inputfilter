@@ -13,7 +13,7 @@ class TestToPascalCaseFilter(unittest.TestCase):
             "username", required=True, filters=[ToPascalCaseFilter()]
         )
 
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"username": "test user"}
         )
         self.assertEqual(validated_data["username"], "TestUser")
@@ -23,5 +23,5 @@ class TestToPascalCaseFilter(unittest.TestCase):
             "username", required=True, filters=[ToPascalCaseFilter()]
         )
 
-        validated_data = self.input_filter.validateData({"username": 123})
+        validated_data = self.input_filter.validate_data({"username": 123})
         self.assertEqual(validated_data["username"], 123)

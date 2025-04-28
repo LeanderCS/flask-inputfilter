@@ -11,19 +11,20 @@ class IsInstanceValidator(BaseValidator):
     Validator that checks if a value is an instance of a given class.
     """
 
-    __slots__ = ("classType", "error_message")
+    __slots__ = ("class_type", "error_message")
 
     def __init__(
         self,
         classType: Type[Any],
         error_message: Optional[str] = None,
     ) -> None:
-        self.classType = classType
+        self.class_type = classType
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
-        if not isinstance(value, self.classType):
+        if not isinstance(value, self.class_type):
             raise ValidationError(
                 self.error_message
-                or f"Value '{value}' is not an instance of '{self.classType}'."
+                or f"Value '{value}' is not an instance "
+                f"of '{self.class_type}'."
             )

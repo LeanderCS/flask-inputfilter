@@ -8,14 +8,14 @@ class TestNotInArrayValidator(BaseValidatorTest):
         self.input_filter.add(
             "color", validators=[NotInArrayValidator(["red", "green", "blue"])]
         )
-        self.input_filter.validateData({"color": "yellow"})
+        self.input_filter.validate_data({"color": "yellow"})
 
     def test_invalid_in_array(self):
         self.input_filter.add(
             "color", validators=[NotInArrayValidator(["red", "green", "blue"])]
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"color": "red"})
+            self.input_filter.validate_data({"color": "red"})
 
     def test_custom_error_message(self):
         self.input_filter.add(

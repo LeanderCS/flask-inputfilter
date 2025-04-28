@@ -15,10 +15,10 @@ class TestNOfMatchesCondition(unittest.TestCase):
         self.input_filter.add("field2")
         self.input_filter.add("field3")
         self.input_filter.add("field4")
-        self.input_filter.addCondition(
+        self.input_filter.add_condition(
             NOfMatchesCondition(["field1", "field2", "field3"], 3, "value")
         )
-        self.input_filter.validateData(
+        self.input_filter.validate_data(
             {"field1": "value", "field2": "value", "field3": "value"}
         )
 
@@ -27,10 +27,10 @@ class TestNOfMatchesCondition(unittest.TestCase):
         self.input_filter.add("field1")
         self.input_filter.add("field2")
         self.input_filter.add("field3")
-        self.input_filter.addCondition(
+        self.input_filter.add_condition(
             NOfMatchesCondition(["field1", "field2", "field3"], 3, "value")
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData(
+            self.input_filter.validate_data(
                 {"field1": "value", "field2": "value"}
             )

@@ -9,14 +9,14 @@ class TestIsDateValidator(BaseValidatorTest):
         self.input_filter.add(
             "date", filters=[ToDateFilter()], validators=[IsDateValidator()]
         )
-        self.input_filter.validateData({"date": "2025-01-01"})
+        self.input_filter.validate_data({"date": "2025-01-01"})
 
     def test_invalid_date(self) -> None:
         self.input_filter.add(
             "date", filters=[ToDateFilter()], validators=[IsDateValidator()]
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"date": "not_a_date"})
+            self.input_filter.validate_data({"date": "not_a_date"})
 
     def test_custom_error_message(self) -> None:
         self.input_filter.add(

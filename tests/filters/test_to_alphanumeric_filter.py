@@ -14,7 +14,7 @@ class TestToAlphaNumericFilter(unittest.TestCase):
             required=False,
             filters=[ToAlphaNumericFilter()],
         )
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"alphanumeric_field": "Hello World!123"}
         )
         self.assertEqual(validated_data["alphanumeric_field"], "HelloWorld123")
@@ -25,7 +25,7 @@ class TestToAlphaNumericFilter(unittest.TestCase):
             required=False,
             filters=[ToAlphaNumericFilter()],
         )
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"alphanumeric_field": 123}
         )
         self.assertEqual(validated_data["alphanumeric_field"], 123)

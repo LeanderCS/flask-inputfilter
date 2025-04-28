@@ -14,7 +14,7 @@ class TestStringSlugifyFilter(unittest.TestCase):
             required=False,
             filters=[StringSlugifyFilter()],
         )
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"slug": "Hello World!"}
         )
         self.assertEqual(validated_data["slug"], "hello-world")
@@ -25,5 +25,5 @@ class TestStringSlugifyFilter(unittest.TestCase):
             required=False,
             filters=[StringSlugifyFilter()],
         )
-        validated_data = self.input_filter.validateData({"slug": 123})
+        validated_data = self.input_filter.validate_data({"slug": 123})
         self.assertEqual(validated_data["slug"], 123)

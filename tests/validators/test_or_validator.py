@@ -15,8 +15,8 @@ class TestOrValidator(BaseValidatorTest):
                 OrValidator([IsIntegerValidator(), IsFloatValidator()])
             ],
         )
-        self.input_filter.validateData({"age": 25})
-        self.input_filter.validateData({"age": 25.5})
+        self.input_filter.validate_data({"age": 25})
+        self.input_filter.validate_data({"age": 25.5})
 
     def test_invalid_or(self):
         self.input_filter.add(
@@ -26,7 +26,7 @@ class TestOrValidator(BaseValidatorTest):
             ],
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"age": "not a number"})
+            self.input_filter.validate_data({"age": "not a number"})
 
     def test_custom_error_message(self):
         self.input_filter.add(

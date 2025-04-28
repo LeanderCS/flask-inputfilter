@@ -13,7 +13,7 @@ class TestToLowerFilter(unittest.TestCase):
             "username", required=True, filters=[ToLowerFilter()]
         )
 
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"username": "TESTUSER"}
         )
         self.assertEqual(validated_data["username"], "testuser")
@@ -23,5 +23,5 @@ class TestToLowerFilter(unittest.TestCase):
             "username", required=True, filters=[ToLowerFilter()]
         )
 
-        validated_data = self.input_filter.validateData({"username": 123})
+        validated_data = self.input_filter.validate_data({"username": 123})
         self.assertEqual(validated_data["username"], 123)

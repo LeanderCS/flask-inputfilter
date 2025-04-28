@@ -9,7 +9,7 @@ class TestRegexValidator(BaseValidatorTest):
         self.input_filter.add(
             "email", validators=[RegexValidator(RegexEnum.EMAIL.value)]
         )
-        validated_data = self.input_filter.validateData(
+        validated_data = self.input_filter.validate_data(
             {"email": "alice@example.com"}
         )
         self.assertEqual(validated_data["email"], "alice@example.com")
@@ -19,7 +19,7 @@ class TestRegexValidator(BaseValidatorTest):
             "email", validators=[RegexValidator(RegexEnum.EMAIL.value)]
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"email": "invalid_email"})
+            self.input_filter.validate_data({"email": "invalid_email"})
 
     def test_custom_error_message(self):
         self.input_filter.add(

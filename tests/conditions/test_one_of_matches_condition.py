@@ -12,20 +12,20 @@ class TestOneOfMatchesCondition(unittest.TestCase):
     def test_validates_when_at_least_one_field_matches(self) -> None:
         self.input_filter.add("field1")
         self.input_filter.add("field2")
-        self.input_filter.addCondition(
+        self.input_filter.add_condition(
             OneOfMatchesCondition(["field1", "field2"], "value")
         )
 
-        self.input_filter.validateData({"field1": "value"})
-        self.input_filter.validateData({"field2": "value"})
-        self.input_filter.validateData({"field1": "value", "field2": "value"})
+        self.input_filter.validate_data({"field1": "value"})
+        self.input_filter.validate_data({"field2": "value"})
+        self.input_filter.validate_data({"field1": "value", "field2": "value"})
 
     def test_invalidates_when_no_fields_match(self) -> None:
         self.input_filter.add("field1")
         self.input_filter.add("field2")
-        self.input_filter.addCondition(
+        self.input_filter.add_condition(
             OneOfMatchesCondition(["field1", "field2"], "value")
         )
 
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"field": "not value"})
+            self.input_filter.validate_data({"field": "not value"})

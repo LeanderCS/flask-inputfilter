@@ -13,9 +13,9 @@ class TestDateBeforeValidator(BaseValidatorTest):
                 DateBeforeValidator(reference_date=date(2021, 12, 31))
             ],
         )
-        self.input_filter.validateData({"date": date(2021, 6, 1)})
-        self.input_filter.validateData({"date": datetime(2021, 6, 1, 0, 0)})
-        self.input_filter.validateData({"date": "2021-06-01T10:00:55"})
+        self.input_filter.validate_data({"date": date(2021, 6, 1)})
+        self.input_filter.validate_data({"date": datetime(2021, 6, 1, 0, 0)})
+        self.input_filter.validate_data({"date": "2021-06-01T10:00:55"})
 
     def test_invalid_dates(self) -> None:
         self.input_filter.add(
@@ -25,13 +25,13 @@ class TestDateBeforeValidator(BaseValidatorTest):
             ],
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"date": date(2022, 6, 1)})
+            self.input_filter.validate_data({"date": date(2022, 6, 1)})
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData(
+            self.input_filter.validate_data(
                 {"date": datetime(2022, 6, 1, 0, 54)}
             )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"date": "20"})
+            self.input_filter.validate_data({"date": "20"})
 
     def test_datetime_validation(self) -> None:
         self.input_filter.add(
@@ -42,19 +42,21 @@ class TestDateBeforeValidator(BaseValidatorTest):
                 )
             ],
         )
-        self.input_filter.validateData({"datetime": date(2021, 6, 1)})
-        self.input_filter.validateData(
+        self.input_filter.validate_data({"datetime": date(2021, 6, 1)})
+        self.input_filter.validate_data(
             {"datetime": datetime(2021, 6, 1, 12, 0)}
         )
-        self.input_filter.validateData({"datetime": "2021-06-01T00:00:00"})
+        self.input_filter.validate_data({"datetime": "2021-06-01T00:00:00"})
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"datetime": date(2022, 6, 1)})
+            self.input_filter.validate_data({"datetime": date(2022, 6, 1)})
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData(
+            self.input_filter.validate_data(
                 {"datetime": datetime(2022, 6, 1, 0, 0)}
             )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"datetime": "2022-06-01T00:00:00"})
+            self.input_filter.validate_data(
+                {"datetime": "2022-06-01T00:00:00"}
+            )
 
     def test_isodatetime_validation(self) -> None:
         self.input_filter.add(
@@ -63,19 +65,19 @@ class TestDateBeforeValidator(BaseValidatorTest):
                 DateBeforeValidator(reference_date="2021-12-31T00:00:00")
             ],
         )
-        self.input_filter.validateData({"isodatetime": date(2021, 6, 1)})
-        self.input_filter.validateData(
+        self.input_filter.validate_data({"isodatetime": date(2021, 6, 1)})
+        self.input_filter.validate_data(
             {"isodatetime": datetime(2021, 6, 1, 12, 0)}
         )
-        self.input_filter.validateData({"isodatetime": "2021-06-01T00:00:00"})
+        self.input_filter.validate_data({"isodatetime": "2021-06-01T00:00:00"})
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"isodatetime": date(2022, 6, 1)})
+            self.input_filter.validate_data({"isodatetime": date(2022, 6, 1)})
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData(
+            self.input_filter.validate_data(
                 {"isodatetime": datetime(2022, 6, 1, 10, 0)}
             )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData(
+            self.input_filter.validate_data(
                 {"isodatetime": "2022-06-01T00:00:00"}
             )
 

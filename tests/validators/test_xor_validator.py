@@ -17,8 +17,8 @@ class TestXorValidator(BaseValidatorTest):
                 )
             ],
         )
-        self.input_filter.validateData({"age": 25})
-        self.input_filter.validateData({"age": 9.9})
+        self.input_filter.validate_data({"age": 25})
+        self.input_filter.validate_data({"age": 9.9})
 
     def test_invalid_xor(self):
         self.input_filter.add(
@@ -30,9 +30,9 @@ class TestXorValidator(BaseValidatorTest):
             ],
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"age": "not a number"})
+            self.input_filter.validate_data({"age": "not a number"})
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"age": 5})
+            self.input_filter.validate_data({"age": 5})
 
     def test_custom_error_message(self):
         self.input_filter.add(

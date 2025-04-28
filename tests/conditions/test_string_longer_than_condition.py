@@ -12,20 +12,20 @@ class TestStringLongerThanCondition(unittest.TestCase):
     def test_validates_when_string_is_longer(self) -> None:
         self.input_filter.add("field1")
         self.input_filter.add("field2")
-        self.input_filter.addCondition(
+        self.input_filter.add_condition(
             StringLongerThanCondition("field1", "field2")
         )
 
-        self.input_filter.validateData({"field1": "value", "field2": "val"})
+        self.input_filter.validate_data({"field1": "value", "field2": "val"})
 
     def test_invalidates_when_string_not_longer(self) -> None:
         self.input_filter.add("field1")
         self.input_filter.add("field2")
-        self.input_filter.addCondition(
+        self.input_filter.add_condition(
             StringLongerThanCondition("field1", "field2")
         )
 
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData(
+            self.input_filter.validate_data(
                 {"field1": "value", "field2": "value"}
             )

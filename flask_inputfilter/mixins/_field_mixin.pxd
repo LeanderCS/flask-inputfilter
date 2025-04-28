@@ -8,16 +8,12 @@ from flask_inputfilter.validators import BaseValidator
 cdef class FieldMixin:
 
     @staticmethod
-    cdef object applyFilters(filters: List[BaseFilter], value: Any)
+    cdef object apply_filters(filters: List[BaseFilter], value: Any)
     @staticmethod
-    cdef object validateField(validators: List[BaseValidator], fallback: Any, value: Any)
+    cdef object validate_field(validators: List[BaseValidator], fallback: Any, value: Any)
     @staticmethod
-    cdef object applySteps(steps: List[Union[BaseFilter, BaseValidator]], fallback: Any, value: Any)
+    cdef object apply_steps(steps: List[Union[BaseFilter, BaseValidator]], fallback: Any, value: Any)
     @staticmethod
-    cdef void checkConditions(conditions: List[BaseCondition], validated_data: Dict[str, Any]) except *
+    cdef void check_conditions(conditions: List[BaseCondition], validated_data: Dict[str, Any]) except *
     @staticmethod
-    cdef object checkForRequired(field_name: str,
-            required: bool,
-            default: Any,
-            fallback: Any,
-            value: Any,)
+    cdef object check_for_required(field_name: str, required: bool, default: Any, fallback: Any, value: Any)

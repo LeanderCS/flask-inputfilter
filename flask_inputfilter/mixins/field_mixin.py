@@ -10,7 +10,7 @@ from flask_inputfilter.validators import BaseValidator
 
 class FieldMixin:
     @staticmethod
-    def applyFilters(filters: List[BaseFilter], value: Any) -> Any:
+    def apply_filters(filters: List[BaseFilter], value: Any) -> Any:
         """
         Apply filters to the field value.
 
@@ -32,7 +32,7 @@ class FieldMixin:
         return value
 
     @staticmethod
-    def validateField(
+    def validate_field(
         validators: List[BaseValidator], fallback: Any, value: Any
     ) -> Any:
         """
@@ -62,7 +62,7 @@ class FieldMixin:
             return fallback
 
     @staticmethod
-    def applySteps(
+    def apply_steps(
         steps: List[Union[BaseFilter, BaseValidator]],
         fallback: Any,
         value: Any,
@@ -109,7 +109,7 @@ class FieldMixin:
         return value
 
     @staticmethod
-    def checkConditions(
+    def check_conditions(
         conditions: List[BaseCondition], validated_data: Dict[str, Any]
     ) -> None:
         """
@@ -133,7 +133,7 @@ class FieldMixin:
                 )
 
     @staticmethod
-    def checkForRequired(
+    def check_for_required(
         field_name: str,
         required: bool,
         default: Any,

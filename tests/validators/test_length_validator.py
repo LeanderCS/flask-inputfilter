@@ -8,16 +8,16 @@ class TestLengthValidator(BaseValidatorTest):
         self.input_filter.add(
             "name", validators=[LengthValidator(min_length=2, max_length=5)]
         )
-        self.input_filter.validateData({"name": "test"})
+        self.input_filter.validate_data({"name": "test"})
 
     def test_invalid_length(self):
         self.input_filter.add(
             "name", validators=[LengthValidator(min_length=2, max_length=5)]
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"name": "a"})
+            self.input_filter.validate_data({"name": "a"})
         with self.assertRaises(ValidationError):
-            self.input_filter.validateData({"name": "this_is_too_long"})
+            self.input_filter.validate_data({"name": "this_is_too_long"})
 
     def test_custom_error_message(self):
         self.input_filter.add(
