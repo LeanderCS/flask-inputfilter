@@ -9,7 +9,31 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsFutureDateValidator(BaseValidator):
     """
-    Validator that checks if a date is in the future.
+    Ensures that a given date is in the future. Supports datetime objects and
+    ISO 8601 formatted strings.
+
+    **Parameters:**
+
+    - **error_message** (*Optional[str]*): Custom error message if the
+        date is not in the future.
+
+    **Expected Behavior:**
+
+    Parses the input date and compares it to the current date and time. If
+    the input date is not later than the current time, a ``ValidationError``
+    is raised.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class AppointmentInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('appointment_date', validators=[
+                    IsFutureDateValidator()
+                ])
     """
 
     __slots__ = ("error_message",)
@@ -29,6 +53,7 @@ class IsFutureDateValidator(BaseValidator):
     def __parse_date(value: Any) -> datetime:
         """
         Converts a value to a datetime object.
+
         Supports ISO 8601 formatted strings and datetime objects.
         """
 

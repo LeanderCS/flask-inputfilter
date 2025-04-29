@@ -19,7 +19,24 @@ emoji_pattern = (
 
 class StringRemoveEmojisFilter(BaseFilter):
     """
-    Filter that removes emojis from a string.
+    Removes emojis from a string using regular expression matching.
+
+    **Expected Behavior:**
+
+    If the input is a string, all emoji characters are removed;
+    non-string inputs are returned unchanged.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class CommentFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('comment', filters=[
+                    StringRemoveEmojisFilter()
+                ])
     """
 
     def apply(self, value: Any) -> Union[Optional[str], Any]:

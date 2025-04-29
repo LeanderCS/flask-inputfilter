@@ -12,8 +12,30 @@ RGB_COLOR_PATTERN = re.compile(RegexEnum.RGB_COLOR.value)
 
 class IsRgbColorValidator(BaseValidator):
     """
-    Validator that checks if a value is a valid RGB
-    color string (e.g., 'rgb(255, 0, 0)').
+    Checks if a value is a valid RGB color string. The expected format is
+    ``rgb(r, g, b)`` where *r*, *g*, and *b* are integers between 0 and 255.
+
+    **Parameters:**
+
+    - **error_message** (*Optional[str]*): Custom error message if the
+        value is not a valid RGB color.
+
+    **Expected Behavior:**
+
+    Verifies that the input is a string, matches the RGB color format using a
+    regular expression, and that the extracted numeric values are within the
+    range 0 to 255. Raises a ``ValidationError`` if the check fails.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class ColorInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add('color', validators=[
+                    IsRgbColorValidator()
+                ])
     """
 
     __slots__ = ("error_message",)

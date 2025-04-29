@@ -10,7 +10,24 @@ from flask_inputfilter.filters import BaseFilter
 
 class StringSlugifyFilter(BaseFilter):
     """
-    Filter that converts a string to a slug.
+    Converts a string into a slug format.
+
+    **Expected Behavior:**
+
+    Normalizes Unicode, converts to ASCII, lowercases the string,
+    and replaces spaces with hyphens, producing a URL-friendly slug.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class PostFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('title', filters=[
+                    StringSlugifyFilter()
+                ])
     """
 
     def apply(self, value: Any) -> Union[Optional[str], Any]:

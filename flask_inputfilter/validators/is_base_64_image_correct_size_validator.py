@@ -10,8 +10,37 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsBase64ImageCorrectSizeValidator(BaseValidator):
     """
-    Validator that checks if a Base64 string has a valid image size.
+    Hecks whether a Base64 encoded image has a size within the allowed range.
     By default, the image size must be between 1 and 4MB.
+
+    **Parameters:**
+
+    - **minSize** (*int*, default: 1): The minimum allowed size
+        in bytes.
+    - **maxSize** (*int*, default: 4 * 1024 * 1024): The maximum
+        allowed size in bytes.
+    - **error_message** (*Optional[str]*): Custom error message
+        if validation fails.
+
+    **Expected Behavior:**
+
+    Decodes the Base64 string to determine the image size and raises
+    a ``ValidationError`` if the image size is outside the permitted range.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class ImageInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('image', validators=[
+                    IsBase64ImageCorrectSizeValidator(
+                        minSize=1024,
+                        maxSize=2 * 1024 * 1024
+                    )
+                ])
     """
 
     __slots__ = ("minSize", "maxSize", "error_message")

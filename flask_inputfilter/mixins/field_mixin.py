@@ -141,8 +141,8 @@ class FieldMixin:
         value: Any,
     ) -> Any:
         """
-        Determine the value of the field, considering the required and
-        fallback attributes.
+        Determine the value of the field, considering the required and fallback
+        attributes.
 
         If the field is not required and no value is provided, the default
         value is returned. If the field is required and no value is provided,

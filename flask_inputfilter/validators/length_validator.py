@@ -8,9 +8,7 @@ from flask_inputfilter.validators import BaseValidator
 
 
 class LengthEnum(Enum):
-    """
-    Enum that defines the possible length types.
-    """
+    """Enum that defines the possible length types."""
 
     LEAST = "least"
     MOST = "most"
@@ -18,7 +16,31 @@ class LengthEnum(Enum):
 
 class LengthValidator(BaseValidator):
     """
-    Validator that checks the length of a string value.
+    Validates the length of a string, ensuring it falls within a specified
+    range.
+
+    **Parameters:**
+
+    - **min_length** (*Optional[int]*): The minimum allowed length.
+    - **max_length** (*Optional[int]*): The maximum allowed length.
+    - **error_message** (*Optional[str]*): Custom error message if
+        the validation fails.
+
+    **Expected Behavior:**
+
+    Checks the length of the input string and raises a ``ValidationError``
+    if it is shorter than ``min_length`` or longer than ``max_length``.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class TextLengthInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add('username', validators=[
+                    LengthValidator(min_length=3, max_length=15)
+                ])
     """
 
     __slots__ = ("min_length", "max_length", "error_message")

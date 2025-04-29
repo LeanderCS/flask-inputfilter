@@ -93,7 +93,7 @@ Definition
                 ]
             )
 
-            self.addCondition(
+            self.add_condition(
                 ExactlyOneOfCondition(['zipcode', 'city'])
             )
 

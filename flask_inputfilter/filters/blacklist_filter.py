@@ -7,7 +7,31 @@ from flask_inputfilter.filters import BaseFilter
 
 class BlacklistFilter(BaseFilter):
     """
-    Filter that filters out values that are in the blacklist.
+    Filters out unwanted substrings or keys based on a predefined blacklist.
+
+    **Parameters:**
+
+    - **blacklist** (*List[str]*): A list of substrings (for strings) or keys
+        (for dictionaries) that should be removed.
+
+    **Expected Behavior:**
+
+    - For strings: Removes any occurrence of blacklisted items and trims
+        whitespace.
+    - For lists: Filters out items present in the blacklist.
+    - For dictionaries: Removes key-value pairs where the key is blacklisted.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class CommentFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('comment', filters=[
+                    BlacklistFilter(blacklist=["badword1", "badword2"])
+                ])
     """
 
     __slots__ = ("blacklist",)

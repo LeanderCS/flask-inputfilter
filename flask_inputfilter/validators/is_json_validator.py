@@ -9,7 +9,28 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsJsonValidator(BaseValidator):
     """
-    Validator that checks if a value is a valid JSON string.
+    Validates that the provided value is a valid JSON string.
+
+    **Parameters:**
+
+    - **error_message** (*Optional[str]*): Custom error message if
+        the input is not a valid JSON string.
+
+    **Expected Behavior:**
+
+    Attempts to parse the input using JSON decoding. Raises a
+    ``ValidationError`` if parsing fails.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class JsonInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add('json_data', validators=[
+                    IsJsonValidator()
+                ])
     """
 
     __slots__ = ("error_message",)

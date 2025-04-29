@@ -7,6 +7,7 @@ from typing import Any, Dict
 class BaseCondition(ABC):
     """
     Base class for defining conditions.
+
     Each condition should implement the `check` method.
     """
 

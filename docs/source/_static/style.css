@@ -28,3 +28,11 @@ footer {
         display: none;
     }
 }
+
+.sig-object {
+    width: 100%;
+}
+
+.attribute, .method, .class dd>p:first-of-type, .class dd dl.field-list.simple {
+    display: none;
+}

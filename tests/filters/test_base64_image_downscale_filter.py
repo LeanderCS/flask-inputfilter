@@ -10,15 +10,11 @@ from flask_inputfilter.filters import Base64ImageDownscaleFilter
 
 class TestBase64ImageDownscaleFilter(unittest.TestCase):
     def setUp(self) -> None:
-        """
-        Set up a new InputFilter instance before each test.
-        """
+        """Set up a new InputFilter instance before each test."""
         self.input_filter = InputFilter()
 
     def test_downscale_base64_image_string(self) -> None:
-        """
-        Should downscale a base64-encoded image string.
-        """
+        """Should downscale a base64-encoded image string."""
         self.input_filter.add(
             "image",
             filters=[Base64ImageDownscaleFilter(size=144)],
@@ -33,9 +29,7 @@ class TestBase64ImageDownscaleFilter(unittest.TestCase):
             self.assertEqual(size, (12, 12))
 
     def test_downscale_image_object(self) -> None:
-        """
-        Should downscale a Pillow image object.
-        """
+        """Should downscale a Pillow image object."""
         self.input_filter.add(
             "image",
             filters=[Base64ImageDownscaleFilter(size=144)],
@@ -54,9 +48,7 @@ class TestBase64ImageDownscaleFilter(unittest.TestCase):
             self.assertEqual(size, (12, 12))
 
     def test_non_image_input_remains_unchanged(self) -> None:
-        """
-        Should return non-image input unchanged.
-        """
+        """Should return non-image input unchanged."""
         self.input_filter.add(
             "image",
             filters=[Base64ImageDownscaleFilter(size=144)],

@@ -8,7 +8,30 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsHexadecimalValidator(BaseValidator):
     """
-    Validator that checks if a value is a valid hexadecimal string.
+    Checks if a given value is a valid hexadecimal string. The input must be a
+    string that can be converted to an integer using base 16.
+
+    **Parameters:**
+
+    - **error_message** (*Optional[str]*): Custom error message if the
+        value is not a valid hexadecimal string.
+
+    **Expected Behavior:**
+
+    Verifies that the input is a string and attempts to convert it to an
+    integer using base 16. Raises a ``ValidationError`` if the conversion
+    fails.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class HexInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add('hex_value', validators=[
+                    IsHexadecimalValidator()
+                ])
     """
 
     __slots__ = ("error_message",)

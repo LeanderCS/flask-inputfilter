@@ -11,7 +11,39 @@ from flask_inputfilter.filters import BaseFilter
 
 class Base64ImageDownscaleFilter(BaseFilter):
     """
-    Filter that downscales a base64 image to a given size
+    Downscales a base64-encoded image to fit within a specified size. The
+    filter can work with both base64 strings and PIL Image objects.
+
+    **Parameters:**
+
+    - **size** (*int*, default: ``1024 * 1024``): A rough pixel count used to
+        compute default dimensions.
+    - **width** (*Optional[int]*): The target width. If not provided, it is
+        calculated as ``sqrt(size)``.
+    - **height** (*Optional[int]*): The target height. If not provided, it is
+        calculated as ``sqrt(size)``.
+    - **proportionally** (*bool*, default: ``True``): Determines if the image
+        should be scaled proportionally. If ``False``, the image is
+        forcefully resized to the specified width and height.
+
+    **Expected Behavior:**
+
+    If the image (or its base64 representation) exceeds the target dimensions,
+    the filter downscales it. The result is a base64-encoded string. If the
+    image is already within bounds or if the input is not a valid image, the
+    original value is returned.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class ImageFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('profile_pic', filters=[
+                    Base64ImageDownscaleFilter(size=1024*1024)
+                ])
     """
 
     __slots__ = ("size", "width", "height", "proportionally")
@@ -42,10 +74,8 @@ class Base64ImageDownscaleFilter(BaseFilter):
             return value
 
     def resize_picture(self, image: Image) -> str:
-        """
-        Resizes the image if it exceeds the specified width/height
-        and returns the base64 representation.
-        """
+        """Resizes the image if it exceeds the specified width/height and
+        returns the base64 representation."""
         is_animated = getattr(image, "is_animated", False)
 
         if not is_animated and image.mode in ("RGBA", "P"):
@@ -65,9 +95,8 @@ class Base64ImageDownscaleFilter(BaseFilter):
         return self.image_to_base64(image)
 
     def scale_image(self, image: Image) -> Image:
-        """
-        Scale the image proportionally to fit within the target width/height.
-        """
+        """Scale the image proportionally to fit within the target
+        width/height."""
         original_width, original_height = image.size
         aspect_ratio = original_width / original_height
 

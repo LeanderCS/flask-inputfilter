@@ -1,9 +1,22 @@
+import os
+import sys
+
 project = "flask-inputfilter"
 copyright = "2025, Leander Cain Slotosch"
 author = "Leander Cain Slotosch"
-release = "0.5.3"
 
-extensions = ["sphinx_rtd_theme", "sphinx_design"]
+extensions = [
+    "sphinx_rtd_theme",
+    "sphinx_design",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
+]
+
+autodoc_member_order = "bysource"
+autodoc_typehints = "description"
+autoclass_content = "both"
+
+sys.path.insert(0, os.path.abspath("../.."))
 
 templates_path = []
 exclude_patterns = []

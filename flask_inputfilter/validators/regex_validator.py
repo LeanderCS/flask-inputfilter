@@ -9,8 +9,31 @@ from flask_inputfilter.validators import BaseValidator
 
 class RegexValidator(BaseValidator):
     """
-    Validator that checks if a value matches a given regular
-    expression pattern.
+    Validates that the input string matches a specified regular expression
+    pattern.
+
+    **Parameters:**
+
+    - **pattern** (*str*): The regular expression pattern the
+        input must match.
+    - **error_message** (*Optional[str]*): Custom error message if
+        the input does not match the pattern.
+
+    **Expected Behavior:**
+
+    Uses the Python ``re`` module to compare the input string against
+    the provided pattern. Raises a ``ValidationError`` if there is no match.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class EmailInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add('email', validators=[
+                    RegexValidator(pattern=r'[a-cA-C]+')
+                ])
     """
 
     __slots__ = ("pattern", "error_message")

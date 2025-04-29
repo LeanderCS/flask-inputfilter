@@ -9,8 +9,8 @@ class BaseValidatorTest(unittest.TestCase):
     """
     Base class for all validator tests.
 
-    Provides common setup logic and helper methods that can be used
-    in all validator test classes.
+    Provides common setup logic and helper methods that can be used in all
+    validator test classes.
     """
 
     def setUp(self) -> None:

@@ -8,7 +8,28 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsFloatValidator(BaseValidator):
     """
-    Validator that checks if a value is a float.
+    Checks if the provided value is a float.
+
+    **Parameters:**
+
+    - **error_message** (*Optional[str]*): Custom error message if the
+        value is not a float.
+
+    **Expected Behavior:**
+
+    Raises a ``ValidationError`` if the input value is not of type float.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class MeasurementInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('temperature', validators=[
+                    IsFloatValidator()
+                ])
     """
 
     __slots__ = ("error_message",)

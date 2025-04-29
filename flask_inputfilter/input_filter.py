@@ -18,9 +18,7 @@ T = TypeVar("T")
 
 
 class InputFilter:
-    """
-    Base class for all input filters.
-    """
+    """Base class for all input filters."""
 
     def __init__(self, methods: Optional[List[str]] = None) -> None:
         self.methods: List[str] = methods or [
@@ -41,10 +39,9 @@ class InputFilter:
 
     def isValid(self) -> bool:
         """
-        Checks if the object's state or its attributes meet certain
-        conditions to be considered valid. This function is typically used to
-        ensure that the current state complies with specific requirements or
-        rules.
+        Checks if the object's state or its attributes meet certain conditions
+        to be considered valid. This function is typically used to ensure that
+        the current state complies with specific requirements or rules.
 
         Returns:
             bool: Returns True if the state or attributes of the object fulfill
@@ -61,10 +58,9 @@ class InputFilter:
 
     def is_valid(self) -> bool:
         """
-        Checks if the object's state or its attributes meet certain
-        conditions to be considered valid. This function is typically used to
-        ensure that the current state complies with specific requirements or
-        rules.
+        Checks if the object's state or its attributes meet certain conditions
+        to be considered valid. This function is typically used to ensure that
+        the current state complies with specific requirements or rules.
 
         Returns:
             bool: Returns True if the state or attributes of the object fulfill
@@ -128,8 +124,8 @@ class InputFilter:
                 *args, **kwargs
             ) -> Union[Response, tuple[Any, Dict[str, Any]]]:
                 """
-                Wrapper function to handle input validation and
-                error handling for the decorated route function.
+                Wrapper function to handle input validation and error handling
+                for the decorated route function.
 
                 Args:
                     *args: Positional arguments for the route function.
@@ -139,7 +135,6 @@ class InputFilter:
                     Union[Response, tuple[Any, Dict[str, Any]]]: The response
                         from the route function or an error response.
                 """
-
                 input_filter = cls()
                 if request.method not in input_filter.methods:
                     return Response(status=405, response="Method Not Allowed")
@@ -344,9 +339,9 @@ class InputFilter:
 
     def setData(self, data: Dict[str, Any]) -> None:
         """
-        Filters and sets the provided data into the object's internal
-        storage, ensuring that only the specified fields are considered and
-        their values are processed through defined filters.
+        Filters and sets the provided data into the object's internal storage,
+        ensuring that only the specified fields are considered and their values
+        are processed through defined filters.
 
         Parameters:
             data (Dict[str, Any]):
@@ -365,9 +360,9 @@ class InputFilter:
 
     def set_data(self, data: Dict[str, Any]) -> None:
         """
-        Filters and sets the provided data into the object's internal
-        storage, ensuring that only the specified fields are considered and
-        their values are processed through defined filters.
+        Filters and sets the provided data into the object's internal storage,
+        ensuring that only the specified fields are considered and their values
+        are processed through defined filters.
 
         Parameters:
             data (Dict[str, Any]):
@@ -436,10 +431,10 @@ class InputFilter:
 
     def getValues(self) -> Dict[str, Any]:
         """
-        Retrieves a dictionary of key-value pairs from the current object.
-        This method provides access to the internal state or configuration of
-        the object in a dictionary format, where keys are strings and values
-        can be of various types depending on the object's design.
+        Retrieves a dictionary of key-value pairs from the current object. This
+        method provides access to the internal state or configuration of the
+        object in a dictionary format, where keys are strings and values can be
+        of various types depending on the object's design.
 
         Returns:
             Dict[str, Any]: A dictionary containing string keys and their
@@ -456,10 +451,10 @@ class InputFilter:
 
     def get_values(self) -> Dict[str, Any]:
         """
-        Retrieves a dictionary of key-value pairs from the current object.
-        This method provides access to the internal state or configuration of
-        the object in a dictionary format, where keys are strings and values
-        can be of various types depending on the object's design.
+        Retrieves a dictionary of key-value pairs from the current object. This
+        method provides access to the internal state or configuration of the
+        object in a dictionary format, where keys are strings and values can be
+        of various types depending on the object's design.
 
         Returns:
             Dict[str, Any]: A dictionary containing string keys and their
@@ -636,8 +631,8 @@ class InputFilter:
 
     def hasUnknown(self) -> bool:
         """
-        Checks whether any values in the current data do not have
-        corresponding configurations in the defined fields.
+        Checks whether any values in the current data do not have corresponding
+        configurations in the defined fields.
 
         Returns:
             bool: True if there are any unknown fields; False otherwise.
@@ -653,8 +648,8 @@ class InputFilter:
 
     def has_unknown(self) -> bool:
         """
-        Checks whether any values in the current data do not have
-        corresponding configurations in the defined fields.
+        Checks whether any values in the current data do not have corresponding
+        configurations in the defined fields.
 
         Returns:
             bool: True if there are any unknown fields; False otherwise.
@@ -716,8 +711,8 @@ class InputFilter:
 
     def getErrorMessages(self) -> Dict[str, str]:
         """
-        Retrieves all error messages associated with the fields in the
-        input filter.
+        Retrieves all error messages associated with the fields in the input
+        filter.
 
         This method aggregates and returns a dictionary of error messages
         where the keys represent field names, and the values are their
@@ -739,8 +734,8 @@ class InputFilter:
 
     def get_error_messages(self) -> Dict[str, str]:
         """
-        Retrieves all error messages associated with the fields in the
-        input filter.
+        Retrieves all error messages associated with the fields in the input
+        filter.
 
         This method aggregates and returns a dictionary of error messages
         where the keys represent field names, and the values are their
@@ -808,8 +803,8 @@ class InputFilter:
 
     def has(self, field_name: str) -> bool:
         """
-        This method checks the existence of a specific field within the
-        input filter values, identified by its field name. It does not return a
+        This method checks the existence of a specific field within the input
+        filter values, identified by its field name. It does not return a
         value, serving purely as a validation or existence check mechanism.
 
         Args:
@@ -1035,12 +1030,12 @@ class InputFilter:
 
     def clear(self) -> None:
         """
-        Resets all fields of the InputFilter instance to
-        their initial empty state.
+        Resets all fields of the InputFilter instance to their initial empty
+        state.
 
-        This method clears the internal storage of fields,
-        conditions, filters, validators, and data, effectively
-        resetting the object as if it were newly initialized.
+        This method clears the internal storage of fields, conditions, filters,
+        validators, and data, effectively resetting the object as if it were
+        newly initialized.
         """
         self.fields.clear()
         self.conditions.clear()
@@ -1120,9 +1115,8 @@ class InputFilter:
 
     def serialize(self) -> Union[Dict[str, Any], T]:
         """
-        Serialize the validated data. If a model class is set,
-        returns an instance of that class, otherwise returns the
-        raw validated data.
+        Serialize the validated data. If a model class is set, returns an
+        instance of that class, otherwise returns the raw validated data.
 
         Returns:
             Union[Dict[str, Any], T]: The serialized data.
@@ -1160,8 +1154,8 @@ class InputFilter:
 
     def getGlobalValidators(self) -> List[BaseValidator]:
         """
-        Retrieve all global validators associated with this
-        InputFilter instance.
+        Retrieve all global validators associated with this InputFilter
+        instance.
 
         This method returns a list of BaseValidator instances that have been
         added as global validators. These validators are applied universally
@@ -1182,8 +1176,8 @@ class InputFilter:
 
     def get_global_validators(self) -> List[BaseValidator]:
         """
-        Retrieve all global validators associated with this
-        InputFilter instance.
+        Retrieve all global validators associated with this InputFilter
+        instance.
 
         This method returns a list of BaseValidator instances that have been
         added as global validators. These validators are applied universally

@@ -7,7 +7,34 @@ from flask_inputfilter.conditions import BaseCondition
 
 class ExactlyOneOfCondition(BaseCondition):
     """
-    Condition that ensures exactly one of the specified fields is present.
+    Ensures that exactly one of the specified fields is present.
+
+    **Parameters:**
+
+    - **fields** (*List[str]*): A list of fields to check.
+
+    **Expected Behavior:**
+
+    Validates that only one field among the specified fields exists in the
+    input data.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class OneFieldFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add(
+                    'email'
+                )
+
+                self.add(
+                    'phone'
+                )
+
+                self.add_condition(ExactlyOneOfCondition(['email', 'phone']))
     """
 
     __slots__ = ("fields",)

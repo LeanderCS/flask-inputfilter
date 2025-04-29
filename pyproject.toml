@@ -6,7 +6,11 @@ build-backend = "setuptools.build_meta"
 name = "flask_inputfilter"
 version = "0.5.3"
 description = "A library to easily filter and validate input data in Flask applications"
-readme = "README.rst"
+readme = "README.md"
+keywords = [
+    "flask", "input", "validation", "filter", "condition", "sanitization", "api", "data",
+    "schema", "security", "middleware", "request", "serialization", "json-validation", "form"
+]
 requires-python = ">=3.7"
 license = {text = "MIT"}
 authors = [
@@ -43,8 +47,9 @@ dev = [
     "requests>=2.22.0",
     "sphinx",
     "sphinx-autobuild",
+    "sphinx_design",
     "sphinx_rtd_theme",
-    #"docformatter",
+    "docformatter",
 ]
 optional = [
     "pillow>=8.0.0",

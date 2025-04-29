@@ -7,7 +7,29 @@ from flask_inputfilter.filters import BaseFilter
 
 class ToTypedDictFilter(BaseFilter):
     """
-    Filter that converts a dictionary to a TypedDict.
+    Converts a dictionary into an instance of a specified TypedDict.
+
+    **Parameters:**
+
+    - **typed_dict** (*Type[TypedDict]*): The target TypedDict type.
+
+    **Expected Behavior:**
+
+    - If the input is a dictionary, returns an instance of the specified
+        TypedDict.
+    - Otherwise, returns the original value.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class ConfigFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('config', filters=[
+                    ToTypedDictFilter(MyTypedDict)
+                ])
     """
 
     __slots__ = ("typed_dict",)

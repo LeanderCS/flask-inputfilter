@@ -4,9 +4,7 @@ from enum import Enum
 
 
 class RegexEnum(Enum):
-    """
-    Enum for regex patterns.
-    """
+    """Enum for regex patterns."""
 
     EMAIL = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
 

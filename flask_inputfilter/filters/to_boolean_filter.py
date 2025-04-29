@@ -7,7 +7,24 @@ from flask_inputfilter.filters import BaseFilter
 
 class ToBooleanFilter(BaseFilter):
     """
-    Filter, that transforms the value to a boolean.
+    Converts the input value to a boolean.
+
+    **Expected Behavior:**
+
+    Uses Python's built-in ``bool()`` conversion. Note that non-empty
+    strings and non-zero numbers will return ``True``.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class ActiveFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('active', filters=[
+                    ToBooleanFilter()
+                ])
     """
 
     def apply(self, value: Any) -> Union[Optional[bool], Any]:

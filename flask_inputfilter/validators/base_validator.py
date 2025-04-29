@@ -6,7 +6,9 @@ from typing import Any
 
 class BaseValidator(ABC):
     """
-    BaseValidator-Class. Every validator should inherit from it.
+    BaseValidator-Class.
+
+    Every validator should inherit from it.
     """
 
     @abstractmethod

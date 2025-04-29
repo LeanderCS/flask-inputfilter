@@ -7,8 +7,41 @@ from flask_inputfilter.conditions import BaseCondition
 
 class StringLongerThanCondition(BaseCondition):
     """
-    Condition that checks if the length of the string is longer
-    than the given length.
+    Checks if the length of the string in one field is longer than the string
+    in another field.
+
+    **Parameters:**
+
+    - **longer_field** (*str*): The field expected to have a longer string.
+    - **shorter_field** (*str*): The field expected to have a shorter string.
+
+    **Expected Behavior:**
+
+    Validates that the string in ``longer_field`` has a greater length
+    than the string in ``shorter_field``.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class StringLengthFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add(
+                    'description'
+                )
+
+                self.add(
+                    'summary'
+                )
+
+                self.add_condition(
+                    StringLongerThanCondition(
+                        longer_field='description',
+                        shorter_field='summary'
+                    )
+                )
     """
 
     __slots__ = ("longer_field", "shorter_field")

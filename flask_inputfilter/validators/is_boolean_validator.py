@@ -8,7 +8,28 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsBooleanValidator(BaseValidator):
     """
-    Validator that checks if a value is a bool.
+    Checks if the provided value is a boolean.
+
+    **Parameters:**
+
+    - **error_message** (*Optional[str]*): Custom error message if the
+        input is not a bool.
+
+    **Expected Behavior:**
+
+    Raises a ``ValidationError`` if the input value is not of type bool.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class FlagInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('is_active', validators=[
+                    IsBooleanValidator()
+                ])
     """
 
     __slots__ = ("error_message",)

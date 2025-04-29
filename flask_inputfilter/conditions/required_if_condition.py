@@ -7,8 +7,45 @@ from flask_inputfilter.conditions import BaseCondition
 
 class RequiredIfCondition(BaseCondition):
     """
-    Condition that ensures a field is required if another
-    field has a specific value.
+    Ensures that a field is required if another field has a specific value.
+
+    **Parameters:**
+
+    - **condition_field** (*str*): The field whose value is checked.
+    - **value** (*Optional[Union[Any, List[Any]]]*): The value(s) that
+        trigger the requirement.
+    - **required_field** (*str*): The field that becomes required if the
+        condition is met.
+
+    **Expected Behavior:**
+
+    If the value of ``condition_field`` matches the specified value
+    (or is in the specified list), then ``required_field`` must be present.
+    Otherwise, the condition passes.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class ConditionalRequiredFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add(
+                    'status'
+                )
+
+                self.add(
+                    'activation_date'
+                )
+
+                self.add_condition(
+                    RequiredIfCondition(
+                        condition_field='status',
+                        value='active',
+                        required_field='activation_date'
+                    )
+                )
     """
 
     __slots__ = ("condition_field", "value", "required_field")

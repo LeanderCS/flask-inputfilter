@@ -12,7 +12,31 @@ MAC_ADDRESS_PATTERN = re.compile(RegexEnum.MAC_ADDRESS.value)
 
 class IsMacAddressValidator(BaseValidator):
     """
-    Validator that checks if a value is a valid MAC address.
+    Checks if a value is a valid MAC address. It verifies common MAC address
+    formats, such as colon-separated or hyphen-separated pairs of hexadecimal
+    digits.
+
+    **Parameters:**
+
+    - **error_message** (*Optional[str]*): Custom error message if the
+        value is not a valid MAC address.
+
+    **Expected Behavior:**
+
+    Ensures the input is a string and matches a regular expression pattern
+    for MAC addresses. Raises a ``ValidationError`` if the value does not
+    conform to the expected MAC address format.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class NetworkInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add('mac_address', validators=[
+                    IsMacAddressValidator()
+                ])
     """
 
     __slots__ = ("error_message",)

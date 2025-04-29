@@ -9,7 +9,28 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsUUIDValidator(BaseValidator):
     """
-    Validator that checks if a value is a valid UUID string.
+    Checks if the provided value is a valid UUID string.
+
+    **Parameters:**
+
+    - **error_message** (*Optional[str]*): Custom error message if the
+        input is not a valid UUID.
+
+    **Expected Behavior:**
+
+    Verifies that the input is a string and attempts to parse it as a
+    UUID. Raises a ``ValidationError`` if parsing fails.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class UUIDInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add('uuid', validators=[
+                    IsUUIDValidator()
+                ])
     """
 
     __slots__ = ("error_message",)

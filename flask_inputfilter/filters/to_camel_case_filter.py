@@ -8,7 +8,25 @@ from flask_inputfilter.filters import BaseFilter
 
 class ToCamelCaseFilter(BaseFilter):
     """
-    Filter that converts a string to camelCase.
+    Transforms a string into camelCase format.
+
+    **Expected Behavior:**
+
+    Normalizes delimiters such as spaces, underscores, or hyphens,
+    capitalizes each word (except the first), and concatenates them
+    so that the first letter is lowercase.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class IdentifierFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('identifier', filters=[
+                    ToCamelCaseFilter()
+                ])
     """
 
     def apply(self, value: Any) -> Union[str, Any]:

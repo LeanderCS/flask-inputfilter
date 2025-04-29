@@ -4,6 +4,11 @@ InputFilter
 Overview
 --------
 
+.. autoclass:: flask_inputfilter.input_filter.InputFilter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Configuration
 -------------
 
@@ -90,4 +95,3 @@ Least config
 
 
 Full config
-

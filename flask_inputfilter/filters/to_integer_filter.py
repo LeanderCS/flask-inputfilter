@@ -7,7 +7,24 @@ from flask_inputfilter.filters import BaseFilter
 
 class ToIntegerFilter(BaseFilter):
     """
-    Filter, that transforms the value to an Integer.
+    Converts the input value to an integer.
+
+    **Expected Behavior:**
+
+    - Attempts to cast the input using ``int()``.
+    - On failure, returns the original value.
+
+    **Example Usage:**
+
+    .. code-block:: python
+
+        class AgeFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+
+                self.add('age', filters=[
+                    ToIntegerFilter()
+                ])
     """
 
     def apply(self, value: Any) -> Union[int, Any]:
