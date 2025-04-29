@@ -12,7 +12,8 @@ class IsArrayValidator(BaseValidator):
 
     **Parameters:**
 
-    - **error_message** (*Optional[str]*): Custom error message if validation fails.
+    - **error_message** (*Optional[str]*): Custom error message if
+        validation fails.
 
     **Expected Behavior:**
 
@@ -21,9 +22,6 @@ class IsArrayValidator(BaseValidator):
     **Example Usage:**
 
     .. code-block:: python
-
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import IsArrayValidator
 
         class ListInputFilter(InputFilter):
             def __init__(self):

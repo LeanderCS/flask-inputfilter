@@ -11,10 +11,13 @@ class ToDataclassFilter(BaseFilter):
 
     **Parameters:**
 
-    - **dataclass_type** (*Type[dict]*): The target dataclass type that the dictionary should be converted into.
+    - **dataclass_type** (*Type[dict]*): The target dataclass type
+        that the dictionary should be converted into.
 
     **Expected Behavior:**
-    If the input is a dictionary, it instantiates the provided dataclass using the dictionary values. Otherwise, the input is returned unchanged.
+
+    If the input is a dictionary, it instantiates the provided dataclass
+    using the dictionary values. Otherwise, the input is returned unchanged.
 
     **Example Usage:**
 

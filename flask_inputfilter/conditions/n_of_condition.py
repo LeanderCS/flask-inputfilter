@@ -7,8 +7,8 @@ from flask_inputfilter.conditions import BaseCondition
 
 class NOfCondition(BaseCondition):
     """
-    Checks that at least ``n`` of the specified fields are present in
-    the input data.
+    Checks that at least ``n`` of the specified fields are present in the input
+    data.
 
     **Parameters:**
 
@@ -17,14 +17,12 @@ class NOfCondition(BaseCondition):
 
     **Expected Behavior:**
 
-    Validates that the count of the specified fields present is greater than or equal to ``n``.
+    Validates that the count of the specified fields present is greater
+    than or equal to ``n``.
 
     **Example Usage:**
 
     .. code-block:: python
-
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.conditions import NOfCondition
 
         class MinimumFieldsFilter(InputFilter):
             def __init__(self):
@@ -42,7 +40,12 @@ class NOfCondition(BaseCondition):
                     'field3'
                 )
 
-                self.add_condition(NOfCondition(['field1', 'field2', 'field3'], 2))
+                self.add_condition(
+                    NOfCondition(
+                        fields=['field1', 'field2', 'field3'],
+                        n=2
+                    )
+                )
     """
 
     __slots__ = ("fields", "n")

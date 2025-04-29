@@ -14,8 +14,8 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsVerticalImageValidator(BaseValidator):
     """
-    Validates that the provided image is vertically oriented. Accepts
-    either a Base64 encoded string or an image object.
+    Validates that the provided image is vertically oriented. Accepts either a
+    Base64 encoded string or an image object.
 
     **Parameters:**
 

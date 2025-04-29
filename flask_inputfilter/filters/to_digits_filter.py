@@ -9,8 +9,7 @@ from flask_inputfilter.filters import BaseFilter
 
 class ToDigitsFilter(BaseFilter):
     """
-    Converts a string to a numeric type (either an integer or a
-    float).
+    Converts a string to a numeric type (either an integer or a float).
 
     **Expected Behavior:**
 

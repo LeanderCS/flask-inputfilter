@@ -19,8 +19,7 @@ class TestExactlyOneOfMatchesCondition(unittest.TestCase):
         self.input_filter.validate_data({"field1": "value"})
 
     def test_invalidates_when_more_than_one_field_matches(self) -> None:
-        """Test that more than one matching field raises a
-        ValidationError."""
+        """Test that more than one matching field raises a ValidationError."""
         self.input_filter.add("field1")
         self.input_filter.add("field2")
         self.input_filter.add_condition(

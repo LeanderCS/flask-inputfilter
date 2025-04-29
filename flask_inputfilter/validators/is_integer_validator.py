@@ -12,7 +12,8 @@ class IsIntegerValidator(BaseValidator):
 
     **Parameters:**
 
-    - **error_message** (*Optional[str]*): Custom error message if the value is not an integer.
+    - **error_message** (*Optional[str]*): Custom error message if
+        the value is not an integer.
 
     **Expected Behavior:**
 

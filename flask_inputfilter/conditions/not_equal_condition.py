@@ -16,14 +16,12 @@ class NotEqualCondition(BaseCondition):
 
     **Expected Behavior:**
 
-    Validates that the values of ``first_field`` and ``second_field`` are not equal.
+    Validates that the values of ``first_field`` and ``second_field``
+    are not equal.
 
     **Example Usage:**
 
     .. code-block:: python
-
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.conditions import NotEqualCondition
 
         class DifferenceFilter(InputFilter):
             def __init__(self):

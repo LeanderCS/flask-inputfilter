@@ -12,7 +12,9 @@ class ToCamelCaseFilter(BaseFilter):
 
     **Expected Behavior:**
 
-    Normalizes delimiters such as spaces, underscores, or hyphens, capitalizes each word (except the first), and concatenates them so that the first letter is lowercase.
+    Normalizes delimiters such as spaces, underscores, or hyphens,
+    capitalizes each word (except the first), and concatenates them
+    so that the first letter is lowercase.
 
     **Example Usage:**
 

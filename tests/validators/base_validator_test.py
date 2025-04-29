@@ -9,8 +9,8 @@ class BaseValidatorTest(unittest.TestCase):
     """
     Base class for all validator tests.
 
-    Provides common setup logic and helper methods that can be used
-    in all validator test classes.
+    Provides common setup logic and helper methods that can be used in all
+    validator test classes.
     """
 
     def setUp(self) -> None:
@@ -24,8 +24,7 @@ class BaseValidatorTest(unittest.TestCase):
         expected_message: Optional[str] = None,
     ) -> None:
         """
-        Helper method to check if an invalid value raises a
-        ValidationError.
+        Helper method to check if an invalid value raises a ValidationError.
 
         Args:
             field_name (str): Name of the field to validate

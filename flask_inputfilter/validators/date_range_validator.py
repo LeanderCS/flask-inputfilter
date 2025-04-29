@@ -13,20 +13,21 @@ class DateRangeValidator(BaseValidator):
 
     **Parameters:**
 
-    - **min_date** (*Optional[Union[str, date, datetime]]*): The lower bound of the date range.
-    - **max_date** (*Optional[Union[str, date, datetime]]*): The upper bound of the date range.
-    - **error_message** (*Optional[str]*): Custom error message if the date is outside the range.
+    - **min_date** (*Optional[Union[str, date, datetime]]*): The lower bound
+        of the date range.
+    - **max_date** (*Optional[Union[str, date, datetime]]*): The upper bound
+        of the date range.
+    - **error_message** (*Optional[str]*): Custom error message if the date
+        is outside the range.
 
     **Expected Behavior:**
 
-    Ensures the input date is not earlier than ``min_date`` and not later than ``max_date``. A ``ValidationError`` is raised if the check fails.
+    Ensures the input date is not earlier than ``min_date`` and not later
+    than ``max_date``. A ``ValidationError`` is raised if the check fails.
 
     **Example Usage:**
 
     .. code-block:: python
-
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import DateRangeValidator
 
         class BookingInputFilter(InputFilter):
             def __init__(self):
@@ -35,7 +36,7 @@ class DateRangeValidator(BaseValidator):
                 self.add('booking_date', validators=[
                     DateRangeValidator(
                         min_date="2023-01-01",
-                        max_date="2023-12-31"
+                        max_date="2023-01-31"
                     )
                 ])
     """

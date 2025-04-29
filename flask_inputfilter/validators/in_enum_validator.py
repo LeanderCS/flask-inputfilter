@@ -9,8 +9,7 @@ from flask_inputfilter.validators import BaseValidator
 
 class InEnumValidator(BaseValidator):
     """
-    Verifies that a given value is a valid member of a specified Enum
-    class.
+    Verifies that a given value is a valid member of a specified Enum class.
 
     **Parameters:**
 
@@ -29,8 +28,6 @@ class InEnumValidator(BaseValidator):
     .. code-block:: python
 
         from enum import Enum
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import InEnumValidator
 
         class ColorEnum(Enum):
             RED = "red"

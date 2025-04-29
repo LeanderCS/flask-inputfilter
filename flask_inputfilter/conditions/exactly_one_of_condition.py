@@ -15,14 +15,12 @@ class ExactlyOneOfCondition(BaseCondition):
 
     **Expected Behavior:**
 
-    Validates that only one field among the specified fields exists in the input data.
+    Validates that only one field among the specified fields exists in the
+    input data.
 
     **Example Usage:**
 
     .. code-block:: python
-
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.conditions import ExactlyOneOfCondition
 
         class OneFieldFilter(InputFilter):
             def __init__(self):

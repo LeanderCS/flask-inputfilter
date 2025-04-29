@@ -7,8 +7,8 @@ from flask_inputfilter.conditions import BaseCondition
 
 class IntegerBiggerThanCondition(BaseCondition):
     """
-    Checks if the integer value in one field is greater than that in
-    another field.
+    Checks if the integer value in one field is greater than that in another
+    field.
 
     **Parameters:**
 
@@ -17,15 +17,12 @@ class IntegerBiggerThanCondition(BaseCondition):
 
     **Expected Behavior:**
 
-    Validates that the integer value from ``bigger_field`` is greater than the value from ``smaller_field``.
+    Validates that the integer value from ``bigger_field`` is greater than
+    the value from ``smaller_field``.
 
     **Example Usage:**
 
     .. code-block:: python
-
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.conditions import IntegerBiggerThanCondition
-        from flask_inputfilter.validators import IsIntegerValidator
 
         class NumberComparisonFilter(InputFilter):
             def __init__(self):
@@ -41,7 +38,12 @@ class IntegerBiggerThanCondition(BaseCondition):
                     validators=[IsIntegerValidator()]
                 )
 
-                self.add_condition(IntegerBiggerThanCondition('field_should_be_bigger', 'field_should_be_smaller'))
+                self.add_condition(
+                    IntegerBiggerThanCondition(
+                        bigger_field='field_should_be_bigger',
+                        smaller_field='field_should_be_smaller'
+                    )
+                )
     """
 
     __slots__ = ("bigger_field", "smaller_field")

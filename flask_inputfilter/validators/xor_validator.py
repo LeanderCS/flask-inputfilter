@@ -8,9 +8,9 @@ from flask_inputfilter.validators import BaseValidator
 
 class XorValidator(BaseValidator):
     """
-    Validates that the input passes exactly one of the provided
-    validators. This composite validator ensures that the input does
-    not pass zero or more than one of the specified validators.
+    Validates that the input passes exactly one of the provided validators.
+    This composite validator ensures that the input does not pass zero or more
+    than one of the specified validators.
 
     **Parameters:**
 

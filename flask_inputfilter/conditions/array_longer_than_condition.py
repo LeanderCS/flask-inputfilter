@@ -7,8 +7,7 @@ from flask_inputfilter.conditions import BaseCondition
 
 class ArrayLongerThanCondition(BaseCondition):
     """
-    Checks if the array in one field is longer than the array in
-    another field.
+    Checks if the array in one field is longer than the array in another field.
 
     **Parameters:**
 
@@ -17,15 +16,12 @@ class ArrayLongerThanCondition(BaseCondition):
 
     **Expected Behavior:**
 
-    Validates that the array in ``longer_field`` has more elements than the array in ``shorter_field``.
+    Validates that the array in ``longer_field`` has more elements than
+    the array in ``shorter_field``.
 
     **Example Usage:**
 
     .. code-block:: python
-
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.conditions import ArrayLongerThanCondition
-        from flask_inputfilter.validators import IsArrayValidator
 
         class ArrayComparisonFilter(InputFilter):
             def __init__(self):
@@ -41,7 +37,12 @@ class ArrayLongerThanCondition(BaseCondition):
                     validators=[IsArrayValidator()]
                 )
 
-                self.add_condition(ArrayLongerThanCondition('list1', 'list2'))
+                self.add_condition(
+                    ArrayLongerThanCondition(
+                        longer_field='list1',
+                        shorter_field='list2'
+                    )
+                )
     """
 
     __slots__ = ("longer_field", "shorter_field")

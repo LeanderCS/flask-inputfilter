@@ -10,25 +10,24 @@ T = TypeVar("T")
 
 class IsDataclassValidator(BaseValidator):
     """
-    Validates that the provided value conforms to a specific
-    dataclass type.
+    Validates that the provided value conforms to a specific dataclass type.
 
     **Parameters:**
 
     - **dataclass_type** (*Type[dict]*): The expected dataclass type.
-    - **error_message** (*Optional[str]*): Custom error message if validation fails.
+    - **error_message** (*Optional[str]*): Custom error message if
+        validation fails.
 
     **Expected Behavior:**
 
-    Ensures the input is a dictionary and, that all expected keys are present. Raises a ``ValidationError`` if the structure does not match.
+    Ensures the input is a dictionary and, that all expected keys are
+    present. Raises a ``ValidationError`` if the structure does not match.
 
     **Example Usage:**
 
     .. code-block:: python
 
         from dataclasses import dataclass
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import IsDataclassValidator
 
         @dataclass
         class User:

@@ -12,9 +12,8 @@ RGB_COLOR_PATTERN = re.compile(RegexEnum.RGB_COLOR.value)
 
 class IsRgbColorValidator(BaseValidator):
     """
-    Checks if a value is a valid RGB color string. The expected
-    format is ``rgb(r, g, b)`` where *r*, *g*, and *b* are integers
-    between 0 and 255.
+    Checks if a value is a valid RGB color string. The expected format is
+    ``rgb(r, g, b)`` where *r*, *g*, and *b* are integers between 0 and 255.
 
     **Parameters:**
 
@@ -30,9 +29,6 @@ class IsRgbColorValidator(BaseValidator):
     **Example Usage:**
 
     .. code-block:: python
-
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import IsRgbColorValidator
 
         class ColorInputFilter(InputFilter):
             def __init__(self):

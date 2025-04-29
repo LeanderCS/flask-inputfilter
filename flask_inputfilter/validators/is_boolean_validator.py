@@ -12,7 +12,8 @@ class IsBooleanValidator(BaseValidator):
 
     **Parameters:**
 
-    - **error_message** (*Optional[str]*): Custom error message if the input is not a bool.
+    - **error_message** (*Optional[str]*): Custom error message if the
+        input is not a bool.
 
     **Expected Behavior:**
 
@@ -21,9 +22,6 @@ class IsBooleanValidator(BaseValidator):
     **Example Usage:**
 
     .. code-block:: python
-
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import IsBooleanValidator
 
         class FlagInputFilter(InputFilter):
             def __init__(self):

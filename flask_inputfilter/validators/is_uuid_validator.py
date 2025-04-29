@@ -13,11 +13,13 @@ class IsUUIDValidator(BaseValidator):
 
     **Parameters:**
 
-    - **error_message** (*Optional[str]*): Custom error message if the input is not a valid UUID.
+    - **error_message** (*Optional[str]*): Custom error message if the
+        input is not a valid UUID.
 
     **Expected Behavior:**
 
-    Verifies that the input is a string and attempts to parse it as a UUID. Raises a ``ValidationError`` if parsing fails.
+    Verifies that the input is a string and attempts to parse it as a
+    UUID. Raises a ``ValidationError`` if parsing fails.
 
     **Example Usage:**
 

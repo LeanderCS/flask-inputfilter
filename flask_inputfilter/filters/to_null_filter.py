@@ -7,8 +7,8 @@ from flask_inputfilter.filters import BaseFilter
 
 class ToNullFilter(BaseFilter):
     """
-    Transforms the input to ``None`` if it is an empty string or
-    already ``None``.
+    Transforms the input to ``None`` if it is an empty string or already
+    ``None``.
 
     **Expected Behavior:**
 

@@ -16,14 +16,12 @@ class EqualCondition(BaseCondition):
 
     **Expected Behavior:**
 
-    Validates that the values of ``first_field`` and ``second_field`` are equal. Fails if they differ.
+    Validates that the values of ``first_field`` and ``second_field`` are
+    equal. Fails if they differ.
 
     **Example Usage:**
 
     .. code-block:: python
-
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.conditions import EqualCondition
 
         class EqualFieldsFilter(InputFilter):
             def __init__(self):
@@ -37,7 +35,12 @@ class EqualCondition(BaseCondition):
                     'confirm_password'
                 )
 
-                self.add_condition(EqualCondition('password', 'confirm_password'))
+                self.add_condition(
+                    EqualCondition(
+                        first_field='password',
+                        second_field='confirm_password'
+                    )
+                )
     """
 
     __slots__ = ("first_field", "second_field")

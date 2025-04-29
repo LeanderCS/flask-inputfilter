@@ -8,25 +8,25 @@ from flask_inputfilter.validators import BaseValidator
 
 class ArrayLengthValidator(BaseValidator):
     """
-    Checks whether the length of an array falls within a specified
-    range.
+    Checks whether the length of an array falls within a specified range.
 
     **Parameters:**
 
-    - **min_length** (*int*, default: 0): The minimum number of elements required.
-    - **max_length** (*int*, default: infinity): The maximum number of allowed elements.
-    - **error_message** (*Optional[str]*): Custom error message if the length check fails.
+    - **min_length** (*int*, default: 0): The minimum number of
+        elements required.
+    - **max_length** (*int*, default: infinity): The maximum number
+        of allowed elements.
+    - **error_message** (*Optional[str]*): Custom error message if the
+        length check fails.
 
     **Expected Behavior:**
 
-    Ensures that the input is a list and that its length is between the specified minimum and maximum. If not, a ``ValidationError`` is raised.
+    Ensures that the input is a list and that its length is between the
+    specified minimum and maximum. If not, a ``ValidationError`` is raised.
 
     **Example Usage:**
 
     .. code-block:: python
-
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import ArrayLengthValidator
 
         class ListInputFilter(InputFilter):
             def __init__(self):

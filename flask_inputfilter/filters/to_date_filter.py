@@ -8,8 +8,8 @@ from flask_inputfilter.filters import BaseFilter
 
 class ToDateFilter(BaseFilter):
     """
-    Converts an input value to a ``date`` object. Supports ISO 8601
-    formatted strings and datetime objects.
+    Converts an input value to a ``date`` object. Supports ISO 8601 formatted
+    strings and datetime objects.
 
     **Expected Behavior:**
 

@@ -7,8 +7,7 @@ from flask_inputfilter.conditions import BaseCondition
 
 class ExactlyOneOfMatchesCondition(BaseCondition):
     """
-    Ensures that exactly one of the specified fields matches a given
-    value.
+    Ensures that exactly one of the specified fields matches a given value.
 
     **Parameters:**
 
@@ -23,9 +22,6 @@ class ExactlyOneOfMatchesCondition(BaseCondition):
 
     .. code-block:: python
 
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.conditions import ExactlyOneOfMatchesCondition
-
         class OneMatchFilter(InputFilter):
             def __init__(self):
                 super().__init__()
@@ -38,7 +34,12 @@ class ExactlyOneOfMatchesCondition(BaseCondition):
                     'option2'
                 )
 
-                self.add_condition(ExactlyOneOfMatchesCondition(['option1', 'option2'], 'yes'))
+                self.add_condition(
+                    ExactlyOneOfMatchesCondition(
+                        fields=['option1', 'option2'],
+                        value='yes'
+                    )
+                )
     """
 
     __slots__ = ("fields", "value")

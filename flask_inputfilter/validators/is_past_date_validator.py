@@ -9,23 +9,23 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsPastDateValidator(BaseValidator):
     """
-    Checks whether a given date is in the past. Supports datetime
-    objects, date objects, and ISO 8601 formatted strings.
+    Checks whether a given date is in the past. Supports datetime objects, date
+    objects, and ISO 8601 formatted strings.
 
     **Parameters:**
 
-    - **error_message** (*Optional[str]*): Custom error message if the date is not in the past.
+    - **error_message** (*Optional[str]*): Custom error message if the date
+        is not in the past.
 
     **Expected Behavior:**
 
-    Parses the input date and verifies that it is earlier than the current date and time. Raises a ``ValidationError`` if the input date is not in the past.
+    Parses the input date and verifies that it is earlier than the current
+    date and time. Raises a ``ValidationError`` if the input date is not
+    in the past.
 
     **Example Usage:**
 
     .. code-block:: python
-
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import IsPastDateValidator
 
         class HistoryInputFilter(InputFilter):
             def __init__(self):

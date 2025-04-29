@@ -9,9 +9,8 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsWeekdayValidator(BaseValidator):
     """
-    Checks whether a given date falls on a weekday (Monday to
-    Friday). Supports datetime objects, date objects, and ISO 8601
-    formatted strings.
+    Checks whether a given date falls on a weekday (Monday to Friday). Supports
+    datetime objects, date objects, and ISO 8601 formatted strings.
 
     **Parameters:**
 

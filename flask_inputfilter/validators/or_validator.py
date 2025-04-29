@@ -8,9 +8,9 @@ from flask_inputfilter.validators import BaseValidator
 
 class OrValidator(BaseValidator):
     """
-    Validates that the input passes at least one of the provided
-    validators. This composite validator performs a logical OR over
-    its constituent validators.
+    Validates that the input passes at least one of the provided validators.
+    This composite validator performs a logical OR over its constituent
+    validators.
 
     **Parameters:**
 

@@ -13,12 +13,16 @@ class ToNormalizedUnicodeFilter(BaseFilter):
 
     **Parameters:**
 
-    - **form** (*Union[UnicodeFormEnum, Literal["NFC", "NFD", "NFKC", "NFKD"]]*,
-    default: ``UnicodeFormEnum.NFC``): The target Unicode normalization form.
+    - **form** (
+            *Union[UnicodeFormEnum,
+            Literal["NFC", "NFD", "NFKC", "NFKD"]]*,
+            default: ``UnicodeFormEnum.NFC``
+        ): The target Unicode normalization form.
 
     **Expected Behavior:**
 
-    - Removes accent characters and normalizes the string based on the specified form.
+    - Removes accent characters and normalizes the string based on the
+        specified form.
     - Returns non-string inputs unchanged.
 
     **Example Usage:**

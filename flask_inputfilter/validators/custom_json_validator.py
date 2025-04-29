@@ -9,9 +9,9 @@ from flask_inputfilter.validators import BaseValidator
 
 class CustomJsonValidator(BaseValidator):
     """
-    Validates that the provided value is valid JSON. It also checks
-    for the presence of required fields and optionally verifies field
-    types against a provided schema.
+    Validates that the provided value is valid JSON. It also checks for the
+    presence of required fields and optionally verifies field types against a
+    provided schema.
 
     **Parameters:**
 
@@ -24,16 +24,13 @@ class CustomJsonValidator(BaseValidator):
 
     **Expected Behavior:**
 
-    If the input is a string, it attempts to parse it as JSON. It then confirms
-    that the result is a dictionary, contains all required fields, and that each
-    field adheres to the defined type in the schema.
+    If the input is a string, it attempts to parse it as JSON. It then
+    confirms that the result is a dictionary, contains all required
+    fields, and that each field adheres to the defined type in the schema.
 
     **Example Usage:**
 
     .. code-block:: python
-
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import CustomJsonValidator
 
         class JsonInputFilter(InputFilter):
             def __init__(self):

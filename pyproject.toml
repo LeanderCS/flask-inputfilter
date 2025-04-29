@@ -49,7 +49,7 @@ dev = [
     "sphinx-autobuild",
     "sphinx_design",
     "sphinx_rtd_theme",
-    #"docformatter",
+    "docformatter",
 ]
 optional = [
     "pillow>=8.0.0",

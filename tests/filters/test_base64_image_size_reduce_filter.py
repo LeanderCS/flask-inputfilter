@@ -14,8 +14,8 @@ class TestBase64ImageResizeFilter(unittest.TestCase):
         self.input_filter = InputFilter()
 
     def test_resize_base64_image_string_to_max_size(self) -> None:
-        """Should resize a base64-encoded image so that it fits
-        within the max size."""
+        """Should resize a base64-encoded image so that it fits within the max
+        size."""
         self.input_filter.add(
             "image",
             filters=[Base64ImageResizeFilter(max_size=1024)],
@@ -34,8 +34,8 @@ class TestBase64ImageResizeFilter(unittest.TestCase):
             self.assertLessEqual(size, 1024)
 
     def test_resize_image_object_to_max_size(self) -> None:
-        """Should resize a Pillow image object so that it fits within
-        the max size."""
+        """Should resize a Pillow image object so that it fits within the max
+        size."""
         self.input_filter.add(
             "image",
             filters=[Base64ImageResizeFilter(max_size=1024)],

@@ -13,7 +13,8 @@ class IsDateValidator(BaseValidator):
 
     **Parameters:**
 
-    - **error_message** (*Optional[str]*): Custom error message if the value is not a date.
+    - **error_message** (*Optional[str]*): Custom error message if the
+        value is not a date.
 
     **Expected Behavior:**
 
@@ -22,9 +23,6 @@ class IsDateValidator(BaseValidator):
     **Example Usage:**
 
     .. code-block:: python
-
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import IsDateValidator
 
         class DateInputFilter(InputFilter):
             def __init__(self):

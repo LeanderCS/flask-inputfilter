@@ -13,8 +13,8 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsBase64ImageValidator(BaseValidator):
     """
-    Validates that a Base64 encoded string represents a valid image
-    by decoding it and verifying its integrity.
+    Validates that a Base64 encoded string represents a valid image by decoding
+    it and verifying its integrity.
 
     **Parameters:**
 

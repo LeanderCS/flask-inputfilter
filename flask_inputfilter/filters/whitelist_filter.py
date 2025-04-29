@@ -7,18 +7,21 @@ from flask_inputfilter.filters import BaseFilter
 
 class WhitelistFilter(BaseFilter):
     """
-    Filters the input by only keeping elements that appear in a
-    predefined whitelist.
+    Filters the input by only keeping elements that appear in a predefined
+    whitelist.
 
     **Parameters:**
 
-    - **whitelist** (*List[str]*, optional): A list of allowed words or keys. If not provided, no filtering is applied.
+    - **whitelist** (*List[str]*, optional): A list of allowed words
+        or keys. If not provided, no filtering is applied.
 
     **Expected Behavior:**
 
-    - For strings: Splits the input by whitespace and returns only the words present in the whitelist.
+    - For strings: Splits the input by whitespace and returns only
+        the words present in the whitelist.
     - For lists: Returns a list of items that are in the whitelist.
-    - For dictionaries: Returns a dictionary containing only the whitelisted keys.
+    - For dictionaries: Returns a dictionary containing only the
+         whitelisted keys.
 
     **Example Usage:**
 

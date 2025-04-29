@@ -103,8 +103,8 @@ class TestInputFilter(unittest.TestCase):
             self.assertEqual(response.json, {"username": "test_user"})
 
     def test_custom_method(self) -> None:
-        """Test that a method not supported by the InputFilter
-        instance raises a TypeError."""
+        """Test that a method not supported by the InputFilter instance raises
+        a TypeError."""
 
         class MyInputFilter(InputFilter):
             def __init__(self):
@@ -126,8 +126,8 @@ class TestInputFilter(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
 
     def test_validation_error_response(self):
-        """Tests the behavior of the application when a validation
-        error occurs due to invalid input data."""
+        """Tests the behavior of the application when a validation error occurs
+        due to invalid input data."""
 
         class MyInputFilter(InputFilter):
             def __init__(self):
@@ -805,8 +805,7 @@ class TestInputFilter(unittest.TestCase):
 
     @patch("requests.request")
     def test_external_invalid_api_response(self, mock_request: Mock) -> None:
-        """Test that a non-JSON API response raises a
-        ValidationError."""
+        """Test that a non-JSON API response raises a ValidationError."""
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.json.side_effect = ValueError("Invalid JSON")
@@ -923,8 +922,8 @@ class TestInputFilter(unittest.TestCase):
         self.assertEqual(validated_data, {})
 
     def test_copy(self) -> None:
-        """Test that InputFilter.copy() creates a deep copy of the
-        InputFilter instance."""
+        """Test that InputFilter.copy() creates a deep copy of the InputFilter
+        instance."""
         self.inputFilter.add("username")
 
         self.inputFilter.add(
@@ -937,8 +936,7 @@ class TestInputFilter(unittest.TestCase):
         self.assertEqual(validated_data["escapedUsername"], "test-user")
 
     def test_serialize_and_set_model(self) -> None:
-        """Test that InputFilter.serialize() serializes the validated
-        data."""
+        """Test that InputFilter.serialize() serializes the validated data."""
 
         class User:
             def __init__(self, username: str):

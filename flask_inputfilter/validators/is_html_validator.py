@@ -9,8 +9,8 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsHtmlValidator(BaseValidator):
     """
-    Checks if a value contains valid HTML. The validator looks for
-    the presence of HTML tags in the input string.
+    Checks if a value contains valid HTML. The validator looks for the presence
+    of HTML tags in the input string.
 
     **Parameters:**
 
@@ -25,9 +25,6 @@ class IsHtmlValidator(BaseValidator):
     **Example Usage:**
 
     .. code-block:: python
-
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import IsHtmlValidator
 
         class HtmlInputFilter(InputFilter):
             def __init__(self):

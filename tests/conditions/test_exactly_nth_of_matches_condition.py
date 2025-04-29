@@ -22,8 +22,7 @@ class TestExactlyNthOfMatchesCondition(unittest.TestCase):
         self.input_filter.validate_data({"field1": "value", "field2": "value"})
 
     def test_invalidates_when_less_than_n_fields_match(self) -> None:
-        """Test that less than N matching fields raise a
-        ValidationError."""
+        """Test that less than N matching fields raise a ValidationError."""
         self.input_filter.add("field1")
         self.input_filter.add("field2")
         self.input_filter.add("field3")
@@ -36,8 +35,7 @@ class TestExactlyNthOfMatchesCondition(unittest.TestCase):
             self.input_filter.validate_data({"field1": "value"})
 
     def test_invalidates_when_more_than_n_fields_match(self) -> None:
-        """Test that more than N matching fields raise a
-        ValidationError."""
+        """Test that more than N matching fields raise a ValidationError."""
         self.input_filter.add("field1")
         self.input_filter.add("field2")
         self.input_filter.add("field3")
