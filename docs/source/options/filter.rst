@@ -36,6 +36,7 @@ Example
 Available Filters
 -----------------
 
+- `ArrayElementFilter <#flask_inputfilter.filters.ArrayElementFilter>`_
 - `ArrayExplodeFilter <#flask_inputfilter.filters.ArrayExplodeFilter>`_
 - `Base64ImageDownscaleFilter <#flask_inputfilter.filters.Base64ImageDownscaleFilter>`_
 - `Base64ImageResizeFilter <#flask_inputfilter.filters.Base64ImageResizeFilter>`_

@@ -3,6 +3,19 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.5.4] - 2025-05-24
+--------------------
+
+Added
+^^^^^
+- Added ``ArrayElementFilter`` to filter elements in an array against specific filter.
+
+Changed
+^^^^^^^
+- Updated ``ArrayElementValidator`` to support validators directly.
+- Updated ``IsDataclassValidator`` to also check against their types, including nested dataclasses, lists, and dictionaries.
+
+
 [0.5.3] - 2025-04-28
 --------------------
 

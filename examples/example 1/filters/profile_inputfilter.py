@@ -1,12 +1,15 @@
 from dataclasses import dataclass
 
 from flask_inputfilter import InputFilter
-from flask_inputfilter.validators import IsStringValidator, IsDataclassValidator
+from flask_inputfilter.validators import (
+    IsDataclassValidator,
+    IsStringValidator,
+)
 
 
 @dataclass
 class User:
-    name: int
+    name: str
     age: int
     email: str
 
@@ -23,29 +26,15 @@ class ProfileInputFilter(InputFilter):
         super().__init__()
 
         self.add(
-            'user',
-             required=True,
-             validators=[
-                 IsDataclassValidator(
-                    dataclass_type=User
-                 )
-             ]
-         )
+            "user",
+            required=True,
+            validators=[IsDataclassValidator(dataclass_type=User)],
+        )
 
         self.add(
-            'address',
-             required=True,
-             validators=[
-                 IsDataclassValidator(
-                    dataclass_type=Address
-                 )
-             ]
-         )
+            "address",
+            required=True,
+            validators=[IsDataclassValidator(dataclass_type=Address)],
+        )
 
-        self.add(
-            'phone',
-             required=False,
-             validators=[
-                 IsStringValidator()
-             ]
-         )
+        self.add("phone", required=False, validators=[IsStringValidator()])

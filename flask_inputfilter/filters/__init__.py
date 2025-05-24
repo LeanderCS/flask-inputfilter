@@ -1,5 +1,6 @@
 from flask_inputfilter.filters.base_filter import BaseFilter
 
+from .array_element_filter import ArrayElementFilter
 from .array_explode_filter import ArrayExplodeFilter
 from .base_64_image_downscale_filter import Base64ImageDownscaleFilter
 from .base_64_image_resize_filter import Base64ImageResizeFilter
@@ -31,7 +32,7 @@ from .whitelist_filter import WhitelistFilter
 from .whitespace_collapse_filter import WhitespaceCollapseFilter
 
 __all__ = [
-    "ArrayExplodeFilter",
+    "ArrayElementFilter" "ArrayExplodeFilter",
     "Base64ImageDownscaleFilter",
     "Base64ImageResizeFilter",
     "BaseFilter",

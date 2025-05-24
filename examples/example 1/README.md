@@ -6,15 +6,14 @@ This example demonstrates various use cases of the Flask-InputFilter package, sh
 
 ```
 example 1/
-├── app.py                 # Main Flask application
-├── filters/              # InputFilter classes
-│   ├── __init__.py      # Package exports
-│   ├── user_filter.py   # User input validation
-│   ├── address_filter.py # Address input validation
-│   ├── profile_filter.py # Profile input validation
-│   └── product_filter.py # Product input validation
-├── test.http            # HTTP test requests
-└── README.md            # This file
+├── app.py                        # Main Flask application
+├── filters/                      # InputFilter classes
+│   ├── __init__.py               # Package exports
+│   ├── product_inputfilter.py    # Product input validation
+│   ├── profile_inputfilter.py    # Profile input validation
+│   └── user_inputfilter.py       # User input validation
+├── test.http                     # HTTP test requests
+└── README.md                     # This file
 ```
 
 ## Features Demonstrated
@@ -29,12 +28,12 @@ example 1/
 
 1. Make sure you have Flask and Flask-InputFilter installed:
 ```bash
-pip install flask flask-inputfilter
+  pip install flask flask-inputfilter
 ```
 
 2. Run the example application:
 ```bash
-python app.py
+  python app.py
 ```
 
 The server will start on `http://localhost:5000`.
@@ -55,10 +54,11 @@ You can use the provided `test.http` file to test the endpoints. This file conta
    - Demonstrates nested filtering with multiple InputFilter classes
    - Optional phone number field
 
-3. `POST /api/products`
+3. `POST /api/product`
    - Creates a new product
-   - Demonstrates basic type conversion with ToFloatFilter
-   - Optional tags field
+   - Demonstrates list validation for tags
+   - Required fields: name, price
+   - Optional tags field as a list of strings
 
 ## Example Requests
 
@@ -66,7 +66,7 @@ You can use the provided `test.http` file to test the endpoints. This file conta
 ```json
 {
     "name": "John Doe",
-    "age": "30",
+    "age": 30,
     "email": "john.doe@example.com"
 }
 ```
@@ -76,13 +76,13 @@ You can use the provided `test.http` file to test the endpoints. This file conta
 {
     "user": {
         "name": "John Doe",
-        "age": "30",
+        "age": 30,
         "email": "john.doe@example.com"
     },
     "address": {
         "street": "123 Main St",
         "city": "New York",
-        "zip_code": "10001"
+        "zip_code": 10001
     },
     "phone": "+1234567890"
 }
@@ -92,8 +92,11 @@ You can use the provided `test.http` file to test the endpoints. This file conta
 ```json
 {
     "name": "Laptop",
-    "price": "999.99",
-    "tags": "electronics,computers,gadgets"
+    "price": 999,
+    "tags": [
+        "electronics",
+        "sports"
+    ]
 }
 ```
 
@@ -138,9 +141,9 @@ You can use the provided `test.http` file to test the endpoints. This file conta
 The application demonstrates various validation errors:
 - Missing required fields
 - Invalid email format
-- Invalid zip code format
-- Invalid phone number format
-- Negative price values
-- Invalid data types
+- Invalid age format (must be integer)
+- Invalid price format
+- Invalid tags format (must be a list of strings)
+- Invalid nested data structures
 
 Each error will return a 400 status code with a descriptive error message. 

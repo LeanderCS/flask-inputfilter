@@ -6,7 +6,6 @@ from flask_inputfilter.filters import ArrayExplodeFilter
 
 class TestArrayExplodeFilter(unittest.TestCase):
     def setUp(self) -> None:
-        """Set up a new InputFilter instance before each test."""
         self.input_filter = InputFilter()
 
     def test_explode_comma_separated_string(self) -> None:

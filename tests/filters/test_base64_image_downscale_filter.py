@@ -10,7 +10,6 @@ from flask_inputfilter.filters import Base64ImageDownscaleFilter
 
 class TestBase64ImageDownscaleFilter(unittest.TestCase):
     def setUp(self) -> None:
-        """Set up a new InputFilter instance before each test."""
         self.input_filter = InputFilter()
 
     def test_downscale_base64_image_string(self) -> None:

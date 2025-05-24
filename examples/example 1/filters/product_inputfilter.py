@@ -2,50 +2,50 @@ from enum import Enum
 
 from flask_inputfilter import InputFilter
 from flask_inputfilter.filters import ToFloatFilter
-from flask_inputfilter.validators import IsStringValidator, IsIntegerValidator, InEnumValidator, IsArrayValidator, \
-    ArrayElementValidator, IsFloatValidator
+from flask_inputfilter.validators import (
+    ArrayElementValidator,
+    InEnumValidator,
+    IsArrayValidator,
+    IsFloatValidator,
+    IsStringValidator,
+)
 
 
 class Tags(Enum):
-    ELECTRONICS = 'electronics'
-    FASHION = 'fashion'
-    HOME = 'home'
-    BEAUTY = 'beauty'
-    SPORTS = 'sports'
-    TOYS = 'toys'
+    ELECTRONICS = "electronics"
+    FASHION = "fashion"
+    HOME = "home"
+    BEAUTY = "beauty"
+    SPORTS = "sports"
+    TOYS = "toys"
+
 
 class ProductInputFilter(InputFilter):
     def __init__(self):
         super().__init__()
 
         self.add(
-            'name',
+            "name",
             required=True,
             validators=[
                 IsStringValidator(),
-            ]
+            ],
         )
 
         self.add(
-            'price',
+            "price",
             required=True,
-            filters=[
-                ToFloatFilter()
-            ],
+            filters=[ToFloatFilter()],
             validators=[
                 IsFloatValidator(),
-            ]
+            ],
         )
 
         self.add(
-            'tags',
+            "tags",
             required=False,
             validators=[
                 IsArrayValidator(),
-                ArrayElementValidator(
-                    InEnumValidator(
-                        Tags
-                    )
-                )
-            ]
+                ArrayElementValidator(InEnumValidator(Tags)),
+            ],
         )
