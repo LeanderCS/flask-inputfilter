@@ -1,14 +1,36 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import Any, Optional, Type, TypeVar, Union
-
-from typing_extensions import get_args, get_origin
+from typing import Any, Optional, Type, TypeVar, Union, _GenericAlias
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import BaseValidator
 
 T = TypeVar("T")
+
+
+# TODO: Replace with typing.get_origin when Python 3.7 support is dropped.
+def get_origin(tp: Any) -> Optional[Type[Any]]:
+    """Get the unsubscripted version of a type.
+
+    This supports typing types like List, Dict, etc. and their
+    typing_extensions equivalents.
+    """
+    if isinstance(tp, _GenericAlias):
+        return tp.__origin__
+    return None
+
+
+# TODO: Replace with typing.get_args when Python 3.7 support is dropped.
+def get_args(tp: Any) -> tuple[Any, ...]:
+    """Get type arguments with all substitutions performed.
+
+    For unions, basic types, and special typing forms, returns
+    the type arguments. For example, for List[int] returns (int,).
+    """
+    if isinstance(tp, _GenericAlias):
+        return tp.__args__
+    return ()
 
 
 class IsDataclassValidator(BaseValidator):

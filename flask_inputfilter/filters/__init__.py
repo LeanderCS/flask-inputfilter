@@ -32,7 +32,8 @@ from .whitelist_filter import WhitelistFilter
 from .whitespace_collapse_filter import WhitespaceCollapseFilter
 
 __all__ = [
-    "ArrayElementFilter" "ArrayExplodeFilter",
+    "ArrayElementFilter",
+    "ArrayExplodeFilter",
     "Base64ImageDownscaleFilter",
     "Base64ImageResizeFilter",
     "BaseFilter",
