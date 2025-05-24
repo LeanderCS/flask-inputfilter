@@ -22,10 +22,6 @@ class ArrayLengthEqualCondition(BaseCondition):
 
     .. code-block:: python
 
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.conditions import ArrayLengthEqualCondition
-        from flask_inputfilter.validators import IsArrayValidator
-
         class ArrayLengthFilter(InputFilter):
             def __init__(self):
                 super().__init__()

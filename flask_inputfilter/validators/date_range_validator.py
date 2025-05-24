@@ -25,9 +25,6 @@ class DateRangeValidator(BaseValidator):
 
     .. code-block:: python
 
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import DateRangeValidator
-
         class BookingInputFilter(InputFilter):
             def __init__(self):
                 super().__init__()

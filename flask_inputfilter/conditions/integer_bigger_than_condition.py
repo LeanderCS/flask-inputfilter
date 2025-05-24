@@ -23,10 +23,6 @@ class IntegerBiggerThanCondition(BaseCondition):
 
     .. code-block:: python
 
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.conditions import IntegerBiggerThanCondition
-        from flask_inputfilter.validators import IsIntegerValidator
-
         class NumberComparisonFilter(InputFilter):
             def __init__(self):
                 super().__init__()

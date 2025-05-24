@@ -24,9 +24,6 @@ class RequiredIfCondition(BaseCondition):
 
     .. code-block:: python
 
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.conditions import RequiredIfCondition
-
         class ConditionalRequiredFilter(InputFilter):
             def __init__(self):
                 super().__init__()

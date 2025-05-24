@@ -22,9 +22,6 @@ class IsStringValidator(BaseValidator):
 
     .. code-block:: python
 
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import IsStringValidator
-
         class TextInputFilter(InputFilter):
             def __init__(self):
                 super().__init__()

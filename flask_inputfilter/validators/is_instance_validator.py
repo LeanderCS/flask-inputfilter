@@ -24,9 +24,6 @@ class IsInstanceValidator(BaseValidator):
 
     .. code-block:: python
 
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import IsInstanceValidator
-
         class MyClass:
             pass
 

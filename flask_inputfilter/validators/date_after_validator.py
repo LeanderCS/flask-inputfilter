@@ -25,9 +25,6 @@ class DateAfterValidator(BaseValidator):
 
     .. code-block:: python
 
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import DateAfterValidator
-
         class EventInputFilter(InputFilter):
             def __init__(self):
                 super().__init__()

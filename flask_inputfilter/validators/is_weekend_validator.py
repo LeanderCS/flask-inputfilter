@@ -25,9 +25,6 @@ class IsWeekendValidator(BaseValidator):
 
     .. code-block:: python
 
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import IsWeekendValidator
-
         class WeekendInputFilter(InputFilter):
             def __init__(self):
                 super().__init__()

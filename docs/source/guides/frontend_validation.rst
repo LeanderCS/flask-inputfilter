@@ -14,11 +14,6 @@ Example implementation
 .. code-block:: python
 
     from flask import Response, Flask
-    from flask_inputfilter import InputFilter
-    from flask_inputfilter.conditions import ExactlyOneOfCondition
-    from flask_inputfilter.enums import RegexEnum
-    from flask_inputfilter.filters import StringTrimFilter, ToIntegerFilter, ToNullFilter
-    from flask_inputfilter.validators import IsIntegerValidator, IsStringValidator, RegexValidator
 
     app = Flask(__name__)
 

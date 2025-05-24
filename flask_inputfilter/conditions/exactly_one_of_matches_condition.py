@@ -23,9 +23,6 @@ class ExactlyOneOfMatchesCondition(BaseCondition):
 
     .. code-block:: python
 
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.conditions import ExactlyOneOfMatchesCondition
-
         class OneMatchFilter(InputFilter):
             def __init__(self):
                 super().__init__()

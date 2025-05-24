@@ -24,9 +24,6 @@ class IsPastDateValidator(BaseValidator):
 
     .. code-block:: python
 
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import IsPastDateValidator
-
         class HistoryInputFilter(InputFilter):
             def __init__(self):
                 super().__init__()

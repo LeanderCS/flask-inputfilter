@@ -27,8 +27,6 @@ class IsDataclassValidator(BaseValidator):
     .. code-block:: python
 
         from dataclasses import dataclass
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import IsDataclassValidator
 
         @dataclass
         class User:

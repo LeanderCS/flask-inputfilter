@@ -23,10 +23,6 @@ class CustomCondition(BaseCondition):
 
     .. code-block:: python
 
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.conditions import CustomCondition
-        from flask_inputfilter.validators import IsIntegerValidator
-
         def my_custom_condition(data):
             return data.get('age', 0) >= 18
 

@@ -29,8 +29,6 @@ class InEnumValidator(BaseValidator):
     .. code-block:: python
 
         from enum import Enum
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import InEnumValidator
 
         class ColorEnum(Enum):
             RED = "red"

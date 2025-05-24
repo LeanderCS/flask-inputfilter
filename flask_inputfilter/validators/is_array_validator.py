@@ -22,9 +22,6 @@ class IsArrayValidator(BaseValidator):
 
     .. code-block:: python
 
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import IsArrayValidator
-
         class ListInputFilter(InputFilter):
             def __init__(self):
                 super().__init__()

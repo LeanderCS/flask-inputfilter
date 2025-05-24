@@ -23,9 +23,6 @@ class StringLongerThanCondition(BaseCondition):
 
     .. code-block:: python
 
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.conditions import StringLongerThanCondition
-
         class StringLengthFilter(InputFilter):
             def __init__(self):
                 super().__init__()

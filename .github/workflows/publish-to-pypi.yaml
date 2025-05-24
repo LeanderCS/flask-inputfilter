@@ -137,7 +137,5 @@ jobs:
           path: dist
           merge-multiple: true
 
-      - run: ls -la dist
-
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

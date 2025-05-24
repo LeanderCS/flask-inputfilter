@@ -53,8 +53,6 @@ Basic External API Integration
 
 .. code-block:: python
 
-    from flask_inputfilter import InputFilter
-
     class MyInputFilter(InputFilter):
         def __init__(self):
             super().__init__()

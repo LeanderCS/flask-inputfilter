@@ -12,9 +12,6 @@ Example
 
 .. code-block:: python
 
-    from flask_inputfilter import InputFilter
-    from flask_inputfilter.validators import NotValidator, IsIntegerValidator
-
     class NotIntegerInputFilter(InputFilter):
         def __init__(self):
             super().__init__()

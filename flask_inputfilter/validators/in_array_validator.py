@@ -25,9 +25,6 @@ class InArrayValidator(BaseValidator):
 
     .. code-block:: python
 
-        from flask_inputfilter import InputFilter
-        from flask_inputfilter.validators import InArrayValidator
-
         class StatusInputFilter(InputFilter):
             def __init__(self):
                 super().__init__()

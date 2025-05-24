@@ -15,9 +15,6 @@ Example
 
 .. code-block:: python
 
-    from flask_inputfilter import InputFilter
-    from flask_inputfilter.filters import StringTrimFilter, ToLowerFilter
-
     class TestInputFilter(InputFilter):
         def __init__(self):
             super().__init__()
