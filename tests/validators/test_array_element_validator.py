@@ -3,7 +3,7 @@ from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.filters import ToIntegerFilter
 from flask_inputfilter.validators import (
     ArrayElementValidator,
-    IsIntegerValidator,
+    IsIntegerValidator, IsStringValidator, LengthValidator,
 )
 from tests.validators import BaseValidatorTest
 
@@ -43,6 +43,37 @@ class TestArrayElementValidator(BaseValidatorTest):
         self.assertValidationError(
             "items", "not an array", "Value 'not an array' is not an array"
         )
+
+    def test_validator_with_direct_validator(self) -> None:
+        self.input_filter.add(
+            "items",
+            validators=[
+                ArrayElementValidator(
+                    IsStringValidator()
+                )
+            ],
+        )
+        with self.assertRaises(ValidationError):
+            self.input_filter.validate_data({"items": ["str1", 123]})
+
+        self.input_filter.validate_data({"items": ["str1", "str2"]})
+
+    def test_validator_with_direct_validators(self) -> None:
+        self.input_filter.add(
+            "items",
+            validators=[
+                ArrayElementValidator([
+                    IsStringValidator(),
+                    LengthValidator(min_length=3, max_length=5)
+                ])
+            ],
+        )
+        with self.assertRaises(ValidationError):
+            self.input_filter.validate_data({"items": ["str1", 123]})
+            self.input_filter.validate_data({"items": ["str1", "stringtoolong"]})
+
+        self.input_filter.validate_data({"items": ["str1", "str2"]})
+
 
     def test_custom_error_message(self) -> None:
         self.input_filter.add(

@@ -1,0 +1,101 @@
+### Create a new user (Success case)
+POST http://localhost:5000/api/user
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "age": 30,
+    "email": "john.doe@example.com"
+}
+
+### Create a new user (Validation error - invalid age)
+POST http://localhost:5000/api/user
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "age": "invalid",
+    "email": "john.doe@example.com"
+}
+
+### Create a new user (Validation error - missing required field)
+POST http://localhost:5000/api/user
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "email": "john.doe@example.com"
+}
+
+### Create a profile (Success case)
+POST http://localhost:5000/api/profile
+Content-Type: application/json
+
+{
+    "user": {
+        "name": "John Doe",
+        "age": 30,
+        "email": "john.doe@example.com"
+    },
+    "address": {
+        "street": "123 Main St",
+        "city": "New York",
+        "zip_code": 10001
+    },
+    "phone": "+1234567890"
+}
+
+### Create a profile (Validation error - invalid nested data)
+POST http://localhost:5000/api/profile
+Content-Type: application/json
+
+{
+    "user": {
+        "name": "John Doe",
+        "age": "invalid",
+        "email": "john.doe@example.com"
+    },
+    "address": {
+        "street": "123 Main St",
+        "city": "New York",
+        "zip_code": 10001
+    }
+}
+
+### Create products (Success case)
+POST http://localhost:5000/api/product
+Content-Type: application/json
+
+{
+    "name": "Laptop",
+    "price": 999,
+    "tags": [
+      "electronics",
+      "sports"
+    ]
+}
+
+### Create products (Validation error - invalid price)
+POST http://localhost:5000/api/product
+Content-Type: application/json
+
+{
+    "name": "Laptop",
+    "price": "invalid",
+    "tags": [
+      "electronics"
+    ]
+}
+
+### Create products (Validation error - invalid tags format)
+POST http://localhost:5000/api/product
+Content-Type: application/json
+
+{
+    "name": "Laptop",
+    "price": 999.99,
+    "tags": [
+      "home",
+      "children"
+    ]
+}
