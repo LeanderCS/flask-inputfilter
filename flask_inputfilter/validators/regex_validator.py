@@ -9,8 +9,8 @@ from flask_inputfilter.validators import BaseValidator
 
 class RegexValidator(BaseValidator):
     """
-    Validates that the input string matches a specified regular
-    expression pattern.
+    Validates that the input string matches a specified regular expression
+    pattern.
 
     **Parameters:**
 
@@ -32,7 +32,7 @@ class RegexValidator(BaseValidator):
             def __init__(self):
                 super().__init__()
                 self.add('email', validators=[
-                    RegexValidator(pattern=r"[^@]+@[^@]+\.[^@]+")
+                    RegexValidator(pattern=r'[a-cA-C]+')
                 ])
     """
 

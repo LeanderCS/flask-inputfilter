@@ -12,7 +12,8 @@ class IsArrayValidator(BaseValidator):
 
     **Parameters:**
 
-    - **error_message** (*Optional[str]*): Custom error message if validation fails.
+    - **error_message** (*Optional[str]*): Custom error message if
+        validation fails.
 
     **Expected Behavior:**
 

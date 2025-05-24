@@ -8,8 +8,8 @@ from flask_inputfilter.validators import BaseValidator
 
 class NotValidator(BaseValidator):
     """
-    Inverts the result of another validator. The validation passes if
-    the inner validator fails, and vice versa.
+    Inverts the result of another validator. The validation passes if the inner
+    validator fails, and vice versa.
 
     **Parameters:**
 

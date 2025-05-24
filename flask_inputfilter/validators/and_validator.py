@@ -8,9 +8,8 @@ from flask_inputfilter.validators import BaseValidator
 
 class AndValidator(BaseValidator):
     """
-    Validates that the input passes all the provided validators. This
-    composite validator performs a logical AND over its constituent
-    validators.
+    Validates that the input passes all the provided validators. This composite
+    validator performs a logical AND over its constituent validators.
 
     **Parameters:**
 

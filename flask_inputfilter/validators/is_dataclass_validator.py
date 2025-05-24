@@ -35,18 +35,20 @@ def get_args(tp: Any) -> tuple[Any, ...]:
 
 class IsDataclassValidator(BaseValidator):
     """
-    Validates that the provided value conforms to a specific
-    dataclass type.
+    Validates that the provided value conforms to a specific dataclass type.
 
     **Parameters:**
 
     - **dataclass_type** (*Type[dict]*): The expected dataclass type.
-    - **error_message** (*Optional[str]*): Custom error message if validation fails.
+    - **error_message** (*Optional[str]*): Custom error message if
+        validation fails.
 
     **Expected Behavior:**
 
-    Ensures the input is a dictionary and, that all expected keys are present. Raises a ``ValidationError`` if the structure does not match.
-    All fields in the dataclass are validated against their types, including nested dataclasses, lists, and dictionaries.
+    Ensures the input is a dictionary and, that all expected keys are present.
+    Raises a ``ValidationError`` if the structure does not match.
+    All fields in the dataclass are validated against their types, including
+    nested dataclasses, lists, and dictionaries.
 
     **Example Usage:**
 
@@ -103,7 +105,8 @@ class IsDataclassValidator(BaseValidator):
                 if not has_default:
                     raise ValidationError(
                         self.error_message
-                        or f"Missing required field '{field_name}' in value '{value}'."
+                        or f"Missing required field '{field_name}' in "
+                        f"value '{value}'."
                     )
                 continue
 
@@ -119,7 +122,8 @@ class IsDataclassValidator(BaseValidator):
                     ):
                         raise ValidationError(
                             self.error_message
-                            or f"Field '{field_name}' in value '{value}' is not a valid list of '{args[0]}'."
+                            or f"Field '{field_name}' in value '{value}' is "
+                            f"not a valid list of '{args[0]}'."
                         )
                 elif origin is dict:
                     if not isinstance(field_value, dict) or not all(
@@ -128,7 +132,9 @@ class IsDataclassValidator(BaseValidator):
                     ):
                         raise ValidationError(
                             self.error_message
-                            or f"Field '{field_name}' in value '{value}' is not a valid dict with keys of type '{args[0]}' and values of type '{args[1]}'."
+                            or f"Field '{field_name}' in value '{value}' is "
+                            f"not a valid dict with keys of type "
+                            f"'{args[0]}' and values of type '{args[1]}'."
                         )
                 elif origin is Union and type(None) in args:
                     if field_value is not None and not isinstance(
@@ -136,12 +142,14 @@ class IsDataclassValidator(BaseValidator):
                     ):
                         raise ValidationError(
                             self.error_message
-                            or f"Field '{field_name}' in value '{value}' is not of type '{args[0]}'."
+                            or f"Field '{field_name}' in value '{value}' is "
+                            f"not of type '{args[0]}'."
                         )
                 else:
                     raise ValidationError(
                         self.error_message
-                        or f"Unsupported type '{field_type}' for field '{field_name}'."
+                        or f"Unsupported type '{field_type}' for field "
+                        f"'{field_name}'."
                     )
             elif dataclasses.is_dataclass(field_type):
                 IsDataclassValidator(field_type).validate(field_value)
@@ -149,5 +157,6 @@ class IsDataclassValidator(BaseValidator):
                 if not isinstance(field_value, field_type):
                     raise ValidationError(
                         self.error_message
-                        or f"Field '{field_name}' in value '{value}' is not of type '{field_type}'."
+                        or f"Field '{field_name}' in value '{value}' is not "
+                        f"of type '{field_type}'."
                     )

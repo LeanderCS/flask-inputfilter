@@ -7,8 +7,7 @@ from flask_inputfilter.conditions import BaseCondition
 
 class NOfMatchesCondition(BaseCondition):
     """
-    Checks that at least ``n`` of the specified fields match a given
-    value.
+    Checks that at least ``n`` of the specified fields match a given value.
 
     **Parameters:**
 
@@ -18,7 +17,8 @@ class NOfMatchesCondition(BaseCondition):
 
     **Expected Behavior:**
 
-    Validates that the count of fields matching the given value is greater than or equal to ``n``.
+    Validates that the count of fields matching the given value is greater
+    than or equal to ``n``.
 
     **Example Usage:**
 
@@ -36,7 +36,13 @@ class NOfMatchesCondition(BaseCondition):
                     'field2'
                 )
 
-                self.add_condition(NOfMatchesCondition(['field1', 'field2'], 1, 'value'))
+                self.add_condition(
+                    NOfMatchesCondition(
+                        fields=['field1', 'field2'],
+                        n=1,
+                        value='value'
+                    )
+                )
     """
 
     __slots__ = ("fields", "n", "value")

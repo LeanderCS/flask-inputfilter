@@ -9,19 +9,22 @@ from flask_inputfilter.validators import BaseValidator
 
 class FloatPrecisionValidator(BaseValidator):
     """
-    Ensures that a numeric value conforms to a specific precision and
-    scale. This is useful for validating monetary values or
-    measurements.
+    Ensures that a numeric value conforms to a specific precision and scale.
+    This is useful for validating monetary values or measurements.
 
     **Parameters:**
 
     - **precision** (*int*): The maximum total number of digits allowed.
-    - **scale** (*int*): The maximum number of digits allowed after the decimal point.
-    - **error_message** (*Optional[str]*): Custom error message if validation fails.
+    - **scale** (*int*): The maximum number of digits allowed after the
+        decimal point.
+    - **error_message** (*Optional[str]*): Custom error message if
+        validation fails.
 
     **Expected Behavior:**
 
-    Converts the number to a string and checks the total number of digits and the digits after the decimal point. A ``ValidationError`` is raised if these limits are exceeded.
+    Converts the number to a string and checks the total number of digits and
+    the digits after the decimal point. A ``ValidationError`` is raised if
+    these limits are exceeded.
 
     **Example Usage:**
 

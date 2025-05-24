@@ -9,17 +9,20 @@ from flask_inputfilter.validators import BaseValidator
 
 class DateBeforeValidator(BaseValidator):
     """
-    Validates that a given date is before a specified reference date.
-    It supports datetime objects and ISO 8601 formatted strings.
+    Validates that a given date is before a specified reference date. It
+    supports datetime objects and ISO 8601 formatted strings.
 
     **Parameters:**
 
-    - **reference_date** (*Union[str, date, datetime]*): The date that the input must be earlier than.
-    - **error_message** (*Optional[str]*): Custom error message if validation fails.
+    - **reference_date** (*Union[str, date, datetime]*): The date that the
+        input must be earlier than.
+    - **error_message** (*Optional[str]*): Custom error message if validation
+        fails.
 
     **Expected Behavior:**
 
-    Parses the input and reference date into datetime objects and checks that the input date is earlier. Raises a ``ValidationError`` on failure.
+    Parses the input and reference date into datetime objects and checks that
+    the input date is earlier. Raises a ``ValidationError`` on failure.
 
     **Example Usage:**
 

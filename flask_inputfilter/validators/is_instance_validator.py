@@ -8,17 +8,19 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsInstanceValidator(BaseValidator):
     """
-    Validates that the provided value is an instance of a specified
-    class.
+    Validates that the provided value is an instance of a specified class.
 
     **Parameters:**
 
-    - **classType** (*Type[Any]*): The class against which the value is validated.
-    - **error_message** (*Optional[str]*): Custom error message if the validation fails.
+    - **classType** (*Type[Any]*): The class against which the value is
+        validated.
+    - **error_message** (*Optional[str]*): Custom error message if the
+        validation fails.
 
     **Expected Behavior:**
 
-    Raises a ``ValidationError`` if the input is not an instance of the specified class.
+    Raises a ``ValidationError`` if the input is not an instance of the
+    specified class.
 
     **Example Usage:**
 

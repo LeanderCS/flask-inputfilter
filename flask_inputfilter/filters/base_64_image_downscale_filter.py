@@ -11,9 +11,8 @@ from flask_inputfilter.filters import BaseFilter
 
 class Base64ImageDownscaleFilter(BaseFilter):
     """
-    Downscales a base64-encoded image to fit within a specified size.
-    The filter can work with both base64 strings and PIL Image
-    objects.
+    Downscales a base64-encoded image to fit within a specified size. The
+    filter can work with both base64 strings and PIL Image objects.
 
     **Parameters:**
 
@@ -75,8 +74,8 @@ class Base64ImageDownscaleFilter(BaseFilter):
             return value
 
     def resize_picture(self, image: Image) -> str:
-        """Resizes the image if it exceeds the specified width/height
-        and returns the base64 representation."""
+        """Resizes the image if it exceeds the specified width/height and
+        returns the base64 representation."""
         is_animated = getattr(image, "is_animated", False)
 
         if not is_animated and image.mode in ("RGBA", "P"):

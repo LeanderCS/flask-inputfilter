@@ -8,12 +8,12 @@ from flask_inputfilter.filters import BaseFilter
 
 class WhitespaceCollapseFilter(BaseFilter):
     """
-    Collapses multiple consecutive whitespace characters into a
-    single space.
+    Collapses multiple consecutive whitespace characters into a single space.
 
     **Expected Behavior:**
 
-    - Replaces sequences of whitespace with a single space and trims the result.
+    - Replaces sequences of whitespace with a single space and trims
+        the result.
     - Non-string inputs are returned unchanged.
 
     **Example Usage:**

@@ -15,7 +15,8 @@ class ExactlyOneOfCondition(BaseCondition):
 
     **Expected Behavior:**
 
-    Validates that only one field among the specified fields exists in the input data.
+    Validates that only one field among the specified fields exists in the
+    input data.
 
     **Example Usage:**
 

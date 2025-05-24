@@ -11,11 +11,14 @@ class ArrayElementFilter(BaseFilter):
 
     **Parameters:**
 
-    - **element_filter** (*BaseFilter* | *list[BaseFilter]*): A filter or a list of filters to apply to each element in the array.
+    - **element_filter** (*BaseFilter* | *list[BaseFilter]*): A filter or a
+        list of filters to apply to each element in the array.
 
     **Expected Behavior:**
 
-    Validates that the input is a list and applies the specified filter(s) to each element. If any element does not conform to the expected structure, a `ValueError` is raised.
+    Validates that the input is a list and applies the specified filter(s) to
+    each element. If any element does not conform to the expected structure,
+    a `ValueError` is raised.
 
     **Example Usage:**
 

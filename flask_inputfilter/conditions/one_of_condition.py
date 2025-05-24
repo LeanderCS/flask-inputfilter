@@ -7,8 +7,8 @@ from flask_inputfilter.conditions import BaseCondition
 
 class OneOfCondition(BaseCondition):
     """
-    Ensures that at least one of the specified fields is present in
-    the input data.
+    Ensures that at least one of the specified fields is present in the input
+    data.
 
     **Parameters:**
 
@@ -16,7 +16,8 @@ class OneOfCondition(BaseCondition):
 
     **Expected Behavior:**
 
-    Validates that at least one field from the specified list is present. Fails if none are present.
+    Validates that at least one field from the specified list is present.
+    Fails if none are present.
 
     **Example Usage:**
 
@@ -34,7 +35,11 @@ class OneOfCondition(BaseCondition):
                     'phone'
                 )
 
-                self.add_condition(OneOfCondition(['email', 'phone']))
+                self.add_condition(
+                    OneOfCondition(
+                        fields=['email', 'phone']
+                    )
+                )
     """
 
     __slots__ = ("fields",)

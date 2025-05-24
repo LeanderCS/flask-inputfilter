@@ -15,7 +15,8 @@ class ToTypedDictFilter(BaseFilter):
 
     **Expected Behavior:**
 
-    - If the input is a dictionary, returns an instance of the specified TypedDict.
+    - If the input is a dictionary, returns an instance of the specified
+        TypedDict.
     - Otherwise, returns the original value.
 
     **Example Usage:**

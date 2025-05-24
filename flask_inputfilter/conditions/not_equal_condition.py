@@ -16,7 +16,8 @@ class NotEqualCondition(BaseCondition):
 
     **Expected Behavior:**
 
-    Validates that the values of ``first_field`` and ``second_field`` are not equal.
+    Validates that the values of ``first_field`` and ``second_field``
+    are not equal.
 
     **Example Usage:**
 

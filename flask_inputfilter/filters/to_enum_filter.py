@@ -12,11 +12,13 @@ class ToEnumFilter(BaseFilter):
 
     **Parameters:**
 
-    - **enum_class** (*Type[Enum]*): The enum class to which the input should be converted.
+    - **enum_class** (*Type[Enum]*): The enum class to which the
+        input should be converted.
 
     **Expected Behavior:**
 
-    - If the input is a string or an integer, the filter attempts to convert it into the corresponding enum member.
+    - If the input is a string or an integer, the filter attempts to
+        convert it into the corresponding enum member.
     - If the input is already an enum instance, it is returned as is.
     - If conversion fails, the original input is returned.
 

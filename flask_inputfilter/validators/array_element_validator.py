@@ -12,22 +12,27 @@ if TYPE_CHECKING:
 
 class ArrayElementValidator(BaseValidator):
     """
-    Validates each element within an array by applying an inner
-    ``InputFilter`` to every element. It ensures that all array items
-    conform to the expected structure.
+    Validates each element within an array by applying an inner ``InputFilter``
+    to every element. It ensures that all array items conform to the expected
+    structure.
 
     **Parameters:**
 
-    - **elementFilter** (*InputFilter* | *BaseValidator* | *list[BaseValidator]*): An instance used to validate each element.
-    - **error_message** (*Optional[str]*): Custom error message for validation failure.
+    - **elementFilter** (*InputFilter* | *BaseValidator* |
+        *list[BaseValidator]*): An instance used to validate each element.
+    - **error_message** (*Optional[str]*): Custom error message for validation
+        failure.
 
     **Expected Behavior:**
 
-    Verifies that the input is a list and then applies the provided filter to each element. If any element fails validation, a ``ValidationError`` is raised.
+    Verifies that the input is a list and then applies the provided filter
+    to each element. If any element fails validation, a ``ValidationError``
+    is raised.
 
     **Example Usage:**
 
-    This example demonstrates how to use the `ArrayElementValidator` with a custom `InputFilter` for validating elements in an array.
+    This example demonstrates how to use the `ArrayElementValidator` with a
+    custom `InputFilter` for validating elements in an array.
 
     .. code-block:: python
 

@@ -13,7 +13,8 @@ class IsDateTimeValidator(BaseValidator):
 
     **Parameters:**
 
-    - **error_message** (*Optional[str]*): Custom error message if the value is not a datetime.
+    - **error_message** (*Optional[str]*): Custom error message if the
+        value is not a datetime.
 
     **Expected Behavior:**
 

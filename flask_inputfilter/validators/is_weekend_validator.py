@@ -9,17 +9,18 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsWeekendValidator(BaseValidator):
     """
-    Validates that a given date falls on a weekend (Saturday or
-    Sunday). Supports datetime objects, date objects, and ISO 8601
-    formatted strings.
+    Validates that a given date falls on a weekend (Saturday or Sunday).
+    Supports datetime objects, date objects, and ISO 8601 formatted strings.
 
     **Parameters:**
 
-    - **error_message** (*Optional[str]*): Custom error message if the date is not on a weekend.
+    - **error_message** (*Optional[str]*): Custom error message if the
+        date is not on a weekend.
 
     **Expected Behavior:**
 
-    Parses the input date and confirms that it corresponds to a weekend day. Raises a ``ValidationError`` if the date is on a weekday.
+    Parses the input date and confirms that it corresponds to a weekend day.
+    Raises a ``ValidationError`` if the date is on a weekday.
 
     **Example Usage:**
 

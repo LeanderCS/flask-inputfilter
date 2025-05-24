@@ -8,8 +8,8 @@ from flask_inputfilter.validators import BaseValidator
 
 class NotInArrayValidator(BaseValidator):
     """
-    Ensures that the provided value is not present in a specified
-    list of disallowed values.
+    Ensures that the provided value is not present in a specified list of
+    disallowed values.
 
     **Parameters:**
 

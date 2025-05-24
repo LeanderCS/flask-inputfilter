@@ -16,18 +16,20 @@ class LengthEnum(Enum):
 
 class LengthValidator(BaseValidator):
     """
-    Validates the length of a string, ensuring it falls within a
-    specified range.
+    Validates the length of a string, ensuring it falls within a specified
+    range.
 
     **Parameters:**
 
     - **min_length** (*Optional[int]*): The minimum allowed length.
     - **max_length** (*Optional[int]*): The maximum allowed length.
-    - **error_message** (*Optional[str]*): Custom error message if the validation fails.
+    - **error_message** (*Optional[str]*): Custom error message if
+        the validation fails.
 
     **Expected Behavior:**
 
-    Checks the length of the input string and raises a ``ValidationError`` if it is shorter than ``min_length`` or longer than ``max_length``.
+    Checks the length of the input string and raises a ``ValidationError``
+    if it is shorter than ``min_length`` or longer than ``max_length``.
 
     **Example Usage:**
 

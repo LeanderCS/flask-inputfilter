@@ -17,8 +17,7 @@ class TestEqualCondition(unittest.TestCase):
         self.input_filter.validate_data({"field1": "value", "field2": "value"})
 
     def test_invalidates_when_fields_are_not_equal(self) -> None:
-        """Test that EqualCondition raises an error when fields
-        differ."""
+        """Test that EqualCondition raises an error when fields differ."""
         self.input_filter.add("field1")
         self.input_filter.add("field2")
         self.input_filter.add_condition(EqualCondition("field1", "field2"))

@@ -14,7 +14,8 @@ class StringSlugifyFilter(BaseFilter):
 
     **Expected Behavior:**
 
-    Normalizes Unicode, converts to ASCII, lowercases the string, and replaces spaces with hyphens, producing a URL-friendly slug.
+    Normalizes Unicode, converts to ASCII, lowercases the string,
+    and replaces spaces with hyphens, producing a URL-friendly slug.
 
     **Example Usage:**
 

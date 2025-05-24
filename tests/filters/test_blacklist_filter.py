@@ -48,8 +48,7 @@ class TestBlacklistFilter(unittest.TestCase):
         )
 
     def test_non_string_array_dict_remains_unchanged(self) -> None:
-        """Should leave non-string, non-array, non-dict values
-        unchanged."""
+        """Should leave non-string, non-array, non-dict values unchanged."""
         self.input_filter.add(
             "blacklisted_field",
             required=False,

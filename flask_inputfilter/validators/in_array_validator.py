@@ -8,18 +8,22 @@ from flask_inputfilter.validators import BaseValidator
 
 class InArrayValidator(BaseValidator):
     """
-    Checks that the provided value exists within a predefined list of
-    allowed values.
+    Checks that the provided value exists within a predefined list of allowed
+    values.
 
     **Parameters:**
 
     - **haystack** (*List[Any]*): The list of allowed values.
-    - **strict** (*bool*, default: False): When ``True``, also checks that the type of the value matches the types in the allowed list.
-    - **error_message** (*Optional[str]*): Custom error message if validation fails.
+    - **strict** (*bool*, default: False): When ``True``, also checks that
+        the type of the value matches the types in the allowed list.
+    - **error_message** (*Optional[str]*): Custom error message if
+        validation fails.
 
     **Expected Behavior:**
 
-    Verifies that the value is present in the list. In strict mode, type compatibility is also enforced. If the check fails, a ``ValidationError`` is raised.
+    Verifies that the value is present in the list. In strict mode, type
+    compatibility is also enforced. If the check fails, a ``ValidationError``
+    is raised.
 
     **Example Usage:**
 

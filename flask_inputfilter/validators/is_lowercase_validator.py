@@ -8,16 +8,19 @@ from flask_inputfilter.validators import BaseValidator
 
 class IsLowercaseValidator(BaseValidator):
     """
-    Checks if a value is entirely lowercase. The validator ensures
-    that the input string has no uppercase characters.
+    Checks if a value is entirely lowercase. The validator ensures that the
+    input string has no uppercase characters.
 
     **Parameters:**
 
-    - **error_message** (*Optional[str]*): Custom error message if the value is not entirely lowercase.
+    - **error_message** (*Optional[str]*): Custom error message if the
+        value is not entirely lowercase.
 
     **Expected Behavior:**
 
-    Confirms that the input is a string and verifies that all characters are lowercase using the string method ``islower()``. Raises a ``ValidationError`` if the check fails.
+    Confirms that the input is a string and verifies that all characters
+    are lowercase using the string method ``islower()``. Raises a
+    ``ValidationError`` if the check fails.
 
     **Example Usage:**
 

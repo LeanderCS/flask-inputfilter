@@ -7,16 +7,17 @@ from flask_inputfilter.filters import BaseFilter
 
 class BlacklistFilter(BaseFilter):
     """
-    Filters out unwanted substrings or keys based on a predefined
-    blacklist.
+    Filters out unwanted substrings or keys based on a predefined blacklist.
 
     **Parameters:**
 
-    - **blacklist** (*List[str]*): A list of substrings (for strings) or keys (for dictionaries) that should be removed.
+    - **blacklist** (*List[str]*): A list of substrings (for strings) or keys
+        (for dictionaries) that should be removed.
 
     **Expected Behavior:**
 
-    - For strings: Removes any occurrence of blacklisted items and trims whitespace.
+    - For strings: Removes any occurrence of blacklisted items and trims
+        whitespace.
     - For lists: Filters out items present in the blacklist.
     - For dictionaries: Removes key-value pairs where the key is blacklisted.
 

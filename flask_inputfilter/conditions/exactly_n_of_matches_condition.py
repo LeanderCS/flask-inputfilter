@@ -7,8 +7,7 @@ from flask_inputfilter.conditions import BaseCondition
 
 class ExactlyNOfMatchesCondition(BaseCondition):
     """
-    Checks that exactly ``n`` of the specified fields match a given
-    value.
+    Checks that exactly ``n`` of the specified fields match a given value.
 
     **Parameters:**
 
@@ -18,7 +17,8 @@ class ExactlyNOfMatchesCondition(BaseCondition):
 
     **Expected Behavior:**
 
-    Validates that exactly ``n`` fields among the specified ones have the given value.
+    Validates that exactly ``n`` fields among the specified ones have the
+    given value.
 
     **Example Usage:**
 
@@ -36,7 +36,13 @@ class ExactlyNOfMatchesCondition(BaseCondition):
                     'field2'
                 )
 
-                self.add_condition(ExactlyNOfMatchesCondition(['field1', 'field2'], 1, 'expected_value'))
+                self.add_condition(
+                    ExactlyNOfMatchesCondition(
+                        fields=['field1', 'field2'],
+                        n=1,
+                        value='expected_value'
+                    )
+                )
     """
 
     __slots__ = ("fields", "n", "value")

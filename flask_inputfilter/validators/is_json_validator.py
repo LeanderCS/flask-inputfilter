@@ -13,11 +13,13 @@ class IsJsonValidator(BaseValidator):
 
     **Parameters:**
 
-    - **error_message** (*Optional[str]*): Custom error message if the input is not a valid JSON string.
+    - **error_message** (*Optional[str]*): Custom error message if
+        the input is not a valid JSON string.
 
     **Expected Behavior:**
 
-    Attempts to parse the input using JSON decoding. Raises a ``ValidationError`` if parsing fails.
+    Attempts to parse the input using JSON decoding. Raises a
+    ``ValidationError`` if parsing fails.
 
     **Example Usage:**
 

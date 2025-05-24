@@ -16,5 +16,5 @@ isort /app
 echo "Running black"
 black /app
 
-# echo "Running docformatter"
-# docformatter --in-place /app
+echo "Running docformatter"
+docformatter --in-place --wrap-summaries 79 --wrap-descriptions 79 --recursive --pre-summary-newline /app
