@@ -16,9 +16,6 @@ Example
 
 .. code-block:: python
 
-    from flask_inputfilter import InputFilter
-    from flask_inputfilter.validators import IsIntegerValidator, RangeValidator
-
     class UpdatePointsInputFilter(InputFilter):
         def __init__(self):
             super().__init__()

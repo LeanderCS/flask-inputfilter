@@ -13,11 +13,6 @@ Example
 
 .. code-block:: python
 
-    from flask_inputfilter import InputFilter
-    from flask_inputfilter.conditions import OneOfCondition
-    from flask_inputfilter.filters import StringTrimFilter
-    from flask_inputfilter.validators import IsStringValidator
-
     class TestInputFilter(InputFilter):
         def __init__(self):
             super().__init__()

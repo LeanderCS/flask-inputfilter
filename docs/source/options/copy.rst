@@ -19,15 +19,15 @@ Basic Copy Integration
 
 .. code-block:: python
 
-    from flask_inputfilter import InputFilter
-    from flask_inputfilter.filters import StringSlugifyFilter
-
     class MyInputFilter(InputFilter):
         def __init__(self):
             super().__init__()
 
             self.add(
-                "username"
+                "username",
+                validator=[
+                    IsStringValidator()
+                ]
             )
 
             self.add(
@@ -51,9 +51,6 @@ Basic Copy Integration
 The coping can also be used as a chain.
 
 .. code-block:: python
-
-    from flask_inputfilter import InputFilter
-    from flask_inputfilter.filters import StringSlugifyFilter, ToUpperFilter, ToLowerFilter
 
     class MyInputFilter(InputFilter):
         def __init__(self):
@@ -80,3 +77,15 @@ The coping can also be used as a chain.
                 copy="escapedUsername"
                 filters=[ToLowerFilter()]
             )
+
+    # Example usage
+    # Body: {"username": "Very Important User"}
+
+    @app.route("/test", methods=["GET"])
+    @MyInputFilter.validate()
+    def test_route():
+        validated_data = g.validated_data
+
+        # Contains the same value as username but escaped eg. "very-important-user"
+        # and in upper-case eg. "VERY-IMPORTANT-USER"
+        print(validated_data["upperEscapedUsername"])

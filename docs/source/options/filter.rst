@@ -15,9 +15,6 @@ Example
 
 .. code-block:: python
 
-    from flask_inputfilter import InputFilter
-    from flask_inputfilter.filters import StringTrimFilter, ToLowerFilter
-
     class TestInputFilter(InputFilter):
         def __init__(self):
             super().__init__()
@@ -39,6 +36,7 @@ Example
 Available Filters
 -----------------
 
+- `ArrayElementFilter <#flask_inputfilter.filters.ArrayElementFilter>`_
 - `ArrayExplodeFilter <#flask_inputfilter.filters.ArrayExplodeFilter>`_
 - `Base64ImageDownscaleFilter <#flask_inputfilter.filters.Base64ImageDownscaleFilter>`_
 - `Base64ImageResizeFilter <#flask_inputfilter.filters.Base64ImageResizeFilter>`_

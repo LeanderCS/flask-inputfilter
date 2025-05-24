@@ -23,7 +23,6 @@ into an instance of the model class, if there is a model class set.
 
 .. code-block:: python
 
-    from flask_inputfilter import InputFilter
     from dataclasses import dataclass
 
 
@@ -50,7 +49,6 @@ You can also use deserialization in your Flask routes:
 .. code-block:: python
 
     from flask import Flask, jsonify, g
-    from flask_inputfilter import InputFilter
 
 
     class User:
@@ -82,7 +80,6 @@ You can also use deserialization outside of Flask routes:
 .. code-block:: python
 
     from flask import Flask, jsonify, g
-    from flask_inputfilter import InputFilter
 
 
     class User:
