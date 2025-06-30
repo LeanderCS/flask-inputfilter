@@ -6,7 +6,6 @@
 # cython: initializedcheck=False
 import json
 import logging
-import warnings
 from typing import Any, Optional, Type, TypeVar, Union
 
 from flask import Response, g, request
@@ -59,14 +58,6 @@ cdef class InputFilter:
         if methods is not None:
             self.methods.clear()
             [self.methods.push_back(method.encode()) for method in methods]
-
-    cpdef bint isValid(self):
-        warnings.warn(
-            "isValid() is deprecated, use is_valid() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        return self.is_valid()
 
     cpdef bint is_valid(self):
         """
@@ -170,16 +161,6 @@ cdef class InputFilter:
             return wrapper
 
         return decorator
-
-    cpdef object validateData(
-        self, data: Optional[dict[str, Any]] = None
-    ):
-        warnings.warn(
-            "validateData() is deprecated, use validate_data() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        return self.validate_data(data)
 
     cpdef object validate_data(
         self, data: Optional[dict[str, Any]] = None
@@ -291,14 +272,6 @@ cdef class InputFilter:
 
         return validated_data
 
-    cpdef void addCondition(self, condition: BaseCondition):
-        warnings.warn(
-            "addCondition() is deprecated, use add_condition() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        self.add_condition(condition)
-
     cpdef void add_condition(self, condition: BaseCondition):
         """
         Add a condition to the input filter.
@@ -307,14 +280,6 @@ cdef class InputFilter:
             condition (BaseCondition): The condition to add.
         """
         self.conditions.append(condition)
-
-    cpdef list getConditions(self):
-        warnings.warn(
-            "getConditions() is deprecated, use get_conditions() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        return self.get_conditions()
 
     cpdef list get_conditions(self):
         """
@@ -329,14 +294,6 @@ cdef class InputFilter:
                 instances of BaseCondition.
         """
         return self.conditions
-
-    cpdef void setData(self, data: dict[str, Any]):
-        warnings.warn(
-            "setData() is deprecated, use set_data() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        self.set_data(data)
 
     cpdef void set_data(self, data: dict[str, Any]):
         """
@@ -360,14 +317,6 @@ cdef class InputFilter:
 
             self.data[field_name] = field_value
 
-    cpdef object getValue(self, name: str):
-        warnings.warn(
-            "getValue() is deprecated, use get_value() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        return self.get_value(name)
-
     cpdef object get_value(self, name: str):
         """
         This method retrieves a value associated with the provided name. It
@@ -389,14 +338,6 @@ cdef class InputFilter:
         """
         return self.validated_data.get(name)
 
-    cpdef dict getValues(self):
-        warnings.warn(
-            "getValues() is deprecated, use get_values() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        return self.get_values()
-
     cpdef dict get_values(self):
         """
         Retrieves a dictionary of key-value pairs from the current object.
@@ -409,14 +350,6 @@ cdef class InputFilter:
                             corresponding values of any data type.
         """
         return self.validated_data
-
-    cpdef object getRawValue(self, name: str):
-        warnings.warn(
-            "getRawValue() is deprecated, use get_raw_value() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        return self.get_raw_value(name)
 
     cpdef object get_raw_value(self, name: str):
         """
@@ -436,14 +369,6 @@ cdef class InputFilter:
             Any: The raw value associated with the provided key.
         """
         return self.data.get(name) if name in self.data else None
-
-    cpdef dict getRawValues(self):
-        warnings.warn(
-            "getRawValues() is deprecated, use get_raw_values() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        return self.get_raw_values()
 
     cpdef dict get_raw_values(self):
         """
@@ -469,14 +394,6 @@ cdef class InputFilter:
             if field in self.data
         }
 
-    cpdef dict getUnfilteredData(self):
-        warnings.warn(
-            "getUnfilteredData() is deprecated, use get_unfiltered_data() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        return self.get_unfiltered_data()
-
     cpdef dict get_unfiltered_data(self):
         """
         Fetches unfiltered data from the data source.
@@ -494,14 +411,6 @@ cdef class InputFilter:
         """
         return self.data
 
-    cpdef void setUnfilteredData(self, data: dict[str, Any]):
-        warnings.warn(
-            "setUnfilteredData() is deprecated, use set_unfiltered_data() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        self.set_unfiltered_data(data)
-
     cpdef void set_unfiltered_data(self, data: dict[str, Any]):
         """
         Sets unfiltered data for the current instance. This method assigns a
@@ -513,14 +422,6 @@ cdef class InputFilter:
                 data to be associated with the instance.
         """
         self.data = data
-
-    cpdef bint hasUnknown(self):
-        warnings.warn(
-            "hasUnknown() is deprecated, use has_unknown() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        return self.has_unknown()
 
     cpdef bint has_unknown(self):
         """
@@ -538,14 +439,6 @@ cdef class InputFilter:
                 return True
 
         return False
-
-    cpdef str getErrorMessage(self, field_name: str):
-        warnings.warn(
-            "getErrorMessage() is deprecated, use get_error_message() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        return self.get_error_message(field_name)
 
     cpdef str get_error_message(self, field_name: str):
         """
@@ -566,14 +459,6 @@ cdef class InputFilter:
             Optional[str]: A string representing the predefined error message.
         """
         return self.errors.get(field_name)
-
-    cpdef dict getErrorMessages(self):
-        warnings.warn(
-            "getErrorMessages() is deprecated, use get_error_messages() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        return self.get_error_messages()
 
     cpdef dict get_error_messages(self):
         """
@@ -659,14 +544,6 @@ cdef class InputFilter:
         """
         return field_name in self.fields
 
-    cpdef object getInput(self, field_name: str):
-        warnings.warn(
-            "getInput() is deprecated, use get_input() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        return self.get_input(field_name)
-
     cpdef object get_input(self, field_name: str):
         """
         Represents a method to retrieve a field by its name.
@@ -685,14 +562,6 @@ cdef class InputFilter:
                 specified name.
         """
         return self.fields.get(field_name)
-
-    cpdef dict getInputs(self):
-        warnings.warn(
-            "getInputs() is deprecated, use get_inputs() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        return self.get_inputs()
 
     cpdef dict get_inputs(self):
         """
@@ -785,14 +654,6 @@ cdef class InputFilter:
             copy=copy,
         )
 
-    cpdef void addGlobalFilter(self, filter: BaseFilter):
-        warnings.warn(
-            "addGlobalFilter() is deprecated, use add_global_filter() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        self.add_global_filter(filter)
-
     cpdef void add_global_filter(self, filter: BaseFilter):
         """
         Add a global filter to be applied to all fields.
@@ -801,14 +662,6 @@ cdef class InputFilter:
             filter: The filter to add.
         """
         self.global_filters.append(filter)
-
-    cpdef list getGlobalFilters(self):
-        warnings.warn(
-            "getGlobalFilters() is deprecated, use get_global_filters() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        return self.get_global_filters()
 
     cpdef list get_global_filters(self):
         """
@@ -883,14 +736,6 @@ cdef class InputFilter:
             else:
                 self.global_validators.append(validator)
 
-    cpdef void setModel(self, model_class: Type[T]):
-        warnings.warn(
-            "setModel() is deprecated, use set_model() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        self.set_model(model_class)
-
     cpdef void set_model(self, model_class: Type[T]):
         """
         Set the model class for serialization.
@@ -914,14 +759,6 @@ cdef class InputFilter:
 
         return self.model_class(**self.validated_data)
 
-    cpdef void addGlobalValidator(self, validator: BaseValidator):
-        warnings.warn(
-            "addGlobalValidator() is deprecated, use add_global_validator() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        self.add_global_validator(validator)
-
     cpdef void add_global_validator(self, validator: BaseValidator):
         """
         Add a global validator to be applied to all fields.
@@ -930,14 +767,6 @@ cdef class InputFilter:
             validator (BaseValidator): The validator to add.
         """
         self.global_validators.append(validator)
-
-    cpdef list getGlobalValidators(self):
-        warnings.warn(
-            "getGlobalValidators() is deprecated, use get_global_validators() instead",
-            DeprecationWarning,
-            stacklevel=2
-        )
-        return self.global_validators
 
     cpdef list get_global_validators(self):
         """

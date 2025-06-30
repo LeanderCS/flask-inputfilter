@@ -56,16 +56,6 @@ class InputFilter:
         self.errors: dict[str, str] = {}
         self.model_class: Optional[Type[T]] = None
 
-    def isValid(self) -> bool:
-        import warnings
-
-        warnings.warn(
-            "isValid() is deprecated, use is_valid() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.is_valid()
-
     def is_valid(self) -> bool:
         """
         Checks if the object's state or its attributes meet certain conditions
@@ -167,18 +157,6 @@ class InputFilter:
             return wrapper
 
         return decorator
-
-    def validateData(
-        self, data: Optional[dict[str, Any]] = None
-    ) -> Union[dict[str, Any], Type[T]]:
-        import warnings
-
-        warnings.warn(
-            "validateData() is deprecated, use validate_data() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.validate_data(data)
 
     def validate_data(
         self, data: Optional[dict[str, Any]] = None
@@ -283,16 +261,6 @@ class InputFilter:
 
         return validated_data
 
-    def addCondition(self, condition: BaseCondition) -> None:
-        import warnings
-
-        warnings.warn(
-            "addCondition() is deprecated, use add_condition() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.add_condition(condition)
-
     def add_condition(self, condition: BaseCondition) -> None:
         """
         Add a condition to the input filter.
@@ -301,16 +269,6 @@ class InputFilter:
             condition (BaseCondition): The condition to add.
         """
         self.conditions.append(condition)
-
-    def getConditions(self) -> list[BaseCondition]:
-        import warnings
-
-        warnings.warn(
-            "getConditions() is deprecated, use get_conditions() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get_conditions()
 
     def get_conditions(self) -> list[BaseCondition]:
         """
@@ -325,16 +283,6 @@ class InputFilter:
                 instances of BaseCondition.
         """
         return self.conditions
-
-    def setData(self, data: dict[str, Any]) -> None:
-        import warnings
-
-        warnings.warn(
-            "setData() is deprecated, use set_data() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.set_data(data)
 
     def set_data(self, data: dict[str, Any]) -> None:
         """
@@ -358,16 +306,6 @@ class InputFilter:
 
             self.data[field_name] = field_value
 
-    def getValue(self, name: str) -> Any:
-        import warnings
-
-        warnings.warn(
-            "getValue() is deprecated, use get_value() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get_value(name)
-
     def get_value(self, name: str) -> Any:
         """
         This method retrieves a value associated with the provided name. It
@@ -389,16 +327,6 @@ class InputFilter:
         """
         return self.validated_data.get(name)
 
-    def getValues(self) -> dict[str, Any]:
-        import warnings
-
-        warnings.warn(
-            "getValues() is deprecated, use get_values() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get_values()
-
     def get_values(self) -> dict[str, Any]:
         """
         Retrieves a dictionary of key-value pairs from the current object. This
@@ -411,16 +339,6 @@ class InputFilter:
                             corresponding values of any data type.
         """
         return self.validated_data
-
-    def getRawValue(self, name: str) -> Any:
-        import warnings
-
-        warnings.warn(
-            "getRawValue() is deprecated, use get_raw_value() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get_raw_value(name)
 
     def get_raw_value(self, name: str) -> Any:
         """
@@ -440,16 +358,6 @@ class InputFilter:
             Any: The raw value associated with the provided key.
         """
         return self.data.get(name)
-
-    def getRawValues(self) -> dict[str, Any]:
-        import warnings
-
-        warnings.warn(
-            "getRawValues() is deprecated, use get_raw_values() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get_raw_values()
 
     def get_raw_values(self) -> dict[str, Any]:
         """
@@ -475,17 +383,6 @@ class InputFilter:
             if field in self.data
         }
 
-    def getUnfilteredData(self) -> dict[str, Any]:
-        import warnings
-
-        warnings.warn(
-            "getUnfilteredData() is deprecated, use "
-            "get_unfiltered_data() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get_unfiltered_data()
-
     def get_unfiltered_data(self) -> dict[str, Any]:
         """
         Fetches unfiltered data from the data source.
@@ -503,17 +400,6 @@ class InputFilter:
         """
         return self.data
 
-    def setUnfilteredData(self, data: dict[str, Any]) -> None:
-        import warnings
-
-        warnings.warn(
-            "setUnfilteredData() is deprecated, use "
-            "set_unfiltered_data() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.set_unfiltered_data(data)
-
     def set_unfiltered_data(self, data: dict[str, Any]) -> None:
         """
         Sets unfiltered data for the current instance. This method assigns a
@@ -525,16 +411,6 @@ class InputFilter:
                 data to be associated with the instance.
         """
         self.data = data
-
-    def hasUnknown(self) -> bool:
-        import warnings
-
-        warnings.warn(
-            "hasUnknown() is deprecated, use has_unknown() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.has_unknown()
 
     def has_unknown(self) -> bool:
         """
@@ -551,16 +427,6 @@ class InputFilter:
             field_name not in self.fields.keys()
             for field_name in self.data.keys()
         )
-
-    def getErrorMessage(self, field_name: str) -> Optional[str]:
-        import warnings
-
-        warnings.warn(
-            "getErrorMessage() is deprecated, use get_error_message() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get_error_message(field_name)
 
     def get_error_message(self, field_name: str) -> Optional[str]:
         """
@@ -581,17 +447,6 @@ class InputFilter:
             Optional[str]: A string representing the predefined error message.
         """
         return self.errors.get(field_name)
-
-    def getErrorMessages(self) -> dict[str, str]:
-        import warnings
-
-        warnings.warn(
-            "getErrorMessages() is deprecated, use "
-            "get_error_messages() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get_error_messages()
 
     def get_error_messages(self) -> dict[str, str]:
         """
@@ -677,16 +532,6 @@ class InputFilter:
         """
         return field_name in self.fields
 
-    def getInput(self, field_name: str) -> Optional[FieldModel]:
-        import warnings
-
-        warnings.warn(
-            "getInput() is deprecated, use get_input() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get_input(field_name)
-
     def get_input(self, field_name: str) -> Optional[FieldModel]:
         """
         Represents a method to retrieve a field by its name.
@@ -705,16 +550,6 @@ class InputFilter:
                 specified name.
         """
         return self.fields.get(field_name)
-
-    def getInputs(self) -> dict[str, FieldModel]:
-        import warnings
-
-        warnings.warn(
-            "getInputs() is deprecated, use get_inputs() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get_inputs()
 
     def get_inputs(self) -> dict[str, FieldModel]:
         """
@@ -807,16 +642,6 @@ class InputFilter:
             copy=copy,
         )
 
-    def addGlobalFilter(self, filter: BaseFilter) -> None:
-        import warnings
-
-        warnings.warn(
-            "addGlobalFilter() is deprecated, use add_global_filter() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.add_global_filter(filter)
-
     def add_global_filter(self, filter: BaseFilter) -> None:
         """
         Add a global filter to be applied to all fields.
@@ -825,17 +650,6 @@ class InputFilter:
             filter: The filter to add.
         """
         self.global_filters.append(filter)
-
-    def getGlobalFilters(self) -> list[BaseFilter]:
-        import warnings
-
-        warnings.warn(
-            "getGlobalFilters() is deprecated, use "
-            "get_global_filters() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get_global_filters()
 
     def get_global_filters(self) -> list[BaseFilter]:
         """
@@ -910,16 +724,6 @@ class InputFilter:
             else:
                 self.global_validators.append(validator)
 
-    def setModel(self, model_class: Type[T]) -> None:
-        import warnings
-
-        warnings.warn(
-            "setModel() is deprecated, use set_model() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.set_model(model_class)
-
     def set_model(self, model_class: Type[T]) -> None:
         """
         Set the model class for serialization.
@@ -942,17 +746,6 @@ class InputFilter:
 
         return self.model_class(**self.validated_data)
 
-    def addGlobalValidator(self, validator: BaseValidator) -> None:
-        import warnings
-
-        warnings.warn(
-            "addGlobalValidator() is deprecated, use "
-            "add_global_validator() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.add_global_validator(validator)
-
     def add_global_validator(self, validator: BaseValidator) -> None:
         """
         Add a global validator to be applied to all fields.
@@ -961,17 +754,6 @@ class InputFilter:
             validator (BaseValidator): The validator to add.
         """
         self.global_validators.append(validator)
-
-    def getGlobalValidators(self) -> list[BaseValidator]:
-        import warnings
-
-        warnings.warn(
-            "getGlobalValidators() is deprecated, use "
-            "get_global_validators() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get_global_validators()
 
     def get_global_validators(self) -> list[BaseValidator]:
         """

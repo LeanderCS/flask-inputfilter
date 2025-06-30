@@ -3,6 +3,15 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.6.0] - 2025-06-30
+--------------------
+
+Removed
+^^^^^^^
+- Removed deprecated camel case methods and properties.
+- Removed deprecated subfolders.
+
+
 [0.5.5] - 2025-06-30
 --------------------
 
@@ -75,8 +84,10 @@ Changed
 
 - Renamed files into snake_case to follow the PEP8 standard.
   This requires a migration if you are importing the files directly.
-  e.g. ``from flask_inputfilter.filters import Base64ImageResizeFilter`` to
+  e.g. ``from flask_inputfilter.Filter import Base64ImageResizeFilter`` to
   ``from flask_inputfilter.filters.base64_image_resize_filter import Base64ImageResizeFilter``.
+
+  If you are using the components through the module, you don't need to change anything.
 
 
 [0.4.3a1] - 2025-04-26
