@@ -15,7 +15,7 @@ class IsHtmlValidator(BaseValidator):
     **Parameters:**
 
     - **error_message** (*Optional[str]*): Custom error message if the value
-        does not contain valid HTML.
+      does not contain valid HTML.
 
     **Expected Behavior:**
 

@@ -14,7 +14,7 @@ class IsUUIDValidator(BaseValidator):
     **Parameters:**
 
     - **error_message** (*Optional[str]*): Custom error message if the
-        input is not a valid UUID.
+      input is not a valid UUID.
 
     **Expected Behavior:**
 

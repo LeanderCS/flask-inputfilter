@@ -16,9 +16,9 @@ class DateBeforeValidator(BaseValidator):
     **Parameters:**
 
     - **reference_date** (*Union[str, date, datetime]*): The date that the
-        input must be earlier than.
+      input must be earlier than.
     - **error_message** (*Optional[str]*): Custom error message if validation
-        fails.
+      fails.
 
     **Expected Behavior:**
 

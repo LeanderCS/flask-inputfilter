@@ -16,8 +16,7 @@ class ToDateTimeFilter(BaseFilter):
     - If the input is a datetime, it is returned unchanged.
     - If the input is a date, it is combined with a minimum time value.
     - If the input is a string, the filter attempts to parse it as an
-        ISO 8601
-        datetime.
+      ISO 8601 datetime.
     - If conversion fails, the original value is returned.
 
     **Example Usage:**

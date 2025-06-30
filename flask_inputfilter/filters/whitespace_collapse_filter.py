@@ -13,7 +13,7 @@ class WhitespaceCollapseFilter(BaseFilter):
     **Expected Behavior:**
 
     - Replaces sequences of whitespace with a single space and trims
-        the result.
+      the result.
     - Non-string inputs are returned unchanged.
 
     **Example Usage:**

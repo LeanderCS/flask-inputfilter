@@ -24,7 +24,7 @@ class LengthValidator(BaseValidator):
     - **min_length** (*Optional[int]*): The minimum allowed length.
     - **max_length** (*Optional[int]*): The maximum allowed length.
     - **error_message** (*Optional[str]*): Custom error message if
-        the validation fails.
+      the validation fails.
 
     **Expected Behavior:**
 

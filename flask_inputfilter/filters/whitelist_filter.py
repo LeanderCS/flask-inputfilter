@@ -13,15 +13,15 @@ class WhitelistFilter(BaseFilter):
     **Parameters:**
 
     - **whitelist** (*list[str]*, optional): A list of allowed words
-        or keys. If not provided, no filtering is applied.
+      or keys. If not provided, no filtering is applied.
 
     **Expected Behavior:**
 
     - For strings: Splits the input by whitespace and returns only
-        the words present in the whitelist.
+      the words present in the whitelist.
     - For lists: Returns a list of items that are in the whitelist.
     - For dictionaries: Returns a dictionary containing only the
-         whitelisted keys.
+       whitelisted keys.
 
     **Example Usage:**
 

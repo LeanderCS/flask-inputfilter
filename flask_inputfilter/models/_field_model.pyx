@@ -1,13 +1,14 @@
 # cython: language=c++
+# cython: freelist=256
 from __future__ import annotations
 
-from typing import Any, Optional, Union
-
-from flask_inputfilter.filters import BaseFilter
-from flask_inputfilter.models import ExternalApiConfig
-from flask_inputfilter.validators import BaseValidator
+import cython
 
 
+cdef list EMPTY_LIST = []
+
+
+@cython.final
 cdef class FieldModel:
     """
     FieldModel is a dataclass that represents a field in the input data.
@@ -32,20 +33,20 @@ cdef class FieldModel:
 
     def __init__(
         self,
-        required: bool = False,
-        default: Any = None,
-        fallback: Any = None,
-        filters: list[BaseFilter] = None,
-        validators: list[BaseValidator] = None,
-        steps: list[Union[BaseFilter, BaseValidator]] = None,
-        external_api: Optional[ExternalApiConfig] = None,
-        copy: Optional[str] = None
+        bint required = False,
+        object default = None,
+        object fallback = None,
+        list filters = None,
+        list validators = None,
+        list steps = None,
+        object external_api = None,
+        str copy = None
     ) -> None:
         self.required = required
-        self.default = default
+        self._default = default
         self.fallback = fallback
-        self.filters = filters or []
-        self.validators = validators or []
-        self.steps = steps or []
+        self.filters = filters if filters is not None else EMPTY_LIST
+        self.validators = validators if validators is not None else EMPTY_LIST
+        self.steps = steps if steps is not None else EMPTY_LIST
         self.external_api = external_api
         self.copy = copy

@@ -16,7 +16,7 @@ class IsPastDateValidator(BaseValidator):
     **Parameters:**
 
     - **error_message** (*Optional[str]*): Custom error message if the date
-        is not in the past.
+      is not in the past.
 
     **Expected Behavior:**
 

@@ -16,11 +16,11 @@ class IsBase64ImageCorrectSizeValidator(BaseValidator):
     **Parameters:**
 
     - **min_size** (*int*, default: 1): The minimum allowed size
-        in bytes.
+      in bytes.
     - **max_size** (*int*, default: 4 * 1024 * 1024): The maximum
-        allowed size in bytes.
+      allowed size in bytes.
     - **error_message** (*Optional[str]*): Custom error message
-        if validation fails.
+      if validation fails.
 
     **Expected Behavior:**
 

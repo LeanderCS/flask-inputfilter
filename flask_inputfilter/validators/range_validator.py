@@ -15,7 +15,7 @@ class RangeValidator(BaseValidator):
     - **min_value** (*Optional[float]*): The minimum allowed value.
     - **max_value** (*Optional[float]*): The maximum allowed value.
     - **error_message** (*Optional[str]*): Custom error message if the
-        validation fails.
+      validation fails.
 
     **Expected Behavior:**
 

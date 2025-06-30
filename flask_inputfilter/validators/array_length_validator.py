@@ -13,11 +13,11 @@ class ArrayLengthValidator(BaseValidator):
     **Parameters:**
 
     - **min_length** (*int*, default: 0): The minimum number of
-        elements required.
+      elements required.
     - **max_length** (*int*, default: infinity): The maximum number
-        of allowed elements.
+      of allowed elements.
     - **error_message** (*Optional[str]*): Custom error message if the
-        length check fails.
+      length check fails.
 
     **Expected Behavior:**
 

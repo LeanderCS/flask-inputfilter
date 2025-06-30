@@ -13,9 +13,9 @@ class IsInstanceValidator(BaseValidator):
     **Parameters:**
 
     - **classType** (*Type[Any]*): The class against which the value is
-        validated.
+      validated.
     - **error_message** (*Optional[str]*): Custom error message if the
-        validation fails.
+      validation fails.
 
     **Expected Behavior:**
 

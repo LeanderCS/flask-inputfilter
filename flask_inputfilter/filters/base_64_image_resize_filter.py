@@ -18,13 +18,13 @@ class Base64ImageResizeFilter(BaseFilter):
     **Parameters:**
 
     - **max_size** (*int*, default: ``4 * 1024 * 1024``): The maximum
-        allowed file size in bytes.
+      allowed file size in bytes.
     - **format** (*ImageFormatEnum*, default: ``ImageFormatEnum.JPEG``):
-        The output image format.
+      The output image format.
     - **preserve_icc_profile** (*bool*, default: ``False``): If set to
-        ``True``, the ICC profile is preserved.
+      ``True``, the ICC profile is preserved.
     - **preserve_metadata** (*bool*, default: ``False``): If set to ``True``,
-        image metadata is preserved.
+      image metadata is preserved.
 
     **Expected Behavior:**
 

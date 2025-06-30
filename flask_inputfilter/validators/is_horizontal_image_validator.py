@@ -19,7 +19,7 @@ class IsHorizontalImageValidator(BaseValidator):
     **Parameters:**
 
     - **error_message** (*Optional[str]*): Custom error message if the image
-        is not horizontally oriented.
+      is not horizontally oriented.
 
     **Expected Behavior:**
 

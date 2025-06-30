@@ -13,7 +13,7 @@ class IsBooleanValidator(BaseValidator):
     **Parameters:**
 
     - **error_message** (*Optional[str]*): Custom error message if the
-        input is not a bool.
+      input is not a bool.
 
     **Expected Behavior:**
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import unicodedata
+import warnings
 from typing import Any, Optional, Union
 
 from flask_inputfilter.enums import UnicodeFormEnum
@@ -13,16 +14,13 @@ class ToNormalizedUnicodeFilter(BaseFilter):
 
     **Parameters:**
 
-    - **form** (
-            *Union[UnicodeFormEnum,
-            Literal["NFC", "NFD", "NFKC", "NFKD"]]*,
-            default: ``UnicodeFormEnum.NFC``
-        ): The target Unicode normalization form.
+    - **form** (*UnicodeFormEnum*, default: ``UnicodeFormEnum.NFC``):
+      The target Unicode normalization form.
 
     **Expected Behavior:**
 
     - Removes accent characters and normalizes the string based on the
-        specified form.
+      specified form.
     - Returns non-string inputs unchanged.
 
     **Example Usage:**
@@ -45,6 +43,12 @@ class ToNormalizedUnicodeFilter(BaseFilter):
         form: Optional[UnicodeFormEnum] = None,
     ) -> None:
         if form and not isinstance(form, UnicodeFormEnum):
+            warnings.warn(
+                "Directly using a sting is deprecated, use UnicodeFormEnum "
+                "instead",
+                DeprecationWarning,
+                stacklevel=2,
+            )
             form = UnicodeFormEnum(form)
 
         self.form = form if form else UnicodeFormEnum.NFC

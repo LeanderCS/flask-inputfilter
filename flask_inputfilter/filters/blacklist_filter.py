@@ -12,12 +12,12 @@ class BlacklistFilter(BaseFilter):
     **Parameters:**
 
     - **blacklist** (*list[str]*): A list of substrings (for strings) or keys
-        (for dictionaries) that should be removed.
+      (for dictionaries) that should be removed.
 
     **Expected Behavior:**
 
     - For strings: Removes any occurrence of blacklisted items and trims
-        whitespace.
+      whitespace.
     - For lists: Filters out items present in the blacklist.
     - For dictionaries: Removes key-value pairs where the key is blacklisted.
 

@@ -15,9 +15,9 @@ class XorValidator(BaseValidator):
     **Parameters:**
 
     - **validators** (*list[BaseValidator]*): A list of validators,
-        of which exactly one must pass.
+      of which exactly one must pass.
     - **error_message** (*Optional[str]*): Custom error message if the
-        input does not satisfy exactly one validator.
+      input does not satisfy exactly one validator.
 
     **Expected Behavior:**
 

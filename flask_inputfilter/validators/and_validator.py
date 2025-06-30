@@ -14,9 +14,9 @@ class AndValidator(BaseValidator):
     **Parameters:**
 
     - **validators** (*list[BaseValidator]*): A list of validators that must
-        all pass.
+      all pass.
     - **error_message** (*Optional[str]*): Custom error message if any of the
-        validators fail.
+      validators fail.
 
     **Expected Behavior:**
 

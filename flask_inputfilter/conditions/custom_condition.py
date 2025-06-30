@@ -13,8 +13,8 @@ class CustomCondition(BaseCondition):
     **Parameters:**
 
     - **condition** (*Callable[[dict[str, Any]], bool]*): A function that
-        takes the input data and returns a boolean indicating whether the
-        condition is met.
+      takes the input data and returns a boolean indicating whether the
+      condition is met.
 
     **Expected Behavior:**
 

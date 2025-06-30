@@ -19,9 +19,9 @@ class ArrayElementValidator(BaseValidator):
     **Parameters:**
 
     - **elementFilter** (*InputFilter* | *BaseValidator* |
-        *list[BaseValidator]*): An instance used to validate each element.
+      *list[BaseValidator]*): An instance used to validate each element.
     - **error_message** (*Optional[str]*): Custom error message for validation
-        failure.
+      failure.
 
     **Expected Behavior:**
 

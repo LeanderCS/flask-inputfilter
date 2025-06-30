@@ -12,7 +12,7 @@ class ArrayElementFilter(BaseFilter):
     **Parameters:**
 
     - **element_filter** (*BaseFilter* | *list[BaseFilter]*): A filter or a
-        list of filters to apply to each element in the array.
+      list of filters to apply to each element in the array.
 
     **Expected Behavior:**
 

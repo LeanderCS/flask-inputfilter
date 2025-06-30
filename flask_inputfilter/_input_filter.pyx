@@ -436,8 +436,9 @@ cdef class InputFilter:
         given dictionary of data to the instance for further processing. It
         updates the internal state using the provided data.
 
-        Parameters:
-            data (dict[str, Any]): A dictionary containing the unfiltered
+        **Parameters**:
+        
+            - data (dict[str, Any]): A dictionary containing the unfiltered
                 data to be associated with the instance.
         """
         self.data = data

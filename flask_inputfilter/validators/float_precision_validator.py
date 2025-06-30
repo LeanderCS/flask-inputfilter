@@ -16,9 +16,9 @@ class FloatPrecisionValidator(BaseValidator):
 
     - **precision** (*int*): The maximum total number of digits allowed.
     - **scale** (*int*): The maximum number of digits allowed after the
-        decimal point.
+      decimal point.
     - **error_message** (*Optional[str]*): Custom error message if
-        validation fails.
+      validation fails.
 
     **Expected Behavior:**
 

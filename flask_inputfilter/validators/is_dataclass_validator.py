@@ -43,7 +43,7 @@ class IsDataclassValidator(BaseValidator):
 
     - **dataclass_type** (*Type[dict]*): The expected dataclass type.
     - **error_message** (*Optional[str]*): Custom error message if
-        validation fails.
+      validation fails.
 
     **Expected Behavior:**
 

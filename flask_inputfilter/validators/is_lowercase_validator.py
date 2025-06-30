@@ -14,7 +14,7 @@ class IsLowercaseValidator(BaseValidator):
     **Parameters:**
 
     - **error_message** (*Optional[str]*): Custom error message if the
-        value is not entirely lowercase.
+      value is not entirely lowercase.
 
     **Expected Behavior:**
 

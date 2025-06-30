@@ -15,7 +15,7 @@ class InEnumValidator(BaseValidator):
 
     - **enumClass** (*Type[Enum]*): The Enum to validate against.
     - **error_message** (*Optional[str]*): Custom error message if
-        validation fails.
+      validation fails.
 
     **Expected Behavior:**
 

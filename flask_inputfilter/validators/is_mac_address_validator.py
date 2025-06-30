@@ -19,7 +19,7 @@ class IsMacAddressValidator(BaseValidator):
     **Parameters:**
 
     - **error_message** (*Optional[str]*): Custom error message if the
-        value is not a valid MAC address.
+      value is not a valid MAC address.
 
     **Expected Behavior:**
 
