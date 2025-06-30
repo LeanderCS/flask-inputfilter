@@ -12,7 +12,7 @@ class ArrayExplodeFilter(BaseFilter):
     **Parameters:**
 
     - **delimiter** (*str*, default: ``","``): The delimiter used to split
-        the string.
+      the string.
 
     **Expected Behavior:**
 

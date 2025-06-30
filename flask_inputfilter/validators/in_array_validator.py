@@ -15,9 +15,9 @@ class InArrayValidator(BaseValidator):
 
     - **haystack** (*list[Any]*): The list of allowed values.
     - **strict** (*bool*, default: False): When ``True``, also checks that
-        the type of the value matches the types in the allowed list.
+      the type of the value matches the types in the allowed list.
     - **error_message** (*Optional[str]*): Custom error message if
-        validation fails.
+      validation fails.
 
     **Expected Behavior:**
 

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import warnings
 from enum import Enum
 from typing import Any, Optional, Type
 
@@ -16,7 +15,7 @@ class InEnumValidator(BaseValidator):
 
     - **enumClass** (*Type[Enum]*): The Enum to validate against.
     - **error_message** (*Optional[str]*): Custom error message if
-        validation fails.
+      validation fails.
 
     **Expected Behavior:**
 
@@ -50,19 +49,7 @@ class InEnumValidator(BaseValidator):
         self,
         enum_class: Type[Enum],
         error_message: Optional[str] = None,
-        # Deprecated parameters (for Backward Compatibility)
-        enumClass: Type[Enum] = None,
     ) -> None:
-        if enumClass is not None:
-            warnings.warn(
-                "Parameter 'enumClass' is deprecated, use 'enum_class' "
-                "instead",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-            if enum_class is None:
-                enum_class = enumClass
-
         self.enum_class = enum_class
         self.error_message = error_message
 

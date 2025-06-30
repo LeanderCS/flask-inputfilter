@@ -15,9 +15,9 @@ class OrValidator(BaseValidator):
     **Parameters:**
 
     - **validators** (*list[BaseValidator]*): A list of validators
-        to apply.
+      to apply.
     - **error_message** (*Optional[str]*): Custom error message if none
-        of the validators pass.
+      of the validators pass.
 
     **Expected Behavior:**
 

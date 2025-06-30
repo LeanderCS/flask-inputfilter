@@ -14,9 +14,9 @@ class IsTypedDictValidator(BaseValidator):
     **Parameters:**
 
     - **typed_dict_type** (*Type[TypedDict]*): The TypedDict class that
-        defines the expected structure.
+      defines the expected structure.
     - **error_message** (*Optional[str]*): Custom error message if the
-        validation fails.
+      validation fails.
 
     **Expected Behavior:**
 

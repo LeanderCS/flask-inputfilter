@@ -12,7 +12,7 @@ class ToDataclassFilter(BaseFilter):
     **Parameters:**
 
     - **dataclass_type** (*Type[dict]*): The target dataclass type
-        that the dictionary should be converted into.
+      that the dictionary should be converted into.
 
     **Expected Behavior:**
 

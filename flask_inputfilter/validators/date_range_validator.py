@@ -15,11 +15,11 @@ class DateRangeValidator(BaseValidator):
     **Parameters:**
 
     - **min_date** (*Optional[Union[str, date, datetime]]*): The lower bound
-        of the date range.
+      of the date range.
     - **max_date** (*Optional[Union[str, date, datetime]]*): The upper bound
-        of the date range.
+      of the date range.
     - **error_message** (*Optional[str]*): Custom error message if the date
-        is outside the range.
+      is outside the range.
 
     **Expected Behavior:**
 

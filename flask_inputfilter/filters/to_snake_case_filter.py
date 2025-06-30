@@ -13,8 +13,8 @@ class ToSnakeCaseFilter(BaseFilter):
     **Expected Behavior:**
 
     - Inserts underscores before uppercase letters (except the first),
-        converts the string to lowercase, and replaces spaces or hyphens
-        with underscores.
+      converts the string to lowercase, and replaces spaces or hyphens
+      with underscores.
     - Non-string inputs are returned unchanged.
 
     **Example Usage:**

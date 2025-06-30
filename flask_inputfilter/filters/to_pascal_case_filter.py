@@ -13,7 +13,7 @@ class ToPascalCaseFilter(BaseFilter):
     **Expected Behavior:**
 
     - Capitalizes the first letter of each word and concatenates
-        them without spaces.
+      them without spaces.
     - Returns non-string inputs unchanged.
 
     **Example Usage:**

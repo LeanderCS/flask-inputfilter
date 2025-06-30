@@ -12,9 +12,24 @@ extensions = [
     "sphinx.ext.napoleon",
 ]
 
+autodoc_default_options = {
+    "show-inheritance": True,
+}
+
 autodoc_member_order = "bysource"
 autodoc_typehints = "description"
 autoclass_content = "both"
+
+autodoc_type_aliases = {
+    "EstimatorPubLike": "EstimatorPubLike",
+    "SamplerPubLike": "SamplerPubLike",
+}
+
+autosummary_generate = True
+autosummary_generate_overwrite = False
+
+napoleon_google_docstring = True
+napoleon_numpy_docstring = False
 
 sys.path.insert(0, os.path.abspath("../.."))
 

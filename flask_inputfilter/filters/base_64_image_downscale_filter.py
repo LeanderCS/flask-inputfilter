@@ -17,14 +17,14 @@ class Base64ImageDownscaleFilter(BaseFilter):
     **Parameters:**
 
     - **size** (*Optional[int]*, default: ``1024 * 1024``): A rough pixel
-        count used to compute default dimensions.
+      count used to compute default dimensions.
     - **width** (*Optional[int]*, default: ``size**0.5``): The target width.
-        If not provided, it is calculated as ``sqrt(size)``.
+      If not provided, it is calculated as ``sqrt(size)``.
     - **height** (*Optional[int]*, default: ``size**0.5``): The target height.
-        If not provided, it is calculated as ``sqrt(size)``.
+      If not provided, it is calculated as ``sqrt(size)``.
     - **proportionally** (*bool*, default: ``True``): Determines if the image
-        should be scaled proportionally. If ``False``, the image is
-        forcefully resized to the specified width and height.
+      should be scaled proportionally. If ``False``, the image is
+      forcefully resized to the specified width and height.
 
     **Expected Behavior:**
 

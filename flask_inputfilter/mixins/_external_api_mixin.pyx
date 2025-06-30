@@ -1,74 +1,16 @@
 # cython: language=c++
-# cython: language_level=3
-# cython: binding=True
-# cython: cdivision=True
-# cython: boundscheck=False
-# cython: initializedcheck=False
 import re
-from typing import Any, Dict, Optional
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.models import ExternalApiConfig
 
 
 cdef class ExternalApiMixin:
 
     @staticmethod
-    cdef str replace_placeholders(
-            str value,
-            dict validated_data
-    ):
-        """
-        Replace all placeholders, marked with '{{ }}' in value
-        with the corresponding values from validated_data.
-
-        Params:
-            value (str): The string containing placeholders to be replaced.
-            validated_data (dict[str, Any]): The dictionary containing 
-                the values to replace the placeholders with.
-
-        Returns:
-            str: The value with all placeholders replaced with
-                 the corresponding values from validated_data.
-        """
-        return re.compile(r"{{(.*?)}}").sub(
-            lambda match: str(validated_data.get(match.group(1))),
-            value,
-        )
-
-    @staticmethod
-    cdef dict replace_placeholders_in_params(
-            dict params, dict validated_data
-    ):
-        """
-        Replace all placeholders in params with the corresponding
-        values from validated_data.
-
-        Params:
-            params (dict): The params dictionary containing placeholders.
-            validated_data (dict[str, Any]): The dictionary containing 
-                the values to replace the placeholders with.
-
-        Returns:
-            dict: The params dictionary with all placeholders replaced
-                  with the corresponding values from validated_data.
-        """
-        return {
-            key: ExternalApiMixin.replace_placeholders(value, validated_data)
-            if isinstance(value, str)
-            else value
-            for key, value in params.items()
-        }
-
-    @staticmethod
     cdef object call_external_api(
-        object config, object fallback, dict validated_data
+            object config, object fallback, dict validated_data
     ):
         """
-        Makes a call to an external API using provided configuration and
-        returns the response.
-
-        Summary:
         The function constructs a request based on the given API
         configuration and validated data, including headers, parameters,
         and other request settings. It utilizes the `requests` library
@@ -77,25 +19,28 @@ cdef class ExternalApiMixin:
         the API call. If no fallback is provided, a validation error is
         raised.
 
-        Parameters:
-            config (ExternalApiConfig):
-                An object containing the configuration details for the
-                external API call, such as URL, headers, method, and API key.
-            fallback (Any):
-                The value to be returned in case the external API call fails.
-            validated_data (dict[str, Any]):
-                The dictionary containing data used to replace placeholders
-                in the URL and parameters of the API request.
+        **Parameters:**
 
-        Returns:
-            Optional[Any]:
-                The JSON-decoded response from the API, or the fallback
-                value if the call fails and a fallback is provided.
+        - **config** (*ExternalApiConfig*):
+          An object containing the configuration details for the
+          external API call, such as URL, headers, method, and API key.
+        - **fallback** (*Any*):
+          The value to be returned in case the external API call fails.
+        - **validated_data** (*dict[str, Any]*):
+          The dictionary containing data used to replace placeholders
+          in the URL and parameters of the API request.
 
-        Raises:
-            ValidationError
-                Raised if the external API call does not succeed and no
-                fallback value is provided.
+        **Returns:**
+
+        - (*Optional[Any]*):
+          The JSON-decoded response from the API, or the fallback
+          value if the call fails and a fallback is provided.
+
+        **Raises:**
+
+        - **ValidationError**:
+          Raised if the external API call does not succeed and no
+          fallback value is provided.
         """
         import logging
 
@@ -160,3 +105,54 @@ cdef class ExternalApiMixin:
             return fallback
 
         return result.get(data_key) if data_key else result
+
+    @staticmethod
+    cdef inline str replace_placeholders(
+            str value,
+            dict validated_data
+    ):
+        """
+        Replace all placeholders, marked with '{{ }}' in value
+        with the corresponding values from validated_data.
+
+        **Parameters:**
+        
+        - **value** (**str**): The string containing placeholders to be replaced.
+        - **validated_data** (**dict[str, Any]**): The dictionary containing 
+          the values to replace the placeholders with.
+
+        **Returns:**
+            
+        - (*str*): The value with all placeholders replaced with
+          the corresponding values from validated_data.
+        """
+        return re.compile(r"{{(.*?)}}").sub(
+            lambda match: str(validated_data.get(match.group(1))),
+            value,
+        )
+
+    @staticmethod
+    cdef dict replace_placeholders_in_params(
+            dict params, dict validated_data
+    ):
+        """
+        Replace all placeholders in params with the corresponding
+        values from validated_data.
+
+        **Parameters:**
+
+        - **params** (*dict*): The params dictionary containing placeholders.
+        - **validated_data** (*dict[str, Any]*): The dictionary containing 
+          the values to replace the placeholders with.
+
+        **Returns:**
+        
+        - (*dict*): The params dictionary with all placeholders replaced
+          with the corresponding values from validated_data.
+        """
+        return {
+            key: ExternalApiMixin.replace_placeholders(value, validated_data)
+            if isinstance(value, str)
+            else value
+            for key, value in params.items()
+        }

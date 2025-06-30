@@ -16,11 +16,11 @@ class CustomJsonValidator(BaseValidator):
     **Parameters:**
 
     - **required_fields** (*list*, default: []): Fields that must exist
-        in the JSON.
+      in the JSON.
     - **schema** (*dict*, default: {}): A dictionary specifying expected
-        types for certain fields.
+      types for certain fields.
     - **error_message** (*Optional[str]*): Custom error message if validation
-        fails.
+      fails.
 
     **Expected Behavior:**
 

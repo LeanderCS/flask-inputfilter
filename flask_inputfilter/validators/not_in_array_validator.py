@@ -15,9 +15,9 @@ class NotInArrayValidator(BaseValidator):
 
     - **haystack** (*list[Any]*): A list of disallowed values.
     - **strict** (*bool*, default: False): If ``True``, the type of the
-        value is also validated against the disallowed list.
+      value is also validated against the disallowed list.
     - **error_message** (*Optional[str]*): Custom error message if the
-        validation fails.
+      validation fails.
 
     **Expected Behavior:**
 

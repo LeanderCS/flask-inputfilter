@@ -9,19 +9,23 @@ from flask_inputfilter.validators import BaseValidator
 
 
 class FieldMixin:
+    __slots__ = ()
+
     @staticmethod
     def apply_filters(filters: list[BaseFilter], value: Any) -> Any:
         """
         Apply filters to the field value.
 
-        Args:
-            filters (list[BaseFilter]): A list of filters to apply to the
-                value.
-            value (Any): The value to be processed by the filters.
+        **Parameters:**
 
-        Returns:
-            Any: The processed value after applying all filters.
-                If the value is None, None is returned.
+        - **filters** (*list[BaseFilter]*): A list of filters to apply to the
+          value.
+        - **value** (*Any*): The value to be processed by the filters.
+
+        **Returns:**
+
+        - (*Any*): The processed value after applying all filters.
+          If the value is None, None is returned.
         """
         if value is None:
             return None
@@ -38,16 +42,18 @@ class FieldMixin:
         """
         Validate the field value.
 
-        Args:
-            validators (list[BaseValidator]): A list of validators to apply
-                to the field value.
-            fallback (Any): A fallback value to return if validation fails.
-            value (Any): The value to be validated.
+        **Parameters:**
 
-        Returns:
-            Any: The validated value if all validators pass. If validation
-                fails and a fallback is provided, the fallback value is
-                returned.
+        - **validators** (*list[BaseValidator]*): A list of validators to
+          apply to the field value.
+        - **fallback** (*Any*): A fallback value to return if validation
+          fails.
+        - **value** (*Any*): The value to be validated.
+
+        **Returns:**
+
+        - (*Any*): The validated value if all validators pass. If validation
+          fails and a fallback is provided, the fallback value is returned.
         """
         if value is None:
             return None
@@ -76,31 +82,34 @@ class FieldMixin:
         and a fallback value is provided, the fallback is returned. Otherwise,
         the validation error is raised.
 
-        Args:
-            steps (list[Union[BaseFilter, BaseValidator]]):
-                A list of filters and validators to be applied in order.
-            fallback (Any):
-                A fallback value to return if validation fails.
-            value (Any):
-                The initial value to be processed.
+        **Parameters:**
 
-        Returns:
-            Any: The processed value after applying all filters and validators.
-                If a validation error occurs and a fallback is provided, the
-                fallback value is returned.
+        - **steps** (*list[Union[BaseFilter, BaseValidator]]*):
+          A list of filters and validators to be applied in order.
+        - **fallback** (*Any*):
+          A fallback value to return if validation fails.
+        - **value** (*Any*):
+          The initial value to be processed.
 
-        Raises:
-            ValidationError: If validation fails and no fallback value is
-                provided.
+        **Returns:**
+
+        - (*Any*): The processed value after applying all filters and
+          validators. If a validation error occurs and a fallback is
+          provided, the fallback value is returned.
+
+        **Raises:**
+
+        - **ValidationError:** If validation fails and no fallback value is
+          provided.
         """
         if value is None:
             return None
 
         try:
             for step in steps:
-                if hasattr(step, "apply"):
+                if isinstance(step, BaseFilter):
                     value = step.apply(value)
-                elif hasattr(step, "validate"):
+                elif isinstance(step, BaseValidator):
                     step.validate(value)
         except ValidationError:
             if fallback is None:
@@ -120,11 +129,12 @@ class FieldMixin:
         condition is not met, a ValidationError is raised with an appropriate
         message indicating which condition failed.
 
-        Args:
-            conditions (list[BaseCondition]):
-                A list of conditions to be checked against the validated
-            validated_data (dict[str, Any]):
-                The validated data to check against the conditions.
+        **Parameters:**
+
+        - **conditions** (*list[BaseCondition]*):
+          A list of conditions to be checked against the validated data.
+        - **validated_data** (*dict[str, Any]*):
+          The validated data to check against the conditions.
         """
         for condition in conditions:
             if not condition.check(validated_data):
@@ -149,22 +159,25 @@ class FieldMixin:
         the fallback value is returned. If no of the above conditions are met,
         a ValidationError is raised.
 
-        Args:
-            field_name (str): The name of the field being processed.
-            required (bool): Indicates whether the field is required.
-            default (Any): The default value to use if the field is not
-                provided and not required.
-            fallback (Any): The fallback value to use if the field is required
-                but not provided.
-            value (Any): The current value of the field being processed.
+        **Parameters:**
 
-        Returns:
-            Any: The determined value of the field after considering required,
-                default, and fallback attributes.
+        - **field_name** (*str*): The name of the field being processed.
+        - **required** (*bool*): Indicates whether the field is required.
+        - **default** (*Any*): The default value to use if the field is not
+          provided and not required.
+        - **fallback** (*Any*): The fallback value to use if the field is
+          required but not provided.
+        - **value** (*Any*): The current value of the field being processed.
 
-        Raises:
-            ValidationError: If the field is required and no value or fallback
-                is provided.
+        **Returns:**
+
+        - (*Any*): The determined value of the field after considering
+          required, default, and fallback attributes.
+
+        **Raises:**
+
+        - **ValidationError**:
+          If the field is required and no value or fallback is provided.
         """
         if value is not None:
             return value

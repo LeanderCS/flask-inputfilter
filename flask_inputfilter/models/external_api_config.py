@@ -9,12 +9,15 @@ class ExternalApiConfig:
     """
     Configuration for an external API call.
 
-    :param url: The URL of the external API.
-    :param method: The HTTP method to use.
-    :param params: The parameters to send to the API.
-    :param data_key: The key in the response JSON to use
-    :param api_key: The API key to use.
-    :param headers: The headers to send to the API.
+    **Parameters:**
+
+    - **url** (*str*): The URL of the external API.
+    - **method** (*str*): The HTTP method to use.
+    - **params** (*Optional[dict[str, str]]*): The parameters to send to
+      the API.
+    - **data_key** (*Optional[str]*): The key in the response JSON to use
+    - **api_key** (*Optional[str]*): The API key to use.
+    - **headers** (*Optional[dict[str, str]]*): The headers to send to the API.
     """
 
     url: str

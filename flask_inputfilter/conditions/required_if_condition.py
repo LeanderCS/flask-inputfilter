@@ -13,9 +13,9 @@ class RequiredIfCondition(BaseCondition):
 
     - **condition_field** (*str*): The field whose value is checked.
     - **value** (*Optional[Union[Any, list[Any]]]*): The value(s) that
-        trigger the requirement.
+      trigger the requirement.
     - **required_field** (*str*): The field that becomes required if the
-        condition is met.
+      condition is met.
 
     **Expected Behavior:**
 

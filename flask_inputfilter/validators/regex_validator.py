@@ -15,9 +15,9 @@ class RegexValidator(BaseValidator):
     **Parameters:**
 
     - **pattern** (*str*): The regular expression pattern the
-        input must match.
+      input must match.
     - **error_message** (*Optional[str]*): Custom error message if
-        the input does not match the pattern.
+      the input does not match the pattern.
 
     **Expected Behavior:**
 

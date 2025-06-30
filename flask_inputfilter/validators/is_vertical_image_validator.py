@@ -20,7 +20,7 @@ class IsVerticalImageValidator(BaseValidator):
     **Parameters:**
 
     - **error_message** (*Optional[str]*): Custom error message if the image
-        is not vertically oriented.
+      is not vertically oriented.
 
     **Expected Behavior:**
 

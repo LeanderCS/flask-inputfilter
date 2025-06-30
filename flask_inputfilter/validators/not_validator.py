@@ -14,9 +14,9 @@ class NotValidator(BaseValidator):
     **Parameters:**
 
     - **validator** (*BaseValidator*): The validator whose outcome is to be
-        inverted.
+      inverted.
     - **error_message** (*Optional[str]*): Custom error message if the
-        inverted validation does not behave as expected.
+      inverted validation does not behave as expected.
 
     **Expected Behavior:**
 

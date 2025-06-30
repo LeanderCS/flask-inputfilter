@@ -15,7 +15,7 @@ class IsWeekendValidator(BaseValidator):
     **Parameters:**
 
     - **error_message** (*Optional[str]*): Custom error message if the
-        date is not on a weekend.
+      date is not on a weekend.
 
     **Expected Behavior:**
 
