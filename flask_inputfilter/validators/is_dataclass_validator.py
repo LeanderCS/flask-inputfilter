@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import Any, Optional, Tuple, Type, TypeVar, Union, _GenericAlias
+from typing import Any, Optional, Type, TypeVar, Union, _GenericAlias
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import BaseValidator
@@ -216,7 +216,7 @@ class IsDataclassValidator(BaseValidator):
         self,
         field_name: str,
         field_value: Any,
-        args: Tuple[Type, ...],
+        args: tuple[Type, ...],
         parent_value: dict[str, Any],
     ) -> None:
         """Validate list[T] type."""
@@ -246,7 +246,7 @@ class IsDataclassValidator(BaseValidator):
         self,
         field_name: str,
         field_value: Any,
-        args: Tuple[Type, ...],
+        args: tuple[Type, ...],
         parent_value: dict[str, Any],
     ) -> None:
         """Validate dict[K, V] type."""
@@ -286,7 +286,7 @@ class IsDataclassValidator(BaseValidator):
         self,
         field_name: str,
         field_value: Any,
-        args: Tuple[Type, ...],
+        args: tuple[Type, ...],
         parent_value: dict[str, Any],
     ) -> None:
         """Validate Union types, particularly Optional[T]."""
