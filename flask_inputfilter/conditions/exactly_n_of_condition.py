@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any
 
 from flask_inputfilter.conditions import BaseCondition
 
@@ -12,7 +12,7 @@ class ExactlyNOfCondition(BaseCondition):
 
     **Parameters:**
 
-    - **fields** (*List[str]*): A list of fields to check.
+    - **fields** (*list[str]*): A list of fields to check.
     - **n** (*int*): The exact number of fields that must be present.
 
     **Expected Behavior:**
@@ -50,11 +50,11 @@ class ExactlyNOfCondition(BaseCondition):
 
     __slots__ = ("fields", "n")
 
-    def __init__(self, fields: List[str], n: int) -> None:
+    def __init__(self, fields: list[str], n: int) -> None:
         self.fields = fields
         self.n = n
 
-    def check(self, data: Dict[str, Any]) -> bool:
+    def check(self, data: dict[str, Any]) -> bool:
         return (
             sum(1 for field in self.fields if data.get(field) is not None)
             == self.n

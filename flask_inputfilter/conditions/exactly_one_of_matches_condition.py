@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any
 
 from flask_inputfilter.conditions import BaseCondition
 
@@ -11,7 +11,7 @@ class ExactlyOneOfMatchesCondition(BaseCondition):
 
     **Parameters:**
 
-    - **fields** (*List[str]*): A list of fields to check.
+    - **fields** (*list[str]*): A list of fields to check.
     - **value** (*Any*): The value to match against.
 
     **Expected Behavior:**
@@ -44,11 +44,11 @@ class ExactlyOneOfMatchesCondition(BaseCondition):
 
     __slots__ = ("fields", "value")
 
-    def __init__(self, fields: List[str], value: Any) -> None:
+    def __init__(self, fields: list[str], value: Any) -> None:
         self.fields = fields
         self.value = value
 
-    def check(self, data: Dict[str, Any]) -> bool:
+    def check(self, data: dict[str, Any]) -> bool:
         return (
             sum(1 for field in self.fields if data.get(field) == self.value)
             == 1

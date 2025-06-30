@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any
 
 from flask_inputfilter.conditions import BaseCondition
 
@@ -12,7 +12,7 @@ class OneOfCondition(BaseCondition):
 
     **Parameters:**
 
-    - **fields** (*List[str]*): A list of fields to check.
+    - **fields** (*list[str]*): A list of fields to check.
 
     **Expected Behavior:**
 
@@ -44,10 +44,10 @@ class OneOfCondition(BaseCondition):
 
     __slots__ = ("fields",)
 
-    def __init__(self, fields: List[str]) -> None:
+    def __init__(self, fields: list[str]) -> None:
         self.fields = fields
 
-    def check(self, data: Dict[str, Any]) -> bool:
+    def check(self, data: dict[str, Any]) -> bool:
         return any(
             field in data and data.get(field) is not None
             for field in self.fields

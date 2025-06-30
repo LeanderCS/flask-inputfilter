@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import BaseValidator
@@ -14,7 +14,7 @@ class XorValidator(BaseValidator):
 
     **Parameters:**
 
-    - **validators** (*List[BaseValidator]*): A list of validators,
+    - **validators** (*list[BaseValidator]*): A list of validators,
         of which exactly one must pass.
     - **error_message** (*Optional[str]*): Custom error message if the
         input does not satisfy exactly one validator.
@@ -44,7 +44,7 @@ class XorValidator(BaseValidator):
 
     def __init__(
         self,
-        validators: List[BaseValidator],
+        validators: list[BaseValidator],
         error_message: Optional[str] = None,
     ) -> None:
         self.validators = validators

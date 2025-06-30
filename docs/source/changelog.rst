@@ -3,6 +3,15 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.5.5] - 2025-06-30
+--------------------
+
+Changed
+^^^^^^^
+- Updated ``InputFilter`` to increase performance.
+- Updated ``IsDataclassValidator`` to be more readable and maintainable.
+
+
 [0.5.4] - 2025-05-24
 --------------------
 

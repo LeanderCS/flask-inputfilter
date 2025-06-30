@@ -15,8 +15,8 @@ cdef class ExternalApiMixin:
 
     @staticmethod
     cdef str replace_placeholders(
-            value: str,
-            validated_data: Dict[str, Any]
+            str value,
+            dict validated_data
     ):
         """
         Replace all placeholders, marked with '{{ }}' in value
@@ -24,7 +24,7 @@ cdef class ExternalApiMixin:
 
         Params:
             value (str): The string containing placeholders to be replaced.
-            validated_data (Dict[str, Any]): The dictionary containing 
+            validated_data (dict[str, Any]): The dictionary containing 
                 the values to replace the placeholders with.
 
         Returns:
@@ -38,7 +38,7 @@ cdef class ExternalApiMixin:
 
     @staticmethod
     cdef dict replace_placeholders_in_params(
-            params: dict, validated_data: Dict[str, Any]
+            dict params, dict validated_data
     ):
         """
         Replace all placeholders in params with the corresponding
@@ -46,7 +46,7 @@ cdef class ExternalApiMixin:
 
         Params:
             params (dict): The params dictionary containing placeholders.
-            validated_data (Dict[str, Any]): The dictionary containing 
+            validated_data (dict[str, Any]): The dictionary containing 
                 the values to replace the placeholders with.
 
         Returns:
@@ -62,7 +62,7 @@ cdef class ExternalApiMixin:
 
     @staticmethod
     cdef object call_external_api(
-        config: ExternalApiConfig, fallback: Any, validated_data: Dict[str, Any]
+        object config, object fallback, dict validated_data
     ):
         """
         Makes a call to an external API using provided configuration and
@@ -83,7 +83,7 @@ cdef class ExternalApiMixin:
                 external API call, such as URL, headers, method, and API key.
             fallback (Any):
                 The value to be returned in case the external API call fails.
-            validated_data (Dict[str, Any]):
+            validated_data (dict[str, Any]):
                 The dictionary containing data used to replace placeholders
                 in the URL and parameters of the API request.
 

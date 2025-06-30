@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Optional
 
 
 @dataclass
@@ -19,7 +19,7 @@ class ExternalApiConfig:
 
     url: str
     method: str
-    params: Optional[Dict[str, str]] = None
+    params: Optional[dict[str, str]] = None
     data_key: Optional[str] = None
     api_key: Optional[str] = None
-    headers: Optional[Dict[str, str]] = None
+    headers: Optional[dict[str, str]] = None

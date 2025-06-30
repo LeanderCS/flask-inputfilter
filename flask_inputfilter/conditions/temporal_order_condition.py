@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
 from flask_inputfilter.conditions import BaseCondition
 from flask_inputfilter.helpers import parse_date
@@ -54,7 +54,7 @@ class TemporalOrderCondition(BaseCondition):
         self.smaller_date_field = smaller_date_field
         self.larger_date_field = larger_date_field
 
-    def check(self, data: Dict[str, Any]) -> bool:
+    def check(self, data: dict[str, Any]) -> bool:
         return parse_date(data.get(self.smaller_date_field)) < parse_date(
             data.get(self.larger_date_field)
         )

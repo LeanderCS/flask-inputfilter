@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import BaseValidator
@@ -13,7 +13,7 @@ class AndValidator(BaseValidator):
 
     **Parameters:**
 
-    - **validators** (*List[BaseValidator]*): A list of validators that must
+    - **validators** (*list[BaseValidator]*): A list of validators that must
         all pass.
     - **error_message** (*Optional[str]*): Custom error message if any of the
         validators fail.
@@ -45,7 +45,7 @@ class AndValidator(BaseValidator):
 
     def __init__(
         self,
-        validators: List[BaseValidator],
+        validators: list[BaseValidator],
         error_message: Optional[str] = None,
     ) -> None:
         self.validators = validators

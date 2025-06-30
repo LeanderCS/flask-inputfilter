@@ -1,16 +1,7 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import (
-    Any,
-    Dict,
-    Optional,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-    _GenericAlias,
-)
+from typing import Any, Optional, Tuple, Type, TypeVar, Union, _GenericAlias
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import BaseValidator
@@ -23,7 +14,7 @@ def get_origin(tp: Any) -> Optional[Type[Any]]:
     """
     Get the unsubscripted version of a type.
 
-    This supports typing types like List, Dict, etc. and their
+    This supports typing types like list, dict, etc. and their
     typing_extensions equivalents.
     """
     if isinstance(tp, _GenericAlias):
@@ -37,7 +28,7 @@ def get_args(tp: Any) -> tuple[Any, ...]:
     Get type arguments with all substitutions performed.
 
     For unions, basic types, and special typing forms, returns the type
-    arguments. For example, for List[int] returns (int,).
+    arguments. For example, for list[int] returns (int,).
     """
     if isinstance(tp, _GenericAlias):
         return tp.__args__
@@ -143,7 +134,7 @@ class IsDataclassValidator(BaseValidator):
             raise ValidationError(self._format_error("not_dict"))
 
     def _validate_field(
-        self, field: dataclasses.Field, value: Dict[str, Any]
+        self, field: dataclasses.Field, value: dict[str, Any]
     ) -> None:
         """Validate a single field of the dataclass."""
         field_name = field.name
@@ -174,7 +165,7 @@ class IsDataclassValidator(BaseValidator):
         field_name: str,
         field_value: Any,
         field_type: Type,
-        parent_value: Dict[str, Any],
+        parent_value: dict[str, Any],
     ) -> None:
         """Validate that a field value matches its expected type."""
         origin = get_origin(field_type)
@@ -198,9 +189,9 @@ class IsDataclassValidator(BaseValidator):
         field_value: Any,
         field_type: Type,
         origin: Type,
-        parent_value: Dict[str, Any],
+        parent_value: dict[str, Any],
     ) -> None:
-        """Validate generic types like List[T], Dict[K, V], Optional[T]."""
+        """Validate generic types like list[T], dict[K, V], Optional[T]."""
         args = get_args(field_type)
 
         validators = {
@@ -226,9 +217,9 @@ class IsDataclassValidator(BaseValidator):
         field_name: str,
         field_value: Any,
         args: Tuple[Type, ...],
-        parent_value: Dict[str, Any],
+        parent_value: dict[str, Any],
     ) -> None:
-        """Validate List[T] type."""
+        """Validate list[T] type."""
         if not isinstance(field_value, list):
             raise ValidationError(
                 self._format_error(
@@ -256,9 +247,9 @@ class IsDataclassValidator(BaseValidator):
         field_name: str,
         field_value: Any,
         args: Tuple[Type, ...],
-        parent_value: Dict[str, Any],
+        parent_value: dict[str, Any],
     ) -> None:
-        """Validate Dict[K, V] type."""
+        """Validate dict[K, V] type."""
         if not isinstance(field_value, dict):
             raise ValidationError(
                 self._format_error(
@@ -296,7 +287,7 @@ class IsDataclassValidator(BaseValidator):
         field_name: str,
         field_value: Any,
         args: Tuple[Type, ...],
-        parent_value: Dict[str, Any],
+        parent_value: dict[str, Any],
     ) -> None:
         """Validate Union types, particularly Optional[T]."""
         if None in args:
@@ -339,7 +330,7 @@ class IsDataclassValidator(BaseValidator):
         field_name: str,
         field_value: Any,
         field_type: Type,
-        parent_value: Dict[str, Any],
+        parent_value: dict[str, Any],
     ) -> None:
         """Validate simple types like int, str, bool, etc."""
         if not isinstance(field_value, field_type):

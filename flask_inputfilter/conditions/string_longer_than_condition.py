@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Dict
-
 from flask_inputfilter.conditions import BaseCondition
 
 
@@ -50,7 +48,7 @@ class StringLongerThanCondition(BaseCondition):
         self.longer_field = longer_field
         self.shorter_field = shorter_field
 
-    def check(self, value: Dict[str, str]) -> bool:
+    def check(self, value: dict[str, str]) -> bool:
         return len(value.get(self.longer_field) or 0) > len(
             value.get(self.shorter_field) or 0
         )

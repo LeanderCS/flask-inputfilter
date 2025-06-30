@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Union
+from typing import Any, Union
 
 from flask_inputfilter.conditions import BaseCondition
 from flask_inputfilter.exceptions import ValidationError
@@ -8,12 +8,12 @@ from flask_inputfilter.validators import BaseValidator
 
 cdef class FieldMixin:
     @staticmethod
-    cdef object apply_filters(filters: List[BaseFilter], value: Any):
+    cdef object apply_filters(list filters, object value):
         """
         Apply filters to the field value.
 
         Args:
-            filters (List[BaseFilter]): A list of filters to apply to the 
+            filters (list[BaseFilter]): A list of filters to apply to the 
                 value.
             value (Any): The value to be processed by the filters.
 
@@ -31,9 +31,9 @@ cdef class FieldMixin:
 
     @staticmethod
     cdef object apply_steps(
-            steps: List[Union[BaseFilter, BaseValidator]],
-            fallback: Any,
-            value: Any
+            list steps,
+            object fallback,
+            object value
     ):
         """
         Apply multiple filters and validators in a specific order.
@@ -45,7 +45,7 @@ cdef class FieldMixin:
         the validation error is raised.
 
         Args:
-            steps (List[Union[BaseFilter, BaseValidator]]): 
+            steps (list[Union[BaseFilter, BaseValidator]]): 
                 A list of filters and validators to be applied in order.
             fallback (Any): 
                 A fallback value to return if validation fails.
@@ -77,7 +77,7 @@ cdef class FieldMixin:
         return value
 
     @staticmethod
-    cdef void check_conditions(conditions: List[BaseCondition], validated_data: Dict[str, Any]) except *:
+    cdef void check_conditions(list conditions, dict validated_data) except *:
         """
         Checks if all conditions are met.
 
@@ -87,9 +87,9 @@ cdef class FieldMixin:
         message indicating which condition failed.
 
         Args:
-            conditions (List[BaseCondition]):
+            conditions (list[BaseCondition]):
                 A list of conditions to be checked against the validated data.
-            validated_data (Dict[str, Any]):
+            validated_data (dict[str, Any]):
                 The validated data to check against the conditions.
         """
         for condition in conditions:
@@ -100,11 +100,11 @@ cdef class FieldMixin:
 
     @staticmethod
     cdef object check_for_required(
-            field_name: str,
-            required: bool,
-            default: Any,
-            fallback: Any,
-            value: Any,
+            str field_name,
+            bint required,
+            object default,
+            object fallback,
+            object value,
     ):
         """
         Determine the value of the field, considering the required and
@@ -141,13 +141,13 @@ cdef class FieldMixin:
 
     @staticmethod
     cdef object validate_field(
-            validators: List[BaseValidator], fallback: Any, value: Any
+            list validators, object fallback, object value
     ):
         """
         Validate the field value.
 
         Args:
-            validators (List[BaseValidator]): A list of validators to apply 
+            validators (list[BaseValidator]): A list of validators to apply 
                 to the field value.
             fallback (Any): A fallback value to return if validation fails.
             value (Any): The value to be validated.

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List
+from typing import Any
 
 from flask_inputfilter.filters import BaseFilter
 
@@ -12,7 +12,7 @@ class WhitelistFilter(BaseFilter):
 
     **Parameters:**
 
-    - **whitelist** (*List[str]*, optional): A list of allowed words
+    - **whitelist** (*list[str]*, optional): A list of allowed words
         or keys. If not provided, no filtering is applied.
 
     **Expected Behavior:**
@@ -38,7 +38,7 @@ class WhitelistFilter(BaseFilter):
 
     __slots__ = ("whitelist",)
 
-    def __init__(self, whitelist: List[str] = None) -> None:
+    def __init__(self, whitelist: list[str] = None) -> None:
         self.whitelist = whitelist
 
     def apply(self, value: Any) -> Any:

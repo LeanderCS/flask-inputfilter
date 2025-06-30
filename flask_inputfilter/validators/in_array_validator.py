@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import BaseValidator
@@ -13,7 +13,7 @@ class InArrayValidator(BaseValidator):
 
     **Parameters:**
 
-    - **haystack** (*List[Any]*): The list of allowed values.
+    - **haystack** (*list[Any]*): The list of allowed values.
     - **strict** (*bool*, default: False): When ``True``, also checks that
         the type of the value matches the types in the allowed list.
     - **error_message** (*Optional[str]*): Custom error message if
@@ -42,7 +42,7 @@ class InArrayValidator(BaseValidator):
 
     def __init__(
         self,
-        haystack: List[Any],
+        haystack: list[Any],
         strict: bool = False,
         error_message: Optional[str] = None,
     ) -> None:

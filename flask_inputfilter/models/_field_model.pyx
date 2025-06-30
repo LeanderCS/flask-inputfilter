@@ -6,7 +6,7 @@
 # cython: initializedcheck=False
 from __future__ import annotations
 
-from typing import Any, List, Optional, Union
+from typing import Any, Optional, Union
 
 from flask_inputfilter.filters import BaseFilter
 from flask_inputfilter.models import ExternalApiConfig
@@ -40,9 +40,9 @@ cdef class FieldModel:
         required: bool = False,
         default: Any = None,
         fallback: Any = None,
-        filters: List[BaseFilter] = None,
-        validators: List[BaseValidator] = None,
-        steps: List[Union[BaseFilter, BaseValidator]] = None,
+        filters: list[BaseFilter] = None,
+        validators: list[BaseValidator] = None,
+        steps: list[Union[BaseFilter, BaseValidator]] = None,
         external_api: Optional[ExternalApiConfig] = None,
         copy: Optional[str] = None
     ) -> None:

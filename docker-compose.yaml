@@ -1,10 +1,30 @@
 services:
 
-  flask-inputfilter:
+  env:
+    build:
+      context: .
+      dockerfile: env_configs/env.Dockerfile
+    container_name: flask-inputfilter-env
+    volumes:
+      - .:/app
+    stdin_open: true
+    tty: true
+
+  cython:
     build:
       context: .
       dockerfile: env_configs/cython.Dockerfile
-    container_name: flask-inputfilter
+    container_name: flask-inputfilter-cython
+    volumes:
+      - .:/app
+    stdin_open: true
+    tty: true
+
+  pure:
+    build:
+      context: .
+      dockerfile: env_configs/pure.Dockerfile
+    container_name: flask-inputfilter-pure
     volumes:
       - .:/app
     ports:

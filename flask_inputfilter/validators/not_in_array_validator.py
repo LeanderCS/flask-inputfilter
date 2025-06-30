@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import BaseValidator
@@ -13,7 +13,7 @@ class NotInArrayValidator(BaseValidator):
 
     **Parameters:**
 
-    - **haystack** (*List[Any]*): A list of disallowed values.
+    - **haystack** (*list[Any]*): A list of disallowed values.
     - **strict** (*bool*, default: False): If ``True``, the type of the
         value is also validated against the disallowed list.
     - **error_message** (*Optional[str]*): Custom error message if the
@@ -41,7 +41,7 @@ class NotInArrayValidator(BaseValidator):
 
     def __init__(
         self,
-        haystack: List[Any],
+        haystack: list[Any],
         strict: bool = False,
         error_message: Optional[str] = None,
     ) -> None:

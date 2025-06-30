@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
 from flask_inputfilter.conditions import BaseCondition
 
@@ -51,7 +51,7 @@ class ArrayLongerThanCondition(BaseCondition):
         self.longer_field = longer_field
         self.shorter_field = shorter_field
 
-    def check(self, data: Dict[str, Any]) -> bool:
+    def check(self, data: dict[str, Any]) -> bool:
         return len(data.get(self.longer_field) or []) > len(
             data.get(self.shorter_field) or []
         )

@@ -4,7 +4,7 @@ import json
 import logging
 import sys
 from collections.abc import Callable
-from typing import Any, Dict, List, Optional, Type, TypeVar, Union
+from typing import Any, Optional, Type, TypeVar, Union
 
 from flask import Response, g, request
 
@@ -39,21 +39,21 @@ _INTERNED_STRINGS = {
 class InputFilter:
     """Base class for all input filters."""
 
-    def __init__(self, methods: Optional[List[str]] = None) -> None:
-        self.methods: List[str] = methods or [
+    def __init__(self, methods: Optional[list[str]] = None) -> None:
+        self.methods: list[str] = methods or [
             "GET",
             "POST",
             "PATCH",
             "PUT",
             "DELETE",
         ]
-        self.fields: Dict[str, FieldModel] = {}
-        self.conditions: List[BaseCondition] = []
-        self.global_filters: List[BaseFilter] = []
-        self.global_validators: List[BaseValidator] = []
-        self.data: Dict[str, Any] = {}
-        self.validated_data: Dict[str, Any] = {}
-        self.errors: Dict[str, str] = {}
+        self.fields: dict[str, FieldModel] = {}
+        self.conditions: list[BaseCondition] = []
+        self.global_filters: list[BaseFilter] = []
+        self.global_validators: list[BaseValidator] = []
+        self.data: dict[str, Any] = {}
+        self.validated_data: dict[str, Any] = {}
+        self.errors: dict[str, str] = {}
         self.model_class: Optional[Type[T]] = None
 
     def isValid(self) -> bool:
@@ -114,7 +114,7 @@ class InputFilter:
 
             def wrapper(
                 *args, **kwargs
-            ) -> Union[Response, tuple[Any, Dict[str, Any]]]:
+            ) -> Union[Response, tuple[Any, dict[str, Any]]]:
                 """
                 Wrapper function to handle input validation and error handling
                 for the decorated route function.
@@ -124,7 +124,7 @@ class InputFilter:
                     **kwargs: Keyword arguments for the route function.
 
                 Returns:
-                    Union[Response, tuple[Any, Dict[str, Any]]]: The response
+                    Union[Response, tuple[Any, dict[str, Any]]]: The response
                         from the route function or an error response.
                 """
                 input_filter = cls()
@@ -169,8 +169,8 @@ class InputFilter:
         return decorator
 
     def validateData(
-        self, data: Optional[Dict[str, Any]] = None
-    ) -> Union[Dict[str, Any], Type[T]]:
+        self, data: Optional[dict[str, Any]] = None
+    ) -> Union[dict[str, Any], Type[T]]:
         import warnings
 
         warnings.warn(
@@ -181,8 +181,8 @@ class InputFilter:
         return self.validate_data(data)
 
     def validate_data(
-        self, data: Optional[Dict[str, Any]] = None
-    ) -> Union[Dict[str, Any], Type[T]]:
+        self, data: Optional[dict[str, Any]] = None
+    ) -> Union[dict[str, Any], Type[T]]:
         """
         Validates input data against defined field rules, including applying
         filters, validators, custom logic steps, and fallback mechanisms. The
@@ -190,12 +190,12 @@ class InputFilter:
         appropriately and conditions are checked after processing.
 
         Args:
-            data (Dict[str, Any]): A dictionary containing the input data to
+            data (dict[str, Any]): A dictionary containing the input data to
                 be validated where keys represent field names and values
                 represent the corresponding data.
 
         Returns:
-            Union[Dict[str, Any], Type[T]]: A dictionary containing the
+            Union[dict[str, Any], Type[T]]: A dictionary containing the
                 validated data with any modifications, default values,
                 or processed values as per the defined validation rules.
 
@@ -302,7 +302,7 @@ class InputFilter:
         """
         self.conditions.append(condition)
 
-    def getConditions(self) -> List[BaseCondition]:
+    def getConditions(self) -> list[BaseCondition]:
         import warnings
 
         warnings.warn(
@@ -312,7 +312,7 @@ class InputFilter:
         )
         return self.get_conditions()
 
-    def get_conditions(self) -> List[BaseCondition]:
+    def get_conditions(self) -> list[BaseCondition]:
         """
         Retrieve the list of all registered conditions.
 
@@ -321,12 +321,12 @@ class InputFilter:
         is represented as an instance of the BaseCondition type.
 
         Returns:
-            List[BaseCondition]: A list containing all currently registered
+            list[BaseCondition]: A list containing all currently registered
                 instances of BaseCondition.
         """
         return self.conditions
 
-    def setData(self, data: Dict[str, Any]) -> None:
+    def setData(self, data: dict[str, Any]) -> None:
         import warnings
 
         warnings.warn(
@@ -336,14 +336,14 @@ class InputFilter:
         )
         self.set_data(data)
 
-    def set_data(self, data: Dict[str, Any]) -> None:
+    def set_data(self, data: dict[str, Any]) -> None:
         """
         Filters and sets the provided data into the object's internal storage,
         ensuring that only the specified fields are considered and their values
         are processed through defined filters.
 
         Parameters:
-            data (Dict[str, Any]):
+            data (dict[str, Any]):
                 The input dictionary containing key-value pairs where keys
                 represent field names and values represent the associated
                 data to be filtered and stored.
@@ -389,7 +389,7 @@ class InputFilter:
         """
         return self.validated_data.get(name)
 
-    def getValues(self) -> Dict[str, Any]:
+    def getValues(self) -> dict[str, Any]:
         import warnings
 
         warnings.warn(
@@ -399,7 +399,7 @@ class InputFilter:
         )
         return self.get_values()
 
-    def get_values(self) -> Dict[str, Any]:
+    def get_values(self) -> dict[str, Any]:
         """
         Retrieves a dictionary of key-value pairs from the current object. This
         method provides access to the internal state or configuration of the
@@ -407,7 +407,7 @@ class InputFilter:
         of various types depending on the object's design.
 
         Returns:
-            Dict[str, Any]: A dictionary containing string keys and their
+            dict[str, Any]: A dictionary containing string keys and their
                             corresponding values of any data type.
         """
         return self.validated_data
@@ -441,7 +441,7 @@ class InputFilter:
         """
         return self.data.get(name)
 
-    def getRawValues(self) -> Dict[str, Any]:
+    def getRawValues(self) -> dict[str, Any]:
         import warnings
 
         warnings.warn(
@@ -451,7 +451,7 @@ class InputFilter:
         )
         return self.get_raw_values()
 
-    def get_raw_values(self) -> Dict[str, Any]:
+    def get_raw_values(self) -> dict[str, Any]:
         """
         Retrieves raw values from a given source and returns them as a
         dictionary.
@@ -461,7 +461,7 @@ class InputFilter:
         the identifiers, and the values are of any data type.
 
         Returns:
-            Dict[str, Any]: A dictionary containing the raw values retrieved.
+            dict[str, Any]: A dictionary containing the raw values retrieved.
                The keys are strings representing the identifiers, and the
                values can be of any type, depending on the source
                being accessed.
@@ -475,7 +475,7 @@ class InputFilter:
             if field in self.data
         }
 
-    def getUnfilteredData(self) -> Dict[str, Any]:
+    def getUnfilteredData(self) -> dict[str, Any]:
         import warnings
 
         warnings.warn(
@@ -486,7 +486,7 @@ class InputFilter:
         )
         return self.get_unfiltered_data()
 
-    def get_unfiltered_data(self) -> Dict[str, Any]:
+    def get_unfiltered_data(self) -> dict[str, Any]:
         """
         Fetches unfiltered data from the data source.
 
@@ -497,13 +497,13 @@ class InputFilter:
         is required, as it does not perform any validations or checks.
 
         Returns:
-            Dict[str, Any]: The unfiltered, raw data retrieved from the
+            dict[str, Any]: The unfiltered, raw data retrieved from the
                  data source. The return type may vary based on the
                  specific implementation of the data source.
         """
         return self.data
 
-    def setUnfilteredData(self, data: Dict[str, Any]) -> None:
+    def setUnfilteredData(self, data: dict[str, Any]) -> None:
         import warnings
 
         warnings.warn(
@@ -514,14 +514,14 @@ class InputFilter:
         )
         self.set_unfiltered_data(data)
 
-    def set_unfiltered_data(self, data: Dict[str, Any]) -> None:
+    def set_unfiltered_data(self, data: dict[str, Any]) -> None:
         """
         Sets unfiltered data for the current instance. This method assigns a
         given dictionary of data to the instance for further processing. It
         updates the internal state using the provided data.
 
         Parameters:
-            data (Dict[str, Any]): A dictionary containing the unfiltered
+            data (dict[str, Any]): A dictionary containing the unfiltered
                 data to be associated with the instance.
         """
         self.data = data
@@ -582,7 +582,7 @@ class InputFilter:
         """
         return self.errors.get(field_name)
 
-    def getErrorMessages(self) -> Dict[str, str]:
+    def getErrorMessages(self) -> dict[str, str]:
         import warnings
 
         warnings.warn(
@@ -593,7 +593,7 @@ class InputFilter:
         )
         return self.get_error_messages()
 
-    def get_error_messages(self) -> Dict[str, str]:
+    def get_error_messages(self) -> dict[str, str]:
         """
         Retrieves all error messages associated with the fields in the input
         filter.
@@ -603,7 +603,7 @@ class InputFilter:
         respective error messages.
 
         Returns:
-            Dict[str, str]: A dictionary containing field names as keys and
+            dict[str, str]: A dictionary containing field names as keys and
                             their corresponding error messages as values.
         """
         return self.errors
@@ -614,9 +614,9 @@ class InputFilter:
         required: bool = False,
         default: Any = None,
         fallback: Any = None,
-        filters: Optional[List[BaseFilter]] = None,
-        validators: Optional[List[BaseValidator]] = None,
-        steps: Optional[List[Union[BaseFilter, BaseValidator]]] = None,
+        filters: Optional[list[BaseFilter]] = None,
+        validators: Optional[list[BaseValidator]] = None,
+        steps: Optional[list[Union[BaseFilter, BaseValidator]]] = None,
         external_api: Optional[ExternalApiConfig] = None,
         copy: Optional[str] = None,
     ) -> None:
@@ -633,13 +633,13 @@ class InputFilter:
             fallback (Optional[Any]): The fallback value of the field, if
                 validations fails or field None, although it is required.
 
-            filters (Optional[List[BaseFilter]]): The filters to apply to
+            filters (Optional[list[BaseFilter]]): The filters to apply to
                 the field value.
 
-            validators (Optional[List[BaseValidator]]): The validators to
+            validators (Optional[list[BaseValidator]]): The validators to
                 apply to the field value.
 
-            steps (Optional[List[Union[BaseFilter, BaseValidator]]]): Allows
+            steps (Optional[list[Union[BaseFilter, BaseValidator]]]): Allows
                 to apply multiple filters and validators in a specific order.
 
             external_api (Optional[ExternalApiConfig]): Configuration for an
@@ -706,7 +706,7 @@ class InputFilter:
         """
         return self.fields.get(field_name)
 
-    def getInputs(self) -> Dict[str, FieldModel]:
+    def getInputs(self) -> dict[str, FieldModel]:
         import warnings
 
         warnings.warn(
@@ -716,12 +716,12 @@ class InputFilter:
         )
         return self.get_inputs()
 
-    def get_inputs(self) -> Dict[str, FieldModel]:
+    def get_inputs(self) -> dict[str, FieldModel]:
         """
         Retrieve the dictionary of input fields associated with the object.
 
         Returns:
-            Dict[str, FieldModel]: Dictionary containing field names as
+            dict[str, FieldModel]: Dictionary containing field names as
                 keys and their corresponding FieldModel instances as values
         """
         return self.fields
@@ -762,9 +762,9 @@ class InputFilter:
         required: bool = False,
         default: Any = None,
         fallback: Any = None,
-        filters: Optional[List[BaseFilter]] = None,
-        validators: Optional[List[BaseValidator]] = None,
-        steps: Optional[List[Union[BaseFilter, BaseValidator]]] = None,
+        filters: Optional[list[BaseFilter]] = None,
+        validators: Optional[list[BaseValidator]] = None,
+        steps: Optional[list[Union[BaseFilter, BaseValidator]]] = None,
         external_api: Optional[ExternalApiConfig] = None,
         copy: Optional[str] = None,
     ) -> None:
@@ -781,13 +781,13 @@ class InputFilter:
             fallback (Optional[Any]): The fallback value of the field, if
                 validations fails or field None, although it is required.
 
-            filters (Optional[List[BaseFilter]]): The filters to apply to
+            filters (Optional[list[BaseFilter]]): The filters to apply to
                 the field value.
 
-            validators (Optional[List[BaseValidator]]): The validators to
+            validators (Optional[list[BaseValidator]]): The validators to
                 apply to the field value.
 
-            steps (Optional[List[Union[BaseFilter, BaseValidator]]]): Allows
+            steps (Optional[list[Union[BaseFilter, BaseValidator]]]): Allows
                 to apply multiple filters and validators in a specific order.
 
             external_api (Optional[ExternalApiConfig]): Configuration for an
@@ -826,7 +826,7 @@ class InputFilter:
         """
         self.global_filters.append(filter)
 
-    def getGlobalFilters(self) -> List[BaseFilter]:
+    def getGlobalFilters(self) -> list[BaseFilter]:
         import warnings
 
         warnings.warn(
@@ -837,7 +837,7 @@ class InputFilter:
         )
         return self.get_global_filters()
 
-    def get_global_filters(self) -> List[BaseFilter]:
+    def get_global_filters(self) -> list[BaseFilter]:
         """
         Retrieve all global filters associated with this InputFilter instance.
 
@@ -846,7 +846,7 @@ class InputFilter:
         all fields during data processing.
 
         Returns:
-            List[BaseFilter]: A list of global filters.
+            list[BaseFilter]: A list of global filters.
         """
         return self.global_filters
 
@@ -929,13 +929,13 @@ class InputFilter:
         """
         self.model_class = model_class
 
-    def serialize(self) -> Union[Dict[str, Any], T]:
+    def serialize(self) -> Union[dict[str, Any], T]:
         """
         Serialize the validated data. If a model class is set, returns an
         instance of that class, otherwise returns the raw validated data.
 
         Returns:
-            Union[Dict[str, Any], T]: The serialized data.
+            Union[dict[str, Any], T]: The serialized data.
         """
         if self.model_class is None:
             return self.validated_data
@@ -962,7 +962,7 @@ class InputFilter:
         """
         self.global_validators.append(validator)
 
-    def getGlobalValidators(self) -> List[BaseValidator]:
+    def getGlobalValidators(self) -> list[BaseValidator]:
         import warnings
 
         warnings.warn(
@@ -973,7 +973,7 @@ class InputFilter:
         )
         return self.get_global_validators()
 
-    def get_global_validators(self) -> List[BaseValidator]:
+    def get_global_validators(self) -> list[BaseValidator]:
         """
         Retrieve all global validators associated with this InputFilter
         instance.
@@ -983,6 +983,6 @@ class InputFilter:
         to all fields during validation.
 
         Returns:
-            List[BaseValidator]: A list of global validators.
+            list[BaseValidator]: A list of global validators.
         """
         return self.global_validators

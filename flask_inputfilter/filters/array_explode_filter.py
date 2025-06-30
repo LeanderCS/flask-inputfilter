@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Union
+from typing import Any, Union
 
 from flask_inputfilter.filters import BaseFilter
 
@@ -37,7 +37,7 @@ class ArrayExplodeFilter(BaseFilter):
     def __init__(self, delimiter: str = ",") -> None:
         self.delimiter = delimiter
 
-    def apply(self, value: Any) -> Union[List[str], Any]:
+    def apply(self, value: Any) -> Union[list[str], Any]:
         if not isinstance(value, str):
             return value
 
