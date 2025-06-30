@@ -11,9 +11,10 @@ T = TypeVar("T")
 
 # TODO: Replace with typing.get_origin when Python 3.7 support is dropped.
 def get_origin(tp: Any) -> Optional[Type[Any]]:
-    """Get the unsubscripted version of a type.
+    """
+    Get the unsubscripted version of a type.
 
-    This supports typing types like List, Dict, etc. and their
+    This supports typing types like list, dict, etc. and their
     typing_extensions equivalents.
     """
     if isinstance(tp, _GenericAlias):
@@ -23,10 +24,11 @@ def get_origin(tp: Any) -> Optional[Type[Any]]:
 
 # TODO: Replace with typing.get_args when Python 3.7 support is dropped.
 def get_args(tp: Any) -> tuple[Any, ...]:
-    """Get type arguments with all substitutions performed.
+    """
+    Get type arguments with all substitutions performed.
 
-    For unions, basic types, and special typing forms, returns
-    the type arguments. For example, for List[int] returns (int,).
+    For unions, basic types, and special typing forms, returns the type
+    arguments. For example, for list[int] returns (int,).
     """
     if isinstance(tp, _GenericAlias):
         return tp.__args__
@@ -72,6 +74,30 @@ class IsDataclassValidator(BaseValidator):
 
     __slots__ = ("dataclass_type", "error_message")
 
+    _ERROR_TEMPLATES = {
+        "not_dict": "The provided value is not a dict instance.",
+        "not_dataclass": "'{dataclass_type}' is not a valid dataclass.",
+        "missing_field": "Missing required field '{field_name}' in value "
+        "'{value}'.",
+        "type_mismatch": "Field '{field_name}' in value '{value}' is not of "
+        "type '{expected_type}'.",
+        "list_type": "Field '{field_name}' in value '{value}' is not a valid "
+        "list of '{item_type}'.",
+        "list_item": "Item at index {index} in field '{field_name}' is not "
+        "of type '{expected_type}'.",
+        "dict_type": "Field '{field_name}' in value '{value}' is not a valid "
+        "dict with keys of type '{key_type}' and values of type "
+        "'{value_type}'.",
+        "dict_key": "Key '{key}' in field '{field_name}' is not of type "
+        "'{expected_type}'.",
+        "dict_value": "Value for key '{key}' in field '{field_name}' is not "
+        "of type '{expected_type}'.",
+        "union_mismatch": "Field '{field_name}' in value '{value}' does not "
+        "match any of the types: {types}.",
+        "unsupported_type": "Unsupported type '{field_type}' for field "
+        "'{field_name}'.",
+    }
+
     def __init__(
         self,
         dataclass_type: Type[T],
@@ -80,83 +106,239 @@ class IsDataclassValidator(BaseValidator):
         self.dataclass_type = dataclass_type
         self.error_message = error_message
 
-    def validate(self, value: Any) -> None:
-        if not isinstance(value, dict):
-            raise ValidationError(
-                self.error_message
-                or "The provided value is not a dict instance."
+        if not dataclasses.is_dataclass(self.dataclass_type):
+            raise ValueError(
+                self._format_error(
+                    "not_dataclass", dataclass_type=self.dataclass_type
+                )
             )
 
-        if not dataclasses.is_dataclass(self.dataclass_type):
-            raise ValidationError(
-                self.error_message
-                or f"'{self.dataclass_type}' is not a valid dataclass."
-            )
+    def _format_error(self, error_type: str, **kwargs) -> str:
+        """Format error message using template or custom message."""
+        if self.error_message:
+            return self.error_message
+
+        template = self._ERROR_TEMPLATES.get(error_type, "Validation error")
+        return template.format(**kwargs)
+
+    def validate(self, value: Any) -> None:
+        """Validate that value conforms to the dataclass type."""
+        self._validate_is_dict(value)
 
         for field in dataclasses.fields(self.dataclass_type):
-            field_name = field.name
-            field_type = field.type
-            has_default = (
-                field.default is not dataclasses.MISSING
-                or field.default_factory is not dataclasses.MISSING
+            self._validate_field(field, value)
+
+    def _validate_is_dict(self, value: Any) -> None:
+        """Ensure value is a dictionary."""
+        if not isinstance(value, dict):
+            raise ValidationError(self._format_error("not_dict"))
+
+    def _validate_field(
+        self, field: dataclasses.Field, value: dict[str, Any]
+    ) -> None:
+        """Validate a single field of the dataclass."""
+        field_name = field.name
+        field_type = field.type
+
+        if field_name not in value:
+            if not IsDataclassValidator._has_default(field):
+                raise ValidationError(
+                    self._format_error(
+                        "missing_field", field_name=field_name, value=value
+                    )
+                )
+            return
+
+        field_value = value[field_name]
+        self._validate_field_type(field_name, field_value, field_type, value)
+
+    @staticmethod
+    def _has_default(field: dataclasses.Field) -> bool:
+        """Check if a field has a default value."""
+        return (
+            field.default is not dataclasses.MISSING
+            or field.default_factory is not dataclasses.MISSING
+        )
+
+    def _validate_field_type(
+        self,
+        field_name: str,
+        field_value: Any,
+        field_type: Type,
+        parent_value: dict[str, Any],
+    ) -> None:
+        """Validate that a field value matches its expected type."""
+        origin = get_origin(field_type)
+
+        if origin is not None:
+            self._validate_generic_type(
+                field_name, field_value, field_type, origin, parent_value
+            )
+        elif dataclasses.is_dataclass(field_type):
+            IsDataclassValidator._validate_nested_dataclass(
+                field_value, field_type
+            )
+        else:
+            self._validate_simple_type(
+                field_name, field_value, field_type, parent_value
             )
 
-            if field_name not in value:
-                if not has_default:
-                    raise ValidationError(
-                        self.error_message
-                        or f"Missing required field '{field_name}' in "
-                        f"value '{value}'."
-                    )
-                continue
+    def _validate_generic_type(
+        self,
+        field_name: str,
+        field_value: Any,
+        field_type: Type,
+        origin: Type,
+        parent_value: dict[str, Any],
+    ) -> None:
+        """Validate generic types like list[T], dict[K, V], Optional[T]."""
+        args = get_args(field_type)
 
-            field_value = value[field_name]
+        validators = {
+            list: self._validate_list_type,
+            dict: self._validate_dict_type,
+            Union: self._validate_union_type,
+        }
 
-            origin = get_origin(field_type)
-            args = get_args(field_type)
+        validator = validators.get(origin)
+        if validator:
+            validator(field_name, field_value, args, parent_value)
+        else:
+            raise ValidationError(
+                self._format_error(
+                    "unsupported_type",
+                    field_type=field_type,
+                    field_name=field_name,
+                )
+            )
 
-            if origin is not None:
-                if origin is list:
-                    if not isinstance(field_value, list) or not all(
-                        isinstance(item, args[0]) for item in field_value
-                    ):
-                        raise ValidationError(
-                            self.error_message
-                            or f"Field '{field_name}' in value '{value}' is "
-                            f"not a valid list of '{args[0]}'."
-                        )
-                elif origin is dict:
-                    if not isinstance(field_value, dict) or not all(
-                        isinstance(k, args[0]) and isinstance(v, args[1])
-                        for k, v in field_value.items()
-                    ):
-                        raise ValidationError(
-                            self.error_message
-                            or f"Field '{field_name}' in value '{value}' is "
-                            f"not a valid dict with keys of type "
-                            f"'{args[0]}' and values of type '{args[1]}'."
-                        )
-                elif origin is Union and type(None) in args:
-                    if field_value is not None and not isinstance(
-                        field_value, args[0]
-                    ):
-                        raise ValidationError(
-                            self.error_message
-                            or f"Field '{field_name}' in value '{value}' is "
-                            f"not of type '{args[0]}'."
-                        )
-                else:
-                    raise ValidationError(
-                        self.error_message
-                        or f"Unsupported type '{field_type}' for field "
-                        f"'{field_name}'."
+    def _validate_list_type(
+        self,
+        field_name: str,
+        field_value: Any,
+        args: tuple[Type, ...],
+        parent_value: dict[str, Any],
+    ) -> None:
+        """Validate list[T] type."""
+        if not isinstance(field_value, list):
+            raise ValidationError(
+                self._format_error(
+                    "list_type",
+                    field_name=field_name,
+                    value=parent_value,
+                    item_type=args[0],
+                )
+            )
+
+        item_type = args[0]
+        for i, item in enumerate(field_value):
+            if not isinstance(item, item_type):
+                raise ValidationError(
+                    self._format_error(
+                        "list_item",
+                        index=i,
+                        field_name=field_name,
+                        expected_type=item_type,
                     )
-            elif dataclasses.is_dataclass(field_type):
-                IsDataclassValidator(field_type).validate(field_value)
-            else:
-                if not isinstance(field_value, field_type):
-                    raise ValidationError(
-                        self.error_message
-                        or f"Field '{field_name}' in value '{value}' is not "
-                        f"of type '{field_type}'."
+                )
+
+    def _validate_dict_type(
+        self,
+        field_name: str,
+        field_value: Any,
+        args: tuple[Type, ...],
+        parent_value: dict[str, Any],
+    ) -> None:
+        """Validate dict[K, V] type."""
+        if not isinstance(field_value, dict):
+            raise ValidationError(
+                self._format_error(
+                    "dict_type",
+                    field_name=field_name,
+                    value=parent_value,
+                    key_type=args[0],
+                    value_type=args[1],
+                )
+            )
+
+        key_type, value_type = args[0], args[1]
+        for k, v in field_value.items():
+            if not isinstance(k, key_type):
+                raise ValidationError(
+                    self._format_error(
+                        "dict_key",
+                        key=k,
+                        field_name=field_name,
+                        expected_type=key_type,
                     )
+                )
+            if not isinstance(v, value_type):
+                raise ValidationError(
+                    self._format_error(
+                        "dict_value",
+                        key=k,
+                        field_name=field_name,
+                        expected_type=value_type,
+                    )
+                )
+
+    def _validate_union_type(
+        self,
+        field_name: str,
+        field_value: Any,
+        args: tuple[Type, ...],
+        parent_value: dict[str, Any],
+    ) -> None:
+        """Validate Union types, particularly Optional[T]."""
+        if None in args:
+            if field_value is None:
+                return
+
+            non_none_types = [t for t in args if t is not None]
+            if len(non_none_types) == 1:
+                expected_type = non_none_types[0]
+                if not isinstance(field_value, expected_type):
+                    raise ValidationError(
+                        self._format_error(
+                            "type_mismatch",
+                            field_name=field_name,
+                            value=parent_value,
+                            expected_type=expected_type,
+                        )
+                    )
+                return
+
+        if not any(isinstance(field_value, t) for t in args):
+            types_str = ", ".join(str(t) for t in args)
+            raise ValidationError(
+                self._format_error(
+                    "union_mismatch",
+                    field_name=field_name,
+                    value=parent_value,
+                    types=types_str,
+                )
+            )
+
+    @staticmethod
+    def _validate_nested_dataclass(field_value: Any, field_type: Type) -> None:
+        """Validate nested dataclass."""
+        nested_validator = IsDataclassValidator(field_type)
+        nested_validator.validate(field_value)
+
+    def _validate_simple_type(
+        self,
+        field_name: str,
+        field_value: Any,
+        field_type: Type,
+        parent_value: dict[str, Any],
+    ) -> None:
+        """Validate simple types like int, str, bool, etc."""
+        if not isinstance(field_value, field_type):
+            raise ValidationError(
+                self._format_error(
+                    "type_mismatch",
+                    field_name=field_name,
+                    value=parent_value,
+                    expected_type=field_type,
+                )
+            )

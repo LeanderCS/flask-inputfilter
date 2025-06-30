@@ -28,5 +28,7 @@ class ToNullFilter(BaseFilter):
                 ])
     """
 
+    __slots__ = ()
+
     def apply(self, value: Any) -> Optional[Any]:
         return None if value in ("", None) else value

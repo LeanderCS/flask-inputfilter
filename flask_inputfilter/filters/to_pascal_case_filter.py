@@ -29,6 +29,8 @@ class ToPascalCaseFilter(BaseFilter):
                 ])
     """
 
+    __slots__ = ()
+
     def apply(self, value: Any) -> Union[Optional[str], Any]:
         if not isinstance(value, str):
             return value

@@ -36,7 +36,7 @@ Fields of `ExternalApiConfig`
      - ``str``
      - The HTTP method to use (e.g., ``GET``, ``POST``).
    * - ``params``
-     - ``Optional[Dict[str, str]]``
+     - ``Optional[dict[str, str]]``
      - Query parameters for the API, with placeholders allowed.
    * - ``data_key``
      - ``Optional[str]``

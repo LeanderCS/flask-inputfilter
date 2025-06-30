@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import BaseValidator
@@ -48,7 +48,7 @@ class CustomJsonValidator(BaseValidator):
 
     def __init__(
         self,
-        required_fields: List[str] = None,
+        required_fields: list[str] = None,
         schema: dict = None,
         error_message: Optional[str] = None,
     ) -> None:

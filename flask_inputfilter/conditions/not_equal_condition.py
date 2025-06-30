@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
 from flask_inputfilter.conditions import BaseCondition
 
@@ -44,5 +44,5 @@ class NotEqualCondition(BaseCondition):
         self.first_field = first_field
         self.second_field = second_field
 
-    def check(self, data: Dict[str, Any]) -> bool:
+    def check(self, data: dict[str, Any]) -> bool:
         return data.get(self.first_field) != data.get(self.second_field)

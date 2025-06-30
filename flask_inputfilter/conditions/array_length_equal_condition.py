@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
 from flask_inputfilter.conditions import BaseCondition
 
@@ -54,7 +54,7 @@ class ArrayLengthEqualCondition(BaseCondition):
         self.first_array_field = first_array_field
         self.second_array_field = second_array_field
 
-    def check(self, data: Dict[str, Any]) -> bool:
+    def check(self, data: dict[str, Any]) -> bool:
         return len(data.get(self.first_array_field) or []) == len(
             data.get(self.second_array_field) or []
         )

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import binascii
+import warnings
 from typing import Any, Optional
 
 from flask_inputfilter.exceptions import ValidationError
@@ -37,22 +38,43 @@ class IsBase64ImageCorrectSizeValidator(BaseValidator):
 
                 self.add('image', validators=[
                     IsBase64ImageCorrectSizeValidator(
-                        minSize=1024,
-                        maxSize=2 * 1024 * 1024
+                        min_size=1024,
+                        max_size=2 * 1024 * 1024
                     )
                 ])
     """
 
-    __slots__ = ("minSize", "maxSize", "error_message")
+    __slots__ = ("min_size", "max_size", "error_message")
 
     def __init__(
         self,
-        minSize: int = 1,
-        maxSize: int = 4 * 1024 * 1024,
+        min_size: Optional[int] = None,
+        max_size: Optional[int] = None,
         error_message: Optional[str] = None,
+        # Deprecated parameters (for Backward Compatibility)
+        minSize: Optional[int] = None,
+        maxSize: Optional[int] = None,
     ) -> None:
-        self.min_size = minSize
-        self.max_size = maxSize
+        if minSize is not None:
+            warnings.warn(
+                "Parameter 'minSize' is deprecated, use 'min_size' instead",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            if min_size is None:
+                min_size = minSize
+
+        if maxSize is not None:
+            warnings.warn(
+                "Parameter 'maxSize' is deprecated, use 'max_size' instead",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            if max_size is None:
+                max_size = maxSize
+
+        self.min_size = min_size if min_size is not None else 1
+        self.max_size = max_size if max_size is not None else 4 * 1024 * 1024
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:

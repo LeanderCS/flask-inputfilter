@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional, Union
+from typing import Any, Optional, Union
 
 from flask_inputfilter.filters import BaseFilter
 from flask_inputfilter.models import ExternalApiConfig
@@ -15,9 +15,9 @@ class FieldModel:
         required: bool = False,
         default: Any = None,
         fallback: Any = None,
-        filters: Optional[List[BaseFilter]] = None,
-        validators: Optional[List[BaseValidator]] = None,
-        steps: Optional[List[Union[BaseFilter, BaseValidator]]] = None,
+        filters: Optional[list[BaseFilter]] = None,
+        validators: Optional[list[BaseValidator]] = None,
+        steps: Optional[list[Union[BaseFilter, BaseValidator]]] = None,
         external_api: Optional[ExternalApiConfig] = None,
         copy: Optional[str] = None,
     ):

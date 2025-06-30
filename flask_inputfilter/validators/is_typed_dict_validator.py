@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any, Optional, Type
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import BaseValidator
@@ -41,11 +41,15 @@ class IsTypedDictValidator(BaseValidator):
                 ])
     """
 
-    __slots__ = ("typed_dict_type", "error_message")
+    __slots__ = (
+        "typed_dict_expected_keys",
+        "typed_dict_name",
+        "error_message",
+    )
 
     def __init__(
         self,
-        typed_dict_type,
+        typed_dict_type: Type,
         error_message: Optional[str] = None,
     ) -> None:
         """
@@ -56,7 +60,8 @@ class IsTypedDictValidator(BaseValidator):
                 use if validation fails.
         """
 
-        self.typed_dict_type = typed_dict_type
+        self.typed_dict_expected_keys = typed_dict_type.__annotations__
+        self.typed_dict_name = typed_dict_type.__name__
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
@@ -66,19 +71,18 @@ class IsTypedDictValidator(BaseValidator):
                 or "The provided value is not a dict instance."
             )
 
-        expected_keys = self.typed_dict_type.__annotations__
-        for key, expected_type in expected_keys.items():
+        for key, expected_type in self.typed_dict_expected_keys.items():
             if key not in value:
                 raise ValidationError(
                     self.error_message
                     or f"'{value}' does not match "
-                    f"'{self.typed_dict_type.__name__}' structure: "
+                    f"'{self.typed_dict_name}' structure: "
                     f"Missing key '{key}'."
                 )
             if not isinstance(value[key], expected_type):
                 raise ValidationError(
                     self.error_message
                     or f"'{value}' does not match "
-                    f"'{self.typed_dict_type.__name__}' structure: "
+                    f"'{self.typed_dict_name}' structure: "
                     f"Key '{key}' has invalid type."
                 )

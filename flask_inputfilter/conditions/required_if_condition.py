@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 from flask_inputfilter.conditions import BaseCondition
 
@@ -12,7 +12,7 @@ class RequiredIfCondition(BaseCondition):
     **Parameters:**
 
     - **condition_field** (*str*): The field whose value is checked.
-    - **value** (*Optional[Union[Any, List[Any]]]*): The value(s) that
+    - **value** (*Optional[Union[Any, list[Any]]]*): The value(s) that
         trigger the requirement.
     - **required_field** (*str*): The field that becomes required if the
         condition is met.
@@ -53,14 +53,14 @@ class RequiredIfCondition(BaseCondition):
     def __init__(
         self,
         condition_field: str,
-        value: Optional[Union[Any, List[Any]]],
+        value: Optional[Union[Any, list[Any]]],
         required_field: str,
     ) -> None:
         self.condition_field = condition_field
         self.value = value
         self.required_field = required_field
 
-    def check(self, data: Dict[str, Any]) -> bool:
+    def check(self, data: dict[str, Any]) -> bool:
         condition_value = data.get(self.condition_field)
 
         if self.value is not None:

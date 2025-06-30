@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Union
+from typing import Any, Union
 
 from flask_inputfilter.conditions import BaseCondition
 from flask_inputfilter.exceptions import ValidationError
@@ -10,12 +10,12 @@ from flask_inputfilter.validators import BaseValidator
 
 class FieldMixin:
     @staticmethod
-    def apply_filters(filters: List[BaseFilter], value: Any) -> Any:
+    def apply_filters(filters: list[BaseFilter], value: Any) -> Any:
         """
         Apply filters to the field value.
 
         Args:
-            filters (List[BaseFilter]): A list of filters to apply to the
+            filters (list[BaseFilter]): A list of filters to apply to the
                 value.
             value (Any): The value to be processed by the filters.
 
@@ -24,7 +24,7 @@ class FieldMixin:
                 If the value is None, None is returned.
         """
         if value is None:
-            return
+            return None
 
         for filter in filters:
             value = filter.apply(value)
@@ -33,13 +33,13 @@ class FieldMixin:
 
     @staticmethod
     def validate_field(
-        validators: List[BaseValidator], fallback: Any, value: Any
+        validators: list[BaseValidator], fallback: Any, value: Any
     ) -> Any:
         """
         Validate the field value.
 
         Args:
-            validators (List[BaseValidator]): A list of validators to apply
+            validators (list[BaseValidator]): A list of validators to apply
                 to the field value.
             fallback (Any): A fallback value to return if validation fails.
             value (Any): The value to be validated.
@@ -50,7 +50,7 @@ class FieldMixin:
                 returned.
         """
         if value is None:
-            return
+            return None
 
         try:
             for validator in validators:
@@ -63,7 +63,7 @@ class FieldMixin:
 
     @staticmethod
     def apply_steps(
-        steps: List[Union[BaseFilter, BaseValidator]],
+        steps: list[Union[BaseFilter, BaseValidator]],
         fallback: Any,
         value: Any,
     ) -> Any:
@@ -77,7 +77,7 @@ class FieldMixin:
         the validation error is raised.
 
         Args:
-            steps (List[Union[BaseFilter, BaseValidator]]):
+            steps (list[Union[BaseFilter, BaseValidator]]):
                 A list of filters and validators to be applied in order.
             fallback (Any):
                 A fallback value to return if validation fails.
@@ -94,13 +94,13 @@ class FieldMixin:
                 provided.
         """
         if value is None:
-            return
+            return None
 
         try:
             for step in steps:
-                if isinstance(step, BaseFilter):
+                if hasattr(step, "apply"):
                     value = step.apply(value)
-                elif isinstance(step, BaseValidator):
+                elif hasattr(step, "validate"):
                     step.validate(value)
         except ValidationError:
             if fallback is None:
@@ -110,7 +110,7 @@ class FieldMixin:
 
     @staticmethod
     def check_conditions(
-        conditions: List[BaseCondition], validated_data: Dict[str, Any]
+        conditions: list[BaseCondition], validated_data: dict[str, Any]
     ) -> None:
         """
         Checks if all conditions are met.
@@ -121,9 +121,9 @@ class FieldMixin:
         message indicating which condition failed.
 
         Args:
-            conditions (List[BaseCondition]):
+            conditions (list[BaseCondition]):
                 A list of conditions to be checked against the validated
-            validated_data (Dict[str, Any]):
+            validated_data (dict[str, Any]):
                 The validated data to check against the conditions.
         """
         for condition in conditions:

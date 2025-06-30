@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional, Union
+from typing import Any, Optional, Union
 
 from flask_inputfilter.filters.base_filter import BaseFilter
 
@@ -37,24 +37,24 @@ class ArrayElementFilter(BaseFilter):
 
     def __init__(
         self,
-        element_filter: Union[BaseFilter, List[BaseFilter]],
+        element_filter: Union[BaseFilter, list[BaseFilter]],
         error_message: Optional[str] = None,
     ) -> None:
         self.element_filter = element_filter
         self.error_message = error_message
 
-    def apply(self, value: Any) -> List[Any]:
+    def apply(self, value: Any) -> list[Any]:
         if not isinstance(value, list):
             return value
 
         result = []
         for element in value:
-            if isinstance(self.element_filter, BaseFilter):
+            if hasattr(self.element_filter, "apply"):
                 result.append(self.element_filter.apply(element))
                 continue
 
             elif isinstance(self.element_filter, list) and all(
-                isinstance(v, BaseFilter) for v in self.element_filter
+                hasattr(v, "apply") for v in self.element_filter
             ):
                 for filter_instance in self.element_filter:
                     element = filter_instance.apply(element)

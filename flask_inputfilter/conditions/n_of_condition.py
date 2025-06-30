@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List
+from typing import Any
 
 from flask_inputfilter.conditions import BaseCondition
 
@@ -12,7 +12,7 @@ class NOfCondition(BaseCondition):
 
     **Parameters:**
 
-    - **fields** (*List[str]*): A list of fields to check.
+    - **fields** (*list[str]*): A list of fields to check.
     - **n** (*int*): The minimum number of fields that must be present.
 
     **Expected Behavior:**
@@ -50,7 +50,7 @@ class NOfCondition(BaseCondition):
 
     __slots__ = ("fields", "n")
 
-    def __init__(self, fields: List[str], n: int) -> None:
+    def __init__(self, fields: list[str], n: int) -> None:
         self.fields = fields
         self.n = n
 

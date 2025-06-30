@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import BaseValidator
@@ -14,7 +14,7 @@ class OrValidator(BaseValidator):
 
     **Parameters:**
 
-    - **validators** (*List[BaseValidator]*): A list of validators
+    - **validators** (*list[BaseValidator]*): A list of validators
         to apply.
     - **error_message** (*Optional[str]*): Custom error message if none
         of the validators pass.
@@ -44,11 +44,11 @@ class OrValidator(BaseValidator):
 
     def __init__(
         self,
-        validators: List[BaseValidator],
+        validators: list[BaseValidator],
         error_message: Optional[str] = None,
     ) -> None:
         self.validators = validators
-        self.error_message = error_message
+        self.error_message = error_message or "No validator succeeded."
 
     def validate(self, value: Any) -> None:
         for validator in self.validators:
@@ -58,4 +58,4 @@ class OrValidator(BaseValidator):
             except ValidationError:
                 pass
 
-        raise ValidationError(self.error_message or "No validator succeeded.")
+        raise ValidationError(self.error_message)

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.models import ExternalApiConfig
@@ -12,7 +12,7 @@ class ExternalApiMixin:
     def call_external_api(
         config: ExternalApiConfig,
         fallback: Any,
-        validated_data: Dict[str, Any],
+        validated_data: dict[str, Any],
     ) -> Optional[Any]:
         """
         Makes a call to an external API using provided configuration and
@@ -33,7 +33,7 @@ class ExternalApiMixin:
                 external API call, such as URL, headers, method, and API key.
             fallback (Any):
                 The value to be returned in case the external API call fails.
-            validated_data (Dict[str, Any]):
+            validated_data (dict[str, Any]):
                 The dictionary containing data used to replace placeholders
                 in the URL and parameters of the API request.
 
@@ -115,7 +115,7 @@ class ExternalApiMixin:
 
     @staticmethod
     def replace_placeholders(
-        value: str, validated_data: Dict[str, Any]
+        value: str, validated_data: dict[str, Any]
     ) -> str:
         """
         Replace all placeholders, marked with '{{ }}' in value with the
@@ -123,7 +123,7 @@ class ExternalApiMixin:
 
         Params:
             value (str): The string containing placeholders to be replaced.
-            validated_data (Dict[str, Any]): The dictionary containing
+            validated_data (dict[str, Any]): The dictionary containing
                 the values to replace the placeholders with.
 
         Returns:
@@ -137,7 +137,7 @@ class ExternalApiMixin:
 
     @staticmethod
     def replace_placeholders_in_params(
-        params: dict, validated_data: Dict[str, Any]
+        params: dict, validated_data: dict[str, Any]
     ) -> dict:
         """
         Replace all placeholders in params with the corresponding values from
@@ -145,7 +145,7 @@ class ExternalApiMixin:
 
         Params:
             params (dict): The params dictionary containing placeholders.
-            validated_data (Dict[str, Any]): The dictionary containing
+            validated_data (dict[str, Any]): The dictionary containing
                 the values to replace the placeholders with.
 
         Returns:

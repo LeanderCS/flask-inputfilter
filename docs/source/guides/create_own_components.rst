@@ -18,7 +18,7 @@ Condition
 First off with conditions.
 
 Their validation method is called ``check``.
-It expects a dict from the type ``Dict[str, Any]`` whereas the key (``str``) of the
+It expects a dict from the type ``dict[str, Any]`` whereas the key (``str``) of the
 dictionary represents the name of a field and the value (``Any``) the corresponding value.
 The dict represents the entirety of all fields present in the InputFilter it is called.
 

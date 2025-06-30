@@ -57,8 +57,7 @@ class FloatPrecisionValidator(BaseValidator):
                 f"Value '{value}' must be a float or an integer."
             )
 
-        value_str = str(value)
-        match = re.match(r"^-?(\d+)(\.(\d+))?$", value_str)
+        match = re.match(r"^-?(\d+)(\.(\d+))?$", str(value))
         if not match:
             raise ValidationError(f"Value '{value}' is not a valid float.")
 

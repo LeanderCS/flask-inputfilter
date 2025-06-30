@@ -2,7 +2,7 @@ import unittest
 from dataclasses import dataclass
 from unittest.mock import Mock, patch
 
-from flask import Flask, g, jsonify
+from flask import Flask, g, jsonify, request
 
 from flask_inputfilter import InputFilter
 from flask_inputfilter.conditions import BaseCondition, ExactlyOneOfCondition
@@ -154,6 +154,201 @@ class TestInputFilter(unittest.TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json.get("age"), "Invalid data")
+
+    def test_validate_decorator_non_dict_json(self) -> None:
+        """Test that non-dictionary JSON data is handled correctly."""
+
+        class MyInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add("username", default="default_user")
+                self.add("age", default=18)
+
+        app = Flask(__name__)
+
+        @app.route("/test", methods=["POST"])
+        @MyInputFilter.validate()
+        def test_route():
+            return jsonify(g.validated_data)
+
+        with app.test_client() as client:
+            response = client.post(
+                "/test",
+                json=["item1", "item2", "item3"],
+                content_type="application/json",
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(
+                response.json, {"username": "default_user", "age": 18}
+            )
+
+            response = client.post(
+                "/test",
+                data='"just a string"',
+                content_type="application/json",
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(
+                response.json, {"username": "default_user", "age": 18}
+            )
+
+            response = client.post(
+                "/test", data="42", content_type="application/json"
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(
+                response.json, {"username": "default_user", "age": 18}
+            )
+
+            response = client.post(
+                "/test", data="true", content_type="application/json"
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(
+                response.json, {"username": "default_user", "age": 18}
+            )
+
+            response = client.post(
+                "/test", json="null", content_type="application/json"
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(
+                response.json, {"username": "default_user", "age": 18}
+            )
+
+    def test_validate_decorator_invalid_json(self) -> None:
+        """Test that invalid JSON is handled correctly."""
+
+        class MyInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add("field", default="default")
+
+        app = Flask(__name__)
+
+        @app.route("/test", methods=["POST"])
+        @MyInputFilter.validate()
+        def test_route():
+            return jsonify(g.validated_data)
+
+        with app.test_client() as client:
+            response = client.post(
+                "/test", data="{invalid json}", content_type="application/json"
+            )
+            self.assertEqual(response.status_code, 400)
+
+    def test_validate_decorator_mixed_json_types(self) -> None:
+        """Test various JSON types that should be converted to empty dict."""
+
+        class MyInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add("name", required=False)
+                self.add("value", required=False)
+
+        app = Flask(__name__)
+
+        @app.route("/test", methods=["POST"])
+        @MyInputFilter.validate()
+        def test_route():
+            return jsonify(
+                {
+                    "validated": g.validated_data,
+                    "original_type": type(request.get_json()).__name__,
+                }
+            )
+
+        with app.test_client() as client:
+            response = client.post(
+                "/test",
+                json=[{"key": "value"}, ["nested", "array"]],
+                content_type="application/json",
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(
+                response.json["validated"], {"name": None, "value": None}
+            )
+            self.assertEqual(response.json["original_type"], "list")
+
+            response = client.post(
+                "/test", json=3.14, content_type="application/json"
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(
+                response.json["validated"], {"name": None, "value": None}
+            )
+            self.assertEqual(response.json["original_type"], "float")
+
+    def test_validate_decorator_required_fields_with_non_dict(self) -> None:
+        """Test that required fields raise errors when non-dict JSON is
+        sent."""
+
+        class MyInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add("username", required=True)
+                self.add("email", required=True)
+
+        app = Flask(__name__)
+
+        @app.route("/test", methods=["POST"])
+        @MyInputFilter.validate()
+        def test_route():
+            return jsonify(g.validated_data)
+
+        with app.test_client() as client:
+            response = client.post(
+                "/test",
+                json=["user1", "user2"],
+                content_type="application/json",
+            )
+            self.assertEqual(response.status_code, 400)
+            response_data = response.get_json()
+            self.assertIn("username", response_data)
+            self.assertIn("email", response_data)
+
+            # Test mit String
+            response = client.post(
+                "/test", data='"some string"', content_type="application/json"
+            )
+            self.assertEqual(response.status_code, 400)
+            response_data = response.get_json()
+            self.assertIn("username", response_data)
+            self.assertIn("email", response_data)
+
+    def test_validate_decorator_with_fallback_and_non_dict(self) -> None:
+        """Test that fallback values work correctly with non-dict JSON."""
+
+        class MyInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add("status", required=True, fallback="active")
+                self.add(
+                    "count",
+                    required=True,
+                    fallback=0,
+                    validators=[IsIntegerValidator()],
+                )
+
+        app = Flask(__name__)
+
+        @app.route("/test", methods=["POST"])
+        @MyInputFilter.validate()
+        def test_route():
+            return jsonify(g.validated_data)
+
+        with app.test_client() as client:
+            response = client.post(
+                "/test", json=False, content_type="application/json"
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json, {"status": "active", "count": 0})
+
+            response = client.post(
+                "/test", json=[], content_type="application/json"
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json, {"status": "active", "count": 0})
 
     def test_optional(self) -> None:
         """Test that optional field validation works."""
@@ -922,8 +1117,8 @@ class TestInputFilter(unittest.TestCase):
         self.assertEqual(validated_data, {})
 
     def test_copy(self) -> None:
-        """Test that InputFilter.copy() creates a deep copy of the InputFilter
-        instance."""
+        """Test that copy copies the value of the field to the current
+        field."""
         self.inputFilter.add("username")
 
         self.inputFilter.add(

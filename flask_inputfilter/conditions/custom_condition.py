@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import Any, Dict
+from typing import Any
 
 from flask_inputfilter.conditions import BaseCondition
 
@@ -12,7 +12,7 @@ class CustomCondition(BaseCondition):
 
     **Parameters:**
 
-    - **condition** (*Callable[[Dict[str, Any]], bool]*): A function that
+    - **condition** (*Callable[[dict[str, Any]], bool]*): A function that
         takes the input data and returns a boolean indicating whether the
         condition is met.
 
@@ -46,8 +46,8 @@ class CustomCondition(BaseCondition):
 
     __slots__ = ("condition",)
 
-    def __init__(self, condition: Callable[[Dict[str, Any]], bool]) -> None:
+    def __init__(self, condition: Callable[[dict[str, Any]], bool]) -> None:
         self.condition = condition
 
-    def check(self, data: Dict[str, Any]) -> bool:
+    def check(self, data: dict[str, Any]) -> bool:
         return self.condition(data)

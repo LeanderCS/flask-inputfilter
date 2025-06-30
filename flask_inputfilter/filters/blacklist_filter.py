@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List
+from typing import Any
 
 from flask_inputfilter.filters import BaseFilter
 
@@ -11,7 +11,7 @@ class BlacklistFilter(BaseFilter):
 
     **Parameters:**
 
-    - **blacklist** (*List[str]*): A list of substrings (for strings) or keys
+    - **blacklist** (*list[str]*): A list of substrings (for strings) or keys
         (for dictionaries) that should be removed.
 
     **Expected Behavior:**
@@ -36,7 +36,7 @@ class BlacklistFilter(BaseFilter):
 
     __slots__ = ("blacklist",)
 
-    def __init__(self, blacklist: List[str]) -> None:
+    def __init__(self, blacklist: list[str]) -> None:
         self.blacklist = blacklist
 
     def apply(self, value: Any) -> Any:

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import base64
 import io
-from typing import Any
+from typing import Any, Optional
 
 from PIL import Image
 
@@ -56,12 +56,12 @@ class Base64ImageResizeFilter(BaseFilter):
     def __init__(
         self,
         max_size: int = 4 * 1024 * 1024,
-        format: ImageFormatEnum = ImageFormatEnum.JPEG,
+        format: Optional[ImageFormatEnum] = None,
         preserve_icc_profile: bool = False,
         preserve_metadata: bool = False,
     ) -> None:
         self.max_size = max_size
-        self.format = format
+        self.format = format if format else ImageFormatEnum.JPEG
         self.preserve_metadata = preserve_metadata
         self.preserve_icc_profile = preserve_icc_profile
 

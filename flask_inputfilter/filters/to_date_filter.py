@@ -30,6 +30,8 @@ class ToDateFilter(BaseFilter):
                 ])
     """
 
+    __slots__ = ()
+
     def apply(self, value: Any) -> Union[date, Any]:
         if isinstance(value, datetime):
             return value.date()
