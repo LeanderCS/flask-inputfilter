@@ -48,7 +48,9 @@ class XorValidator(BaseValidator):
         error_message: Optional[str] = None,
     ) -> None:
         self.validators = validators
-        self.error_message = error_message
+        self.error_message = (
+            error_message or "No or multiple validators succeeded."
+        )
 
     def validate(self, value: Any) -> None:
         success_count = 0
@@ -60,6 +62,4 @@ class XorValidator(BaseValidator):
                 pass
 
         if success_count != 1:
-            raise ValidationError(
-                self.error_message or "No or multiple validators succeeded."
-            )
+            raise ValidationError(self.error_message)

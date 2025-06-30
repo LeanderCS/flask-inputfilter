@@ -3,7 +3,7 @@ from __future__ import annotations
 import base64
 import binascii
 import io
-from typing import Any
+from typing import Any, Optional
 
 from PIL import Image
 from PIL.Image import Image as ImageType
@@ -42,8 +42,10 @@ class IsVerticalImageValidator(BaseValidator):
 
     __slots__ = ("error_message",)
 
-    def __init__(self, error_message=None):
-        self.error_message = error_message
+    def __init__(self, error_message: Optional[str] = None):
+        self.error_message = (
+            error_message or "The image is not vertically oriented."
+        )
 
     def validate(self, value: Any) -> None:
         if not isinstance(value, (str, ImageType)):
@@ -59,6 +61,4 @@ class IsVerticalImageValidator(BaseValidator):
                 raise ValidationError
 
         except (ValidationError, binascii.Error, OSError):
-            raise ValidationError(
-                self.error_message or "The image is not vertically oriented."
-            )
+            raise ValidationError(self.error_message)

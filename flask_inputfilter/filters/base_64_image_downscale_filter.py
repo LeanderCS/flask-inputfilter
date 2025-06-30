@@ -16,12 +16,12 @@ class Base64ImageDownscaleFilter(BaseFilter):
 
     **Parameters:**
 
-    - **size** (*int*, default: ``1024 * 1024``): A rough pixel count used to
-        compute default dimensions.
-    - **width** (*Optional[int]*): The target width. If not provided, it is
-        calculated as ``sqrt(size)``.
-    - **height** (*Optional[int]*): The target height. If not provided, it is
-        calculated as ``sqrt(size)``.
+    - **size** (*Optional[int]*, default: ``1024 * 1024``): A rough pixel
+        count used to compute default dimensions.
+    - **width** (*Optional[int]*, default: ``size**0.5``): The target width.
+        If not provided, it is calculated as ``sqrt(size)``.
+    - **height** (*Optional[int]*, default: ``size**0.5``): The target height.
+        If not provided, it is calculated as ``sqrt(size)``.
     - **proportionally** (*bool*, default: ``True``): Determines if the image
         should be scaled proportionally. If ``False``, the image is
         forcefully resized to the specified width and height.
@@ -46,17 +46,18 @@ class Base64ImageDownscaleFilter(BaseFilter):
                 ])
     """
 
-    __slots__ = ("size", "width", "height", "proportionally")
+    __slots__ = ("width", "height", "proportionally")
 
     def __init__(
         self,
-        size: int = 1024 * 1024,
+        size: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
         proportionally: bool = True,
     ) -> None:
-        self.width = int(width or size**0.5)
-        self.height = int(height or size**0.5)
+        size = size if size else 1024 * 1024
+        self.width = int(width if width else size**0.5)
+        self.height = int(height if height else size**0.5)
         self.proportionally = proportionally
 
     def apply(self, value: Any) -> Any:

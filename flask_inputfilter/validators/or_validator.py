@@ -48,7 +48,7 @@ class OrValidator(BaseValidator):
         error_message: Optional[str] = None,
     ) -> None:
         self.validators = validators
-        self.error_message = error_message
+        self.error_message = error_message or "No validator succeeded."
 
     def validate(self, value: Any) -> None:
         for validator in self.validators:
@@ -58,4 +58,4 @@ class OrValidator(BaseValidator):
             except ValidationError:
                 pass
 
-        raise ValidationError(self.error_message or "No validator succeeded.")
+        raise ValidationError(self.error_message)

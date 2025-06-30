@@ -27,5 +27,7 @@ class ToBooleanFilter(BaseFilter):
                 ])
     """
 
+    __slots__ = ()
+
     def apply(self, value: Any) -> Union[Optional[bool], Any]:
         return bool(value)

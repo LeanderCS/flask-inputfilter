@@ -24,7 +24,7 @@ class FieldMixin:
                 If the value is None, None is returned.
         """
         if value is None:
-            return
+            return None
 
         for filter in filters:
             value = filter.apply(value)
@@ -50,7 +50,7 @@ class FieldMixin:
                 returned.
         """
         if value is None:
-            return
+            return None
 
         try:
             for validator in validators:
@@ -94,13 +94,13 @@ class FieldMixin:
                 provided.
         """
         if value is None:
-            return
+            return None
 
         try:
             for step in steps:
-                if isinstance(step, BaseFilter):
+                if hasattr(step, "apply"):
                     value = step.apply(value)
-                elif isinstance(step, BaseValidator):
+                elif hasattr(step, "validate"):
                     step.validate(value)
         except ValidationError:
             if fallback is None:

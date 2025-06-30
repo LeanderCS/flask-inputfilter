@@ -80,7 +80,7 @@ cdef class InputFilter:
                 all required conditions; otherwise, returns False.
         """
         try:
-            self.validateData()
+            self.validate_data()
 
         except ValidationError as e:
             self.errors = e.args[0]
@@ -99,13 +99,7 @@ cdef class InputFilter:
             cls
 
         Returns:
-            Callable[
-                [Any],
-                Callable[
-                    [tuple[Any, ...], Dict[str, Any]],
-                    Union[Response, tuple[Any, Dict[str, Any]]],
-                ],
-            ]
+            Callable
         """
         def decorator(
             f,
@@ -140,14 +134,22 @@ cdef class InputFilter:
                 if not any(request_method == method for method in input_filter.methods):
                     return Response(status=405, response="Method Not Allowed")
 
-                data = request.json if request.is_json else request.args
+                if request.is_json:
+                    data = request.get_json(cache=True)
+                    if not isinstance(data, dict):
+                        data = {}
+                else:
+                    data = dict(request.args)
 
                 try:
-                    kwargs = kwargs or {}
+                    if kwargs:
+                        data.update(kwargs)
 
-                    input_filter.data = {**data, **kwargs}
+                    input_filter.data = data
+                    input_filter.validated_data = {}
+                    input_filter.errors = {}
 
-                    g.validated_data = input_filter.validateData()
+                    g.validated_data = input_filter.validate_data()
 
                 except ValidationError as e:
                     return Response(
@@ -157,7 +159,7 @@ cdef class InputFilter:
                     )
 
                 except Exception:
-                    logging.getLogger(__name__).exception(
+                    logging.exception(
                         "An unexpected exception occurred while "
                         "validating input data.",
                     )
@@ -205,7 +207,8 @@ cdef class InputFilter:
         """
         data = data or self.data
         cdef dict errors = {}
-        cdef bint required
+        cdef dict validated_data = {}
+
         cdef object default
         cdef object fallback
         cdef list filters
@@ -213,51 +216,80 @@ cdef class InputFilter:
         cdef object external_api
         cdef str copy
 
+        cdef list global_filters = self.global_filters
+        cdef list global_validators = self.global_validators
+        cdef bint has_global_filters = bool(global_filters)
+        cdef bint has_global_validators = bool(global_validators)
+
         for field_name, field_info in self.fields.items():
-            value = data.get(field_name)
-
-            required = field_info.required
-            default = field_info.default
-            fallback = field_info.fallback
-            filters = field_info.filters + self.global_filters
-            validators = field_info.validators + self.global_validators
-            steps = field_info.steps
-            external_api = field_info.external_api
-            copy = field_info.copy
-
             try:
-                if copy:
-                    value = self.validated_data.get(copy)
-
-                if external_api:
+                if field_info.copy:
+                    value = validated_data.get(field_info.copy)
+                elif field_info.external_api:
                     value = ExternalApiMixin.call_external_api(
-                        external_api, fallback, self.validated_data
+                        field_info.external_api,
+                        field_info.fallback,
+                        validated_data,
                     )
+                else:
+                    value = data.get(field_name)
 
-                value = FieldMixin.apply_filters(filters, value)
-                value = FieldMixin.validate_field(validators, fallback, value) or value
-                value = FieldMixin.apply_steps(steps, fallback, value) or value
-                value = FieldMixin.check_for_required(
-                    field_name, required, default, fallback, value
-                )
+                if field_info.filters or has_global_filters:
+                    filters = field_info.filters
+                    if has_global_filters:
+                        filters = filters + global_filters
+                    value = FieldMixin.apply_filters(filters, value)
 
-                self.validated_data[field_name] = value
+                if field_info.validators or has_global_validators:
+                    validators = field_info.validators
+                    if has_global_validators:
+                        validators = validators + global_validators
+                    result = FieldMixin.validate_field(
+                        validators, field_info.fallback, value
+                    )
+                    if result is not None:
+                        value = result
+
+                if field_info.steps:
+                    result = FieldMixin.apply_steps(
+                        field_info.steps, field_info.fallback, value
+                    )
+                    if result is not None:
+                        value = result
+
+                if value is None:
+                    if field_info.required:
+                        if field_info.fallback is not None:
+                            value = field_info.fallback
+                        elif field_info.default is not None:
+                            value = field_info.default
+                        else:
+                            raise ValidationError(
+                                f"Field '{field_name}' is required."
+                            )
+                    elif field_info.default is not None:
+                        value = field_info.default
+
+                validated_data[field_name] = value
 
             except ValidationError as e:
                 errors[field_name] = str(e)
 
-        try:
-            FieldMixin.check_conditions(self.conditions, self.validated_data)
-        except ValidationError as e:
-            errors["_condition"] = str(e)
+        if self.conditions:
+            try:
+                FieldMixin.check_conditions(self.conditions, validated_data)
+            except ValidationError as e:
+                errors["_condition"] = str(e)
 
         if errors:
             raise ValidationError(errors)
 
-        if self.model_class is not None:
-            return self.serialize()
+        self.validated_data = validated_data
 
-        return self.validated_data
+        if self.model_class is not None:
+            return self.model_class(**validated_data)
+
+        return validated_data
 
     cpdef void addCondition(self, condition: BaseCondition):
         warnings.warn(
@@ -826,7 +858,7 @@ cdef class InputFilter:
                 "Can only merge with another InputFilter instance."
             )
 
-        for key, new_field in other.getInputs().items():
+        for key, new_field in other.get_inputs().items():
             self.fields[key] = new_field
 
         self.conditions += other.conditions

@@ -30,6 +30,8 @@ class ToDigitsFilter(BaseFilter):
                 ])
     """
 
+    __slots__ = ()
+
     def apply(self, value: Any) -> Union[float, int, Any]:
         if not isinstance(value, str):
             return value

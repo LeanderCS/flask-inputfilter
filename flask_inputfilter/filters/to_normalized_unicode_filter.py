@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import unicodedata
-from typing import Any, Union
+from typing import Any, Optional, Union
 
 from flask_inputfilter.enums import UnicodeFormEnum
 from flask_inputfilter.filters import BaseFilter
@@ -42,12 +42,12 @@ class ToNormalizedUnicodeFilter(BaseFilter):
 
     def __init__(
         self,
-        form: UnicodeFormEnum = UnicodeFormEnum.NFC,
+        form: Optional[UnicodeFormEnum] = None,
     ) -> None:
-        if not isinstance(form, UnicodeFormEnum):
+        if form and not isinstance(form, UnicodeFormEnum):
             form = UnicodeFormEnum(form)
 
-        self.form = form
+        self.form = form if form else UnicodeFormEnum.NFC
 
     def apply(self, value: Any) -> Union[str, Any]:
         if not isinstance(value, str):

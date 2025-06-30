@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+import sys
 from collections.abc import Callable
 from typing import Any, Dict, List, Optional, Type, TypeVar, Union
 
@@ -15,6 +16,24 @@ from flask_inputfilter.models import ExternalApiConfig, FieldModel
 from flask_inputfilter.validators import BaseValidator
 
 T = TypeVar("T")
+
+_INTERNED_STRINGS = {
+    "required": sys.intern("required"),
+    "default": sys.intern("default"),
+    "fallback": sys.intern("fallback"),
+    "filters": sys.intern("filters"),
+    "validators": sys.intern("validators"),
+    "steps": sys.intern("steps"),
+    "external_api": sys.intern("external_api"),
+    "copy": sys.intern("copy"),
+    "GET": sys.intern("GET"),
+    "POST": sys.intern("POST"),
+    "PUT": sys.intern("PUT"),
+    "PATCH": sys.intern("PATCH"),
+    "DELETE": sys.intern("DELETE"),
+    "_condition": sys.intern("_condition"),
+    "_error": sys.intern("_error"),
+}
 
 
 class InputFilter:
@@ -38,15 +57,6 @@ class InputFilter:
         self.model_class: Optional[Type[T]] = None
 
     def isValid(self) -> bool:
-        """
-        Checks if the object's state or its attributes meet certain conditions
-        to be considered valid. This function is typically used to ensure that
-        the current state complies with specific requirements or rules.
-
-        Returns:
-            bool: Returns True if the state or attributes of the object fulfill
-                all required conditions; otherwise, returns False.
-        """
         import warnings
 
         warnings.warn(
@@ -78,13 +88,7 @@ class InputFilter:
     @classmethod
     def validate(
         cls,
-    ) -> Callable[
-        [Any],
-        Callable[
-            [tuple[Any, ...], Dict[str, Any]],
-            Union[Response, tuple[Any, Dict[str, Any]]],
-        ],
-    ]:
+    ) -> Callable:
         """
         Decorator for validating input data in routes.
 
@@ -92,18 +96,12 @@ class InputFilter:
             cls
 
         Returns:
-            Callable[
-                [Any],
-                Callable[
-                    [tuple[Any, ...], Dict[str, Any]],
-                    Union[Response, tuple[Any, Dict[str, Any]]],
-                ],
-            ]
+            Callable
         """
 
         def decorator(
             f: Callable,
-        ) -> Callable[[Any, Any], Union[Response, tuple[Any, Dict[str, Any]]]]:
+        ) -> Callable:
             """
             Decorator function to validate input data for a Flask route.
 
@@ -111,13 +109,7 @@ class InputFilter:
                 f (Callable): The Flask route function to be decorated.
 
             Returns:
-                Callable[
-                    [Any, Any],
-                    Union[
-                        Response,
-                        tuple[Any, Dict[str, Any]]
-                    ]
-                ]: The wrapped function with input validation.
+                Callable: The wrapped function with input validation.
             """
 
             def wrapper(
@@ -137,16 +129,24 @@ class InputFilter:
                 """
                 input_filter = cls()
                 if request.method not in input_filter.methods:
-                    return Response(status=405, response="Method Not Allowed")
+                    return Response(status=405)
 
-                data = request.json if request.is_json else request.args
+                if request.is_json:
+                    data = request.get_json(cache=True)
+                    if not isinstance(data, dict):
+                        data = {}
+                else:
+                    data = dict(request.args)
 
                 try:
-                    kwargs = kwargs or {}
+                    if kwargs:
+                        data.update(kwargs)
 
-                    input_filter.data = {**data, **kwargs}
+                    input_filter.data = data
+                    input_filter.validated_data = {}
+                    input_filter.errors = {}
 
-                    g.validated_data = input_filter.validateData()
+                    g.validated_data = input_filter.validate_data()
 
                 except ValidationError as e:
                     return Response(
@@ -156,7 +156,7 @@ class InputFilter:
                     )
 
                 except Exception:
-                    logging.getLogger(__name__).exception(
+                    logging.exception(
                         "An unexpected exception occurred while "
                         "validating input data.",
                     )
@@ -171,27 +171,6 @@ class InputFilter:
     def validateData(
         self, data: Optional[Dict[str, Any]] = None
     ) -> Union[Dict[str, Any], Type[T]]:
-        """
-        Validates input data against defined field rules, including applying
-        filters, validators, custom logic steps, and fallback mechanisms. The
-        validation process also ensures the required fields are handled
-        appropriately and conditions are checked after processing.
-
-        Args:
-            data (Dict[str, Any]): A dictionary containing the input data to
-                be validated where keys represent field names and values
-                represent the corresponding data.
-
-        Returns:
-            Union[Dict[str, Any], Type[T]]: A dictionary containing the
-                validated data with any modifications, default values,
-                or processed values as per the defined validation rules.
-
-        Raises:
-            Any errors raised during external API calls, validation, or
-                logical steps execution of the respective fields or conditions
-                will propagate without explicit handling here.
-        """
         import warnings
 
         warnings.warn(
@@ -227,63 +206,84 @@ class InputFilter:
         """
         data = data or self.data
         errors = {}
+        validated_data = {}
+
+        global_filters = self.global_filters
+        global_validators = self.global_validators
+        has_global_filters = bool(global_filters)
+        has_global_validators = bool(global_validators)
 
         for field_name, field_info in self.fields.items():
-            value = data.get(field_name)
-
-            required = field_info.required
-            default = field_info.default
-            fallback = field_info.fallback
-            filters = field_info.filters + self.global_filters
-            validators = field_info.validators + self.global_validators
-            steps = field_info.steps
-            external_api = field_info.external_api
-            copy = field_info.copy
-
             try:
-                if copy:
-                    value = self.validated_data.get(copy)
-
-                if external_api:
+                if field_info.copy:
+                    value = validated_data.get(field_info.copy)
+                elif field_info.external_api:
                     value = ExternalApiMixin.call_external_api(
-                        external_api, fallback, self.validated_data
+                        field_info.external_api,
+                        field_info.fallback,
+                        validated_data,
                     )
+                else:
+                    value = data.get(field_name)
 
-                value = FieldMixin.apply_filters(filters, value)
-                value = (
-                    FieldMixin.validate_field(validators, fallback, value)
-                    or value
-                )
-                value = FieldMixin.apply_steps(steps, fallback, value) or value
-                value = FieldMixin.check_for_required(
-                    field_name, required, default, fallback, value
-                )
+                if field_info.filters or has_global_filters:
+                    filters = field_info.filters
+                    if has_global_filters:
+                        filters = filters + global_filters
+                    value = FieldMixin.apply_filters(filters, value)
 
-                self.validated_data[field_name] = value
+                if field_info.validators or has_global_validators:
+                    validators = field_info.validators
+                    if has_global_validators:
+                        validators = validators + global_validators
+                    result = FieldMixin.validate_field(
+                        validators, field_info.fallback, value
+                    )
+                    if result is not None:
+                        value = result
+
+                if field_info.steps:
+                    result = FieldMixin.apply_steps(
+                        field_info.steps, field_info.fallback, value
+                    )
+                    if result is not None:
+                        value = result
+
+                if value is None:
+                    if field_info.required:
+                        if field_info.fallback is not None:
+                            value = field_info.fallback
+                        elif field_info.default is not None:
+                            value = field_info.default
+                        else:
+                            raise ValidationError(
+                                f"Field '{field_name}' is required."
+                            )
+                    elif field_info.default is not None:
+                        value = field_info.default
+
+                validated_data[field_name] = value
 
             except ValidationError as e:
                 errors[field_name] = str(e)
 
-        try:
-            FieldMixin.check_conditions(self.conditions, self.validated_data)
-        except ValidationError as e:
-            errors["_condition"] = str(e)
+        if self.conditions:
+            try:
+                FieldMixin.check_conditions(self.conditions, validated_data)
+            except ValidationError as e:
+                errors["_condition"] = str(e)
 
         if errors:
             raise ValidationError(errors)
 
-        if self.model_class is not None:
-            return self.serialize()
+        self.validated_data = validated_data
 
-        return self.validated_data
+        if self.model_class is not None:
+            return self.model_class(**validated_data)
+
+        return validated_data
 
     def addCondition(self, condition: BaseCondition) -> None:
-        """
-        Add a condition to the input filter.
-
-        Args:
-            condition (BaseCondition): The condition to add.
-        """
         import warnings
 
         warnings.warn(
@@ -303,17 +303,6 @@ class InputFilter:
         self.conditions.append(condition)
 
     def getConditions(self) -> List[BaseCondition]:
-        """
-        Retrieve the list of all registered conditions.
-
-        This function provides access to the conditions that have been
-        registered and stored. Each condition in the returned list
-        is represented as an instance of the BaseCondition type.
-
-        Returns:
-            List[BaseCondition]: A list containing all currently registered
-                instances of BaseCondition.
-        """
         import warnings
 
         warnings.warn(
@@ -338,17 +327,6 @@ class InputFilter:
         return self.conditions
 
     def setData(self, data: Dict[str, Any]) -> None:
-        """
-        Filters and sets the provided data into the object's internal storage,
-        ensuring that only the specified fields are considered and their values
-        are processed through defined filters.
-
-        Parameters:
-            data (Dict[str, Any]):
-                The input dictionary containing key-value pairs where keys
-                represent field names and values represent the associated
-                data to be filtered and stored.
-        """
         import warnings
 
         warnings.warn(
@@ -381,24 +359,6 @@ class InputFilter:
             self.data[field_name] = field_value
 
     def getValue(self, name: str) -> Any:
-        """
-        This method retrieves a value associated with the provided name. It
-        searches for the value based on the given identifier and returns the
-        corresponding result. If no value is found, it typically returns a
-        default or fallback output. The method aims to provide flexibility in
-        retrieving data without explicitly specifying the details of the
-        underlying implementation.
-
-        Args:
-            name (str): A string that represents the identifier for which the
-                 corresponding value is being retrieved. It is used to perform
-                 the lookup.
-
-        Returns:
-            Any: The retrieved value associated with the given name. The
-                 specific type of this value is dependent on the
-                 implementation and the data being accessed.
-        """
         import warnings
 
         warnings.warn(
@@ -430,16 +390,6 @@ class InputFilter:
         return self.validated_data.get(name)
 
     def getValues(self) -> Dict[str, Any]:
-        """
-        Retrieves a dictionary of key-value pairs from the current object. This
-        method provides access to the internal state or configuration of the
-        object in a dictionary format, where keys are strings and values can be
-        of various types depending on the object's design.
-
-        Returns:
-            Dict[str, Any]: A dictionary containing string keys and their
-                            corresponding values of any data type.
-        """
         import warnings
 
         warnings.warn(
@@ -463,22 +413,6 @@ class InputFilter:
         return self.validated_data
 
     def getRawValue(self, name: str) -> Any:
-        """
-        Fetches the raw value associated with the provided key.
-
-        This method is used to retrieve the underlying value linked to the
-        given key without applying any transformations or validations. It
-        directly fetches the raw stored value and is typically used in
-        scenarios where the raw data is needed for processing or debugging
-        purposes.
-
-        Args:
-            name (str): The name of the key whose raw value is to be
-                retrieved.
-
-        Returns:
-            Any: The raw value associated with the provided key.
-        """
         import warnings
 
         warnings.warn(
@@ -508,20 +442,6 @@ class InputFilter:
         return self.data.get(name)
 
     def getRawValues(self) -> Dict[str, Any]:
-        """
-        Retrieves raw values from a given source and returns them as a
-        dictionary.
-
-        This method is used to fetch and return unprocessed or raw data in
-        the form of a dictionary where the keys are strings, representing
-        the identifiers, and the values are of any data type.
-
-        Returns:
-            Dict[str, Any]: A dictionary containing the raw values retrieved.
-               The keys are strings representing the identifiers, and the
-               values can be of any type, depending on the source
-               being accessed.
-        """
         import warnings
 
         warnings.warn(
@@ -556,20 +476,6 @@ class InputFilter:
         }
 
     def getUnfilteredData(self) -> Dict[str, Any]:
-        """
-        Fetches unfiltered data from the data source.
-
-        This method retrieves data without any filtering, processing, or
-        manipulations applied. It is intended to provide raw data that has
-        not been altered since being retrieved from its source. The usage
-        of this method should be limited to scenarios where unprocessed data
-        is required, as it does not perform any validations or checks.
-
-        Returns:
-            Dict[str, Any]: The unfiltered, raw data retrieved from the
-                 data source. The return type may vary based on the
-                 specific implementation of the data source.
-        """
         import warnings
 
         warnings.warn(
@@ -598,15 +504,6 @@ class InputFilter:
         return self.data
 
     def setUnfilteredData(self, data: Dict[str, Any]) -> None:
-        """
-        Sets unfiltered data for the current instance. This method assigns a
-        given dictionary of data to the instance for further processing. It
-        updates the internal state using the provided data.
-
-        Parameters:
-            data (Dict[str, Any]): A dictionary containing the unfiltered
-                data to be associated with the instance.
-        """
         import warnings
 
         warnings.warn(
@@ -630,13 +527,6 @@ class InputFilter:
         self.data = data
 
     def hasUnknown(self) -> bool:
-        """
-        Checks whether any values in the current data do not have corresponding
-        configurations in the defined fields.
-
-        Returns:
-            bool: True if there are any unknown fields; False otherwise.
-        """
         import warnings
 
         warnings.warn(
@@ -663,23 +553,6 @@ class InputFilter:
         )
 
     def getErrorMessage(self, field_name: str) -> Optional[str]:
-        """
-        Retrieves and returns a predefined error message.
-
-        This method is intended to provide a consistent error message
-        to be used across the application when an error occurs. The
-        message is predefined and does not accept any parameters.
-        The exact content of the error message may vary based on
-        specific implementation, but it is designed to convey meaningful
-        information about the nature of an error.
-
-        Args:
-            field_name (str): The name of the field for which the error
-                message is being retrieved.
-
-        Returns:
-            Optional[str]: A string representing the predefined error message.
-        """
         import warnings
 
         warnings.warn(
@@ -710,18 +583,6 @@ class InputFilter:
         return self.errors.get(field_name)
 
     def getErrorMessages(self) -> Dict[str, str]:
-        """
-        Retrieves all error messages associated with the fields in the input
-        filter.
-
-        This method aggregates and returns a dictionary of error messages
-        where the keys represent field names, and the values are their
-        respective error messages.
-
-        Returns:
-            Dict[str, str]: A dictionary containing field names as keys and
-                            their corresponding error messages as values.
-        """
         import warnings
 
         warnings.warn(
@@ -817,22 +678,6 @@ class InputFilter:
         return field_name in self.fields
 
     def getInput(self, field_name: str) -> Optional[FieldModel]:
-        """
-        Represents a method to retrieve a field by its name.
-
-        This method allows fetching the configuration of a specific field
-        within the object, using its name as a string. It ensures
-        compatibility with various field names and provides a generic
-        return type to accommodate different data types for the fields.
-
-        Args:
-            field_name (str): A string representing the name of the field who
-                        needs to be retrieved.
-
-        Returns:
-            Optional[FieldModel]: The field corresponding to the
-                specified name.
-        """
         import warnings
 
         warnings.warn(
@@ -862,13 +707,6 @@ class InputFilter:
         return self.fields.get(field_name)
 
     def getInputs(self) -> Dict[str, FieldModel]:
-        """
-        Retrieve the dictionary of input fields associated with the object.
-
-        Returns:
-            Dict[str, FieldModel]: Dictionary containing field names as
-                keys and their corresponding FieldModel instances as values
-        """
         import warnings
 
         warnings.warn(
@@ -970,12 +808,6 @@ class InputFilter:
         )
 
     def addGlobalFilter(self, filter: BaseFilter) -> None:
-        """
-        Add a global filter to be applied to all fields.
-
-        Args:
-            filter: The filter to add.
-        """
         import warnings
 
         warnings.warn(
@@ -995,16 +827,6 @@ class InputFilter:
         self.global_filters.append(filter)
 
     def getGlobalFilters(self) -> List[BaseFilter]:
-        """
-        Retrieve all global filters associated with this InputFilter instance.
-
-        This method returns a list of BaseFilter instances that have been
-        added as global filters. These filters are applied universally to
-        all fields during data processing.
-
-        Returns:
-            List[BaseFilter]: A list of global filters.
-        """
         import warnings
 
         warnings.warn(
@@ -1058,12 +880,12 @@ class InputFilter:
         Args:
             other (InputFilter): The InputFilter instance to merge.
         """
-        if not isinstance(other, InputFilter):
+        if not hasattr(other, "validate_data"):
             raise TypeError(
                 "Can only merge with another InputFilter instance."
             )
 
-        for key, new_field in other.getInputs().items():
+        for key, new_field in other.get_inputs().items():
             self.fields[key] = new_field
 
         self.conditions += other.conditions
@@ -1089,12 +911,6 @@ class InputFilter:
                 self.global_validators.append(validator)
 
     def setModel(self, model_class: Type[T]) -> None:
-        """
-        Set the model class for serialization.
-
-        Args:
-            model_class (Type[T]): The class to use for serialization.
-        """
         import warnings
 
         warnings.warn(
@@ -1127,12 +943,6 @@ class InputFilter:
         return self.model_class(**self.validated_data)
 
     def addGlobalValidator(self, validator: BaseValidator) -> None:
-        """
-        Add a global validator to be applied to all fields.
-
-        Args:
-            validator (BaseValidator): The validator to add.
-        """
         import warnings
 
         warnings.warn(
@@ -1153,17 +963,6 @@ class InputFilter:
         self.global_validators.append(validator)
 
     def getGlobalValidators(self) -> List[BaseValidator]:
-        """
-        Retrieve all global validators associated with this InputFilter
-        instance.
-
-        This method returns a list of BaseValidator instances that have been
-        added as global validators. These validators are applied universally
-        to all fields during validation.
-
-        Returns:
-            List[BaseValidator]: A list of global validators.
-        """
         import warnings
 
         warnings.warn(

@@ -28,6 +28,8 @@ class ToIsoFilter(BaseFilter):
                 ])
     """
 
+    __slots__ = ()
+
     def apply(self, value: Any) -> Union[str, Any]:
         if isinstance(value, (datetime, date)):
             return value.isoformat()

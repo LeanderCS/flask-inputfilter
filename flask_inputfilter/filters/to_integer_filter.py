@@ -27,6 +27,8 @@ class ToIntegerFilter(BaseFilter):
                 ])
     """
 
+    __slots__ = ()
+
     def apply(self, value: Any) -> Union[int, Any]:
         try:
             return int(value)

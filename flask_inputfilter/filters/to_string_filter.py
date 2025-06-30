@@ -26,5 +26,7 @@ class ToStringFilter(BaseFilter):
                 ])
     """
 
+    __slots__ = ()
+
     def apply(self, value: Any) -> Union[str, Any]:
         return str(value)

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from enum import Enum
 from typing import Any, Optional, Type
 
@@ -39,25 +40,37 @@ class InEnumValidator(BaseValidator):
                 super().__init__()
 
                 self.add('color', validators=[
-                    InEnumValidator(enumClass=ColorEnum)
+                    InEnumValidator(enum_class=ColorEnum)
                 ])
     """
 
-    __slots__ = ("enumClass", "error_message")
+    __slots__ = ("enum_class", "error_message")
 
     def __init__(
         self,
-        enumClass: Type[Enum],
+        enum_class: Type[Enum],
         error_message: Optional[str] = None,
+        # Deprecated parameters (for Backward Compatibility)
+        enumClass: Type[Enum] = None,
     ) -> None:
-        self.enumClass = enumClass
+        if enumClass is not None:
+            warnings.warn(
+                "Parameter 'enumClass' is deprecated, use 'enum_class' "
+                "instead",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            if enum_class is None:
+                enum_class = enumClass
+
+        self.enum_class = enum_class
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
         if not any(
-            value.lower() == item.name.lower() for item in self.enumClass
+            value.lower() == item.name.lower() for item in self.enum_class
         ):
             raise ValidationError(
                 self.error_message
-                or f"Value '{value}' is not an value of '{self.enumClass}'"
+                or f"Value '{value}' is not an value of '{self.enum_class}'"
             )

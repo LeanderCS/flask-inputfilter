@@ -27,6 +27,8 @@ class ToLowerFilter(BaseFilter):
                 ])
     """
 
+    __slots__ = ()
+
     def apply(self, value: Any) -> Union[str, Any]:
         if not isinstance(value, str):
             return value

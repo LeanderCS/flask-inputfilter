@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import BaseValidator
@@ -64,7 +64,7 @@ class ArrayElementValidator(BaseValidator):
     def __init__(
         self,
         element_filter: Union[
-            "InputFilter", BaseValidator, List[BaseValidator]
+            "InputFilter", BaseValidator, list[BaseValidator]
         ],
         error_message: Optional[str] = None,
     ) -> None:
@@ -77,6 +77,7 @@ class ArrayElementValidator(BaseValidator):
 
         for i, element in enumerate(value):
             try:
+                # Validation with direct Validators
                 if isinstance(self.element_filter, BaseValidator):
                     self.element_filter.validate(element)
                     value[i] = element
@@ -90,7 +91,8 @@ class ArrayElementValidator(BaseValidator):
                     value[i] = element
                     continue
 
-                if not isinstance(element, Dict):
+                # Validation with InputFilter
+                if not isinstance(element, dict):
                     raise ValidationError(
                         f"Element is not a dictionary: {element}"
                     )

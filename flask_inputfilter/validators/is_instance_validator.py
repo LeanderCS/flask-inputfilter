@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from typing import Any, Optional, Type
 
 from flask_inputfilter.exceptions import ValidationError
@@ -41,10 +42,21 @@ class IsInstanceValidator(BaseValidator):
 
     def __init__(
         self,
-        classType: Type[Any],
+        class_type: Type[Any],
         error_message: Optional[str] = None,
+        classType: Type[Any] = None,
     ) -> None:
-        self.class_type = classType
+        if classType is not None:
+            warnings.warn(
+                "Parameter 'classType' is deprecated, use 'class_type' "
+                "instead",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            if class_type is None:
+                class_type = classType
+
+        self.class_type = class_type
         self.error_message = error_message
 
     def validate(self, value: Any) -> None:
