@@ -1,9 +1,4 @@
 # cython: language=c++
-# cython: language_level=3
-# cython: binding=True
-# cython: cdivision=True
-# cython: boundscheck=False
-# cython: initializedcheck=False
 import json
 import logging
 from typing import Any, Optional, Type, TypeVar, Union
@@ -190,19 +185,29 @@ cdef class InputFilter:
         cdef dict errors = {}
         cdef dict validated_data = {}
 
-        cdef object default
-        cdef object fallback
-        cdef list filters
-        cdef list validators
-        cdef object external_api
-        cdef str copy
+        cdef:
+            list global_filters = self.global_filters
+            list global_validators = self.global_validators
+            bint has_global_filters = bool(global_filters)
+            bint has_global_validators = bool(global_validators)
 
-        cdef list global_filters = self.global_filters
-        cdef list global_validators = self.global_validators
-        cdef bint has_global_filters = bool(global_filters)
-        cdef bint has_global_validators = bool(global_validators)
+        cdef:
+            int i = 0
+            int n = len(self.fields)
+            list field_names = list(self.fields.keys())
+            list field_infos = list(self.fields.values())
 
-        for field_name, field_info in self.fields.items():
+        cdef:
+            object default
+            object fallback
+            list filters
+            list validators
+            object external_api
+            str copy
+
+        for i in range(n):
+            field_name = field_names[i]
+            field_info = field_infos[i]
             try:
                 if field_info.copy:
                     value = validated_data.get(field_info.copy)
@@ -216,27 +221,27 @@ cdef class InputFilter:
                     value = data.get(field_name)
 
                 if field_info.filters or has_global_filters:
-                    filters = field_info.filters
-                    if has_global_filters:
-                        filters = filters + global_filters
-                    value = FieldMixin.apply_filters(filters, value)
+                    value = FieldMixin.apply_filters(
+                        field_info.filters + global_filters
+                        if has_global_filters
+                        else field_info.filters,
+                        value
+                    )
 
                 if field_info.validators or has_global_validators:
-                    validators = field_info.validators
-                    if has_global_validators:
-                        validators = validators + global_validators
-                    result = FieldMixin.validate_field(
-                        validators, field_info.fallback, value
-                    )
-                    if result is not None:
-                        value = result
+                    value = FieldMixin.validate_field(
+                        field_info.validators + global_validators
+                        if has_global_validators
+                        else field_info.validators,
+                        field_info.fallback,
+                        value
+                    ) or value
 
                 if field_info.steps:
-                    result = FieldMixin.apply_steps(
-                        field_info.steps, field_info.fallback, value
-                    )
-                    if result is not None:
-                        value = result
+                    value = FieldMixin.apply_steps(
+                        field_info.steps,
+                        field_info.fallback, value
+                    ) or value
 
                 if value is None:
                     if field_info.required:
@@ -308,7 +313,15 @@ cdef class InputFilter:
                 data to be filtered and stored.
         """
         self.data = {}
-        for field_name, field_value in data.items():
+        cdef:
+            int i = 0
+            int n = len(data)
+            list keys = list(data.keys())
+            list values = list(data.values())
+
+        for i in range(n):
+            field_name = keys[i]
+            field_value = values[i]
             if field_name in self.fields:
                 field_value = FieldMixin.apply_filters(
                     filters=self.fields[field_name].filters + self.global_filters,
@@ -388,11 +401,17 @@ cdef class InputFilter:
         if not self.fields:
             return {}
 
-        return {
-            field: self.data[field]
-            for field in self.fields
-            if field in self.data
-        }
+        cdef:
+            int i = 0
+            int n = len(self.fields)
+            dict result = {}
+            list field_names = list(self.fields.keys())
+
+        for i in range(n):
+            field = field_names[i]
+            if field in self.data:
+                result[field] = self.data[field]
+        return result
 
     cpdef dict get_unfiltered_data(self):
         """
@@ -711,9 +730,14 @@ cdef class InputFilter:
                 "Can only merge with another InputFilter instance."
             )
 
-        for key, new_field in other.get_inputs().items():
-            self.fields[key] = new_field
+        cdef:
+            int i = 0
+            int n = len(other.get_inputs())
+            list keys = list(other.get_inputs().keys())
+            list new_fields = list(other.get_inputs().values())
 
+        for i in range(n):
+            self.fields[keys[i]] = new_fields[i]
         self.conditions += other.conditions
 
         for filter in other.global_filters:

@@ -1,9 +1,4 @@
 # cython: language=c++
-# cython: language_level=3
-# cython: binding=True
-# cython: cdivision=True
-# cython: boundscheck=False
-# cython: initializedcheck=False
 from __future__ import annotations
 
 from typing import Any, Optional, Union

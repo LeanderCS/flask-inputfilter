@@ -1,4 +1,7 @@
-from typing import Any, Union
+# cython: language=c++
+from typing import Union
+
+import cython
 
 from flask_inputfilter.conditions import BaseCondition
 from flask_inputfilter.exceptions import ValidationError
@@ -8,6 +11,7 @@ from flask_inputfilter.validators import BaseValidator
 
 cdef class FieldMixin:
     @staticmethod
+    @cython.exceptval(check=False)
     cdef object apply_filters(list filters, object value):
         """
         Apply filters to the field value.
@@ -24,8 +28,14 @@ cdef class FieldMixin:
         if value is None:
             return None
 
-        for filter in filters:
-            value = filter.apply(value)
+        cdef:
+            int i
+            int n = len(filters)
+            object current_filter
+
+        for i in range(n):
+            current_filter = filters[i]
+            value = current_filter.apply(value)
 
         return value
 
@@ -64,12 +74,18 @@ cdef class FieldMixin:
         if value is None:
             return None
 
+        cdef:
+            int i
+            int n = len(steps)
+            object current_step
+
         try:
-            for step in steps:
-                if hasattr(step, 'apply'):
-                    value = step.apply(value)
-                elif hasattr(step, 'validate'):
-                    step.validate(value)
+            for i in range(n):
+                current_step = steps[i]
+                if isinstance(current_step, BaseFilter):
+                    value = current_step.apply(value)
+                elif isinstance(current_step, BaseValidator):
+                    current_step.validate(value)
         except ValidationError:
             if fallback is None:
                 raise
@@ -92,14 +108,20 @@ cdef class FieldMixin:
             validated_data (dict[str, Any]):
                 The validated data to check against the conditions.
         """
-        for condition in conditions:
-            if not condition.check(validated_data):
+        cdef:
+            int i
+            int n = len(conditions)
+            object current_condition
+
+        for i in range(n):
+            current_condition = conditions[i]
+            if not current_condition.check(validated_data):
                 raise ValidationError(
-                    f"Condition '{condition.__class__.__name__}' not met."
+                    f"Condition '{current_condition.__class__.__name__}' not met."
                 )
 
     @staticmethod
-    cdef object check_for_required(
+    cdef inline object check_for_required(
             str field_name,
             bint required,
             object default,
@@ -160,9 +182,15 @@ cdef class FieldMixin:
         if value is None:
             return None
 
+        cdef:
+            int i
+            int n = len(validators)
+            object current_validator
+
         try:
-            for validator in validators:
-                validator.validate(value)
+            for i in range(n):
+                current_validator = validators[i]
+                current_validator.validate(value)
         except ValidationError:
             if fallback is None:
                 raise

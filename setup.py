@@ -24,6 +24,17 @@ if shutil.which("g++") is not None:
             for module in pyx_modules
         ],
         language_level=3,
+        compiler_directives={
+            "binding": True,
+            "boundscheck": False,
+            "cdivision": True,
+            "embedsignature": True,
+            "infer_types": True,
+            "initializedcheck": False,
+            "linetrace": False,
+            "profile": False,
+            "wraparound": False,
+        },
     )
     options = {
         "build_ext": {"include_dirs": ["flask_inputfilter/include"]},

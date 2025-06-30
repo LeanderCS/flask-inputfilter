@@ -205,27 +205,32 @@ class InputFilter:
                     value = data.get(field_name)
 
                 if field_info.filters or has_global_filters:
-                    filters = field_info.filters
-                    if has_global_filters:
-                        filters = filters + global_filters
-                    value = FieldMixin.apply_filters(filters, value)
+                    value = FieldMixin.apply_filters(
+                        field_info.filters + global_filters
+                        if has_global_filters
+                        else field_info.filters,
+                        value,
+                    )
 
                 if field_info.validators or has_global_validators:
-                    validators = field_info.validators
-                    if has_global_validators:
-                        validators = validators + global_validators
-                    result = FieldMixin.validate_field(
-                        validators, field_info.fallback, value
+                    value = (
+                        FieldMixin.validate_field(
+                            field_info.validators + global_validators
+                            if has_global_validators
+                            else field_info.validators,
+                            field_info.fallback,
+                            value,
+                        )
+                        or value
                     )
-                    if result is not None:
-                        value = result
 
                 if field_info.steps:
-                    result = FieldMixin.apply_steps(
-                        field_info.steps, field_info.fallback, value
+                    value = (
+                        FieldMixin.apply_steps(
+                            field_info.steps, field_info.fallback, value
+                        )
+                        or value
                     )
-                    if result is not None:
-                        value = result
 
                 if value is None:
                     if field_info.required:
@@ -694,7 +699,7 @@ class InputFilter:
         Args:
             other (InputFilter): The InputFilter instance to merge.
         """
-        if not hasattr(other, "validate_data"):
+        if not isinstance(other, InputFilter):
             raise TypeError(
                 "Can only merge with another InputFilter instance."
             )

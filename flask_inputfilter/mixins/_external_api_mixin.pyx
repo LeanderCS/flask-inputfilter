@@ -1,11 +1,6 @@
 # cython: language=c++
-# cython: language_level=3
-# cython: binding=True
-# cython: cdivision=True
-# cython: boundscheck=False
-# cython: initializedcheck=False
 import re
-from typing import Any, Dict, Optional
+from typing import Optional
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.models import ExternalApiConfig
@@ -14,7 +9,7 @@ from flask_inputfilter.models import ExternalApiConfig
 cdef class ExternalApiMixin:
 
     @staticmethod
-    cdef str replace_placeholders(
+    cdef inline str replace_placeholders(
             str value,
             dict validated_data
     ):

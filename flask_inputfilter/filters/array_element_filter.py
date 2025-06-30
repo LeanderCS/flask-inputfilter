@@ -49,12 +49,12 @@ class ArrayElementFilter(BaseFilter):
 
         result = []
         for element in value:
-            if hasattr(self.element_filter, "apply"):
+            if isinstance(self.element_filter, BaseFilter):
                 result.append(self.element_filter.apply(element))
                 continue
 
             elif isinstance(self.element_filter, list) and all(
-                hasattr(v, "apply") for v in self.element_filter
+                isinstance(v, BaseFilter) for v in self.element_filter
             ):
                 for filter_instance in self.element_filter:
                     element = filter_instance.apply(element)

@@ -98,9 +98,9 @@ class FieldMixin:
 
         try:
             for step in steps:
-                if hasattr(step, "apply"):
+                if isinstance(step, BaseFilter):
                     value = step.apply(value)
-                elif hasattr(step, "validate"):
+                elif isinstance(step, BaseValidator):
                     step.validate(value)
         except ValidationError:
             if fallback is None:
