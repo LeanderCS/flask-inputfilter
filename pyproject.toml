@@ -112,7 +112,7 @@ profile = 'black'
 line_length = 79
 known_first_party = [
     "flask_inputfilter/conditions/base_condition",
-    "flask_inputfilter/filters/base_filter",
+    "flask_inputfilter/models/base_filter",
     "flask_inputfilter/validators/base_validator"
 ]
 

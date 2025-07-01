@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from flask_inputfilter.filters import BaseFilter
+from flask_inputfilter.models import BaseFilter
 
 
 class BlacklistFilter(BaseFilter):

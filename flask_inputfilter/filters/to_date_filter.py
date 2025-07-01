@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import Any, Union
 
-from flask_inputfilter.filters import BaseFilter
+from flask_inputfilter.models import BaseFilter
 
 
 class ToDateFilter(BaseFilter):

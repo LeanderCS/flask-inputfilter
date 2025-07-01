@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from typing import Any, Union
 
-from flask_inputfilter.filters import BaseFilter
+from flask_inputfilter.models import BaseFilter
 
 
 class ToSnakeCaseFilter(BaseFilter):

@@ -8,10 +8,12 @@ from flask import Response, g, request
 
 from flask_inputfilter.conditions import BaseCondition
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.filters import BaseFilter
+
 from flask_inputfilter.mixins._field_mixin cimport FieldMixin
+from flask_inputfilter.models._base_filter cimport BaseFilter
 from flask_inputfilter.models._external_api_config cimport ExternalApiConfig
 from flask_inputfilter.models._field_model cimport FieldModel
+
 from flask_inputfilter.validators import BaseValidator
 
 from libcpp.string cimport string
@@ -33,7 +35,7 @@ cdef class InputFilter:
         vector[string] methods
         dict[str, FieldModel] fields
         list conditions
-        list global_filters
+        list[BaseFilter] global_filters
         list global_validators
         dict[str, Any] data
         dict[str, Any] validated_data
@@ -44,7 +46,7 @@ cdef class InputFilter:
         self.methods = make_default_methods()
         self.fields = {}
         self.conditions: list[BaseCondition] = []
-        self.global_filters: list[BaseFilter] = []
+        self.global_filters = []
         self.global_validators: list[BaseValidator] = []
         self.data = {}
         self.validated_data = {}
@@ -160,7 +162,7 @@ cdef class InputFilter:
         return decorator
 
     cpdef object validate_data(
-        self, data: Optional[dict[str, Any]] = None
+        self, dict[str, Any] data = None
     ):
         """
         Validates input data against defined field rules.
@@ -175,7 +177,9 @@ cdef class InputFilter:
             ValidationError: If validation fails.
         """
         data = data or self.data
-        cdef dict errors = {}, validated_data = {}
+        cdef:
+            dict[str, str] errors = {},
+            dict[str, Any] validated_data = {}
 
         validated_data, errors = FieldMixin.validate_fields(self.fields, data, self.global_filters, self.global_validators)
 
@@ -240,7 +244,7 @@ cdef class InputFilter:
 
             self.data[field_name] = field_value
 
-    cpdef object get_value(self, name: str):
+    cpdef object get_value(self, str name):
         """
         This method retrieves a value associated with the provided name. It
         searches for the value based on the given identifier and returns the

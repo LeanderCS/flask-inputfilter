@@ -3,8 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Optional, Union
 
-from flask_inputfilter.filters import BaseFilter
-from flask_inputfilter.models import ExternalApiConfig
+from flask_inputfilter.models import BaseFilter, ExternalApiConfig
 from flask_inputfilter.validators import BaseValidator
 
 

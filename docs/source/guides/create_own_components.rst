@@ -71,7 +71,7 @@ Example implementation
     from datetime import date, datetime
     from typing import Any
 
-    from flask_inputfilter.filters import BaseFilter
+    from flask_inputfilter.models import BaseFilter
 
 
     class ToDateTimeFilter(BaseFilter):

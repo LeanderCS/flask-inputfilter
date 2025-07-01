@@ -6,8 +6,7 @@ from typing import Any, Optional, Type, TypeVar, Union
 from flask import Response
 
 from flask_inputfilter.conditions import BaseCondition
-from flask_inputfilter.filters import BaseFilter
-from flask_inputfilter.models import ExternalApiConfig, FieldModel
+from flask_inputfilter.models import BaseFilter, ExternalApiConfig, FieldModel
 from flask_inputfilter.validators import BaseValidator
 
 T = TypeVar("T")

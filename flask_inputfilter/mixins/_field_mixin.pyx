@@ -2,9 +2,13 @@
 
 import cython
 
+from flask_inputfilter.models._field_model cimport FieldModel
+
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.filters import BaseFilter
+
 from flask_inputfilter.mixins._external_api_mixin cimport ExternalApiMixin
+from flask_inputfilter.models._base_filter cimport BaseFilter
+
 from flask_inputfilter.validators import BaseValidator
 
 
@@ -12,7 +16,7 @@ cdef class FieldMixin:
 
     @staticmethod
     @cython.exceptval(check=False)
-    cdef object apply_filters(list filters1, list filters2, object value):
+    cdef object apply_filters(list[BaseFilter] filters1, list[BaseFilter] filters2, object value):
         """
         Apply filters to the field value.
 
@@ -106,7 +110,7 @@ cdef class FieldMixin:
         return value
 
     @staticmethod
-    cdef void check_conditions(list conditions, dict validated_data) except *:
+    cdef void check_conditions(list conditions, dict[str, Any] validated_data) except *:
         """
         Checks if all conditions are met.
 
@@ -137,7 +141,7 @@ cdef class FieldMixin:
     @staticmethod
     cdef inline object check_for_required(
             str field_name,
-            object field_info,
+            FieldModel field_info,
             object value,
     ):
         """
@@ -230,12 +234,34 @@ cdef class FieldMixin:
 
     @staticmethod
     cdef tuple validate_fields(
-            dict fields,
-            dict data,
-            list global_filters,
+            dict[str, FieldModel] fields,
+            dict[str, Any] data,
+            list[BaseFilter] global_filters,
             list global_validators
     ):
-        """Validate all fields and return (validated_data, errors)."""
+        """
+        Validate multiple fields based on their configurations.
+        
+        **Parameters:**
+        
+        - **fields** (*dict[str, FieldModel]*): A dictionary where keys are 
+          field names and values are FieldModel objects containing field 
+          configurations.
+        - **data** (*dict[str, Any]*): The input data dictionary containing
+          the values to be validated.
+        - **global_filters** (*list[BaseFilter]*): A list of global filters
+          to be applied to all fields.
+        - **global_validators** (*list[BaseValidator]*): A list of global
+          validators to be applied to all fields.
+          
+        **Returns:**
+        
+        - (*tuple*): A tuple containing two dictionaries:
+            - **validated_data** (*dict[str, Any]*): A dictionary of field names
+              and their validated values.
+            - **errors** (*dict[str, str]*): A dictionary of field names and
+              error messages for any validation failures.
+        """
         cdef:
             dict validated_data = {}, errors = {}
             int i, n = len(fields)
@@ -293,9 +319,9 @@ cdef class FieldMixin:
     @staticmethod
     cdef inline object get_field_value(
             str field_name,
-            object field_info,
-            dict data,
-            dict validated_data
+            FieldModel field_info,
+            dict[str, Any] data,
+            dict[str, Any] validated_data
     ):
         """
         Retrieve the value of a field based on its configuration.

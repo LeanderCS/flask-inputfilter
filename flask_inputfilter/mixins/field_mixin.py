@@ -5,9 +5,8 @@ from typing import Any, Union
 
 from flask_inputfilter.conditions import BaseCondition
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.filters import BaseFilter
 from flask_inputfilter.mixins import ExternalApiMixin
-from flask_inputfilter.models import FieldModel
+from flask_inputfilter.models import BaseFilter, FieldModel
 from flask_inputfilter.validators import BaseValidator
 
 
