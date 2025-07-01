@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+from itertools import chain
 from typing import Any, Union
 
 from flask_inputfilter.conditions import BaseCondition
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.filters import BaseFilter
+from flask_inputfilter.mixins import ExternalApiMixin
+from flask_inputfilter.models import FieldModel
 from flask_inputfilter.validators import BaseValidator
 
 
@@ -12,7 +15,9 @@ class FieldMixin:
     __slots__ = ()
 
     @staticmethod
-    def apply_filters(filters: list[BaseFilter], value: Any) -> Any:
+    def apply_filters(
+        filters1: list[BaseFilter], filters2: list[BaseFilter], value: Any
+    ) -> Any:
         """
         Apply filters to the field value.
 
@@ -30,14 +35,17 @@ class FieldMixin:
         if value is None:
             return None
 
-        for filter in filters:
+        for filter in chain(filters1, filters2):
             value = filter.apply(value)
 
         return value
 
     @staticmethod
     def validate_field(
-        validators: list[BaseValidator], fallback: Any, value: Any
+        validators1: list[BaseValidator],
+        validators2: list[BaseValidator],
+        fallback: Any,
+        value: Any,
     ) -> Any:
         """
         Validate the field value.
@@ -59,13 +67,15 @@ class FieldMixin:
             return None
 
         try:
-            for validator in validators:
+            for validator in chain(validators1, validators2):
                 validator.validate(value)
         except ValidationError:
             if fallback is None:
                 raise
 
             return fallback
+
+        return value
 
     @staticmethod
     def apply_steps(
@@ -145,9 +155,7 @@ class FieldMixin:
     @staticmethod
     def check_for_required(
         field_name: str,
-        required: bool,
-        default: Any,
-        fallback: Any,
+        field_info: FieldModel,
         value: Any,
     ) -> Any:
         """
@@ -162,11 +170,7 @@ class FieldMixin:
         **Parameters:**
 
         - **field_name** (*str*): The name of the field being processed.
-        - **required** (*bool*): Indicates whether the field is required.
-        - **default** (*Any*): The default value to use if the field is not
-          provided and not required.
-        - **fallback** (*Any*): The fallback value to use if the field is
-          required but not provided.
+        - **field_info** (*FieldModel*): The object of the field.
         - **value** (*Any*): The current value of the field being processed.
 
         **Returns:**
@@ -182,10 +186,95 @@ class FieldMixin:
         if value is not None:
             return value
 
-        if not required:
-            return default
+        if not field_info.required:
+            return field_info.default
 
-        if fallback is not None:
-            return fallback
+        if field_info.fallback is not None:
+            return field_info.fallback
 
         raise ValidationError(f"Field '{field_name}' is required.")
+
+    @staticmethod
+    def validate_fields(
+        fields: dict[str, Any],
+        data: dict[str, Any],
+        global_filters: list[BaseFilter],
+        global_validators: list[BaseValidator],
+    ) -> tuple:
+        """Process and validate all fields."""
+
+        validated_data = {}
+        errors = {}
+
+        for field_name, field_info in fields.items():
+            try:
+                # Get initial value
+                value = FieldMixin.get_field_value(
+                    field_name, field_info, data, validated_data
+                )
+
+                # Apply filters
+                value = FieldMixin.apply_filters(
+                    field_info.filters, global_filters, value
+                )
+
+                # Apply validators
+                value = FieldMixin.validate_field(
+                    field_info.validators,
+                    global_validators,
+                    field_info.fallback,
+                    value,
+                )
+
+                # Apply steps
+                value = FieldMixin.apply_steps(
+                    field_info.steps, field_info.fallback, value
+                )
+
+                # Handle required fields and defaults
+                value = FieldMixin.check_for_required(
+                    field_name, field_info, value
+                )
+
+                validated_data[field_name] = value
+            except ValidationError as e:
+                errors[field_name] = str(e)
+
+        return validated_data, errors
+
+    @staticmethod
+    def get_field_value(
+        field_name: str,
+        field_info: FieldModel,
+        data: dict[str, Any],
+        validated_data: dict[str, Any],
+    ) -> Any:
+        """
+        Retrieve the value of a field based on its configuration.
+
+        **Parameters:**
+
+        - **field_name** (*str*): The name of the field to retrieve.
+        - **field_info** (*FieldModel*): The object containing field
+          configuration, including copy, external_api, and fallback
+          attributes.
+        - **data** (*dict[str, Any]*): The original data dictionary from which
+          the field value is to be retrieved.
+        - **validated_data** (*dict[str, Any]*): The dictionary containing
+          already validated data, which may include copied or externally
+          fetched values.
+
+        **Returns:**
+
+        - (*Any*): The value of the field, either from the validated data,
+          copied from another field, fetched from an external API, or directly
+          from the original data dictionary.
+        """
+        if field_info.copy:
+            return validated_data.get(field_info.copy)
+        elif field_info.external_api:
+            return ExternalApiMixin.call_external_api(
+                field_info.external_api, field_info.fallback, validated_data
+            )
+        else:
+            return data.get(field_name)

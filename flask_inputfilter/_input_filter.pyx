@@ -1,4 +1,5 @@
 # cython: language=c++
+
 import json
 import logging
 from typing import Any, Optional, Type, TypeVar, Union
@@ -8,7 +9,6 @@ from flask import Response, g, request
 from flask_inputfilter.conditions import BaseCondition
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.filters import BaseFilter
-from flask_inputfilter.mixins._external_api_mixin cimport ExternalApiMixin
 from flask_inputfilter.mixins._field_mixin cimport FieldMixin
 from flask_inputfilter.models import ExternalApiConfig, FieldModel
 from flask_inputfilter.validators import BaseValidator
@@ -28,15 +28,16 @@ cdef class InputFilter:
     Base class for all input filters.
     """
 
-    cdef readonly vector[string] methods
-    cdef readonly dict fields
-    cdef readonly list conditions
-    cdef readonly list global_filters
-    cdef readonly list global_validators
-    cdef readonly dict data
-    cdef readonly dict validated_data
-    cdef readonly dict errors
-    cdef readonly object model_class
+    cdef readonly:
+        vector[string] methods
+        dict fields
+        list conditions
+        list global_filters
+        list global_validators
+        dict data
+        dict validated_data
+        dict errors
+        object model_class
 
     def __cinit__(self) -> None:
         self.methods = make_default_methods()
@@ -161,121 +162,30 @@ cdef class InputFilter:
         self, data: Optional[dict[str, Any]] = None
     ):
         """
-        Validates input data against defined field rules, including applying
-        filters, validators, custom logic steps, and fallback mechanisms. The
-        validation process also ensures the required fields are handled
-        appropriately and conditions are checked after processing.
+        Validates input data against defined field rules.
 
         Args:
-            data (dict[str, Any]): A dictionary containing the input data to
-                be validated where keys represent field names and values
-                represent the corresponding data.
+            data: Input data dictionary to validate.
 
         Returns:
-            Union[dict[str, Any], Type[T]]: A dictionary containing the validated data with
-                any modifications, default values, or processed values as
-                per the defined validation rules.
+            Validated data dictionary or model instance.
 
         Raises:
-            Any errors raised during external API calls, validation, or
-                logical steps execution of the respective fields or conditions
-                will propagate without explicit handling here.
+            ValidationError: If validation fails.
         """
         data = data or self.data
-        cdef dict errors = {}
-        cdef dict validated_data = {}
+        cdef dict errors = {}, validated_data = {}
 
-        cdef:
-            list global_filters = self.global_filters
-            list global_validators = self.global_validators
-            bint has_global_filters = bool(global_filters)
-            bint has_global_validators = bool(global_validators)
-
-        cdef:
-            int i = 0
-            int n = len(self.fields)
-            list field_names = list(self.fields.keys())
-            list field_infos = list(self.fields.values())
-
-        cdef:
-            object default
-            object fallback
-            list filters
-            list validators
-            object external_api
-            str copy
-
-        for i in range(n):
-            field_name = field_names[i]
-            field_info = field_infos[i]
-            try:
-                if field_info.copy:
-                    value = validated_data.get(field_info.copy)
-                elif field_info.external_api:
-                    value = ExternalApiMixin.call_external_api(
-                        field_info.external_api,
-                        field_info.fallback,
-                        validated_data,
-                    )
-                else:
-                    value = data.get(field_name)
-
-                if field_info.filters or has_global_filters:
-                    value = FieldMixin.apply_filters(
-                        field_info.filters + global_filters
-                        if has_global_filters
-                        else field_info.filters,
-                        value
-                    )
-
-                if field_info.validators or has_global_validators:
-                    value = FieldMixin.validate_field(
-                        field_info.validators + global_validators
-                        if has_global_validators
-                        else field_info.validators,
-                        field_info.fallback,
-                        value
-                    ) or value
-
-                if field_info.steps:
-                    value = FieldMixin.apply_steps(
-                        field_info.steps,
-                        field_info.fallback, value
-                    ) or value
-
-                if value is None:
-                    if field_info.required:
-                        if field_info.fallback is not None:
-                            value = field_info.fallback
-                        elif field_info.default is not None:
-                            value = field_info.default
-                        else:
-                            raise ValidationError(
-                                f"Field '{field_name}' is required."
-                            )
-                    elif field_info.default is not None:
-                        value = field_info.default
-
-                validated_data[field_name] = value
-
-            except ValidationError as e:
-                errors[field_name] = str(e)
+        validated_data, errors = FieldMixin.validate_fields(self.fields, data, self.global_filters, self.global_validators)
 
         if self.conditions:
-            try:
-                FieldMixin.check_conditions(self.conditions, validated_data)
-            except ValidationError as e:
-                errors["_condition"] = str(e)
+            self._check_all_conditions(validated_data, errors)
 
         if errors:
             raise ValidationError(errors)
 
         self.validated_data = validated_data
-
-        if self.model_class is not None:
-            return self.model_class(**validated_data)
-
-        return validated_data
+        return self.serialize()
 
     cpdef void add_condition(self, condition: BaseCondition):
         """
@@ -314,18 +224,17 @@ cdef class InputFilter:
         """
         self.data = {}
         cdef:
-            int i = 0
-            int n = len(data)
-            list keys = list(data.keys())
-            list values = list(data.values())
+            int i = 0, n = len(data)
+            list keys = list(data.keys()), values = list(data.values())
 
         for i in range(n):
             field_name = keys[i]
             field_value = values[i]
             if field_name in self.fields:
                 field_value = FieldMixin.apply_filters(
-                    filters=self.fields[field_name].filters + self.global_filters,
-                    value=field_value,
+                    self.fields[field_name].filters,
+                    self.global_filters,
+                    field_value,
                 )
 
             self.data[field_name] = field_value
@@ -402,8 +311,7 @@ cdef class InputFilter:
             return {}
 
         cdef:
-            int i = 0
-            int n = len(self.fields)
+            int i = 0, n = len(self.fields)
             dict result = {}
             list field_names = list(self.fields.keys())
 
@@ -539,14 +447,14 @@ cdef class InputFilter:
             raise ValueError(f"Field '{name}' already exists.")
 
         self.fields[name] = FieldModel(
-            required=required,
-            default=default,
-            fallback=fallback,
-            filters=filters or [],
-            validators=validators or [],
-            steps=steps or [],
-            external_api=external_api,
-            copy=copy,
+            required,
+            default,
+            fallback,
+            filters or [],
+            validators or [],
+            steps or [],
+            external_api,
+            copy,
         )
 
     cpdef bint has(self, field_name: str):
@@ -664,14 +572,14 @@ cdef class InputFilter:
                 from.
         """
         self.fields[name] = FieldModel(
-            required=required,
-            default=default,
-            fallback=fallback,
-            filters=filters or [],
-            validators=validators or [],
-            steps=steps or [],
-            external_api=external_api,
-            copy=copy,
+            required,
+            default,
+            fallback,
+            filters or [],
+            validators or [],
+            steps or [],
+            external_api,
+            copy,
         )
 
     cpdef void add_global_filter(self, filter: BaseFilter):
@@ -732,10 +640,8 @@ cdef class InputFilter:
             )
 
         cdef:
-            int i = 0
-            int n = len(other.get_inputs())
-            list keys = list(other.get_inputs().keys())
-            list new_fields = list(other.get_inputs().values())
+            int i = 0, n = len(other.get_inputs())
+            list keys = list(other.get_inputs().keys()), new_fields = list(other.get_inputs().values())
 
         for i in range(n):
             self.fields[keys[i]] = new_fields[i]
@@ -806,3 +712,10 @@ cdef class InputFilter:
             list[BaseValidator]: A list of global validators.
         """
         return self.global_validators
+
+    cdef inline void _check_all_conditions(self, dict validated_data, dict errors):
+        """Check all conditions against validated data."""
+        try:
+            FieldMixin.check_conditions(self.conditions, validated_data)
+        except ValidationError as e:
+            errors["_condition"] = str(e)

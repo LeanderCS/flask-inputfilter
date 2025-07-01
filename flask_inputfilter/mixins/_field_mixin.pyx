@@ -1,11 +1,10 @@
 # cython: language=c++
-from typing import Union
 
 import cython
 
-from flask_inputfilter.conditions import BaseCondition
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.filters import BaseFilter
+from flask_inputfilter.mixins._external_api_mixin cimport ExternalApiMixin
 from flask_inputfilter.validators import BaseValidator
 
 
@@ -13,13 +12,15 @@ cdef class FieldMixin:
 
     @staticmethod
     @cython.exceptval(check=False)
-    cdef object apply_filters(list filters, object value):
+    cdef object apply_filters(list filters1, list filters2, object value):
         """
         Apply filters to the field value.
 
         **Parameters:**
         
-        - **filters** (*list[BaseFilter]*): A list of filters to apply to the 
+        - **filters1** (*list[BaseFilter]*): A list of filters to apply to the 
+          value.
+        - **filters2** (*list[BaseFilter]*): A list of filters to apply to the 
           value.
         - **value** (*Any*): The value to be processed by the filters.
 
@@ -32,13 +33,20 @@ cdef class FieldMixin:
             return None
 
         cdef:
-            int i
-            int n = len(filters)
+            int i, n
             object current_filter
 
-        for i in range(n):
-            current_filter = filters[i]
-            value = current_filter.apply(value)
+        if filters1:
+            n = len(filters1)
+            for i in range(n):
+                current_filter = filters1[i]
+                value = current_filter.apply(value)
+
+        if filters2:
+            n = len(filters2)
+            for i in range(n):
+                current_filter = filters2[i]
+                value = current_filter.apply(value)
 
         return value
 
@@ -81,8 +89,7 @@ cdef class FieldMixin:
             return None
 
         cdef:
-            int i
-            int n = len(steps)
+            int i, n = len(steps)
             object current_step
 
         try:
@@ -116,8 +123,7 @@ cdef class FieldMixin:
           The validated data to check against the conditions.
         """
         cdef:
-            int i
-            int n = len(conditions)
+            int i, n = len(conditions)
             object current_condition
 
         for i in range(n):
@@ -131,9 +137,7 @@ cdef class FieldMixin:
     @staticmethod
     cdef inline object check_for_required(
             str field_name,
-            bint required,
-            object default,
-            object fallback,
+            object field_info,
             object value,
     ):
         """
@@ -148,11 +152,7 @@ cdef class FieldMixin:
         **Parameters:**
         
         - **field_name** (*str*): The name of the field being processed.
-        - **required** (*bool*): Indicates whether the field is required.
-        - **default** (*Any*): The default value to use if the field is not 
-          provided and not required.
-        - **fallback** (*Any*): The fallback value to use if the field is 
-          required but not provided.
+        - **field_info** (*FieldModel*): The object of the field.
         - **value** (*Any*): The current value of the field being processed.
 
         **Returns:**
@@ -168,24 +168,29 @@ cdef class FieldMixin:
         if value is not None:
             return value
 
-        if not required:
-            return default
+        if not field_info.required:
+            return field_info.default
 
-        if fallback is not None:
-            return fallback
+        if field_info.fallback is not None:
+            return field_info.fallback
 
         raise ValidationError(f"Field '{field_name}' is required.")
 
     @staticmethod
     cdef object validate_field(
-            list validators, object fallback, object value
+            list validators1,
+            list validators2,
+            object fallback,
+            object value
     ):
         """
         Validate the field value.
 
         **Parameters:**
         
-        - **validators** (*list[BaseValidator]*): A list of validators to 
+        - **validators1** (*list[BaseValidator]*): A list of validators to 
+          apply to the field value.
+        - **validators2** (*list[BaseValidator]*): A list of validators to 
           apply to the field value.
         - **fallback** (*Any*): A fallback value to return if validation 
           fails.
@@ -200,16 +205,126 @@ cdef class FieldMixin:
             return None
 
         cdef:
-            int i
-            int n = len(validators)
+            int i, n
             object current_validator
 
         try:
-            for i in range(n):
-                current_validator = validators[i]
-                current_validator.validate(value)
+            if validators1:
+                n = len(validators1)
+                for i in range(n):
+                    current_validator = validators1[i]
+                    current_validator.validate(value)
+
+            if validators2:
+                n = len(validators2)
+                for i in range(n):
+                    current_validator = validators2[i]
+                    current_validator.validate(value)
         except ValidationError:
             if fallback is None:
                 raise
 
             return fallback
+
+        return value
+
+    @staticmethod
+    cdef tuple validate_fields(
+            dict fields,
+            dict data,
+            list global_filters,
+            list global_validators
+    ):
+        """Validate all fields and return (validated_data, errors)."""
+        cdef:
+            dict validated_data = {}, errors = {}
+            int i, n = len(fields)
+            list field_names = list(fields.keys()), field_infos = list(fields.values())
+            object value
+
+        for i in range(n):
+            field_name = field_names[i]
+            field_info = field_infos[i]
+
+            try:
+                # Get initial value
+                value = FieldMixin.get_field_value(
+                    field_name,
+                    field_info,
+                    data,
+                    validated_data
+                )
+
+                # Apply filters
+                value = FieldMixin.apply_filters(
+                    field_info.filters,
+                    global_filters,
+                    value
+                )
+
+                # Apply validators
+                value = FieldMixin.validate_field(
+                    field_info.validators,
+                    global_validators,
+                    field_info.fallback,
+                    value
+                )
+
+                # Apply steps
+                value = FieldMixin.apply_steps(
+                    field_info.steps,
+                    field_info.fallback,
+                    value
+                )
+
+                # Handle required fields and defaults
+                value = FieldMixin.check_for_required(
+                    field_name,
+                    field_info,
+                    value
+                )
+
+                validated_data[field_name] = value
+            except ValidationError as e:
+                errors[field_name] = str(e)
+
+        return validated_data, errors
+
+    @staticmethod
+    cdef inline object get_field_value(
+            str field_name,
+            object field_info,
+            dict data,
+            dict validated_data
+    ):
+        """
+        Retrieve the value of a field based on its configuration.
+        
+        **Parameters:**
+        
+        - **field_name** (*str*): The name of the field to retrieve.
+        - **field_info** (*FieldModel*): The object containing field 
+          configuration, including copy, external_api, and fallback 
+          attributes.
+        - **data** (*dict[str, Any]*): The original data dictionary from which
+          the field value is to be retrieved.
+        - **validated_data** (*dict[str, Any]*): The dictionary containing
+          already validated data, which may include copied or externally 
+          fetched values.
+          
+        **Returns:**
+        
+        - (*Any*): The value of the field, either from the validated data,
+          copied from another field, fetched from an external API, or directly
+          from the original data dictionary.
+        """
+        if field_info.copy:
+            return validated_data.get(field_info.copy)
+        elif field_info.external_api:
+            return ExternalApiMixin.call_external_api(
+                field_info.external_api,
+                field_info.fallback,
+                validated_data
+            )
+        else:
+            return data.get(field_name)

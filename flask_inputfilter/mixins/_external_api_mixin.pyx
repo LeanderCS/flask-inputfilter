@@ -1,4 +1,5 @@
 # cython: language=c++
+
 import re
 
 from flask_inputfilter.exceptions import ValidationError

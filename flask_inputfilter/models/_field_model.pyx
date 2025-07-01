@@ -1,6 +1,5 @@
 # cython: language=c++
 # cython: freelist=256
-from __future__ import annotations
 
 import cython
 

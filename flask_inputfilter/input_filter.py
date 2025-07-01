@@ -11,28 +11,28 @@ from flask import Response, g, request
 from flask_inputfilter.conditions import BaseCondition
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.filters import BaseFilter
-from flask_inputfilter.mixins import ExternalApiMixin, FieldMixin
+from flask_inputfilter.mixins import FieldMixin
 from flask_inputfilter.models import ExternalApiConfig, FieldModel
 from flask_inputfilter.validators import BaseValidator
 
 T = TypeVar("T")
 
 _INTERNED_STRINGS = {
-    "required": sys.intern("required"),
-    "default": sys.intern("default"),
-    "fallback": sys.intern("fallback"),
-    "filters": sys.intern("filters"),
-    "validators": sys.intern("validators"),
-    "steps": sys.intern("steps"),
-    "external_api": sys.intern("external_api"),
-    "copy": sys.intern("copy"),
-    "GET": sys.intern("GET"),
-    "POST": sys.intern("POST"),
-    "PUT": sys.intern("PUT"),
-    "PATCH": sys.intern("PATCH"),
-    "DELETE": sys.intern("DELETE"),
     "_condition": sys.intern("_condition"),
     "_error": sys.intern("_error"),
+    "copy": sys.intern("copy"),
+    "default": sys.intern("default"),
+    "DELETE": sys.intern("DELETE"),
+    "external_api": sys.intern("external_api"),
+    "fallback": sys.intern("fallback"),
+    "filters": sys.intern("filters"),
+    "GET": sys.intern("GET"),
+    "PATCH": sys.intern("PATCH"),
+    "POST": sys.intern("POST"),
+    "PUT": sys.intern("PUT"),
+    "required": sys.intern("required"),
+    "steps": sys.intern("steps"),
+    "validators": sys.intern("validators"),
 }
 
 
@@ -41,11 +41,11 @@ class InputFilter:
 
     def __init__(self, methods: Optional[list[str]] = None) -> None:
         self.methods: list[str] = methods or [
-            "GET",
-            "POST",
-            "PATCH",
-            "PUT",
             "DELETE",
+            "GET",
+            "PATCH",
+            "POST",
+            "PUT",
         ]
         self.fields: dict[str, FieldModel] = {}
         self.conditions: list[BaseCondition] = []
@@ -183,88 +183,19 @@ class InputFilter:
                 will propagate without explicit handling here.
         """
         data = data or self.data
-        errors = {}
-        validated_data = {}
 
-        global_filters = self.global_filters
-        global_validators = self.global_validators
-        has_global_filters = bool(global_filters)
-        has_global_validators = bool(global_validators)
-
-        for field_name, field_info in self.fields.items():
-            try:
-                if field_info.copy:
-                    value = validated_data.get(field_info.copy)
-                elif field_info.external_api:
-                    value = ExternalApiMixin.call_external_api(
-                        field_info.external_api,
-                        field_info.fallback,
-                        validated_data,
-                    )
-                else:
-                    value = data.get(field_name)
-
-                if field_info.filters or has_global_filters:
-                    value = FieldMixin.apply_filters(
-                        field_info.filters + global_filters
-                        if has_global_filters
-                        else field_info.filters,
-                        value,
-                    )
-
-                if field_info.validators or has_global_validators:
-                    value = (
-                        FieldMixin.validate_field(
-                            field_info.validators + global_validators
-                            if has_global_validators
-                            else field_info.validators,
-                            field_info.fallback,
-                            value,
-                        )
-                        or value
-                    )
-
-                if field_info.steps:
-                    value = (
-                        FieldMixin.apply_steps(
-                            field_info.steps, field_info.fallback, value
-                        )
-                        or value
-                    )
-
-                if value is None:
-                    if field_info.required:
-                        if field_info.fallback is not None:
-                            value = field_info.fallback
-                        elif field_info.default is not None:
-                            value = field_info.default
-                        else:
-                            raise ValidationError(
-                                f"Field '{field_name}' is required."
-                            )
-                    elif field_info.default is not None:
-                        value = field_info.default
-
-                validated_data[field_name] = value
-
-            except ValidationError as e:
-                errors[field_name] = str(e)
+        validated_data, errors = FieldMixin.validate_fields(
+            self.fields, data, self.global_filters, self.global_validators
+        )
 
         if self.conditions:
-            try:
-                FieldMixin.check_conditions(self.conditions, validated_data)
-            except ValidationError as e:
-                errors["_condition"] = str(e)
+            self._check_all_conditions(validated_data, errors)
 
         if errors:
             raise ValidationError(errors)
 
         self.validated_data = validated_data
-
-        if self.model_class is not None:
-            return self.model_class(**validated_data)
-
-        return validated_data
+        return self.serialize()
 
     def add_condition(self, condition: BaseCondition) -> None:
         """
@@ -305,8 +236,9 @@ class InputFilter:
         for field_name, field_value in data.items():
             if field_name in self.fields:
                 field_value = FieldMixin.apply_filters(
-                    filters=self.fields[field_name].filters,
-                    value=field_value,
+                    self.fields[field_name].filters,
+                    self.global_filters,
+                    field_value,
                 )
 
             self.data[field_name] = field_value
@@ -512,14 +444,14 @@ class InputFilter:
             raise ValueError(f"Field '{name}' already exists.")
 
         self.fields[name] = FieldModel(
-            required=required,
-            default=default,
-            fallback=fallback,
-            filters=filters or [],
-            validators=validators or [],
-            steps=steps or [],
-            external_api=external_api,
-            copy=copy,
+            required,
+            default,
+            fallback,
+            filters or [],
+            validators or [],
+            steps or [],
+            external_api,
+            copy,
         )
 
     def has(self, field_name: str) -> bool:
@@ -637,14 +569,14 @@ class InputFilter:
                 from.
         """
         self.fields[name] = FieldModel(
-            required=required,
-            default=default,
-            fallback=fallback,
-            filters=filters or [],
-            validators=validators or [],
-            steps=steps or [],
-            external_api=external_api,
-            copy=copy,
+            required,
+            default,
+            fallback,
+            filters or [],
+            validators or [],
+            steps or [],
+            external_api,
+            copy,
         )
 
     def add_global_filter(self, filter: BaseFilter) -> None:
@@ -773,3 +705,10 @@ class InputFilter:
             list[BaseValidator]: A list of global validators.
         """
         return self.global_validators
+
+    def _check_all_conditions(self, validated_data, errors) -> None:
+        """Check all conditions against validated data."""
+        try:
+            FieldMixin.check_conditions(self.conditions, validated_data)
+        except ValidationError as e:
+            errors["_condition"] = str(e)
