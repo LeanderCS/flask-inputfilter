@@ -31,17 +31,6 @@ cdef class InputFilter:
     Base class for all input filters.
     """
 
-    cdef readonly:
-        vector[string] methods
-        dict[str, FieldModel] fields
-        list conditions
-        list[BaseFilter] global_filters
-        list global_validators
-        dict[str, Any] data
-        dict[str, Any] validated_data
-        dict[str, str] errors
-        object model_class
-
     def __cinit__(self) -> None:
         self.methods = make_default_methods()
         self.fields = {}
@@ -351,8 +340,8 @@ cdef class InputFilter:
 
         **Parameters**:
         
-            - data (dict[str, Any]): A dictionary containing the unfiltered
-                data to be associated with the instance.
+        - data (dict[str, Any]): A dictionary containing the unfiltered
+            data to be associated with the instance.
         """
         self.data = data
 
@@ -477,7 +466,7 @@ cdef class InputFilter:
         """
         return field_name in self.fields
 
-    cpdef object get_input(self, str field_name):
+    cpdef FieldModel get_input(self, str field_name):
         """
         Represents a method to retrieve a field by its name.
 
@@ -496,7 +485,7 @@ cdef class InputFilter:
         """
         return self.fields.get(field_name)
 
-    cpdef dict get_inputs(self):
+    cpdef dict[str, FieldModel] get_inputs(self):
         """
         Retrieve the dictionary of input fields associated with the object.
 
@@ -587,7 +576,7 @@ cdef class InputFilter:
             copy,
         )
 
-    cpdef void add_global_filter(self, filter: BaseFilter):
+    cpdef void add_global_filter(self, BaseFilter filter):
         """
         Add a global filter to be applied to all fields.
 
@@ -596,7 +585,7 @@ cdef class InputFilter:
         """
         self.global_filters.append(filter)
 
-    cpdef list get_global_filters(self):
+    cpdef list[BaseFilter] get_global_filters(self):
         """
         Retrieve all global filters associated with this InputFilter instance.
 
@@ -626,7 +615,7 @@ cdef class InputFilter:
         self.validated_data.clear()
         self.errors.clear()
 
-    cpdef void merge(self, other: InputFilter):
+    cpdef void merge(self, InputFilter other):
         """
         Merges another InputFilter instance intelligently into the current
         instance.
@@ -718,8 +707,14 @@ cdef class InputFilter:
         """
         return self.global_validators
 
-    cdef inline void _check_all_conditions(self, dict validated_data, dict errors):
-        """Check all conditions against validated data."""
+    cdef inline void _check_all_conditions(self, dict[str, Any] validated_data, dict[str, str] errors):
+        """
+        Check all conditions against the validated data.
+        
+        Args:
+            validated_data (dict[str, Any]): The data that has been validated.
+            errors (dict[str, str]): A dictionary to store any validation errors.
+        """
         try:
             FieldMixin.check_conditions(self.conditions, validated_data)
         except ValidationError as e:

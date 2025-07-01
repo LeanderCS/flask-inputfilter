@@ -1,7 +1,9 @@
 # cython: language=c++
 
 import re
+from typing import Any
 
+from flask_inputfilter.models._external_api_config cimport ExternalApiConfig
 from flask_inputfilter.exceptions import ValidationError
 
 
@@ -9,7 +11,9 @@ cdef class ExternalApiMixin:
 
     @staticmethod
     cdef object call_external_api(
-            object config, object fallback, dict validated_data
+            ExternalApiConfig config,
+            object fallback,
+            dict[str, Any] validated_data
     ):
         """
         The function constructs a request based on the given API
@@ -110,7 +114,7 @@ cdef class ExternalApiMixin:
     @staticmethod
     cdef inline str replace_placeholders(
             str value,
-            dict validated_data
+            dict[str, Any] validated_data
     ):
         """
         Replace all placeholders, marked with '{{ }}' in value
@@ -134,7 +138,7 @@ cdef class ExternalApiMixin:
 
     @staticmethod
     cdef dict replace_placeholders_in_params(
-            dict params, dict validated_data
+            dict[str, Any] params, dict[str, Any] validated_data
     ):
         """
         Replace all placeholders in params with the corresponding
