@@ -1,6 +1,4 @@
-from typing import Any
-
-from flask_inputfilter.models import ExternalApiConfig
+from flask_inputfilter.models._external_api_config cimport ExternalApiConfig
 
 
 cdef class ExternalApiMixin:
@@ -14,4 +12,4 @@ cdef class ExternalApiMixin:
            dict params, dict validated_data
     )
     @staticmethod
-    cdef object call_external_api(object config, object fallback, dict validated_data)
+    cdef object call_external_api(ExternalApiConfig config, object fallback, dict validated_data)

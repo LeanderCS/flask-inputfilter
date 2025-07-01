@@ -1,11 +1,11 @@
 import shutil
 
-from .external_api_config import ExternalApiConfig
-
 if shutil.which("g++") is not None:
+    from ._external_api_config import ExternalApiConfig
     from ._field_model import FieldModel
 
 else:
+    from .external_api_config import ExternalApiConfig
     from .field_model import FieldModel
 
 __all__ = [

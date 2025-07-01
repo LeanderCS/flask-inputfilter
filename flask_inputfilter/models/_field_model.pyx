@@ -13,15 +13,6 @@ cdef class FieldModel:
     FieldModel is a dataclass that represents a field in the input data.
     """
 
-    cdef public bint required
-    cdef public object _default
-    cdef public object fallback
-    cdef public list filters
-    cdef public list validators
-    cdef public list steps
-    cdef public object external_api
-    cdef public str copy
-
     @property
     def default(self):
         return self._default

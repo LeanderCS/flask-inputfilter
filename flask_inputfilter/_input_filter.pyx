@@ -10,7 +10,8 @@ from flask_inputfilter.conditions import BaseCondition
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.filters import BaseFilter
 from flask_inputfilter.mixins._field_mixin cimport FieldMixin
-from flask_inputfilter.models import ExternalApiConfig, FieldModel
+from flask_inputfilter.models._external_api_config cimport ExternalApiConfig
+from flask_inputfilter.models._field_model cimport FieldModel
 from flask_inputfilter.validators import BaseValidator
 
 from libcpp.string cimport string
@@ -30,24 +31,24 @@ cdef class InputFilter:
 
     cdef readonly:
         vector[string] methods
-        dict fields
+        dict[str, FieldModel] fields
         list conditions
         list global_filters
         list global_validators
-        dict data
-        dict validated_data
-        dict errors
+        dict[str, Any] data
+        dict[str, Any] validated_data
+        dict[str, str] errors
         object model_class
 
     def __cinit__(self) -> None:
         self.methods = make_default_methods()
-        self.fields: dict[str, FieldModel] = {}
+        self.fields = {}
         self.conditions: list[BaseCondition] = []
         self.global_filters: list[BaseFilter] = []
         self.global_validators: list[BaseValidator] = []
-        self.data: dict[str, Any] = {}
-        self.validated_data: dict[str, Any] = {}
-        self.errors: dict[str, str] = {}
+        self.data = {}
+        self.validated_data = {}
+        self.errors = {}
         self.model_class: Optional[Type[T]] = None
 
     def __init__(self, methods: Optional[list[str]] = None) -> None:
@@ -210,7 +211,7 @@ cdef class InputFilter:
         """
         return self.conditions
 
-    cpdef void set_data(self, data: dict[str, Any]):
+    cpdef void set_data(self, dict[str, Any] data):
         """
         Filters and sets the provided data into the object's internal
         storage, ensuring that only the specified fields are considered and
@@ -260,7 +261,7 @@ cdef class InputFilter:
         """
         return self.validated_data.get(name)
 
-    cpdef dict get_values(self):
+    cpdef dict[str, Any] get_values(self):
         """
         Retrieves a dictionary of key-value pairs from the current object.
         This method provides access to the internal state or configuration of
@@ -273,7 +274,7 @@ cdef class InputFilter:
         """
         return self.validated_data
 
-    cpdef object get_raw_value(self, name: str):
+    cpdef object get_raw_value(self, str name):
         """
         Fetches the raw value associated with the provided key.
 
@@ -292,7 +293,7 @@ cdef class InputFilter:
         """
         return self.data.get(name) if name in self.data else None
 
-    cpdef dict get_raw_values(self):
+    cpdef dict[str, Any] get_raw_values(self):
         """
         Retrieves raw values from a given source and returns them as a
         dictionary.
@@ -321,7 +322,7 @@ cdef class InputFilter:
                 result[field] = self.data[field]
         return result
 
-    cpdef dict get_unfiltered_data(self):
+    cpdef dict[str, Any] get_unfiltered_data(self):
         """
         Fetches unfiltered data from the data source.
 
@@ -338,7 +339,7 @@ cdef class InputFilter:
         """
         return self.data
 
-    cpdef void set_unfiltered_data(self, data: dict[str, Any]):
+    cpdef void set_unfiltered_data(self, dict[str, Any] data):
         """
         Sets unfiltered data for the current instance. This method assigns a
         given dictionary of data to the instance for further processing. It
@@ -368,7 +369,7 @@ cdef class InputFilter:
 
         return False
 
-    cpdef str get_error_message(self, field_name: str):
+    cpdef str get_error_message(self, str field_name):
         """
         Retrieves and returns a predefined error message.
 
@@ -388,7 +389,7 @@ cdef class InputFilter:
         """
         return self.errors.get(field_name)
 
-    cpdef dict get_error_messages(self):
+    cpdef dict[str, str] get_error_messages(self):
         """
         Retrieves all error messages associated with the fields in the
         input filter.
@@ -405,15 +406,15 @@ cdef class InputFilter:
 
     cpdef void add(
         self,
-        name: str,
-        required: bool = False,
-        default: Any = None,
-        fallback: Any = None,
-        filters: Optional[list[BaseFilter]] = None,
-        validators: Optional[list[BaseValidator]] = None,
-        steps: Optional[list[Union[BaseFilter, BaseValidator]]] = None,
-        external_api: Optional[ExternalApiConfig] = None,
-        copy: Optional[str] = None,
+        str name,
+        bint required = False,
+        object default = None,
+        object fallback = None,
+        list filters = None,
+        list validators = None,
+        list steps = None,
+        ExternalApiConfig external_api = None,
+        str copy = None,
     ) except *:
         """
         Add the field to the input filter.
@@ -457,7 +458,7 @@ cdef class InputFilter:
             copy,
         )
 
-    cpdef bint has(self, field_name: str):
+    cpdef bint has(self, str field_name):
         """
         This method checks the existence of a specific field within the
         input filter values, identified by its field name. It does not return a
@@ -472,7 +473,7 @@ cdef class InputFilter:
         """
         return field_name in self.fields
 
-    cpdef object get_input(self, field_name: str):
+    cpdef object get_input(self, str field_name):
         """
         Represents a method to retrieve a field by its name.
 
@@ -533,15 +534,15 @@ cdef class InputFilter:
 
     cpdef void replace(
         self,
-        name: str,
-        required: bool = False,
-        default: Any = None,
-        fallback: Any = None,
-        filters: Optional[list[BaseFilter]] = None,
-        validators: Optional[list[BaseValidator]] = None,
-        steps: Optional[list[Union[BaseFilter, BaseValidator]]] = None,
-        external_api: Optional[ExternalApiConfig] = None,
-        copy: Optional[str] = None,
+        str name,
+        bint required = False,
+        object default = None,
+        object fallback = None,
+        list filters = None,
+        list validators = None,
+        list steps = None,
+        ExternalApiConfig external_api = None,
+        str copy = None,
     ):
         """
         Replaces a field in the input filter.
