@@ -1,12 +1,13 @@
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsBase64ImageValidator
+
 from tests.validators import BaseValidatorTest
 
 
 class TestIsBase64ImageValidator(BaseValidatorTest):
     def test_valid_base64_image(self) -> None:
         self.input_filter.add("image", validators=[IsBase64ImageValidator()])
-        with open("tests/data/base64_image.txt", "r") as file:
+        with open("tests/data/base64_image.txt") as file:
             self.input_filter.validate_data({"image": file.read()})
 
     def test_invalid_base64_image(self) -> None:

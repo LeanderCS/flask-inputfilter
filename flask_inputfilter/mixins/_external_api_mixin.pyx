@@ -121,13 +121,13 @@ cdef class ExternalApiMixin:
         with the corresponding values from validated_data.
 
         **Parameters:**
-        
+
         - **value** (**str**): The string containing placeholders to be replaced.
         - **validated_data** (**dict[str, Any]**): The dictionary containing 
           the values to replace the placeholders with.
 
         **Returns:**
-            
+
         - (*str*): The value with all placeholders replaced with
           the corresponding values from validated_data.
         """
@@ -151,7 +151,7 @@ cdef class ExternalApiMixin:
           the values to replace the placeholders with.
 
         **Returns:**
-        
+
         - (*dict*): The params dictionary with all placeholders replaced
           with the corresponding values from validated_data.
         """

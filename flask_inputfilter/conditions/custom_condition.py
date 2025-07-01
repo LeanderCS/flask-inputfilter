@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from collections.abc import Callable
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from flask_inputfilter.conditions import BaseCondition
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 class CustomCondition(BaseCondition):

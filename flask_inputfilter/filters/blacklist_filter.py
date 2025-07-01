@@ -45,10 +45,10 @@ class BlacklistFilter(BaseFilter):
                 value = value.replace(item, "")
             return value.strip()
 
-        elif isinstance(value, list):
+        if isinstance(value, list):
             return [item for item in value if item not in self.blacklist]
 
-        elif isinstance(value, dict):
+        if isinstance(value, dict):
             return {
                 key: value
                 for key, value in value.items()

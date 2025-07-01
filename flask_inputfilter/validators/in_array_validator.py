@@ -38,7 +38,7 @@ class InArrayValidator(BaseValidator):
                 ])
     """
 
-    __slots__ = ("haystack", "strict", "error_message")
+    __slots__ = ("error_message", "haystack", "strict")
 
     def __init__(
         self,

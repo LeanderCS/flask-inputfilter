@@ -2,6 +2,7 @@ from datetime import date, datetime
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsWeekendValidator
+
 from tests.validators import BaseValidatorTest
 
 

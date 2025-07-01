@@ -12,6 +12,6 @@ else:
 
 __all__ = [
     "BaseFilter",
-    "FieldModel",
     "ExternalApiConfig",
+    "FieldModel",
 ]

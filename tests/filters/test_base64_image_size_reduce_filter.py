@@ -2,10 +2,9 @@ import base64
 import io
 import unittest
 
-from PIL import Image
-
 from flask_inputfilter import InputFilter
 from flask_inputfilter.filters import Base64ImageResizeFilter
+from PIL import Image
 
 
 class TestBase64ImageResizeFilter(unittest.TestCase):
@@ -20,7 +19,7 @@ class TestBase64ImageResizeFilter(unittest.TestCase):
             "image",
             filters=[Base64ImageResizeFilter(max_size=1024)],
         )
-        with open("tests/data/base64_image.txt", "r") as file:
+        with open("tests/data/base64_image.txt") as file:
             validated_data = self.input_filter.validate_data(
                 {"image": file.read()}
             )
@@ -40,7 +39,7 @@ class TestBase64ImageResizeFilter(unittest.TestCase):
             "image",
             filters=[Base64ImageResizeFilter(max_size=1024)],
         )
-        with open("tests/data/base64_image.txt", "r") as file:
+        with open("tests/data/base64_image.txt") as file:
             validated_data = self.input_filter.validate_data(
                 {
                     "image": Image.open(

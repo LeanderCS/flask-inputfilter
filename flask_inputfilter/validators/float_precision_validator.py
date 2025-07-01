@@ -39,7 +39,7 @@ class FloatPrecisionValidator(BaseValidator):
                 ])
     """
 
-    __slots__ = ("precision", "scale", "error_message")
+    __slots__ = ("error_message", "precision", "scale")
 
     def __init__(
         self,

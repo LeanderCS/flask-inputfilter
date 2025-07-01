@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
-from flask_inputfilter.models import BaseFilter, ExternalApiConfig
-from flask_inputfilter.validators import BaseValidator
+if TYPE_CHECKING:
+    from flask_inputfilter.models import BaseFilter, ExternalApiConfig
+    from flask_inputfilter.validators import BaseValidator
 
 
 @dataclass

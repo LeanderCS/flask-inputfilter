@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from datetime import date, datetime
-from typing import Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.helpers import parse_date
 from flask_inputfilter.validators import BaseValidator
+
+if TYPE_CHECKING:
+    from datetime import date, datetime
 
 
 class DateBeforeValidator(BaseValidator):
@@ -38,7 +40,7 @@ class DateBeforeValidator(BaseValidator):
                 ])
     """
 
-    __slots__ = ("reference_date", "error_message")
+    __slots__ = ("error_message", "reference_date")
 
     def __init__(
         self,

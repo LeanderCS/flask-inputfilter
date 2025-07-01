@@ -46,7 +46,7 @@ class TemporalOrderCondition(BaseCondition):
                 )
     """
 
-    __slots__ = ("smaller_date_field", "larger_date_field")
+    __slots__ = ("larger_date_field", "smaller_date_field")
 
     def __init__(
         self, smaller_date_field: str, larger_date_field: str

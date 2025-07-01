@@ -49,7 +49,7 @@ jobs:
           set -e # Exit immediately if a command exits with a non-zero status
           set -u # Exit immediately if a variable is not defined
       
-          docker run --rm flask-inputfilter-pure flake8
+          docker run --rm flask-inputfilter-pure ruff check
 
   build-and-test-cython:
     runs-on: ubuntu-latest

@@ -151,7 +151,7 @@ cdef class InputFilter:
         return decorator
 
     cpdef object validate_data(
-        self, dict[str, Any] data = None
+        self, dict[str, Any] data=None
     ):
         """
         Validates input data against defined field rules.
@@ -170,7 +170,8 @@ cdef class InputFilter:
             dict[str, str] errors = {},
             dict[str, Any] validated_data = {}
 
-        validated_data, errors = FieldMixin.validate_fields(self.fields, data, self.global_filters, self.global_validators)
+        validated_data, errors = FieldMixin.validate_fields(
+            self.fields, data, self.global_filters, self.global_validators)
 
         if self.conditions:
             self._check_all_conditions(validated_data, errors)
@@ -339,7 +340,7 @@ cdef class InputFilter:
         updates the internal state using the provided data.
 
         **Parameters**:
-        
+
         - data (dict[str, Any]): A dictionary containing the unfiltered
             data to be associated with the instance.
         """
@@ -400,14 +401,14 @@ cdef class InputFilter:
     cpdef void add(
         self,
         str name,
-        bint required = False,
-        object default = None,
-        object fallback = None,
-        list filters = None,
-        list validators = None,
-        list steps = None,
-        ExternalApiConfig external_api = None,
-        str copy = None,
+        bint required=False,
+        object default=None,
+        object fallback=None,
+        list filters=None,
+        list validators=None,
+        list steps=None,
+        ExternalApiConfig external_api=None,
+        str copy=None,
     ) except *:
         """
         Add the field to the input filter.
@@ -528,14 +529,14 @@ cdef class InputFilter:
     cpdef void replace(
         self,
         str name,
-        bint required = False,
-        object default = None,
-        object fallback = None,
-        list filters = None,
-        list validators = None,
-        list steps = None,
-        ExternalApiConfig external_api = None,
-        str copy = None,
+        bint required=False,
+        object default=None,
+        object fallback=None,
+        list filters=None,
+        list validators=None,
+        list steps=None,
+        ExternalApiConfig external_api=None,
+        str copy=None,
     ):
         """
         Replaces a field in the input filter.
@@ -710,7 +711,7 @@ cdef class InputFilter:
     cdef inline void _check_all_conditions(self, dict[str, Any] validated_data, dict[str, str] errors):
         """
         Check all conditions against the validated data.
-        
+
         Args:
             validated_data (dict[str, Any]): The data that has been validated.
             errors (dict[str, str]): A dictionary to store any validation errors.

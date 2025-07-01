@@ -35,6 +35,4 @@ class WhitespaceCollapseFilter(BaseFilter):
         if not isinstance(value, str):
             return value
 
-        value = re.sub(r"\s+", " ", value).strip()
-
-        return value
+        return re.sub(r"\s+", " ", value).strip()

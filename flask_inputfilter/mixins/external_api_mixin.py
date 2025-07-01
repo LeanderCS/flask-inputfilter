@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.models import ExternalApiConfig
+
+if TYPE_CHECKING:
+    from flask_inputfilter.models import ExternalApiConfig
 
 
 class ExternalApiMixin:
@@ -61,18 +63,18 @@ class ExternalApiMixin:
         }
 
         if config.api_key:
-            request_data["headers"][
-                "Authorization"
-            ] = f"Bearer {config.api_key}"
+            request_data["headers"]["Authorization"] = (
+                f"Bearer {config.api_key}"
+            )
 
         if config.headers:
             request_data["headers"].update(config.headers)
 
         if config.params:
-            request_data[
-                "params"
-            ] = ExternalApiMixin.replace_placeholders_in_params(
-                config.params, validated_data
+            request_data["params"] = (
+                ExternalApiMixin.replace_placeholders_in_params(
+                    config.params, validated_data
+                )
             )
 
         request_data["url"] = ExternalApiMixin.replace_placeholders(

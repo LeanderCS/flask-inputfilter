@@ -27,7 +27,13 @@ except ImportError:
         import logging
 
         logging.getLogger(__name__).warning(
-            "Cython or g++ not available. Falling back to pure Python implementation.\n"
-            "Consult docs for better performance: https://leandercs.github.io/flask-inputfilter/guides/compile.html"
+            "Cython or g++ not available. Falling back to pure Python "
+            "implementation.\n"
+            "Consult docs for better performance: https://leandercs.github.io"
+            "/flask-inputfilter/guides/compile.html"
         )
         from .input_filter import InputFilter
+
+__all__ = [
+    "InputFilter",
+]

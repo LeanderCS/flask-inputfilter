@@ -23,14 +23,14 @@ cdef class FieldModel:
 
     def __init__(
         self,
-        bint required = False,
-        object default = None,
-        object fallback = None,
-        list filters = None,
-        list validators = None,
-        list steps = None,
-        object external_api = None,
-        str copy = None
+        bint required=False,
+        object default=None,
+        object fallback=None,
+        list filters=None,
+        list validators=None,
+        list steps=None,
+        object external_api=None,
+        str copy=None
     ) -> None:
         self.required = required
         self._default = default

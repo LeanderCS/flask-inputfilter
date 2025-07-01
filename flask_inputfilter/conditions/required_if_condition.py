@@ -48,7 +48,7 @@ class RequiredIfCondition(BaseCondition):
                 )
     """
 
-    __slots__ = ("condition_field", "value", "required_field")
+    __slots__ = ("condition_field", "required_field", "value")
 
     def __init__(
         self,

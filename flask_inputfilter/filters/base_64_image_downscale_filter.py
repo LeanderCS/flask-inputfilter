@@ -46,7 +46,7 @@ class Base64ImageDownscaleFilter(BaseFilter):
                 ])
     """
 
-    __slots__ = ("width", "height", "proportionally")
+    __slots__ = ("height", "proportionally", "width")
 
     def __init__(
         self,

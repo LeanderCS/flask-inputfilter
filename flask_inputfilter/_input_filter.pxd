@@ -26,7 +26,7 @@ cdef class InputFilter:
         object model_class
 
     cpdef bint is_valid(self)
-    cpdef object validate_data(self, dict data= *)
+    cpdef object validate_data(self, dict data=*)
     cpdef void add_condition(self, object condition)
     cpdef list get_conditions(self)
     cpdef void set_data(self, dict data)
@@ -40,16 +40,16 @@ cdef class InputFilter:
     cpdef str get_error_message(self, str field_name)
     cpdef dict get_error_messages(self)
     cpdef void add(
-            self,
-            str name,
-            bint required= *,
-            object default= *,
-            object fallback= *,
-            list filters= *,
-            list validators= *,
-            list steps= *,
-            ExternalApiConfig external_api= *,
-            str copy= *,
+        self,
+        str name,
+        bint required=*,
+        object default=*,
+        object fallback=*,
+        list filters=*,
+        list validators=*,
+        list steps=*,
+        ExternalApiConfig external_api=*,
+        str copy=*,
     ) except*
     cpdef bint has(self, str field_name)
     cpdef FieldModel get_input(self, str field_name)
@@ -57,16 +57,16 @@ cdef class InputFilter:
     cpdef object remove(self, str field_name)
     cpdef int count(self)
     cpdef void replace(
-            self,
-            str name,
-            bint required= *,
-            object default= *,
-            object fallback= *,
-            list filters= *,
-            list validators= *,
-            list steps= *,
-            ExternalApiConfig external_api= *,
-            str copy= *,
+        self,
+        str name,
+        bint required=*,
+        object default=*,
+        object fallback=*,
+        list filters=*,
+        list validators=*,
+        list steps=*,
+        ExternalApiConfig external_api=*,
+        str copy=*,
     )
     cpdef void add_global_filter(self, BaseFilter filter)
     cpdef list get_global_filters(self)

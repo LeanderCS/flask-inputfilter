@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import Any
 
 
@@ -11,6 +11,7 @@ class BaseFilter(ABC):
     Every filter should inherit from it.
     """
 
-    @abstractmethod
     def apply(self, value: Any) -> Any:
-        pass
+        raise NotImplementedError(
+            "The apply method must be implemented in filters."
+        )

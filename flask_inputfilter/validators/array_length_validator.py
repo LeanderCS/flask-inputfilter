@@ -37,7 +37,7 @@ class ArrayLengthValidator(BaseValidator):
                 ])
     """
 
-    __slots__ = ("min_length", "max_length", "error_message")
+    __slots__ = ("error_message", "max_length", "min_length")
 
     def __init__(
         self,

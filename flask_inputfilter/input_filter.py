@@ -3,16 +3,19 @@ from __future__ import annotations
 import json
 import logging
 import sys
-from collections.abc import Callable
-from typing import Any, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 from flask import Response, g, request
 
-from flask_inputfilter.conditions import BaseCondition
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.mixins import FieldMixin
 from flask_inputfilter.models import BaseFilter, ExternalApiConfig, FieldModel
-from flask_inputfilter.validators import BaseValidator
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from flask_inputfilter.conditions import BaseCondition
+    from flask_inputfilter.validators import BaseValidator
 
 T = TypeVar("T")
 
@@ -360,8 +363,8 @@ class InputFilter:
             return True
 
         return any(
-            field_name not in self.fields.keys()
-            for field_name in self.data.keys()
+            field_name not in self.fields
+            for field_name in self.data
         )
 
     def get_error_message(self, field_name: str) -> Optional[str]:
@@ -617,7 +620,7 @@ class InputFilter:
         self.validated_data.clear()
         self.errors.clear()
 
-    def merge(self, other: "InputFilter") -> None:
+    def merge(self, other: InputFilter) -> None:
         """
         Merges another InputFilter instance intelligently into the current
         instance.
@@ -654,9 +657,9 @@ class InputFilter:
                 type(v): i for i, v in enumerate(self.global_validators)
             }
             if type(validator) in existing_type_map:
-                self.global_validators[
-                    existing_type_map[type(validator)]
-                ] = validator
+                self.global_validators[existing_type_map[type(validator)]] = (
+                    validator
+                )
             else:
                 self.global_validators.append(validator)
 

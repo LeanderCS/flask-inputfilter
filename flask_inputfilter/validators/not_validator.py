@@ -37,7 +37,7 @@ class NotValidator(BaseValidator):
                 ])
     """
 
-    __slots__ = ("validator", "error_message")
+    __slots__ = ("error_message", "validator")
 
     def __init__(
         self,

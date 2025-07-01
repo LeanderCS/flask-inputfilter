@@ -35,7 +35,7 @@ class RangeValidator(BaseValidator):
                 ])
     """
 
-    __slots__ = ("min_value", "max_value", "error_message")
+    __slots__ = ("error_message", "max_value", "min_value")
 
     def __init__(
         self,

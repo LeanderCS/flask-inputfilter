@@ -44,12 +44,12 @@ class CustomJsonValidator(BaseValidator):
                 ])
     """
 
-    __slots__ = ("required_fields", "schema", "error_message")
+    __slots__ = ("error_message", "required_fields", "schema")
 
     def __init__(
         self,
-        required_fields: list[str] = None,
-        schema: dict = None,
+        required_fields: Optional[list[str]] = None,
+        schema: Optional[dict] = None,
         error_message: Optional[str] = None,
     ) -> None:
         self.required_fields = required_fields or []

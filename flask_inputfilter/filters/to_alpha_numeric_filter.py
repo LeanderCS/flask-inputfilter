@@ -35,6 +35,4 @@ class ToAlphaNumericFilter(BaseFilter):
         if not isinstance(value, str):
             return value
 
-        value = re.sub(r"[^\w]", "", value)
-
-        return value
+        return re.sub(r"[^\w]", "", value)

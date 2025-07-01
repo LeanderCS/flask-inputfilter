@@ -42,9 +42,9 @@ class IsTypedDictValidator(BaseValidator):
     """
 
     __slots__ = (
+        "error_message",
         "typed_dict_expected_keys",
         "typed_dict_name",
-        "error_message",
     )
 
     def __init__(

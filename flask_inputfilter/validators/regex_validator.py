@@ -36,7 +36,7 @@ class RegexValidator(BaseValidator):
                 ])
     """
 
-    __slots__ = ("pattern", "error_message")
+    __slots__ = ("error_message", "pattern")
 
     def __init__(
         self,

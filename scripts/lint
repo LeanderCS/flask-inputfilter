@@ -7,14 +7,9 @@ find /app/flask_inputfilter -name "*.py" ! -name "__init__.py" | while read -r f
   fi
 done
 
-echo "Running autoflake"
-autoflake --in-place --remove-all-unused-imports --ignore-init-module-imports --recursive /app
-
-echo "Running isort"
-isort /app
-
-echo "Running black"
-black /app
+echo "Running Ruff (lint and fix)"
+ruff check --fix /app
+ruff format /app
 
 echo "Running docformatter"
 docformatter --in-place --wrap-summaries 79 --wrap-descriptions 79 --recursive --pre-summary-newline /app

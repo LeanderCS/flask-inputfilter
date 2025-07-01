@@ -2,12 +2,11 @@
 
 import cython
 
-from flask_inputfilter.models._field_model cimport FieldModel
-
 from flask_inputfilter.exceptions import ValidationError
 
 from flask_inputfilter.mixins._external_api_mixin cimport ExternalApiMixin
 from flask_inputfilter.models._base_filter cimport BaseFilter
+from flask_inputfilter.models._field_model cimport FieldModel
 
 from flask_inputfilter.validators import BaseValidator
 
@@ -21,7 +20,7 @@ cdef class FieldMixin:
         Apply filters to the field value.
 
         **Parameters:**
-        
+
         - **filters1** (*list[BaseFilter]*): A list of filters to apply to the 
           value.
         - **filters2** (*list[BaseFilter]*): A list of filters to apply to the 
@@ -29,7 +28,7 @@ cdef class FieldMixin:
         - **value** (*Any*): The value to be processed by the filters.
 
         **Returns:**
-        
+
         - (*Any*): The processed value after applying all filters. 
           If the value is None, None is returned.
         """
@@ -70,7 +69,7 @@ cdef class FieldMixin:
         the validation error is raised.
 
         **Parameters:**
-        
+
         - **steps** (*list[Union[BaseFilter, BaseValidator]]*): 
           A list of filters and validators to be applied in order.
         - **fallback** (*Any*): 
@@ -79,13 +78,13 @@ cdef class FieldMixin:
           The initial value to be processed.
 
         **Returns:**
-        
+
         - (*Any*): The processed value after applying all filters and 
           validators. If a validation error occurs and a fallback is 
           provided, the fallback value is returned.
 
         **Raises:**
-            
+
         - **ValidationError:** If validation fails and no fallback value is 
           provided.
         """
@@ -120,7 +119,7 @@ cdef class FieldMixin:
         message indicating which condition failed.
 
         **Parameters:**
-        
+
         - **conditions** (*list[BaseCondition]*):
           A list of conditions to be checked against the validated data.
         - **validated_data** (*dict[str, Any]*):
@@ -154,18 +153,18 @@ cdef class FieldMixin:
         a ValidationError is raised.
 
         **Parameters:**
-        
+
         - **field_name** (*str*): The name of the field being processed.
         - **field_info** (*FieldModel*): The object of the field.
         - **value** (*Any*): The current value of the field being processed.
 
         **Returns:**
-            
+
         - (*Any*): The determined value of the field after considering 
           required, default, and fallback attributes.
 
         **Raises:**
-        
+
         - **ValidationError**: 
           If the field is required and no value or fallback is provided.
         """
@@ -191,7 +190,7 @@ cdef class FieldMixin:
         Validate the field value.
 
         **Parameters:**
-        
+
         - **validators1** (*list[BaseValidator]*): A list of validators to 
           apply to the field value.
         - **validators2** (*list[BaseValidator]*): A list of validators to 
@@ -201,7 +200,7 @@ cdef class FieldMixin:
         - **value** (*Any*): The value to be validated.
 
         **Returns:**
-        
+
         - (*Any*): The validated value if all validators pass. If validation 
           fails and a fallback is provided, the fallback value is returned.
         """
@@ -241,9 +240,9 @@ cdef class FieldMixin:
     ):
         """
         Validate multiple fields based on their configurations.
-        
+
         **Parameters:**
-        
+
         - **fields** (*dict[str, FieldModel]*): A dictionary where keys are 
           field names and values are FieldModel objects containing field 
           configurations.
@@ -253,9 +252,9 @@ cdef class FieldMixin:
           to be applied to all fields.
         - **global_validators** (*list[BaseValidator]*): A list of global
           validators to be applied to all fields.
-          
+
         **Returns:**
-        
+
         - (*tuple*): A tuple containing two dictionaries:
             - **validated_data** (*dict[str, Any]*): A dictionary of field names
               and their validated values.
@@ -325,9 +324,9 @@ cdef class FieldMixin:
     ):
         """
         Retrieve the value of a field based on its configuration.
-        
+
         **Parameters:**
-        
+
         - **field_name** (*str*): The name of the field to retrieve.
         - **field_info** (*FieldModel*): The object containing field 
           configuration, including copy, external_api, and fallback 
@@ -337,9 +336,9 @@ cdef class FieldMixin:
         - **validated_data** (*dict[str, Any]*): The dictionary containing
           already validated data, which may include copied or externally 
           fetched values.
-          
+
         **Returns:**
-        
+
         - (*Any*): The value of the field, either from the validated data,
           copied from another field, fetched from an external API, or directly
           from the original data dictionary.

@@ -36,7 +36,7 @@ class ToDateFilter(BaseFilter):
         if isinstance(value, datetime):
             return value.date()
 
-        elif isinstance(value, str):
+        if isinstance(value, str):
             try:
                 return datetime.fromisoformat(value).date()
 

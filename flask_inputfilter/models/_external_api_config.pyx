@@ -24,10 +24,10 @@ cdef class ExternalApiConfig:
         self,
         str url,
         str method,
-        dict params = None,
-        str data_key = None,
-        str api_key = None,
-        dict headers = None
+        dict params=None,
+        str data_key=None,
+        str api_key=None,
+        dict headers=None
     ) -> None:
         self.url = url
         self.method = method

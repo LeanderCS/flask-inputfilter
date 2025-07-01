@@ -37,6 +37,4 @@ class ToPascalCaseFilter(BaseFilter):
 
         value = re.sub(r"[\s\-_]+", " ", value).strip()
 
-        value = "".join(word.capitalize() for word in value.split())
-
-        return value
+        return "".join(word.capitalize() for word in value.split())

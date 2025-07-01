@@ -41,7 +41,7 @@ class AndValidator(BaseValidator):
                 ])
     """
 
-    __slots__ = ("validators", "error_message")
+    __slots__ = ("error_message", "validators")
 
     def __init__(
         self,

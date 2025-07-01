@@ -47,8 +47,8 @@ class Base64ImageResizeFilter(BaseFilter):
     """
 
     __slots__ = (
-        "max_size",
         "format",
+        "max_size",
         "preserve_icc_profile",
         "preserve_metadata",
     )

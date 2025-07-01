@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from unittest.mock import Mock, patch
 
 from flask import Flask, g, jsonify, request
-
 from flask_inputfilter import InputFilter
 from flask_inputfilter.conditions import BaseCondition, ExactlyOneOfCondition
 from flask_inputfilter.exceptions import ValidationError

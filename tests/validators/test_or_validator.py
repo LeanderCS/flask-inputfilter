@@ -4,6 +4,7 @@ from flask_inputfilter.validators import (
     IsIntegerValidator,
     OrValidator,
 )
+
 from tests.validators import BaseValidatorTest
 
 

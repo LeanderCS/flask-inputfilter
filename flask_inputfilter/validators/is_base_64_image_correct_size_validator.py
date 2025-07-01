@@ -43,7 +43,7 @@ class IsBase64ImageCorrectSizeValidator(BaseValidator):
                 ])
     """
 
-    __slots__ = ("min_size", "max_size", "error_message")
+    __slots__ = ("error_message", "max_size", "min_size")
 
     def __init__(
         self,
