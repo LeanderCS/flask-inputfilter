@@ -1,10 +1,10 @@
 import base64
 import io
 
-from PIL import Image
-
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsHorizontalImageValidator
+from PIL import Image
+
 from tests.validators import BaseValidatorTest
 
 

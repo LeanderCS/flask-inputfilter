@@ -4,7 +4,7 @@ from enum import Enum
 from typing import Any, Optional
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.models import BaseValidator
 
 
 class LengthEnum(Enum):
@@ -43,7 +43,7 @@ class LengthValidator(BaseValidator):
                 ])
     """
 
-    __slots__ = ("min_length", "max_length", "error_message")
+    __slots__ = ("error_message", "max_length", "min_length")
 
     def __init__(
         self,

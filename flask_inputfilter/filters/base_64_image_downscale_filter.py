@@ -6,7 +6,7 @@ from typing import Any, Optional
 
 from PIL import Image
 
-from flask_inputfilter.filters import BaseFilter
+from flask_inputfilter.models import BaseFilter
 
 
 class Base64ImageDownscaleFilter(BaseFilter):
@@ -46,7 +46,7 @@ class Base64ImageDownscaleFilter(BaseFilter):
                 ])
     """
 
-    __slots__ = ("width", "height", "proportionally")
+    __slots__ = ("height", "proportionally", "width")
 
     def __init__(
         self,

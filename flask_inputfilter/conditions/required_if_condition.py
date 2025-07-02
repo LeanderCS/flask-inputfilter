@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Optional, Union
 
-from flask_inputfilter.conditions import BaseCondition
+from flask_inputfilter.models import BaseCondition
 
 
 class RequiredIfCondition(BaseCondition):
@@ -48,7 +48,7 @@ class RequiredIfCondition(BaseCondition):
                 )
     """
 
-    __slots__ = ("condition_field", "value", "required_field")
+    __slots__ = ("condition_field", "required_field", "value")
 
     def __init__(
         self,

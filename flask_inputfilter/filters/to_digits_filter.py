@@ -4,7 +4,7 @@ import re
 from typing import Any, Union
 
 from flask_inputfilter.enums import RegexEnum
-from flask_inputfilter.filters import BaseFilter
+from flask_inputfilter.models import BaseFilter
 
 
 class ToDigitsFilter(BaseFilter):
@@ -36,10 +36,10 @@ class ToDigitsFilter(BaseFilter):
         if not isinstance(value, str):
             return value
 
-        elif re.fullmatch(RegexEnum.INTEGER_PATTERN.value, value):
+        if re.fullmatch(RegexEnum.INTEGER_PATTERN.value, value):
             return int(value)
 
-        elif re.fullmatch(RegexEnum.FLOAT_PATTERN.value, value):
+        if re.fullmatch(RegexEnum.FLOAT_PATTERN.value, value):
             return float(value)
 
         return value

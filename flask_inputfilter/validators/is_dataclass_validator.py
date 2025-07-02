@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import Any, Optional, Type, TypeVar, Union, _GenericAlias
+from typing import Any, ClassVar, Optional, Type, TypeVar, Union, _GenericAlias
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.models import BaseValidator
 
 T = TypeVar("T")
 
@@ -74,7 +74,7 @@ class IsDataclassValidator(BaseValidator):
 
     __slots__ = ("dataclass_type", "error_message")
 
-    _ERROR_TEMPLATES = {
+    _ERROR_TEMPLATES: ClassVar = {
         "not_dict": "The provided value is not a dict instance.",
         "not_dataclass": "'{dataclass_type}' is not a valid dataclass.",
         "missing_field": "Missing required field '{field_name}' in value "

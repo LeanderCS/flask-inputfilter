@@ -1,4 +1,4 @@
-from flask_inputfilter.conditions.base_condition import BaseCondition
+from flask_inputfilter.models import BaseCondition
 
 from .array_length_equal_condition import ArrayLengthEqualCondition
 from .array_longer_than_condition import ArrayLongerThanCondition

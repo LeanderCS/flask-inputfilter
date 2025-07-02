@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from enum import Enum
-from typing import Any, Optional, Type
+from typing import TYPE_CHECKING, Any, Optional, Type
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.models import BaseValidator
+
+if TYPE_CHECKING:
+    from enum import Enum
 
 
 class InEnumValidator(BaseValidator):

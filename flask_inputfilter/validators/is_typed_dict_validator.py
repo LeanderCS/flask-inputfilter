@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, Optional, Type
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.models import BaseValidator
 
 
 class IsTypedDictValidator(BaseValidator):
@@ -42,9 +42,9 @@ class IsTypedDictValidator(BaseValidator):
     """
 
     __slots__ = (
+        "error_message",
         "typed_dict_expected_keys",
         "typed_dict_name",
-        "error_message",
     )
 
     def __init__(

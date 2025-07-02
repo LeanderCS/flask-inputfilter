@@ -5,7 +5,7 @@ import unicodedata
 from typing import Any, Optional, Union
 
 from flask_inputfilter.enums import UnicodeFormEnum
-from flask_inputfilter.filters import BaseFilter
+from flask_inputfilter.models import BaseFilter
 
 
 class StringSlugifyFilter(BaseFilter):
@@ -50,6 +50,4 @@ class StringSlugifyFilter(BaseFilter):
         value = value.lower()
 
         value = re.sub(r"[^\w\s-]", "", value)
-        value = re.sub(r"[\s]+", "-", value)
-
-        return value
+        return re.sub(r"[\s]+", "-", value)

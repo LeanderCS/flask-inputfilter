@@ -7,6 +7,7 @@ from flask_inputfilter.validators import (
     IsStringValidator,
     LengthValidator,
 )
+
 from tests.validators import BaseValidatorTest
 
 

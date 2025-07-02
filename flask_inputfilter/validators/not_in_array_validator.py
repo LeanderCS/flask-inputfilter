@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, Optional
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.models import BaseValidator
 
 
 class NotInArrayValidator(BaseValidator):
@@ -37,7 +37,7 @@ class NotInArrayValidator(BaseValidator):
                 ])
     """
 
-    __slots__ = ("haystack", "strict", "error_message")
+    __slots__ = ("error_message", "haystack", "strict")
 
     def __init__(
         self,

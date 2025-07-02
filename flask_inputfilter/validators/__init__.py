@@ -1,4 +1,4 @@
-from flask_inputfilter.validators.base_validator import BaseValidator
+from flask_inputfilter.models import BaseValidator
 
 from .and_validator import AndValidator
 from .array_element_validator import ArrayElementValidator
@@ -49,10 +49,10 @@ from .regex_validator import RegexValidator
 from .xor_validator import XorValidator
 
 __all__ = [
-    "BaseValidator",
     "AndValidator",
     "ArrayElementValidator",
     "ArrayLengthValidator",
+    "BaseValidator",
     "CustomJsonValidator",
     "DateAfterValidator",
     "DateBeforeValidator",
@@ -82,9 +82,9 @@ __all__ = [
     "IsRgbColorValidator",
     "IsStringValidator",
     "IsTypedDictValidator",
+    "IsUUIDValidator",
     "IsUppercaseValidator",
     "IsUrlValidator",
-    "IsUUIDValidator",
     "IsVerticalImageValidator",
     "IsWeekdayValidator",
     "IsWeekendValidator",
@@ -94,4 +94,5 @@ __all__ = [
     "OrValidator",
     "RangeValidator",
     "RegexValidator",
+    "XorValidator",
 ]

@@ -4,7 +4,7 @@ from copy import deepcopy
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.models import BaseValidator
 
 if TYPE_CHECKING:
     from flask_inputfilter import InputFilter
@@ -63,9 +63,7 @@ class ArrayElementValidator(BaseValidator):
 
     def __init__(
         self,
-        element_filter: Union[
-            "InputFilter", BaseValidator, list[BaseValidator]
-        ],
+        element_filter: Union[InputFilter, BaseValidator, list[BaseValidator]],
         error_message: Optional[str] = None,
     ) -> None:
         self.element_filter = element_filter
@@ -83,7 +81,7 @@ class ArrayElementValidator(BaseValidator):
                     value[i] = element
                     continue
 
-                elif isinstance(self.element_filter, list) and all(
+                if isinstance(self.element_filter, list) and all(
                     isinstance(v, BaseValidator) for v in self.element_filter
                 ):
                     for validator in self.element_filter:

@@ -4,7 +4,7 @@ import re
 from typing import Optional
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.models import BaseValidator
 
 
 class RegexValidator(BaseValidator):
@@ -36,7 +36,7 @@ class RegexValidator(BaseValidator):
                 ])
     """
 
-    __slots__ = ("pattern", "error_message")
+    __slots__ = ("error_message", "pattern")
 
     def __init__(
         self,

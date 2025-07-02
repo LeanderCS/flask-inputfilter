@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from flask_inputfilter.conditions import BaseCondition
 from flask_inputfilter.helpers import parse_date
+from flask_inputfilter.models import BaseCondition
 
 
 class TemporalOrderCondition(BaseCondition):
@@ -46,7 +46,7 @@ class TemporalOrderCondition(BaseCondition):
                 )
     """
 
-    __slots__ = ("smaller_date_field", "larger_date_field")
+    __slots__ = ("larger_date_field", "smaller_date_field")
 
     def __init__(
         self, smaller_date_field: str, larger_date_field: str

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Any, Optional, Union
+from typing import Any, Union
 
-from flask_inputfilter.filters.base_filter import BaseFilter
+from flask_inputfilter.models import BaseFilter
 
 
 class ArrayElementFilter(BaseFilter):
@@ -38,10 +38,8 @@ class ArrayElementFilter(BaseFilter):
     def __init__(
         self,
         element_filter: Union[BaseFilter, list[BaseFilter]],
-        error_message: Optional[str] = None,
     ) -> None:
         self.element_filter = element_filter
-        self.error_message = error_message
 
     def apply(self, value: Any) -> list[Any]:
         if not isinstance(value, list):
@@ -53,7 +51,7 @@ class ArrayElementFilter(BaseFilter):
                 result.append(self.element_filter.apply(element))
                 continue
 
-            elif isinstance(self.element_filter, list) and all(
+            if isinstance(self.element_filter, list) and all(
                 isinstance(v, BaseFilter) for v in self.element_filter
             ):
                 for filter_instance in self.element_filter:

@@ -1,6 +1,7 @@
 from flask_inputfilter.enums import RegexEnum
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import RegexValidator
+
 from tests.validators import BaseValidatorTest
 
 

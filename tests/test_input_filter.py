@@ -3,9 +3,9 @@ from dataclasses import dataclass
 from unittest.mock import Mock, patch
 
 from flask import Flask, g, jsonify, request
-
 from flask_inputfilter import InputFilter
-from flask_inputfilter.conditions import BaseCondition, ExactlyOneOfCondition
+from flask_inputfilter.models import BaseCondition
+from flask_inputfilter.conditions import ExactlyOneOfCondition
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.filters import (
     StringSlugifyFilter,

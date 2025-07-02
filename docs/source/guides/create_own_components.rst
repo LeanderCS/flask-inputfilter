@@ -33,7 +33,7 @@ Example implementation
 
     from typing import Any
 
-    from flask_inputfilter.conditions import BaseCondition
+    from flask_inputfilter.models import BaseCondition
 
 
     class EqualCondition(BaseCondition):
@@ -71,7 +71,7 @@ Example implementation
     from datetime import date, datetime
     from typing import Any
 
-    from flask_inputfilter.filters import BaseFilter
+    from flask_inputfilter.models import BaseFilter
 
 
     class ToDateTimeFilter(BaseFilter):
@@ -118,7 +118,7 @@ Example implementation
     from typing import Any, Optional
 
     from flask_inputfilter.exceptions import ValidationError
-    from flask_inputfilter.validators import BaseValidator
+    from flask_inputfilter.models import BaseValidator
 
 
     class InArrayValidator(BaseValidator):

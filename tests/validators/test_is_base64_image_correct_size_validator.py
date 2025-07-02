@@ -1,5 +1,6 @@
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsBase64ImageCorrectSizeValidator
+
 from tests.validators import BaseValidatorTest
 
 

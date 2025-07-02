@@ -1,9 +1,10 @@
 # cython: language=c++
 # cython: freelist=256
-from __future__ import annotations
 
 import cython
+from typing import Any
 
+from flask_inputfilter.models.cimports cimport BaseFilter, BaseValidator, ExternalApiConfig
 
 cdef list EMPTY_LIST = []
 
@@ -14,33 +15,24 @@ cdef class FieldModel:
     FieldModel is a dataclass that represents a field in the input data.
     """
 
-    cdef public bint required
-    cdef public object _default
-    cdef public object fallback
-    cdef public list filters
-    cdef public list validators
-    cdef public list steps
-    cdef public object external_api
-    cdef public str copy
-
     @property
-    def default(self):
+    def default(self) -> Any:
         return self._default
 
     @default.setter
-    def default(self, value):
+    def default(self, value: Any) -> None:
         self._default = value
 
     def __init__(
         self,
-        bint required = False,
-        object default = None,
-        object fallback = None,
-        list filters = None,
-        list validators = None,
-        list steps = None,
-        object external_api = None,
-        str copy = None
+        bint required=False,
+        object default=None,
+        object fallback=None,
+        list[BaseFilter] filters=None,
+        list[BaseValidator] validators=None,
+        list steps=None,
+        ExternalApiConfig external_api=None,
+        str copy=None
     ) -> None:
         self.required = required
         self._default = default

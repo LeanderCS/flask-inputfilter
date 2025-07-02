@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import Any, Union
 
-from flask_inputfilter.filters import BaseFilter
+from flask_inputfilter.models import BaseFilter
 
 
 class ToDateTimeFilter(BaseFilter):
@@ -38,10 +38,10 @@ class ToDateTimeFilter(BaseFilter):
         if isinstance(value, datetime):
             return value
 
-        elif isinstance(value, date):
+        if isinstance(value, date):
             return datetime.combine(value, datetime.min.time())
 
-        elif isinstance(value, str):
+        if isinstance(value, str):
             try:
                 return datetime.fromisoformat(value)
 

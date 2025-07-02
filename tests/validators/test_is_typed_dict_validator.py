@@ -1,5 +1,6 @@
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsTypedDictValidator
+
 from tests.validators import BaseValidatorTest
 
 # TODO: Readd when Python 3.7 support is dropped

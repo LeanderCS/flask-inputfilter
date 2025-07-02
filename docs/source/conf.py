@@ -1,5 +1,5 @@
-import os
 import sys
+from pathlib import Path
 
 project = "flask-inputfilter"
 copyright = "2025, Leander Cain Slotosch"
@@ -31,7 +31,7 @@ autosummary_generate_overwrite = False
 napoleon_google_docstring = True
 napoleon_numpy_docstring = False
 
-sys.path.insert(0, os.path.abspath("../.."))
+sys.path.insert(0, str(Path("../..").resolve()))
 
 templates_path = []
 exclude_patterns = []

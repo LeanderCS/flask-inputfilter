@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from typing import Any, Optional, Union
 
-from flask_inputfilter.filters import BaseFilter
+from flask_inputfilter.models import BaseFilter
 
 
 class ToAlphaNumericFilter(BaseFilter):
@@ -35,6 +35,4 @@ class ToAlphaNumericFilter(BaseFilter):
         if not isinstance(value, str):
             return value
 
-        value = re.sub(r"[^\w]", "", value)
-
-        return value
+        return re.sub(r"[^\w]", "", value)

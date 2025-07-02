@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from flask_inputfilter.filters import BaseFilter
+from flask_inputfilter.models import BaseFilter
 
 
 class BlacklistFilter(BaseFilter):
@@ -45,10 +45,10 @@ class BlacklistFilter(BaseFilter):
                 value = value.replace(item, "")
             return value.strip()
 
-        elif isinstance(value, list):
+        if isinstance(value, list):
             return [item for item in value if item not in self.blacklist]
 
-        elif isinstance(value, dict):
+        if isinstance(value, dict):
             return {
                 key: value
                 for key, value in value.items()

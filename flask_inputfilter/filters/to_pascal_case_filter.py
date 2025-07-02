@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from typing import Any, Optional, Union
 
-from flask_inputfilter.filters import BaseFilter
+from flask_inputfilter.models import BaseFilter
 
 
 class ToPascalCaseFilter(BaseFilter):
@@ -37,6 +37,4 @@ class ToPascalCaseFilter(BaseFilter):
 
         value = re.sub(r"[\s\-_]+", " ", value).strip()
 
-        value = "".join(word.capitalize() for word in value.split())
-
-        return value
+        return "".join(word.capitalize() for word in value.split())

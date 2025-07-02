@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, Optional
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.models import BaseValidator
 
 
 class AndValidator(BaseValidator):
@@ -41,7 +41,7 @@ class AndValidator(BaseValidator):
                 ])
     """
 
-    __slots__ = ("validators", "error_message")
+    __slots__ = ("error_message", "validators")
 
     def __init__(
         self,

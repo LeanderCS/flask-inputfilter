@@ -1,21 +1,37 @@
 # cython: language=c++
+
 import json
 import logging
+import sys
 from typing import Any, Optional, Type, TypeVar, Union
 
 from flask import Response, g, request
 
-from flask_inputfilter.conditions import BaseCondition
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.filters import BaseFilter
-from flask_inputfilter.mixins._external_api_mixin cimport ExternalApiMixin
-from flask_inputfilter.mixins._field_mixin cimport FieldMixin
-from flask_inputfilter.models import ExternalApiConfig, FieldModel
-from flask_inputfilter.validators import BaseValidator
 
-from libcpp.string cimport string
+from flask_inputfilter.mixins.cimports cimport DataMixin
+from flask_inputfilter.models.cimports cimport BaseCondition, BaseFilter, BaseValidator, ExternalApiConfig, FieldModel
+
 from libcpp.vector cimport vector
+from libcpp.string cimport string
 
+cdef dict _INTERNED_STRINGS = {
+    "_condition": sys.intern("_condition"),
+    "_error": sys.intern("_error"),
+    "copy": sys.intern("copy"),
+    "default": sys.intern("default"),
+    "DELETE": sys.intern("DELETE"),
+    "external_api": sys.intern("external_api"),
+    "fallback": sys.intern("fallback"),
+    "filters": sys.intern("filters"),
+    "GET": sys.intern("GET"),
+    "PATCH": sys.intern("PATCH"),
+    "POST": sys.intern("POST"),
+    "PUT": sys.intern("PUT"),
+    "required": sys.intern("required"),
+    "steps": sys.intern("steps"),
+    "validators": sys.intern("validators"),
+}
 
 cdef extern from "helper.h":
     vector[string] make_default_methods()
@@ -28,25 +44,15 @@ cdef class InputFilter:
     Base class for all input filters.
     """
 
-    cdef readonly vector[string] methods
-    cdef readonly dict fields
-    cdef readonly list conditions
-    cdef readonly list global_filters
-    cdef readonly list global_validators
-    cdef readonly dict data
-    cdef readonly dict validated_data
-    cdef readonly dict errors
-    cdef readonly object model_class
-
     def __cinit__(self) -> None:
         self.methods = make_default_methods()
-        self.fields: dict[str, FieldModel] = {}
-        self.conditions: list[BaseCondition] = []
-        self.global_filters: list[BaseFilter] = []
-        self.global_validators: list[BaseValidator] = []
-        self.data: dict[str, Any] = {}
-        self.validated_data: dict[str, Any] = {}
-        self.errors: dict[str, str] = {}
+        self.fields = {}
+        self.conditions = []
+        self.global_filters = []
+        self.global_validators = []
+        self.data = {}
+        self.validated_data = {}
+        self.errors = {}
         self.model_class: Optional[Type[T]] = None
 
     def __init__(self, methods: Optional[list[str]] = None) -> None:
@@ -158,126 +164,36 @@ cdef class InputFilter:
         return decorator
 
     cpdef object validate_data(
-        self, data: Optional[dict[str, Any]] = None
+        self, dict[str, Any] data=None
     ):
         """
-        Validates input data against defined field rules, including applying
-        filters, validators, custom logic steps, and fallback mechanisms. The
-        validation process also ensures the required fields are handled
-        appropriately and conditions are checked after processing.
+        Validates input data against defined field rules.
 
         Args:
-            data (dict[str, Any]): A dictionary containing the input data to
-                be validated where keys represent field names and values
-                represent the corresponding data.
+            data: Input data dictionary to validate.
 
         Returns:
-            Union[dict[str, Any], Type[T]]: A dictionary containing the validated data with
-                any modifications, default values, or processed values as
-                per the defined validation rules.
+            Validated data dictionary or model instance.
 
         Raises:
-            Any errors raised during external API calls, validation, or
-                logical steps execution of the respective fields or conditions
-                will propagate without explicit handling here.
+            ValidationError: If validation fails.
         """
         data = data or self.data
-        cdef dict errors = {}
-        cdef dict validated_data = {}
-
         cdef:
-            list global_filters = self.global_filters
-            list global_validators = self.global_validators
-            bint has_global_filters = bool(global_filters)
-            bint has_global_validators = bool(global_validators)
+            dict[str, str] errors
+            dict[str, Any] validated_data
 
-        cdef:
-            int i = 0
-            int n = len(self.fields)
-            list field_names = list(self.fields.keys())
-            list field_infos = list(self.fields.values())
-
-        cdef:
-            object default
-            object fallback
-            list filters
-            list validators
-            object external_api
-            str copy
-
-        for i in range(n):
-            field_name = field_names[i]
-            field_info = field_infos[i]
-            try:
-                if field_info.copy:
-                    value = validated_data.get(field_info.copy)
-                elif field_info.external_api:
-                    value = ExternalApiMixin.call_external_api(
-                        field_info.external_api,
-                        field_info.fallback,
-                        validated_data,
-                    )
-                else:
-                    value = data.get(field_name)
-
-                if field_info.filters or has_global_filters:
-                    value = FieldMixin.apply_filters(
-                        field_info.filters + global_filters
-                        if has_global_filters
-                        else field_info.filters,
-                        value
-                    )
-
-                if field_info.validators or has_global_validators:
-                    value = FieldMixin.validate_field(
-                        field_info.validators + global_validators
-                        if has_global_validators
-                        else field_info.validators,
-                        field_info.fallback,
-                        value
-                    ) or value
-
-                if field_info.steps:
-                    value = FieldMixin.apply_steps(
-                        field_info.steps,
-                        field_info.fallback, value
-                    ) or value
-
-                if value is None:
-                    if field_info.required:
-                        if field_info.fallback is not None:
-                            value = field_info.fallback
-                        elif field_info.default is not None:
-                            value = field_info.default
-                        else:
-                            raise ValidationError(
-                                f"Field '{field_name}' is required."
-                            )
-                    elif field_info.default is not None:
-                        value = field_info.default
-
-                validated_data[field_name] = value
-
-            except ValidationError as e:
-                errors[field_name] = str(e)
-
-        if self.conditions:
-            try:
-                FieldMixin.check_conditions(self.conditions, validated_data)
-            except ValidationError as e:
-                errors["_condition"] = str(e)
+        validated_data, errors = DataMixin.validate_with_conditions(
+            self.fields, data, self.global_filters, self.global_validators, self.conditions
+        )
 
         if errors:
             raise ValidationError(errors)
 
         self.validated_data = validated_data
+        return self.serialize()
 
-        if self.model_class is not None:
-            return self.model_class(**validated_data)
-
-        return validated_data
-
-    cpdef void add_condition(self, condition: BaseCondition):
+    cpdef void add_condition(self, BaseCondition condition):
         """
         Add a condition to the input filter.
 
@@ -300,7 +216,7 @@ cdef class InputFilter:
         """
         return self.conditions
 
-    cpdef void set_data(self, data: dict[str, Any]):
+    cpdef void set_data(self, dict[str, Any] data):
         """
         Filters and sets the provided data into the object's internal
         storage, ensuring that only the specified fields are considered and
@@ -312,25 +228,9 @@ cdef class InputFilter:
                 represent field names and values represent the associated
                 data to be filtered and stored.
         """
-        self.data = {}
-        cdef:
-            int i = 0
-            int n = len(data)
-            list keys = list(data.keys())
-            list values = list(data.values())
+        self.data = DataMixin.filter_data(data, self.fields, self.global_filters)
 
-        for i in range(n):
-            field_name = keys[i]
-            field_value = values[i]
-            if field_name in self.fields:
-                field_value = FieldMixin.apply_filters(
-                    filters=self.fields[field_name].filters + self.global_filters,
-                    value=field_value,
-                )
-
-            self.data[field_name] = field_value
-
-    cpdef object get_value(self, name: str):
+    cpdef object get_value(self, str name):
         """
         This method retrieves a value associated with the provided name. It
         searches for the value based on the given identifier and returns the
@@ -351,7 +251,7 @@ cdef class InputFilter:
         """
         return self.validated_data.get(name)
 
-    cpdef dict get_values(self):
+    cpdef dict[str, Any] get_values(self):
         """
         Retrieves a dictionary of key-value pairs from the current object.
         This method provides access to the internal state or configuration of
@@ -364,7 +264,7 @@ cdef class InputFilter:
         """
         return self.validated_data
 
-    cpdef object get_raw_value(self, name: str):
+    cpdef object get_raw_value(self, str name):
         """
         Fetches the raw value associated with the provided key.
 
@@ -381,9 +281,9 @@ cdef class InputFilter:
         Returns:
             Any: The raw value associated with the provided key.
         """
-        return self.data.get(name) if name in self.data else None
+        return self.data.get(name)
 
-    cpdef dict get_raw_values(self):
+    cpdef dict[str, Any] get_raw_values(self):
         """
         Retrieves raw values from a given source and returns them as a
         dictionary.
@@ -402,10 +302,10 @@ cdef class InputFilter:
             return {}
 
         cdef:
-            int i = 0
-            int n = len(self.fields)
+            Py_ssize_t i, n = len(self.fields)
             dict result = {}
             list field_names = list(self.fields.keys())
+            str field
 
         for i in range(n):
             field = field_names[i]
@@ -413,7 +313,7 @@ cdef class InputFilter:
                 result[field] = self.data[field]
         return result
 
-    cpdef dict get_unfiltered_data(self):
+    cpdef dict[str, Any] get_unfiltered_data(self):
         """
         Fetches unfiltered data from the data source.
 
@@ -430,16 +330,16 @@ cdef class InputFilter:
         """
         return self.data
 
-    cpdef void set_unfiltered_data(self, data: dict[str, Any]):
+    cpdef void set_unfiltered_data(self, dict[str, Any] data):
         """
         Sets unfiltered data for the current instance. This method assigns a
         given dictionary of data to the instance for further processing. It
         updates the internal state using the provided data.
 
         **Parameters**:
-        
-            - data (dict[str, Any]): A dictionary containing the unfiltered
-                data to be associated with the instance.
+
+        - data (dict[str, Any]): A dictionary containing the unfiltered
+            data to be associated with the instance.
         """
         self.data = data
 
@@ -451,16 +351,9 @@ cdef class InputFilter:
         Returns:
             bool: True if there are any unknown fields; False otherwise.
         """
-        if not self.data and self.fields:
-            return True
+        return DataMixin.has_unknown_fields(self.data, self.fields)
 
-        for field_name in self.data.keys():
-            if field_name not in self.fields:
-                return True
-
-        return False
-
-    cpdef str get_error_message(self, field_name: str):
+    cpdef str get_error_message(self, str field_name):
         """
         Retrieves and returns a predefined error message.
 
@@ -480,7 +373,7 @@ cdef class InputFilter:
         """
         return self.errors.get(field_name)
 
-    cpdef dict get_error_messages(self):
+    cpdef dict[str, str] get_error_messages(self):
         """
         Retrieves all error messages associated with the fields in the
         input filter.
@@ -497,15 +390,15 @@ cdef class InputFilter:
 
     cpdef void add(
         self,
-        name: str,
-        required: bool = False,
-        default: Any = None,
-        fallback: Any = None,
-        filters: Optional[list[BaseFilter]] = None,
-        validators: Optional[list[BaseValidator]] = None,
-        steps: Optional[list[Union[BaseFilter, BaseValidator]]] = None,
-        external_api: Optional[ExternalApiConfig] = None,
-        copy: Optional[str] = None,
+        str name,
+        bint required=False,
+        object default=None,
+        object fallback=None,
+        list[BaseFilter] filters=None,
+        list[BaseValidator] validators=None,
+        list[BaseFilter | BaseValidator] steps=None,
+        ExternalApiConfig external_api=None,
+        str copy=None,
     ) except *:
         """
         Add the field to the input filter.
@@ -526,7 +419,7 @@ cdef class InputFilter:
             validators (Optional[list[BaseValidator]]): The validators to 
                 apply to the field value.
 
-            steps (Optional[list[Union[BaseFilter, BaseValidator]]]): Allows 
+            steps (Optional[list[BaseFilter | BaseValidator]]): Allows 
                 to apply multiple filters and validators in a specific order.
 
             external_api (Optional[ExternalApiConfig]): Configuration for an 
@@ -539,17 +432,17 @@ cdef class InputFilter:
             raise ValueError(f"Field '{name}' already exists.")
 
         self.fields[name] = FieldModel(
-            required=required,
-            default=default,
-            fallback=fallback,
-            filters=filters or [],
-            validators=validators or [],
-            steps=steps or [],
-            external_api=external_api,
-            copy=copy,
+            required,
+            default,
+            fallback,
+            filters or [],
+            validators or [],
+            steps or [],
+            external_api,
+            copy,
         )
 
-    cpdef bint has(self, field_name: str):
+    cpdef bint has(self, str field_name):
         """
         This method checks the existence of a specific field within the
         input filter values, identified by its field name. It does not return a
@@ -564,7 +457,7 @@ cdef class InputFilter:
         """
         return field_name in self.fields
 
-    cpdef object get_input(self, field_name: str):
+    cpdef FieldModel get_input(self, str field_name):
         """
         Represents a method to retrieve a field by its name.
 
@@ -583,7 +476,7 @@ cdef class InputFilter:
         """
         return self.fields.get(field_name)
 
-    cpdef dict get_inputs(self):
+    cpdef dict[str, FieldModel] get_inputs(self):
         """
         Retrieve the dictionary of input fields associated with the object.
 
@@ -625,15 +518,15 @@ cdef class InputFilter:
 
     cpdef void replace(
         self,
-        name: str,
-        required: bool = False,
-        default: Any = None,
-        fallback: Any = None,
-        filters: Optional[list[BaseFilter]] = None,
-        validators: Optional[list[BaseValidator]] = None,
-        steps: Optional[list[Union[BaseFilter, BaseValidator]]] = None,
-        external_api: Optional[ExternalApiConfig] = None,
-        copy: Optional[str] = None,
+        str name,
+        bint required=False,
+        object default=None,
+        object fallback=None,
+        list[BaseFilter] filters=None,
+        list[BaseValidator] validators=None,
+        list[BaseFilter | BaseValidator] steps=None,
+        ExternalApiConfig external_api=None,
+        str copy=None,
     ):
         """
         Replaces a field in the input filter.
@@ -654,7 +547,7 @@ cdef class InputFilter:
             validators (Optional[list[BaseValidator]]): The validators to 
                 apply to the field value.
 
-            steps (Optional[list[Union[BaseFilter, BaseValidator]]]): Allows 
+            steps (Optional[list[BaseFilter | BaseValidator]]): Allows 
                 to apply multiple filters and validators in a specific order.
 
             external_api (Optional[ExternalApiConfig]): Configuration for an 
@@ -664,17 +557,17 @@ cdef class InputFilter:
                 from.
         """
         self.fields[name] = FieldModel(
-            required=required,
-            default=default,
-            fallback=fallback,
-            filters=filters or [],
-            validators=validators or [],
-            steps=steps or [],
-            external_api=external_api,
-            copy=copy,
+            required,
+            default,
+            fallback,
+            filters or [],
+            validators or [],
+            steps or [],
+            external_api,
+            copy,
         )
 
-    cpdef void add_global_filter(self, filter: BaseFilter):
+    cpdef void add_global_filter(self, BaseFilter filter):
         """
         Add a global filter to be applied to all fields.
 
@@ -683,7 +576,7 @@ cdef class InputFilter:
         """
         self.global_filters.append(filter)
 
-    cpdef list get_global_filters(self):
+    cpdef list[BaseFilter] get_global_filters(self):
         """
         Retrieve all global filters associated with this InputFilter instance.
 
@@ -713,7 +606,7 @@ cdef class InputFilter:
         self.validated_data.clear()
         self.errors.clear()
 
-    cpdef void merge(self, other: InputFilter):
+    cpdef void merge(self, InputFilter other):
         """
         Merges another InputFilter instance intelligently into the current
         instance.
@@ -731,35 +624,7 @@ cdef class InputFilter:
                 "Can only merge with another InputFilter instance."
             )
 
-        cdef:
-            int i = 0
-            int n = len(other.get_inputs())
-            list keys = list(other.get_inputs().keys())
-            list new_fields = list(other.get_inputs().values())
-
-        for i in range(n):
-            self.fields[keys[i]] = new_fields[i]
-        self.conditions += other.conditions
-
-        for filter in other.global_filters:
-            existing_type_map = {
-                type(v): i for i, v in enumerate(self.global_filters)
-            }
-            if type(filter) in existing_type_map:
-                self.global_filters[existing_type_map[type(filter)]] = filter
-            else:
-                self.global_filters.append(filter)
-
-        for validator in other.global_validators:
-            existing_type_map = {
-                type(v): i for i, v in enumerate(self.global_validators)
-            }
-            if type(validator) in existing_type_map:
-                self.global_validators[
-                    existing_type_map[type(validator)]
-                ] = validator
-            else:
-                self.global_validators.append(validator)
+        DataMixin.merge_input_filters(self, other)
 
     cpdef void set_model(self, model_class: Type[T]):
         """
@@ -784,7 +649,7 @@ cdef class InputFilter:
 
         return self.model_class(**self.validated_data)
 
-    cpdef void add_global_validator(self, validator: BaseValidator):
+    cpdef void add_global_validator(self, BaseValidator validator):
         """
         Add a global validator to be applied to all fields.
 
@@ -793,7 +658,7 @@ cdef class InputFilter:
         """
         self.global_validators.append(validator)
 
-    cpdef list get_global_validators(self):
+    cpdef list[BaseValidator] get_global_validators(self):
         """
         Retrieve all global validators associated with this
         InputFilter instance.

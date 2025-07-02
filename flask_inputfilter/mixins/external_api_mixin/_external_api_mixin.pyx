@@ -1,28 +1,28 @@
-from __future__ import annotations
+# cython: language=c++
 
 import re
-from typing import Any, Optional
+from typing import Any
 
+from flask_inputfilter.models.cimports cimport ExternalApiConfig
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.models import ExternalApiConfig
 
 
-class ExternalApiMixin:
-    __slots__ = ()
+cdef class ExternalApiMixin:
 
     @staticmethod
-    def call_external_api(
-        config: ExternalApiConfig,
-        fallback: Any,
-        validated_data: dict[str, Any],
-    ) -> Optional[Any]:
+    cdef object call_external_api(
+            ExternalApiConfig config,
+            object fallback,
+            dict[str, Any] validated_data
+    ):
         """
-        The function constructs a request based on the given API configuration
-        and validated data, including headers, parameters, and other request
-        settings. It utilizes the `requests` library to send the API call and
-        processes the response. If a fallback value is supplied, it is returned
-        in case of any failure during the API call. If no fallback is provided,
-        a validation error is raised.
+        The function constructs a request based on the given API
+        configuration and validated data, including headers, parameters,
+        and other request settings. It utilizes the `requests` library
+        to send the API call and processes the response. If a fallback
+        value is supplied, it is returned in case of any failure during
+        the API call. If no fallback is provided, a validation error is
+        raised.
 
         **Parameters:**
 
@@ -55,39 +55,37 @@ class ExternalApiMixin:
 
         data_key = config.data_key
 
-        request_data = {
+        requestData = {
             "headers": {},
             "params": {},
         }
 
         if config.api_key:
-            request_data["headers"][
-                "Authorization"
-            ] = f"Bearer {config.api_key}"
+            requestData["headers"]["Authorization"] = (
+                f"Bearer {config.api_key}"
+            )
 
         if config.headers:
-            request_data["headers"].update(config.headers)
+            requestData["headers"].update(config.headers)
 
         if config.params:
-            request_data[
-                "params"
-            ] = ExternalApiMixin.replace_placeholders_in_params(
+            requestData["params"] = ExternalApiMixin.replace_placeholders_in_params(
                 config.params, validated_data
             )
 
-        request_data["url"] = ExternalApiMixin.replace_placeholders(
+        requestData["url"] = ExternalApiMixin.replace_placeholders(
             config.url, validated_data
         )
-        request_data["method"] = config.method
+        requestData["method"] = config.method
 
         try:
-            response = requests.request(**request_data)
+            response = requests.request(**requestData)
             result = response.json()
         except requests.exceptions.RequestException:
             if fallback is None:
                 logger.exception("External API request failed unexpectedly.")
                 raise ValidationError(
-                    f"External API call failed for field'{data_key}'."
+                    f"External API call failed for field '{data_key}'."
                 )
             return fallback
         except ValueError:
@@ -114,18 +112,18 @@ class ExternalApiMixin:
         return result.get(data_key) if data_key else result
 
     @staticmethod
-    def replace_placeholders(
-        value: str, validated_data: dict[str, Any]
-    ) -> str:
+    cdef inline str replace_placeholders(
+            str value,
+            dict[str, Any] validated_data
+    ):
         """
-        Replace all placeholders, marked with '{{ }}' in value with the
-        corresponding values from validated_data.
+        Replace all placeholders, marked with '{{ }}' in value
+        with the corresponding values from validated_data.
 
         **Parameters:**
 
-        - **value** (**str**): The string containing placeholders to
-          be replaced.
-        - **validated_data** (**dict[str, Any]**): The dictionary containing
+        - **value** (**str**): The string containing placeholders to be replaced.
+        - **validated_data** (**dict[str, Any]**): The dictionary containing 
           the values to replace the placeholders with.
 
         **Returns:**
@@ -139,22 +137,22 @@ class ExternalApiMixin:
         )
 
     @staticmethod
-    def replace_placeholders_in_params(
-        params: dict, validated_data: dict[str, Any]
-    ) -> dict:
+    cdef dict[str, Any] replace_placeholders_in_params(
+            dict[str, Any] params, dict[str, Any] validated_data
+    ):
         """
-        Replace all placeholders in params with the corresponding values from
-        validated_data.
+        Replace all placeholders in params with the corresponding
+        values from validated_data.
 
         **Parameters:**
 
-        - **params** (*dict*): The params dictionary containing placeholders.
-        - **validated_data** (*dict[str, Any]*): The dictionary containing
+        - **params** (*dict[str, Any]*): The params dictionary containing placeholders.
+        - **validated_data** (*dict[str, Any]*): The dictionary containing 
           the values to replace the placeholders with.
 
         **Returns:**
 
-        - (*dict*): The params dictionary with all placeholders replaced
+        - (*dict[str, Any]*): The params dictionary with all placeholders replaced
           with the corresponding values from validated_data.
         """
         return {

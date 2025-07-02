@@ -1,14 +1,17 @@
 import shutil
 
 if shutil.which("g++") is not None:
-    from ._external_api_mixin import ExternalApiMixin
-    from ._field_mixin import FieldMixin
+    from .data_mixin._data_mixin import DataMixin
+    from .external_api_mixin._external_api_mixin import ExternalApiMixin
+    from .validation_mixin._validation_mixin import ValidationMixin
 
 else:
-    from .external_api_mixin import ExternalApiMixin
-    from .field_mixin import FieldMixin
+    from .data_mixin.data_mixin import DataMixin
+    from .external_api_mixin.external_api_mixin import ExternalApiMixin
+    from .validation_mixin.validation_mixin import ValidationMixin
 
 __all__ = [
+    "DataMixin",
     "ExternalApiMixin",
-    "FieldMixin",
+    "ValidationMixin",
 ]

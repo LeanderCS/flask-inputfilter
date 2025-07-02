@@ -4,7 +4,7 @@ import re
 from typing import Any, Optional
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.models import BaseValidator
 
 
 class FloatPrecisionValidator(BaseValidator):
@@ -39,7 +39,7 @@ class FloatPrecisionValidator(BaseValidator):
                 ])
     """
 
-    __slots__ = ("precision", "scale", "error_message")
+    __slots__ = ("error_message", "precision", "scale")
 
     def __init__(
         self,

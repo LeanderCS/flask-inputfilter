@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Any, Optional
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.models import BaseValidator
 
 
 class IsDateTimeValidator(BaseValidator):

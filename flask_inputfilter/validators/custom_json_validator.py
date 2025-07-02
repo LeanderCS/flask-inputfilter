@@ -4,7 +4,7 @@ import json
 from typing import Any, Optional
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.models import BaseValidator
 
 
 class CustomJsonValidator(BaseValidator):
@@ -44,12 +44,12 @@ class CustomJsonValidator(BaseValidator):
                 ])
     """
 
-    __slots__ = ("required_fields", "schema", "error_message")
+    __slots__ = ("error_message", "required_fields", "schema")
 
     def __init__(
         self,
-        required_fields: list[str] = None,
-        schema: dict = None,
+        required_fields: Optional[list[str]] = None,
+        schema: Optional[dict] = None,
         error_message: Optional[str] = None,
     ) -> None:
         self.required_fields = required_fields or []

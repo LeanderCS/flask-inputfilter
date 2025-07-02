@@ -1,4 +1,4 @@
-from flask_inputfilter.filters.base_filter import BaseFilter
+from flask_inputfilter.models import BaseFilter
 
 from .array_element_filter import ArrayElementFilter
 from .array_explode_filter import ArrayExplodeFilter
