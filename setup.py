@@ -11,14 +11,14 @@ if shutil.which("g++") is not None:
     pyx_files = Path("flask_inputfilter").rglob("*.pyx")
 
     pyx_modules = [
-        str(path).replace(".pyx", "").replace("/", ".") for path in pyx_files
+        ".".join(path.with_suffix("").parts) for path in pyx_files
     ]
 
     ext_modules = cythonize(
         module_list=[
             Extension(
                 name=module,
-                sources=[module.replace(".", "/") + ".pyx"],
+                sources=[str(Path(*module.split(".")).with_suffix(".pyx"))],
                 extra_compile_args=["-std=c++11"],
                 language="c++",
             )
