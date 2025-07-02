@@ -5,12 +5,12 @@ import binascii
 from typing import Any, Optional
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.models import BaseValidator
 
 
 class IsBase64ImageCorrectSizeValidator(BaseValidator):
     """
-    Hecks whether a Base64 encoded image has a size within the allowed range.
+    Checks whether a Base64 encoded image has a size within the allowed range.
     By default, the image size must be between 1 and 4MB.
 
     **Parameters:**

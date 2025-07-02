@@ -3,25 +3,35 @@ try:
 
 except ImportError:
     import shutil
+    from pathlib import Path
 
-    if shutil.which("g++") is not None:
-        import os
+    _HAS_GPP = shutil.which("g++") is not None
 
-        import pyximport
+    if _HAS_GPP:
+        try:
+            import pyximport
 
-        THIS_DIR = os.path.dirname(__file__)
-        INCLUDE_DIR = os.path.join(THIS_DIR, "include")
+            THIS_DIR = Path(__file__).parent
+            INCLUDE_DIR = THIS_DIR / "include"
 
-        pyximport.install(
-            language_level=3,
-            setup_args={
-                "script_args": ["--quiet"],
-                "include_dirs": [INCLUDE_DIR],
-            },
-            reload_support=True,
-        )
+            pyximport.install(
+                language_level=3,
+                setup_args={
+                    "script_args": ["--quiet"],
+                    "include_dirs": [str(INCLUDE_DIR)],
+                },
+                reload_support=True,
+            )
 
-        from ._input_filter import InputFilter
+            from ._input_filter import InputFilter
+
+        except ImportError:
+            import logging
+
+            logging.getLogger(__name__).debug(
+                "Pyximport failed, falling back to pure Python implementation."
+            )
+            from .input_filter import InputFilter
 
     else:
         import logging

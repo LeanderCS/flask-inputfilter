@@ -5,11 +5,10 @@ from typing import TYPE_CHECKING, Any, Union
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.mixins import ExternalApiMixin
-from flask_inputfilter.models import BaseFilter, FieldModel
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.models import BaseFilter, BaseValidator, FieldModel
 
 if TYPE_CHECKING:
-    from flask_inputfilter.conditions import BaseCondition
+    from flask_inputfilter.models import BaseCondition
 
 
 class FieldMixin:

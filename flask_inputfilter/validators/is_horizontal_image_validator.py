@@ -8,7 +8,7 @@ from PIL import Image
 from PIL.Image import Image as ImageType
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.models import BaseValidator
 
 
 class IsHorizontalImageValidator(BaseValidator):

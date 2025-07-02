@@ -2,23 +2,36 @@
 
 import json
 import logging
+import sys
 from typing import Any, Optional, Type, TypeVar, Union
 
 from flask import Response, g, request
 
-from flask_inputfilter.conditions import BaseCondition
 from flask_inputfilter.exceptions import ValidationError
 
-from flask_inputfilter.mixins._field_mixin cimport FieldMixin
-from flask_inputfilter.models._base_filter cimport BaseFilter
-from flask_inputfilter.models._external_api_config cimport ExternalApiConfig
-from flask_inputfilter.models._field_model cimport FieldModel
+from flask_inputfilter.mixins.cimports cimport FieldMixin
+from flask_inputfilter.models.cimports cimport BaseCondition, BaseFilter, BaseValidator, ExternalApiConfig, FieldModel
 
-from flask_inputfilter.validators import BaseValidator
-
-from libcpp.string cimport string
 from libcpp.vector cimport vector
+from libcpp.string cimport string
 
+cdef dict _INTERNED_STRINGS = {
+    "_condition": sys.intern("_condition"),
+    "_error": sys.intern("_error"),
+    "copy": sys.intern("copy"),
+    "default": sys.intern("default"),
+    "DELETE": sys.intern("DELETE"),
+    "external_api": sys.intern("external_api"),
+    "fallback": sys.intern("fallback"),
+    "filters": sys.intern("filters"),
+    "GET": sys.intern("GET"),
+    "PATCH": sys.intern("PATCH"),
+    "POST": sys.intern("POST"),
+    "PUT": sys.intern("PUT"),
+    "required": sys.intern("required"),
+    "steps": sys.intern("steps"),
+    "validators": sys.intern("validators"),
+}
 
 cdef extern from "helper.h":
     vector[string] make_default_methods()
@@ -34,9 +47,9 @@ cdef class InputFilter:
     def __cinit__(self) -> None:
         self.methods = make_default_methods()
         self.fields = {}
-        self.conditions: list[BaseCondition] = []
+        self.conditions = []
         self.global_filters = []
-        self.global_validators: list[BaseValidator] = []
+        self.global_validators = []
         self.data = {}
         self.validated_data = {}
         self.errors = {}
@@ -182,7 +195,7 @@ cdef class InputFilter:
         self.validated_data = validated_data
         return self.serialize()
 
-    cpdef void add_condition(self, condition: BaseCondition):
+    cpdef void add_condition(self, BaseCondition condition):
         """
         Add a condition to the input filter.
 
@@ -219,8 +232,11 @@ cdef class InputFilter:
         """
         self.data = {}
         cdef:
-            int i = 0, n = len(data)
-            list keys = list(data.keys()), values = list(data.values())
+            Py_ssize_t i, n = len(data) if data else 0
+            list keys = list(data.keys()) if n > 0 else []
+            list values = list(data.values()) if n > 0 else []
+            str field_name
+            object field_value
 
         for i in range(n):
             field_name = keys[i]
@@ -285,7 +301,7 @@ cdef class InputFilter:
         Returns:
             Any: The raw value associated with the provided key.
         """
-        return self.data.get(name) if name in self.data else None
+        return self.data.get(name)
 
     cpdef dict[str, Any] get_raw_values(self):
         """
@@ -306,9 +322,10 @@ cdef class InputFilter:
             return {}
 
         cdef:
-            int i = 0, n = len(self.fields)
+            Py_ssize_t i, n = len(self.fields)
             dict result = {}
             list field_names = list(self.fields.keys())
+            str field
 
         for i in range(n):
             field = field_names[i]
@@ -356,10 +373,17 @@ cdef class InputFilter:
         """
         if not self.data and self.fields:
             return True
+        cdef set field_set
 
-        for field_name in self.data.keys():
-            if field_name not in self.fields:
-                return True
+        if len(self.fields) > 10:
+            field_set = set(self.fields.keys())
+            for field_name in self.data.keys():
+                if field_name not in field_set:
+                    return True
+        else:
+            for field_name in self.data.keys():
+                if field_name not in self.fields:
+                    return True
 
         return False
 
@@ -404,9 +428,9 @@ cdef class InputFilter:
         bint required=False,
         object default=None,
         object fallback=None,
-        list filters=None,
-        list validators=None,
-        list steps=None,
+        list[BaseFilter] filters=None,
+        list[BaseValidator] validators=None,
+        list[BaseFilter | BaseValidator] steps=None,
         ExternalApiConfig external_api=None,
         str copy=None,
     ) except *:
@@ -429,7 +453,7 @@ cdef class InputFilter:
             validators (Optional[list[BaseValidator]]): The validators to 
                 apply to the field value.
 
-            steps (Optional[list[Union[BaseFilter, BaseValidator]]]): Allows 
+            steps (Optional[list[BaseFilter | BaseValidator]]): Allows 
                 to apply multiple filters and validators in a specific order.
 
             external_api (Optional[ExternalApiConfig]): Configuration for an 
@@ -532,9 +556,9 @@ cdef class InputFilter:
         bint required=False,
         object default=None,
         object fallback=None,
-        list filters=None,
-        list validators=None,
-        list steps=None,
+        list[BaseFilter] filters=None,
+        list[BaseValidator] validators=None,
+        list[BaseFilter | BaseValidator] steps=None,
         ExternalApiConfig external_api=None,
         str copy=None,
     ):
@@ -557,7 +581,7 @@ cdef class InputFilter:
             validators (Optional[list[BaseValidator]]): The validators to 
                 apply to the field value.
 
-            steps (Optional[list[Union[BaseFilter, BaseValidator]]]): Allows 
+            steps (Optional[list[BaseFilter | BaseValidator]]): Allows 
                 to apply multiple filters and validators in a specific order.
 
             external_api (Optional[ExternalApiConfig]): Configuration for an 
@@ -635,13 +659,20 @@ cdef class InputFilter:
             )
 
         cdef:
-            int i = 0, n = len(other.get_inputs())
-            list keys = list(other.get_inputs().keys()), new_fields = list(other.get_inputs().values())
+            Py_ssize_t i, n
+            dict other_inputs = other.get_inputs()
+            list keys = list(other_inputs.keys()) if other_inputs else []
+            list new_fields = list(other_inputs.values()) if other_inputs else []
 
+        # Merge fields
+        n = len(keys)
         for i in range(n):
             self.fields[keys[i]] = new_fields[i]
+        
+        # Merge conditions
         self.conditions += other.conditions
 
+        # Merge global filters (avoid duplicates by type)
         for filter in other.global_filters:
             existing_type_map = {
                 type(v): i for i, v in enumerate(self.global_filters)
@@ -651,6 +682,7 @@ cdef class InputFilter:
             else:
                 self.global_filters.append(filter)
 
+        # Merge global validators (avoid duplicates by type)
         for validator in other.global_validators:
             existing_type_map = {
                 type(v): i for i, v in enumerate(self.global_validators)
@@ -685,7 +717,7 @@ cdef class InputFilter:
 
         return self.model_class(**self.validated_data)
 
-    cpdef void add_global_validator(self, validator: BaseValidator):
+    cpdef void add_global_validator(self, BaseValidator validator):
         """
         Add a global validator to be applied to all fields.
 
@@ -694,7 +726,7 @@ cdef class InputFilter:
         """
         self.global_validators.append(validator)
 
-    cpdef list get_global_validators(self):
+    cpdef list[BaseValidator] get_global_validators(self):
         """
         Retrieve all global validators associated with this
         InputFilter instance.
@@ -719,4 +751,4 @@ cdef class InputFilter:
         try:
             FieldMixin.check_conditions(self.conditions, validated_data)
         except ValidationError as e:
-            errors["_condition"] = str(e)
+            errors[_INTERNED_STRINGS["_condition"]] = str(e)

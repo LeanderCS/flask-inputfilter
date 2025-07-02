@@ -3,7 +3,7 @@
 import re
 from typing import Any
 
-from flask_inputfilter.models._external_api_config cimport ExternalApiConfig
+from flask_inputfilter.models.cimports cimport ExternalApiConfig
 from flask_inputfilter.exceptions import ValidationError
 
 
@@ -137,7 +137,7 @@ cdef class ExternalApiMixin:
         )
 
     @staticmethod
-    cdef dict replace_placeholders_in_params(
+    cdef dict[str, Any] replace_placeholders_in_params(
             dict[str, Any] params, dict[str, Any] validated_data
     ):
         """
@@ -146,13 +146,13 @@ cdef class ExternalApiMixin:
 
         **Parameters:**
 
-        - **params** (*dict*): The params dictionary containing placeholders.
+        - **params** (*dict[str, Any]*): The params dictionary containing placeholders.
         - **validated_data** (*dict[str, Any]*): The dictionary containing 
           the values to replace the placeholders with.
 
         **Returns:**
 
-        - (*dict*): The params dictionary with all placeholders replaced
+        - (*dict[str, Any]*): The params dictionary with all placeholders replaced
           with the corresponding values from validated_data.
         """
         return {

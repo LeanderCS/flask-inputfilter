@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from flask_inputfilter.conditions import BaseCondition
+from flask_inputfilter.models import BaseCondition
 
 if TYPE_CHECKING:
     from collections.abc import Callable

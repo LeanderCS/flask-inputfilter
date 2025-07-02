@@ -11,6 +11,13 @@ cdef class BaseFilter:
         """
         Apply the filter to the given value.
 
-        This method must be implemented by subclasses.
+        Args:
+            value: The value to apply the filter to.
+
+        Returns:
+            The filtered value.
+
+        Raises:
+            NotImplementedError: If the method is not implemented by subclasses.
         """
         raise NotImplementedError("Subclasses must implement the apply method")

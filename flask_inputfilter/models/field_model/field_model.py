@@ -4,8 +4,11 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 if TYPE_CHECKING:
-    from flask_inputfilter.models import BaseFilter, ExternalApiConfig
-    from flask_inputfilter.validators import BaseValidator
+    from flask_inputfilter.models import (
+        BaseFilter,
+        BaseValidator,
+        ExternalApiConfig,
+    )
 
 
 @dataclass

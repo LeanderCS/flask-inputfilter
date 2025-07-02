@@ -1,6 +1,6 @@
 from typing import Any
 
-from flask_inputfilter.models._external_api_config cimport ExternalApiConfig
+from flask_inputfilter.models.cimports cimport ExternalApiConfig
 
 
 cdef class ExternalApiMixin:
@@ -11,7 +11,7 @@ cdef class ExternalApiMixin:
     )
 
     @staticmethod
-    cdef dict replace_placeholders_in_params(
+    cdef dict[str, Any] replace_placeholders_in_params(
         dict[str, Any] params, dict[str, Any] validated_data
     )
 

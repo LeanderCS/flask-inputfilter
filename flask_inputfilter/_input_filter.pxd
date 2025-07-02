@@ -1,12 +1,10 @@
 # cython: language=c++
 from typing import Any
 
-from libcpp.string cimport string
-from libcpp.vector cimport vector
+from flask_inputfilter.models.cimports cimport BaseCondition, BaseFilter, BaseValidator, ExternalApiConfig, FieldModel
 
-from flask_inputfilter.models._base_filter cimport BaseFilter
-from flask_inputfilter.models._external_api_config cimport ExternalApiConfig
-from flask_inputfilter.models._field_model cimport FieldModel
+from libcpp.vector cimport vector
+from libcpp.string cimport string
 
 
 cdef extern from "helper.h":
@@ -17,9 +15,9 @@ cdef class InputFilter:
     cdef readonly:
         vector[string] methods
         dict[str, FieldModel] fields
-        list conditions
+        list[BaseCondition] conditions
         list[BaseFilter] global_filters
-        list global_validators
+        list[BaseValidator] global_validators
         dict[str, Any] data
         dict[str, Any] validated_data
         dict[str, str] errors
@@ -27,7 +25,7 @@ cdef class InputFilter:
 
     cpdef bint is_valid(self)
     cpdef object validate_data(self, dict data=*)
-    cpdef void add_condition(self, object condition)
+    cpdef void add_condition(self, BaseCondition condition)
     cpdef list get_conditions(self)
     cpdef void set_data(self, dict data)
     cpdef object get_value(self, str name)
@@ -62,8 +60,8 @@ cdef class InputFilter:
         bint required=*,
         object default=*,
         object fallback=*,
-        list filters=*,
-        list validators=*,
+        list[BaseFilter] filters=*,
+        list[BaseValidator] validators=*,
         list steps=*,
         ExternalApiConfig external_api=*,
         str copy=*,
@@ -74,7 +72,7 @@ cdef class InputFilter:
     cpdef void merge(self, InputFilter other)
     cpdef void set_model(self, object model_class)
     cpdef object serialize(self)
-    cpdef void add_global_validator(self, object validator)
-    cpdef list get_global_validators(self)
+    cpdef void add_global_validator(self, BaseValidator validator)
+    cpdef list[BaseValidator] get_global_validators(self)
 
     cdef inline void _check_all_conditions(self, dict validated_data, dict errors)

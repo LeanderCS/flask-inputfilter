@@ -14,8 +14,7 @@ from flask_inputfilter.models import BaseFilter, ExternalApiConfig, FieldModel
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from flask_inputfilter.conditions import BaseCondition
-    from flask_inputfilter.validators import BaseValidator
+    from flask_inputfilter.models import BaseCondition, BaseValidator
 
 T = TypeVar("T")
 
@@ -362,10 +361,7 @@ class InputFilter:
         if not self.data and self.fields:
             return True
 
-        return any(
-            field_name not in self.fields
-            for field_name in self.data
-        )
+        return any(field_name not in self.fields for field_name in self.data)
 
     def get_error_message(self, field_name: str) -> Optional[str]:
         """
@@ -627,7 +623,7 @@ class InputFilter:
 
         - Fields with the same name are merged recursively if possible,
             otherwise overwritten.
-        - Conditions, are combined and duplicated.
+        - Conditions are combined and duplicated.
         - Global filters and validators are merged without duplicates.
 
         Args:

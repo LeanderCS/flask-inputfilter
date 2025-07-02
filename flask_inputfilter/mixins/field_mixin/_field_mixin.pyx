@@ -1,14 +1,12 @@
 # cython: language=c++
 
 import cython
+from typing import Any
 
 from flask_inputfilter.exceptions import ValidationError
 
-from flask_inputfilter.mixins._external_api_mixin cimport ExternalApiMixin
-from flask_inputfilter.models._base_filter cimport BaseFilter
-from flask_inputfilter.models._field_model cimport FieldModel
-
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.mixins.cimports cimport ExternalApiMixin
+from flask_inputfilter.models.cimports cimport BaseFilter, BaseValidator, FieldModel
 
 
 cdef class FieldMixin:
@@ -36,26 +34,24 @@ cdef class FieldMixin:
             return None
 
         cdef:
-            int i, n
-            object current_filter
+            Py_ssize_t i, n
+            BaseFilter current_filter
 
-        if filters1:
-            n = len(filters1)
-            for i in range(n):
-                current_filter = filters1[i]
-                value = current_filter.apply(value)
+        n = len(filters1) if filters1 else 0
+        for i in range(n):
+            current_filter = filters1[i]
+            value = current_filter.apply(value)
 
-        if filters2:
-            n = len(filters2)
-            for i in range(n):
-                current_filter = filters2[i]
-                value = current_filter.apply(value)
+        n = len(filters2) if filters2 else 0
+        for i in range(n):
+            current_filter = filters2[i]
+            value = current_filter.apply(value)
 
         return value
 
     @staticmethod
     cdef object apply_steps(
-            list steps,
+            list[BaseFilter | BaseValidator] steps,
             object fallback,
             object value
     ):
@@ -92,7 +88,7 @@ cdef class FieldMixin:
             return None
 
         cdef:
-            int i, n = len(steps)
+            Py_ssize_t i, n = len(steps) if steps else 0
             object current_step
 
         try:
@@ -109,7 +105,7 @@ cdef class FieldMixin:
         return value
 
     @staticmethod
-    cdef void check_conditions(list conditions, dict[str, Any] validated_data) except *:
+    cdef void check_conditions(list[BaseCondition] conditions, dict[str, Any] validated_data) except *:
         """
         Checks if all conditions are met.
 
@@ -126,7 +122,7 @@ cdef class FieldMixin:
           The validated data to check against the conditions.
         """
         cdef:
-            int i, n = len(conditions)
+            Py_ssize_t i, n = len(conditions) if conditions else 0
             object current_condition
 
         for i in range(n):
@@ -181,8 +177,8 @@ cdef class FieldMixin:
 
     @staticmethod
     cdef object validate_field(
-            list validators1,
-            list validators2,
+            list[BaseValidator] validators1,
+            list[BaseValidator] validators2,
             object fallback,
             object value
     ):
@@ -208,21 +204,19 @@ cdef class FieldMixin:
             return None
 
         cdef:
-            int i, n
-            object current_validator
+            Py_ssize_t i, n
+            BaseValidator current_validator
 
         try:
-            if validators1:
-                n = len(validators1)
-                for i in range(n):
-                    current_validator = validators1[i]
-                    current_validator.validate(value)
+            n = len(validators1) if validators1 else 0
+            for i in range(n):
+                current_validator = validators1[i]
+                current_validator.validate(value)
 
-            if validators2:
-                n = len(validators2)
-                for i in range(n):
-                    current_validator = validators2[i]
-                    current_validator.validate(value)
+            n = len(validators2) if validators2 else 0
+            for i in range(n):
+                current_validator = validators2[i]
+                current_validator.validate(value)
         except ValidationError:
             if fallback is None:
                 raise
@@ -236,7 +230,7 @@ cdef class FieldMixin:
             dict[str, FieldModel] fields,
             dict[str, Any] data,
             list[BaseFilter] global_filters,
-            list global_validators
+            list[BaseValidator] global_validators
     ):
         """
         Validate multiple fields based on their configurations.
@@ -262,9 +256,15 @@ cdef class FieldMixin:
               error messages for any validation failures.
         """
         cdef:
-            dict validated_data = {}, errors = {}
-            int i, n = len(fields)
-            list field_names = list(fields.keys()), field_infos = list(fields.values())
+            dict[str, Any] validated_data = {}
+            dict[str, str] errors = {}
+            Py_ssize_t i, n = len(fields) if fields else 0
+
+        cdef:
+            list field_names = list(fields.keys()) if n > 0 else []
+            list field_infos = list(fields.values()) if n > 0 else []
+            str field_name
+            FieldModel field_info
             object value
 
         for i in range(n):

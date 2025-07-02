@@ -5,7 +5,7 @@ from typing import Any, Optional
 
 from flask_inputfilter.enums import RegexEnum
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.models import BaseValidator
 
 MAC_ADDRESS_PATTERN = re.compile(RegexEnum.MAC_ADDRESS.value)
 

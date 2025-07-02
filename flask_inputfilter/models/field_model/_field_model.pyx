@@ -2,7 +2,9 @@
 # cython: freelist=256
 
 import cython
+from typing import Any
 
+from flask_inputfilter.models.cimports cimport BaseFilter, BaseValidator, ExternalApiConfig
 
 cdef list EMPTY_LIST = []
 
@@ -14,11 +16,11 @@ cdef class FieldModel:
     """
 
     @property
-    def default(self):
+    def default(self) -> Any:
         return self._default
 
     @default.setter
-    def default(self, value):
+    def default(self, value: Any) -> None:
         self._default = value
 
     def __init__(
@@ -26,10 +28,10 @@ cdef class FieldModel:
         bint required=False,
         object default=None,
         object fallback=None,
-        list filters=None,
-        list validators=None,
+        list[BaseFilter] filters=None,
+        list[BaseValidator] validators=None,
         list steps=None,
-        object external_api=None,
+        ExternalApiConfig external_api=None,
         str copy=None
     ) -> None:
         self.required = required

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Optional, Union
 
-from flask_inputfilter.conditions import BaseCondition
+from flask_inputfilter.models import BaseCondition
 
 
 class RequiredIfCondition(BaseCondition):

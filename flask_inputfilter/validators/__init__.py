@@ -1,4 +1,4 @@
-from flask_inputfilter.validators.base_validator import BaseValidator
+from flask_inputfilter.models import BaseValidator
 
 from .and_validator import AndValidator
 from .array_element_validator import ArrayElementValidator

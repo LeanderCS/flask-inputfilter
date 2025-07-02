@@ -1,8 +1,11 @@
+from typing import Any
+
+
 cdef class ExternalApiConfig:
     cdef public:
         str url
         str method
-        dict params
+        dict[str, Any] params
         str data_key
         str api_key
-        dict headers
+        dict[str, str] headers

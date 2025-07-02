@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.helpers import parse_date
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.models import BaseValidator
 
 if TYPE_CHECKING:
     from datetime import date, datetime

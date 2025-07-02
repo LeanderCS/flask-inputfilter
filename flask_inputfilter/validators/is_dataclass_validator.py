@@ -4,7 +4,7 @@ import dataclasses
 from typing import Any, ClassVar, Optional, Type, TypeVar, Union, _GenericAlias
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.models import BaseValidator
 
 T = TypeVar("T")
 

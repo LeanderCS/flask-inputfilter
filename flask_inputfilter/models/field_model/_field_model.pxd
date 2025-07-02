@@ -1,4 +1,4 @@
-from flask_inputfilter.models._base_filter cimport BaseFilter
+from flask_inputfilter.models.cimports cimport BaseValidator, BaseFilter, ExternalApiConfig
 
 
 cdef class FieldModel:
@@ -7,7 +7,7 @@ cdef class FieldModel:
         object _default
         object fallback
         list[BaseFilter] filters
-        list validators
+        list[BaseValidator] validators
         list steps
-        object external_api
+        ExternalApiConfig external_api
         str copy

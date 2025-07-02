@@ -4,7 +4,7 @@ from copy import deepcopy
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.validators import BaseValidator
+from flask_inputfilter.models import BaseValidator
 
 if TYPE_CHECKING:
     from flask_inputfilter import InputFilter
