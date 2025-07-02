@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 from flask import Response, g, request
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.mixins import FieldMixin
+from flask_inputfilter.mixins import DataMixin
 from flask_inputfilter.models import BaseFilter, ExternalApiConfig, FieldModel
 
 if TYPE_CHECKING:
@@ -185,12 +185,13 @@ class InputFilter:
         """
         data = data or self.data
 
-        validated_data, errors = FieldMixin.validate_fields(
-            self.fields, data, self.global_filters, self.global_validators
+        validated_data, errors = DataMixin.validate_with_conditions(
+            self.fields,
+            data,
+            self.global_filters,
+            self.global_validators,
+            self.conditions,
         )
-
-        if self.conditions:
-            self._check_all_conditions(validated_data, errors)
 
         if errors:
             raise ValidationError(errors)
@@ -233,16 +234,9 @@ class InputFilter:
                 represent field names and values represent the associated
                 data to be filtered and stored.
         """
-        self.data = {}
-        for field_name, field_value in data.items():
-            if field_name in self.fields:
-                field_value = FieldMixin.apply_filters(
-                    self.fields[field_name].filters,
-                    self.global_filters,
-                    field_value,
-                )
-
-            self.data[field_name] = field_value
+        self.data = DataMixin.filter_data(
+            data, self.fields, self.global_filters
+        )
 
     def get_value(self, name: str) -> Any:
         """
@@ -315,6 +309,12 @@ class InputFilter:
         if not self.fields:
             return {}
 
+        # Use optimized intersection for larger datasets
+        if len(self.fields) > 10:
+            field_set = set(self.fields.keys())
+            data_set = set(self.data.keys())
+            common_fields = field_set & data_set
+            return {field: self.data[field] for field in common_fields}
         return {
             field: self.data[field]
             for field in self.fields
@@ -358,10 +358,7 @@ class InputFilter:
         Returns:
             bool: True if there are any unknown fields; False otherwise.
         """
-        if not self.data and self.fields:
-            return True
-
-        return any(field_name not in self.fields for field_name in self.data)
+        return DataMixin.has_unknown_fields(self.data, self.fields)
 
     def get_error_message(self, field_name: str) -> Optional[str]:
         """
@@ -634,30 +631,7 @@ class InputFilter:
                 "Can only merge with another InputFilter instance."
             )
 
-        for key, new_field in other.get_inputs().items():
-            self.fields[key] = new_field
-
-        self.conditions += other.conditions
-
-        for filter in other.global_filters:
-            existing_type_map = {
-                type(v): i for i, v in enumerate(self.global_filters)
-            }
-            if type(filter) in existing_type_map:
-                self.global_filters[existing_type_map[type(filter)]] = filter
-            else:
-                self.global_filters.append(filter)
-
-        for validator in other.global_validators:
-            existing_type_map = {
-                type(v): i for i, v in enumerate(self.global_validators)
-            }
-            if type(validator) in existing_type_map:
-                self.global_validators[existing_type_map[type(validator)]] = (
-                    validator
-                )
-            else:
-                self.global_validators.append(validator)
+        DataMixin.merge_input_filters(self, other)
 
     def set_model(self, model_class: Type[T]) -> None:
         """
@@ -703,10 +677,3 @@ class InputFilter:
             list[BaseValidator]: A list of global validators.
         """
         return self.global_validators
-
-    def _check_all_conditions(self, validated_data, errors) -> None:
-        """Check all conditions against validated data."""
-        try:
-            FieldMixin.check_conditions(self.conditions, validated_data)
-        except ValidationError as e:
-            errors["_condition"] = str(e)

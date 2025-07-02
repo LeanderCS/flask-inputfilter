@@ -1,7 +1,9 @@
 include docs/source/index.rst
 include LICENSE
 include docs/source/changelog.rst
-recursive-include flask_inputfilter *.py *.pyi *.pyx *.pxd *.c *.cpp
-recursive-include flask_inputfilter/include *.h
+recursive-include flask_inputfilter *.py *.pyi *.pyx *.pxd *.h
+
+recursive-exclude flask_inputfilter *.cpp
+
 prune tests
 recursive-prune __pycache__

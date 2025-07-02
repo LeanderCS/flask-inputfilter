@@ -3,14 +3,15 @@ import shutil
 from setuptools import setup
 
 if shutil.which("g++") is not None:
+    from pathlib import Path
+
     from Cython.Build import cythonize
     from setuptools.extension import Extension
 
+    pyx_files = Path("flask_inputfilter").rglob("*.pyx")
+
     pyx_modules = [
-        "flask_inputfilter.mixins._external_api_mixin",
-        "flask_inputfilter.mixins._field_mixin",
-        "flask_inputfilter.models._field_model",
-        "flask_inputfilter._input_filter",
+        str(path).replace(".pyx", "").replace("/", ".") for path in pyx_files
     ]
 
     ext_modules = cythonize(

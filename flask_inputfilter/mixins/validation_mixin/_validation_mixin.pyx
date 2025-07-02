@@ -9,7 +9,7 @@ from flask_inputfilter.mixins.cimports cimport ExternalApiMixin
 from flask_inputfilter.models.cimports cimport BaseFilter, BaseValidator, FieldModel
 
 
-cdef class FieldMixin:
+cdef class ValidationMixin:
 
     @staticmethod
     @cython.exceptval(check=False)
@@ -273,7 +273,7 @@ cdef class FieldMixin:
 
             try:
                 # Get initial value
-                value = FieldMixin.get_field_value(
+                value = ValidationMixin.get_field_value(
                     field_name,
                     field_info,
                     data,
@@ -281,14 +281,14 @@ cdef class FieldMixin:
                 )
 
                 # Apply filters
-                value = FieldMixin.apply_filters(
+                value = ValidationMixin.apply_filters(
                     field_info.filters,
                     global_filters,
                     value
                 )
 
                 # Apply validators
-                value = FieldMixin.validate_field(
+                value = ValidationMixin.validate_field(
                     field_info.validators,
                     global_validators,
                     field_info.fallback,
@@ -296,14 +296,14 @@ cdef class FieldMixin:
                 )
 
                 # Apply steps
-                value = FieldMixin.apply_steps(
+                value = ValidationMixin.apply_steps(
                     field_info.steps,
                     field_info.fallback,
                     value
                 )
 
                 # Handle required fields and defaults
-                value = FieldMixin.check_for_required(
+                value = ValidationMixin.check_for_required(
                     field_name,
                     field_info,
                     value
@@ -352,4 +352,4 @@ cdef class FieldMixin:
                 validated_data
             )
         else:
-            return data.get(field_name)
+            return data.get(field_name) 

@@ -3,7 +3,7 @@ from typing import Any
 from flask_inputfilter.models.cimports cimport BaseFilter, BaseValidator, FieldModel, BaseCondition
 
 
-cdef class FieldMixin:
+cdef class ValidationMixin:
 
     @staticmethod
     cdef object apply_filters(list[BaseFilter] filters1, list[BaseFilter] filters2, object value)
@@ -29,4 +29,4 @@ cdef class FieldMixin:
     )
 
     @staticmethod
-    cdef object get_field_value(str field_name, FieldModel field_info, dict[str, Any] data, dict[str, Any] validated_data)
+    cdef object get_field_value(str field_name, FieldModel field_info, dict[str, Any] data, dict[str, Any] validated_data) 

@@ -74,5 +74,3 @@ cdef class InputFilter:
     cpdef object serialize(self)
     cpdef void add_global_validator(self, BaseValidator validator)
     cpdef list[BaseValidator] get_global_validators(self)
-
-    cdef inline void _check_all_conditions(self, dict validated_data, dict errors)

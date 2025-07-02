@@ -9,7 +9,7 @@ from flask import Response, g, request
 
 from flask_inputfilter.exceptions import ValidationError
 
-from flask_inputfilter.mixins.cimports cimport FieldMixin
+from flask_inputfilter.mixins.cimports cimport DataMixin
 from flask_inputfilter.models.cimports cimport BaseCondition, BaseFilter, BaseValidator, ExternalApiConfig, FieldModel
 
 from libcpp.vector cimport vector
@@ -180,14 +180,12 @@ cdef class InputFilter:
         """
         data = data or self.data
         cdef:
-            dict[str, str] errors = {},
-            dict[str, Any] validated_data = {}
+            dict[str, str] errors
+            dict[str, Any] validated_data
 
-        validated_data, errors = FieldMixin.validate_fields(
-            self.fields, data, self.global_filters, self.global_validators)
-
-        if self.conditions:
-            self._check_all_conditions(validated_data, errors)
+        validated_data, errors = DataMixin.validate_with_conditions(
+            self.fields, data, self.global_filters, self.global_validators, self.conditions
+        )
 
         if errors:
             raise ValidationError(errors)
@@ -230,25 +228,7 @@ cdef class InputFilter:
                 represent field names and values represent the associated
                 data to be filtered and stored.
         """
-        self.data = {}
-        cdef:
-            Py_ssize_t i, n = len(data) if data else 0
-            list keys = list(data.keys()) if n > 0 else []
-            list values = list(data.values()) if n > 0 else []
-            str field_name
-            object field_value
-
-        for i in range(n):
-            field_name = keys[i]
-            field_value = values[i]
-            if field_name in self.fields:
-                field_value = FieldMixin.apply_filters(
-                    self.fields[field_name].filters,
-                    self.global_filters,
-                    field_value,
-                )
-
-            self.data[field_name] = field_value
+        self.data = DataMixin.filter_data(data, self.fields, self.global_filters)
 
     cpdef object get_value(self, str name):
         """
@@ -371,21 +351,7 @@ cdef class InputFilter:
         Returns:
             bool: True if there are any unknown fields; False otherwise.
         """
-        if not self.data and self.fields:
-            return True
-        cdef set field_set
-
-        if len(self.fields) > 10:
-            field_set = set(self.fields.keys())
-            for field_name in self.data.keys():
-                if field_name not in field_set:
-                    return True
-        else:
-            for field_name in self.data.keys():
-                if field_name not in self.fields:
-                    return True
-
-        return False
+        return DataMixin.has_unknown_fields(self.data, self.fields)
 
     cpdef str get_error_message(self, str field_name):
         """
@@ -658,41 +624,7 @@ cdef class InputFilter:
                 "Can only merge with another InputFilter instance."
             )
 
-        cdef:
-            Py_ssize_t i, n
-            dict other_inputs = other.get_inputs()
-            list keys = list(other_inputs.keys()) if other_inputs else []
-            list new_fields = list(other_inputs.values()) if other_inputs else []
-
-        # Merge fields
-        n = len(keys)
-        for i in range(n):
-            self.fields[keys[i]] = new_fields[i]
-        
-        # Merge conditions
-        self.conditions += other.conditions
-
-        # Merge global filters (avoid duplicates by type)
-        for filter in other.global_filters:
-            existing_type_map = {
-                type(v): i for i, v in enumerate(self.global_filters)
-            }
-            if type(filter) in existing_type_map:
-                self.global_filters[existing_type_map[type(filter)]] = filter
-            else:
-                self.global_filters.append(filter)
-
-        # Merge global validators (avoid duplicates by type)
-        for validator in other.global_validators:
-            existing_type_map = {
-                type(v): i for i, v in enumerate(self.global_validators)
-            }
-            if type(validator) in existing_type_map:
-                self.global_validators[
-                    existing_type_map[type(validator)]
-                ] = validator
-            else:
-                self.global_validators.append(validator)
+        DataMixin.merge_input_filters(self, other)
 
     cpdef void set_model(self, model_class: Type[T]):
         """
@@ -739,16 +671,3 @@ cdef class InputFilter:
             list[BaseValidator]: A list of global validators.
         """
         return self.global_validators
-
-    cdef inline void _check_all_conditions(self, dict[str, Any] validated_data, dict[str, str] errors):
-        """
-        Check all conditions against the validated data.
-
-        Args:
-            validated_data (dict[str, Any]): The data that has been validated.
-            errors (dict[str, str]): A dictionary to store any validation errors.
-        """
-        try:
-            FieldMixin.check_conditions(self.conditions, validated_data)
-        except ValidationError as e:
-            errors[_INTERNED_STRINGS["_condition"]] = str(e)

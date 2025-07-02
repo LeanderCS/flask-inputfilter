@@ -4,14 +4,13 @@ from itertools import chain
 from typing import TYPE_CHECKING, Any, Union
 
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.mixins import ExternalApiMixin
 from flask_inputfilter.models import BaseFilter, BaseValidator, FieldModel
 
 if TYPE_CHECKING:
     from flask_inputfilter.models import BaseCondition
 
 
-class FieldMixin:
+class ValidationMixin:
     __slots__ = ()
 
     @staticmethod
@@ -23,7 +22,9 @@ class FieldMixin:
 
         **Parameters:**
 
-        - **filters** (*list[BaseFilter]*): A list of filters to apply to the
+        - **filters1** (*list[BaseFilter]*): A list of filters to apply to the
+          value.
+        - **filters2** (*list[BaseFilter]*): A list of filters to apply to the
           value.
         - **value** (*Any*): The value to be processed by the filters.
 
@@ -52,7 +53,9 @@ class FieldMixin:
 
         **Parameters:**
 
-        - **validators** (*list[BaseValidator]*): A list of validators to
+        - **validators1** (*list[BaseValidator]*): A list of validators to
+          apply to the field value.
+        - **validators2** (*list[BaseValidator]*): A list of validators to
           apply to the field value.
         - **fallback** (*Any*): A fallback value to return if validation
           fails.
@@ -209,17 +212,17 @@ class FieldMixin:
         for field_name, field_info in fields.items():
             try:
                 # Get initial value
-                value = FieldMixin.get_field_value(
+                value = ValidationMixin.get_field_value(
                     field_name, field_info, data, validated_data
                 )
 
                 # Apply filters
-                value = FieldMixin.apply_filters(
+                value = ValidationMixin.apply_filters(
                     field_info.filters, global_filters, value
                 )
 
                 # Apply validators
-                value = FieldMixin.validate_field(
+                value = ValidationMixin.validate_field(
                     field_info.validators,
                     global_validators,
                     field_info.fallback,
@@ -227,12 +230,12 @@ class FieldMixin:
                 )
 
                 # Apply steps
-                value = FieldMixin.apply_steps(
+                value = ValidationMixin.apply_steps(
                     field_info.steps, field_info.fallback, value
                 )
 
                 # Handle required fields and defaults
-                value = FieldMixin.check_for_required(
+                value = ValidationMixin.check_for_required(
                     field_name, field_info, value
                 )
 
@@ -273,6 +276,9 @@ class FieldMixin:
         if field_info.copy:
             return validated_data.get(field_info.copy)
         if field_info.external_api:
+            # Import here to avoid circular imports
+            from flask_inputfilter.mixins import ExternalApiMixin
+
             return ExternalApiMixin.call_external_api(
                 field_info.external_api, field_info.fallback, validated_data
             )
