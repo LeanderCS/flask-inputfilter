@@ -1,16 +1,11 @@
-from __future__ import annotations
+import warnings
 
-from abc import ABC, abstractmethod
-from typing import Any
+warnings.warn(
+    "Please use `flask_inputfilter.models` for importing BaseValidator "
+    "as `flask_inputfilter.validators` is deprecated and will be removed in "
+    "future versions.",
+    DeprecationWarning,
+    stacklevel=2,
+)
 
-
-class BaseValidator(ABC):
-    """
-    BaseValidator-Class.
-
-    Every validator should inherit from it.
-    """
-
-    @abstractmethod
-    def validate(self, value: Any) -> None:
-        pass
+from flask_inputfilter.models import BaseValidator

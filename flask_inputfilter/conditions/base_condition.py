@@ -1,16 +1,11 @@
-from __future__ import annotations
+import warnings
 
-from abc import ABC, abstractmethod
-from typing import Any
+warnings.warn(
+    "Please use `flask_inputfilter.models` for importing BaseCondition "
+    "as `flask_inputfilter.conditions` is deprecated and will be removed in "
+    "future versions.",
+    DeprecationWarning,
+    stacklevel=2,
+)
 
-
-class BaseCondition(ABC):
-    """
-    Base class for defining conditions.
-
-    Each condition should implement the `check` method.
-    """
-
-    @abstractmethod
-    def check(self, data: dict[str, Any]) -> bool:
-        pass
+from flask_inputfilter.models import BaseCondition
