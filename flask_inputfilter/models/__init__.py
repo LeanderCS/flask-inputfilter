@@ -1,13 +1,10 @@
-import shutil
-
-if shutil.which("g++") is not None:
+try:
     from .base_condition._base_condition import BaseCondition
     from .base_filter._base_filter import BaseFilter
     from .base_validator._base_validator import BaseValidator
     from .external_api_config._external_api_config import ExternalApiConfig
     from .field_model._field_model import FieldModel
-
-else:
+except ImportError:
     from .base_condition.base_condition import BaseCondition
     from .base_filter.base_filter import BaseFilter
     from .base_validator.base_validator import BaseValidator

@@ -1,11 +1,8 @@
-import shutil
-
-if shutil.which("g++") is not None:
+try:
     from .data_mixin._data_mixin import DataMixin
     from .external_api_mixin._external_api_mixin import ExternalApiMixin
     from .validation_mixin._validation_mixin import ValidationMixin
-
-else:
+except ImportError:
     from .data_mixin.data_mixin import DataMixin
     from .external_api_mixin.external_api_mixin import ExternalApiMixin
     from .validation_mixin.validation_mixin import ValidationMixin
