@@ -235,7 +235,9 @@ class InputFilter:
                 data to be filtered and stored.
         """
         self.data = DataMixin.filter_data(
-            data, self.fields, self.global_filters
+            data,
+            self.fields,
+            self.global_filters,
         )
 
     def get_value(self, name: str) -> Any:

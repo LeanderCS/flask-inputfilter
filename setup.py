@@ -10,9 +10,7 @@ if shutil.which("g++") is not None:
 
     pyx_files = Path("flask_inputfilter").rglob("*.pyx")
 
-    pyx_modules = [
-        ".".join(path.with_suffix("").parts) for path in pyx_files
-    ]
+    pyx_modules = [".".join(path.with_suffix("").parts) for path in pyx_files]
 
     ext_modules = cythonize(
         module_list=[

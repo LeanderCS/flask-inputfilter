@@ -21,7 +21,8 @@ class DataMixin:
 
     @staticmethod
     def has_unknown_fields(
-        data: dict[str, Any], fields: dict[str, FieldModel]
+        data: dict[str, Any],
+        fields: dict[str, FieldModel],
     ) -> bool:
         """
         Check if data contains fields not defined in fields configuration. Uses
@@ -39,11 +40,6 @@ class DataMixin:
         if not data and fields:
             return True
 
-        # Use set operations for faster lookup when there are many fields
-        if len(fields) > LARGE_DATASET_THRESHOLD:
-            field_set = set(fields.keys())
-            return any(field_name not in field_set for field_name in data)
-        # Use direct dict lookup for smaller field counts
         return any(field_name not in fields for field_name in data)
 
     @staticmethod
@@ -120,7 +116,8 @@ class DataMixin:
 
     @staticmethod
     def merge_input_filters(
-        target_filter: InputFilter, source_filter: InputFilter
+        target_filter: InputFilter,
+        source_filter: InputFilter,
     ) -> None:
         """
         Efficiently merge one InputFilter into another.
@@ -138,16 +135,21 @@ class DataMixin:
 
         # Merge global filters (avoid duplicates by type)
         DataMixin._merge_component_list(
-            target_filter.global_filters, source_filter.global_filters
+            target_filter.global_filters,
+            source_filter.global_filters,
         )
 
         # Merge global validators (avoid duplicates by type)
         DataMixin._merge_component_list(
-            target_filter.global_validators, source_filter.global_validators
+            target_filter.global_validators,
+            source_filter.global_validators,
         )
 
     @staticmethod
-    def _merge_component_list(target_list: list, source_list: list) -> None:
+    def _merge_component_list(
+        target_list: list,
+        source_list: list,
+    ) -> None:
         """
         Helper method to merge component lists avoiding duplicates by type.
 

@@ -38,12 +38,12 @@ class StringSlugifyFilter(BaseFilter):
 
         value_without_accents = "".join(
             char
-            for char in unicodedata.normalize(UnicodeFormEnum.NFD.value, value)
+            for char in unicodedata.normalize(UnicodeFormEnum.NFD.value, value,)
             if unicodedata.category(char) != "Mn"
         )
 
         value = unicodedata.normalize(
-            UnicodeFormEnum.NFKD.value, value_without_accents
+            UnicodeFormEnum.NFKD.value, value_without_accents,
         )
         value = value.encode("ascii", "ignore").decode("ascii")
 

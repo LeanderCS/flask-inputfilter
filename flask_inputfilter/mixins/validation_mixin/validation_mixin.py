@@ -15,7 +15,9 @@ class ValidationMixin:
 
     @staticmethod
     def apply_filters(
-        filters1: list[BaseFilter], filters2: list[BaseFilter], value: Any
+        filters1: list[BaseFilter],
+        filters2: list[BaseFilter],
+        value: Any,
     ) -> Any:
         """
         Apply filters to the field value.
@@ -132,7 +134,8 @@ class ValidationMixin:
 
     @staticmethod
     def check_conditions(
-        conditions: list[BaseCondition], validated_data: dict[str, Any]
+        conditions: list[BaseCondition],
+        validated_data: dict[str, Any],
     ) -> None:
         """
         Checks if all conditions are met.
