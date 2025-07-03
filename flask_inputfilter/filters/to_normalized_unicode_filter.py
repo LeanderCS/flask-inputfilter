@@ -59,8 +59,14 @@ class ToNormalizedUnicodeFilter(BaseFilter):
 
         value_without_accents = "".join(
             char
-            for char in unicodedata.normalize(UnicodeFormEnum.NFD.value, value)
+            for char in unicodedata.normalize(
+                UnicodeFormEnum.NFD.value,
+                value,
+            )
             if unicodedata.category(char) != "Mn"
         )
 
-        return unicodedata.normalize(self.form.value, value_without_accents)
+        return unicodedata.normalize(
+            self.form.value,
+            value_without_accents,
+        )

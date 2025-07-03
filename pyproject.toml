@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "flask_inputfilter"
-version = "0.6.1"
+version = "0.6.2"
 description = "A library to easily filter and validate input data in Flask applications"
 readme = "README.md"
 keywords = [
@@ -141,9 +141,15 @@ pyupgrade = [
     true
 ]
 
+[tool.ruff.lint.isort]
+force-single-line = false
+split-on-trailing-comma = true
+
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "lf"
 
 [tool.docformatter]
 wrap-summaries = 79

@@ -13,7 +13,11 @@ cdef class ValidationMixin:
 
     @staticmethod
     @cython.exceptval(check=False)
-    cdef object apply_filters(list[BaseFilter] filters1, list[BaseFilter] filters2, object value):
+    cdef object apply_filters(
+        list[BaseFilter] filters1,
+        list[BaseFilter] filters2,
+        object value,
+    ):
         """
         Apply filters to the field value.
 
@@ -51,9 +55,9 @@ cdef class ValidationMixin:
 
     @staticmethod
     cdef object apply_steps(
-            list[BaseFilter | BaseValidator] steps,
-            object fallback,
-            object value
+        list[BaseFilter | BaseValidator] steps,
+        object fallback,
+        object value,
     ):
         """
         Apply multiple filters and validators in a specific order.
@@ -105,7 +109,10 @@ cdef class ValidationMixin:
         return value
 
     @staticmethod
-    cdef void check_conditions(list[BaseCondition] conditions, dict[str, Any] validated_data) except *:
+    cdef void check_conditions(
+        list[BaseCondition] conditions,
+        dict[str, Any] validated_data,
+    ) except *:
         """
         Checks if all conditions are met.
 
@@ -135,9 +142,9 @@ cdef class ValidationMixin:
 
     @staticmethod
     cdef inline object check_for_required(
-            str field_name,
-            FieldModel field_info,
-            object value,
+        str field_name,
+        FieldModel field_info,
+        object value,
     ):
         """
         Determine the value of the field, considering the required and
@@ -177,10 +184,10 @@ cdef class ValidationMixin:
 
     @staticmethod
     cdef object validate_field(
-            list[BaseValidator] validators1,
-            list[BaseValidator] validators2,
-            object fallback,
-            object value
+        list[BaseValidator] validators1,
+        list[BaseValidator] validators2,
+        object fallback,
+        object value
     ):
         """
         Validate the field value.
@@ -227,10 +234,10 @@ cdef class ValidationMixin:
 
     @staticmethod
     cdef tuple validate_fields(
-            dict[str, FieldModel] fields,
-            dict[str, Any] data,
-            list[BaseFilter] global_filters,
-            list[BaseValidator] global_validators
+        dict[str, FieldModel] fields,
+        dict[str, Any] data,
+        list[BaseFilter] global_filters,
+        list[BaseValidator] global_validators
     ):
         """
         Validate multiple fields based on their configurations.
@@ -317,10 +324,10 @@ cdef class ValidationMixin:
 
     @staticmethod
     cdef inline object get_field_value(
-            str field_name,
-            FieldModel field_info,
-            dict[str, Any] data,
-            dict[str, Any] validated_data
+        str field_name,
+        FieldModel field_info,
+        dict[str, Any] data,
+        dict[str, Any] validated_data
     ):
         """
         Retrieve the value of a field based on its configuration.

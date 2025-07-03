@@ -117,7 +117,8 @@ class ExternalApiMixin:
 
     @staticmethod
     def replace_placeholders(
-        value: str, validated_data: dict[str, Any]
+        value: str,
+        validated_data: dict[str, Any],
     ) -> str:
         """
         Replace all placeholders, marked with '{{ }}' in value with the
@@ -142,7 +143,8 @@ class ExternalApiMixin:
 
     @staticmethod
     def replace_placeholders_in_params(
-        params: dict, validated_data: dict[str, Any]
+        params: dict,
+        validated_data: dict[str, Any],
     ) -> dict:
         """
         Replace all placeholders in params with the corresponding values from

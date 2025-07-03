@@ -24,6 +24,7 @@ from .is_future_date_validator import IsFutureDateValidator
 from .is_hexadecimal_validator import IsHexadecimalValidator
 from .is_horizontal_image_validator import IsHorizontalImageValidator
 from .is_html_validator import IsHtmlValidator
+from .is_image_validator import IsImageValidator
 from .is_instance_validator import IsInstanceValidator
 from .is_integer_validator import IsIntegerValidator
 from .is_json_validator import IsJsonValidator
@@ -72,6 +73,7 @@ __all__ = [
     "IsHexadecimalValidator",
     "IsHorizontalImageValidator",
     "IsHtmlValidator",
+    "IsImageValidator",
     "IsInstanceValidator",
     "IsIntegerValidator",
     "IsJsonValidator",

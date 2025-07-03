@@ -184,7 +184,11 @@ cdef class InputFilter:
             dict[str, Any] validated_data
 
         validated_data, errors = DataMixin.validate_with_conditions(
-            self.fields, data, self.global_filters, self.global_validators, self.conditions
+            self.fields,
+            data,
+            self.global_filters,
+            self.global_validators,
+            self.conditions,
         )
 
         if errors:

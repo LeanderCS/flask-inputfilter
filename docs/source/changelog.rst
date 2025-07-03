@@ -3,6 +3,22 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.6.2] - 2025-07-03
+--------------------
+
+Added
+^^^^^
+- Added IsImageValidator, ToBase64ImageFilter and ToImageFilter.
+
+
+[0.6.1] - 2025-07-02
+--------------------
+
+Changed
+^^^^^^^
+- Fixed issue with ``__init__.py`` for compiled versions.
+
+
 [0.6.0] - 2025-06-30
 --------------------
 
