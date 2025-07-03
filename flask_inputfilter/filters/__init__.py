@@ -9,6 +9,7 @@ from .string_remove_emojis_filter import StringRemoveEmojisFilter
 from .string_slugify_filter import StringSlugifyFilter
 from .string_trim_filter import StringTrimFilter
 from .to_alpha_numeric_filter import ToAlphaNumericFilter
+from .to_base64_image_filter import ToBase64ImageFilter
 from .to_boolean_filter import ToBooleanFilter
 from .to_camel_case_filter import ToCamelCaseFilter
 from .to_dataclass_filter import ToDataclassFilter
@@ -17,6 +18,7 @@ from .to_datetime_filter import ToDateTimeFilter
 from .to_digits_filter import ToDigitsFilter
 from .to_enum_filter import ToEnumFilter
 from .to_float_filter import ToFloatFilter
+from .to_image_filter import ToImageFilter
 from .to_integer_filter import ToIntegerFilter
 from .to_iso_filter import ToIsoFilter
 from .to_lower_filter import ToLowerFilter
@@ -42,6 +44,7 @@ __all__ = [
     "StringSlugifyFilter",
     "StringTrimFilter",
     "ToAlphaNumericFilter",
+    "ToBase64ImageFilter",
     "ToBooleanFilter",
     "ToCamelCaseFilter",
     "ToDataclassFilter",
@@ -50,6 +53,7 @@ __all__ = [
     "ToDigitsFilter",
     "ToEnumFilter",
     "ToFloatFilter",
+    "ToImageFilter",
     "ToIntegerFilter",
     "ToIsoFilter",
     "ToLowerFilter",

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import warnings
 
 warnings.warn(
@@ -7,5 +9,3 @@ warnings.warn(
     DeprecationWarning,
     stacklevel=2,
 )
-
-from flask_inputfilter.models import BaseFilter
