@@ -94,13 +94,15 @@ cdef class ValidationMixin:
         cdef:
             Py_ssize_t i, n = len(steps) if steps else 0
             object current_step
+            bint has_apply
 
         try:
             for i in range(n):
                 current_step = steps[i]
-                if isinstance(current_step, BaseFilter):
+                has_apply = hasattr(current_step, 'apply')
+                if has_apply:
                     value = current_step.apply(value)
-                elif isinstance(current_step, BaseValidator):
+                else:
                     current_step.validate(value)
         except ValidationError:
             if fallback is None:

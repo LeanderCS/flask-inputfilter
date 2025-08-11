@@ -17,7 +17,14 @@ if shutil.which("g++") is not None:
             Extension(
                 name=module,
                 sources=[str(Path(*module.split(".")).with_suffix(".pyx"))],
-                extra_compile_args=["-std=c++11"],
+                extra_compile_args=[
+                    "-std=c++17",
+                    "-O3",
+                    "-march=native",
+                    "-ffast-math",
+                    "-funroll-loops",
+                    "-finline-functions",
+                ],
                 language="c++",
             )
             for module in pyx_modules
@@ -33,6 +40,12 @@ if shutil.which("g++") is not None:
             "linetrace": False,
             "profile": False,
             "wraparound": False,
+            "nonecheck": False,
+            "overflowcheck": False,
+            "language_level": 3,
+            "optimize.use_switch": True,
+            "optimize.unpack_method_calls": True,
+            "always_allow_keywords": False,
         },
     )
     options = {

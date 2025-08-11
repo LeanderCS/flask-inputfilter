@@ -10,6 +10,7 @@ from flask import Response, g, request
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.mixins import DataMixin
 from flask_inputfilter.models import BaseFilter, ExternalApiConfig, FieldModel
+from flask_inputfilter.performance_config import PerformanceConfig
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -34,6 +35,22 @@ _INTERNED_STRINGS = {
     "required": sys.intern("required"),
     "steps": sys.intern("steps"),
     "validators": sys.intern("validators"),
+    # Common field names
+    "id": sys.intern("id"),
+    "name": sys.intern("name"),
+    "email": sys.intern("email"),
+    "password": sys.intern("password"),
+    "username": sys.intern("username"),
+    "user_id": sys.intern("user_id"),
+    "created_at": sys.intern("created_at"),
+    "updated_at": sys.intern("updated_at"),
+    "status": sys.intern("status"),
+    "type": sys.intern("type"),
+    "value": sys.intern("value"),
+    "data": sys.intern("data"),
+    "message": sys.intern("message"),
+    "error": sys.intern("error"),
+    "result": sys.intern("result"),
 }
 
 
@@ -437,6 +454,9 @@ class InputFilter:
             copy (Optional[str]): The name of the field to copy the value
                 from.
         """
+        if PerformanceConfig.USE_STRING_INTERNING:
+            name = sys.intern(name)
+
         if name in self.fields:
             raise ValueError(f"Field '{name}' already exists.")
 

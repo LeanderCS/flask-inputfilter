@@ -12,3 +12,4 @@ Options
     copy
     external_api
     deserialization
+    performance

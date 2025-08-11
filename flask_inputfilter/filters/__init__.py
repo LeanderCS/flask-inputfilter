@@ -5,6 +5,7 @@ from .array_explode_filter import ArrayExplodeFilter
 from .base_64_image_downscale_filter import Base64ImageDownscaleFilter
 from .base_64_image_resize_filter import Base64ImageResizeFilter
 from .blacklist_filter import BlacklistFilter
+from .lazy_filter_chain import LazyFilterChain
 from .string_remove_emojis_filter import StringRemoveEmojisFilter
 from .string_slugify_filter import StringSlugifyFilter
 from .string_trim_filter import StringTrimFilter
@@ -40,6 +41,7 @@ __all__ = [
     "Base64ImageResizeFilter",
     "BaseFilter",
     "BlacklistFilter",
+    "LazyFilterChain",
     "StringRemoveEmojisFilter",
     "StringSlugifyFilter",
     "StringTrimFilter",

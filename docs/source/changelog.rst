@@ -3,6 +3,22 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.6.3] - 2025-08-11
+--------------------
+
+Added
+^^^^^
+- Added ``PerformanceConfig`` class for fine-tuning performance characteristics with presets for high-performance, low-memory, and balanced modes.
+- Added ``LazyFilterChain`` class for lazy evaluation of filter chains to improve performance with large filter chains.
+- Added regex pattern caching in ``RegexValidator`` to improve performance with repeated patterns.
+
+Changed
+^^^^^^^
+- Updated Dockerfile base image from ``debian:buster-slim`` to ``debian:bookworm-slim`` to fix package repository issues after Debian Buster reached end-of-life.
+- Optimized Cython compilation with enhanced compiler flags (``-O3``, ``-march=native``, etc.) for better performance.
+- Enhanced ``ValidationMixin`` to support lazy evaluation when filter chains exceed the configured threshold.
+
+
 [0.6.2] - 2025-07-03
 --------------------
 

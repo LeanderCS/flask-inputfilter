@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import re
-from typing import Optional
+from typing import ClassVar, Optional, Pattern
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.models import BaseValidator
+from flask_inputfilter.performance_config import PerformanceConfig
 
 
 class RegexValidator(BaseValidator):
@@ -36,7 +37,8 @@ class RegexValidator(BaseValidator):
                 ])
     """
 
-    __slots__ = ("error_message", "pattern")
+    __slots__ = ("_compiled_pattern", "error_message", "pattern")
+    _pattern_cache: ClassVar[dict[str, Pattern]] = {}
 
     def __init__(
         self,
@@ -45,9 +47,14 @@ class RegexValidator(BaseValidator):
     ) -> None:
         self.pattern = pattern
         self.error_message = error_message
+        if pattern not in self._pattern_cache:
+            if len(self._pattern_cache) >= PerformanceConfig.REGEX_CACHE_SIZE:
+                self._pattern_cache.pop(next(iter(self._pattern_cache)))
+            self._pattern_cache[pattern] = re.compile(pattern)
+        self._compiled_pattern = self._pattern_cache[pattern]
 
     def validate(self, value: str) -> None:
-        if not re.match(self.pattern, value):
+        if not self._compiled_pattern.match(value):
             raise ValidationError(
                 self.error_message
                 or f"Value '{value}' does not match the required "

@@ -4,7 +4,9 @@ from itertools import chain
 from typing import TYPE_CHECKING, Any, Union
 
 from flask_inputfilter.exceptions import ValidationError
+from flask_inputfilter.filters.lazy_filter_chain import LazyFilterChain
 from flask_inputfilter.models import BaseFilter, BaseValidator, FieldModel
+from flask_inputfilter.performance_config import PerformanceConfig
 
 if TYPE_CHECKING:
     from flask_inputfilter.models import BaseCondition
@@ -18,6 +20,7 @@ class ValidationMixin:
         filters1: list[BaseFilter],
         filters2: list[BaseFilter],
         value: Any,
+        use_lazy: bool = False,
     ) -> Any:
         """
         Apply filters to the field value.
@@ -29,6 +32,7 @@ class ValidationMixin:
         - **filters2** (*list[BaseFilter]*): A list of filters to apply to the
           value.
         - **value** (*Any*): The value to be processed by the filters.
+        - **use_lazy** (*bool*): Use lazy evaluation for filter chains.
 
         **Returns:**
 
@@ -38,7 +42,15 @@ class ValidationMixin:
         if value is None:
             return None
 
-        for filter in chain(filters1, filters2):
+        all_filters = list(chain(filters1, filters2))
+        if (
+            PerformanceConfig.USE_LAZY_EVALUATION
+            and len(all_filters) > PerformanceConfig.LAZY_EVALUATION_THRESHOLD
+        ):
+            lazy_chain = LazyFilterChain(all_filters, value)
+            return lazy_chain.get_result()
+
+        for filter in all_filters:
             value = filter.apply(value)
 
         return value
