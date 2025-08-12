@@ -3,7 +3,11 @@
 # cython: boundscheck=False
 # cython: wraparound=False
 # cython: cdivision=True
+# cython: nonecheck=False
+# cython: initializedcheck=False
+# cython: overflowcheck=False
 
+import cython
 import json
 import logging
 import sys
@@ -16,35 +20,52 @@ from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.mixins.cimports cimport DataMixin
 from flask_inputfilter.models.cimports cimport BaseCondition, BaseFilter, BaseValidator, ExternalApiConfig, FieldModel
 
-from libcpp.vector cimport vector
+from libcpp.unordered_set cimport unordered_set
 from libcpp.string cimport string
 
 cdef dict _INTERNED_STRINGS = {
     "_condition": sys.intern("_condition"),
     "_error": sys.intern("_error"),
+    "apply": sys.intern("apply"),
+    "Authorization": sys.intern("Authorization"),
+    "cache": sys.intern("cache"),
+    "check": sys.intern("check"),
     "copy": sys.intern("copy"),
+    "data": sys.intern("data"),
+    "data_key": sys.intern("data_key"),
     "default": sys.intern("default"),
     "DELETE": sys.intern("DELETE"),
+    "errors": sys.intern("errors"),
     "external_api": sys.intern("external_api"),
     "fallback": sys.intern("fallback"),
+    "fields": sys.intern("fields"),
     "filters": sys.intern("filters"),
     "GET": sys.intern("GET"),
+    "get": sys.intern("get"),
+    "headers": sys.intern("headers"),
+    "items": sys.intern("items"),
+    "json": sys.intern("json"),
+    "keys": sys.intern("keys"),
+    "method": sys.intern("method"),
+    "name": sys.intern("name"),
+    "params": sys.intern("params"),
     "PATCH": sys.intern("PATCH"),
     "POST": sys.intern("POST"),
     "PUT": sys.intern("PUT"),
     "required": sys.intern("required"),
+    "status_code": sys.intern("status_code"),
     "steps": sys.intern("steps"),
-    "validators": sys.intern("validators"),
-    "data": sys.intern("data"),
-    "errors": sys.intern("errors"),
+    "text": sys.intern("text"),
+    "url": sys.intern("url"),
+    "validate": sys.intern("validate"),
     "validated_data": sys.intern("validated_data"),
-    "fields": sys.intern("fields"),
-    "name": sys.intern("name"),
+    "validators": sys.intern("validators"),
     "value": sys.intern("value"),
+    "values": sys.intern("values"),
 }
 
 cdef extern from "helper.h":
-    vector[string] make_default_methods()
+    unordered_set[string] make_default_methods_set()
 
 T = TypeVar("T")
 
@@ -55,7 +76,7 @@ cdef class InputFilter:
     """
 
     def __cinit__(self) -> None:
-        self.methods = make_default_methods()
+        self.methods = make_default_methods_set()
         self.fields = {}
         self.conditions = []
         self.global_filters = []
@@ -66,9 +87,11 @@ cdef class InputFilter:
         self.model_class: Optional[Type[T]] = None
 
     def __init__(self, methods: Optional[list[str]] = None) -> None:
+        cdef str method
         if methods is not None:
             self.methods.clear()
-            [self.methods.push_back(method.encode()) for method in methods]
+            for method in methods:
+                self.methods.insert(method.encode())
 
     cpdef bint is_valid(self):
         """
@@ -134,13 +157,7 @@ cdef class InputFilter:
                 cdef:
                     InputFilter input_filter = cls()
                     string request_method = request.method.encode()
-                    Py_ssize_t i, n = input_filter.methods.size()
-                    bint method_allowed = False
-
-                for i in range(n):
-                    if request_method == input_filter.methods[i]:
-                        method_allowed = True
-                        break
+                    bint method_allowed = input_filter.methods.count(request_method) > 0
                 
                 if not method_allowed:
                     return Response(status=405, response="Method Not Allowed")
@@ -332,8 +349,8 @@ cdef class InputFilter:
             object value
 
         for i in range(n):
-            field = field_names[i]
-            value = self.data.get(field)
+            field = <str>field_names[i]
+            value = self.data.get(field, None)
             if value is not None:
                 result[field] = value
         return result

@@ -2,6 +2,9 @@
 # cython: boundscheck=False
 # cython: wraparound=False
 # cython: cdivision=True
+# cython: nonecheck=False
+# cython: initializedcheck=False
+# cython: overflowcheck=False
 
 from typing import Any
 
@@ -19,7 +22,7 @@ DEF SMALL_DICT_THRESHOLD = 5
 cdef class DataMixin:
 
     @staticmethod
-    cdef bint has_unknown_fields(
+    cdef inline bint has_unknown_fields(
             dict[str, Any] data,
             dict[str, FieldModel] fields
     ):
@@ -59,7 +62,7 @@ cdef class DataMixin:
         return False
 
     @staticmethod
-    cdef dict[str, Any] filter_data(
+    cdef inline dict[str, Any] filter_data(
             dict[str, Any] data,
             dict[str, FieldModel] fields,
             list[BaseFilter] global_filters
@@ -194,7 +197,7 @@ cdef class DataMixin:
         )
 
     @staticmethod
-    cdef void _merge_component_list(list target_list, list source_list):
+    cdef inline void _merge_component_list(list target_list, list source_list):
         """
         Helper method to merge component lists avoiding duplicates by type.
 

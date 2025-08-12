@@ -2,6 +2,9 @@ from flask_inputfilter.models import BaseCondition
 
 from .array_length_equal_condition import ArrayLengthEqualCondition
 from .array_longer_than_condition import ArrayLongerThanCondition
+
+# New conditions
+from .at_least_one_required_condition import AtLeastOneRequiredCondition
 from .custom_condition import CustomCondition
 from .equal_condition import EqualCondition
 from .exactly_n_of_condition import ExactlyNOfCondition
@@ -9,6 +12,7 @@ from .exactly_n_of_matches_condition import ExactlyNOfMatchesCondition
 from .exactly_one_of_condition import ExactlyOneOfCondition
 from .exactly_one_of_matches_condition import ExactlyOneOfMatchesCondition
 from .integer_bigger_than_condition import IntegerBiggerThanCondition
+from .mutually_exclusive_condition import MutuallyExclusiveCondition
 from .n_of_condition import NOfCondition
 from .n_of_matches_condition import NOfMatchesCondition
 from .not_equal_condition import NotEqualCondition
@@ -37,4 +41,7 @@ __all__ = [
     "RequiredIfCondition",
     "StringLongerThanCondition",
     "TemporalOrderCondition",
+    # New conditions
+    "AtLeastOneRequiredCondition",
+    "MutuallyExclusiveCondition",
 ]

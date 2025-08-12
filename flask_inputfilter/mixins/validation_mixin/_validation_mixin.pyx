@@ -3,6 +3,8 @@
 # cython: wraparound=False
 # cython: cdivision=True
 # cython: nonecheck=False
+# cython: initializedcheck=False
+# cython: overflowcheck=False
 
 import cython
 from typing import Any
@@ -17,6 +19,7 @@ cdef class ValidationMixin:
 
     @staticmethod
     @cython.exceptval(check=False)
+    @cython.inline
     cdef object apply_filters(
         list[BaseFilter] filters1,
         list[BaseFilter] filters2,
@@ -63,6 +66,7 @@ cdef class ValidationMixin:
         return value
 
     @staticmethod
+    @cython.exceptval(check=False) 
     cdef object apply_steps(
         list[BaseFilter | BaseValidator] steps,
         object fallback,
@@ -194,6 +198,8 @@ cdef class ValidationMixin:
         raise ValidationError(f"Field '{field_name}' is required.")
 
     @staticmethod
+    @cython.exceptval(check=False)
+    @cython.inline
     cdef object validate_field(
         list[BaseValidator] validators1,
         list[BaseValidator] validators2,

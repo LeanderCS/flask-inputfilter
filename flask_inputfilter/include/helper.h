@@ -1,10 +1,10 @@
 #ifndef HELPER_H
 #define HELPER_H
 
-#include <vector>
+#include <unordered_set>
 #include <string>
 
-inline std::vector<std::string> make_default_methods() {
+inline std::unordered_set<std::string> make_default_methods_set() {
     return {
         "GET",
         "POST",

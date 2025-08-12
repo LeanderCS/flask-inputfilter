@@ -1,7 +1,10 @@
 # cython: language=c++
-# cython: freelist=512
+# cython: freelist=1024
 # cython: boundscheck=False
 # cython: wraparound=False
+# cython: nonecheck=False
+# cython: initializedcheck=False
+# cython: overflowcheck=False
 
 import cython
 from typing import Any

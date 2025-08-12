@@ -3,18 +3,7 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
-[0.6.4] - 2025-08-12
---------------------
-
-Changed
-^^^^^^^
-- Increased freelist sizes for ``InputFilter``, ``FieldModel``, and ``ExternalApiConfig`` to reduce allocations
-- Replaced Python generators with C-style loops and added early exit conditions in filter/validator chains
-- Optimized dictionary operations and string lookups with extended interning
-- Improved ``has_unknown_fields`` with adaptive strategies based on data size
-
-
-[0.6.3] - 2025-08-11
+[0.6.3] - 2025-08-12
 --------------------
 
 Added
@@ -28,6 +17,10 @@ Changed
 - Updated Dockerfile base image from ``debian:buster-slim`` to ``debian:bookworm-slim`` to fix package repository issues after Debian Buster reached end-of-life.
 - Optimized Cython compilation with enhanced compiler flags (``-O3``, ``-march=native``, etc.) for better performance.
 - Enhanced ``ValidationMixin`` to support lazy evaluation when filter chains exceed the configured threshold.
+- Increased freelist sizes for ``InputFilter``, ``FieldModel``, and ``ExternalApiConfig`` to reduce allocations
+- Replaced Python generators with C-style loops and added early exit conditions in filter/validator chains
+- Optimized dictionary operations and string lookups with extended interning
+- Improved ``has_unknown_fields`` with adaptive strategies based on data size
 
 
 [0.6.2] - 2025-07-03

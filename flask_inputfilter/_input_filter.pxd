@@ -3,17 +3,17 @@ from typing import Any
 
 from flask_inputfilter.models.cimports cimport BaseCondition, BaseFilter, BaseValidator, ExternalApiConfig, FieldModel
 
-from libcpp.vector cimport vector
+from libcpp.unordered_set cimport unordered_set
 from libcpp.string cimport string
 
 
 cdef extern from "helper.h":
-    vector[string] make_default_methods()
+    unordered_set[string] make_default_methods_set()
 
 
 cdef class InputFilter:
     cdef readonly:
-        vector[string] methods
+        unordered_set[string] methods
         dict[str, FieldModel] fields
         list[BaseCondition] conditions
         list[BaseFilter] global_filters

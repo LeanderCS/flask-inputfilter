@@ -1,6 +1,9 @@
 # cython: language=c++
 # cython: boundscheck=False
 # cython: wraparound=False
+# cython: nonecheck=False
+# cython: initializedcheck=False
+# cython: cdivision=True
 
 import re
 from typing import Any
