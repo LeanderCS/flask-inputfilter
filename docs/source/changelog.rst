@@ -3,6 +3,17 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.6.4] - 2025-08-12
+--------------------
+
+Changed
+^^^^^^^
+- Increased freelist sizes for ``InputFilter``, ``FieldModel``, and ``ExternalApiConfig`` to reduce allocations
+- Replaced Python generators with C-style loops and added early exit conditions in filter/validator chains
+- Optimized dictionary operations and string lookups with extended interning
+- Improved ``has_unknown_fields`` with adaptive strategies based on data size
+
+
 [0.6.3] - 2025-08-11
 --------------------
 

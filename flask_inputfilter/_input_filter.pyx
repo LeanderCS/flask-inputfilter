@@ -1,4 +1,8 @@
 # cython: language=c++
+# cython: freelist=256
+# cython: boundscheck=False
+# cython: wraparound=False
+# cython: cdivision=True
 
 import json
 import logging
@@ -31,6 +35,12 @@ cdef dict _INTERNED_STRINGS = {
     "required": sys.intern("required"),
     "steps": sys.intern("steps"),
     "validators": sys.intern("validators"),
+    "data": sys.intern("data"),
+    "errors": sys.intern("errors"),
+    "validated_data": sys.intern("validated_data"),
+    "fields": sys.intern("fields"),
+    "name": sys.intern("name"),
+    "value": sys.intern("value"),
 }
 
 cdef extern from "helper.h":
@@ -121,9 +131,18 @@ cdef class InputFilter:
                     Union[Response, tuple[Any, dict[str, Any]]]: The response from the route function or an error response.
                 """
 
-                cdef InputFilter input_filter = cls()
-                cdef string request_method = request.method.encode()
-                if not any(request_method == method for method in input_filter.methods):
+                cdef:
+                    InputFilter input_filter = cls()
+                    string request_method = request.method.encode()
+                    Py_ssize_t i, n = input_filter.methods.size()
+                    bint method_allowed = False
+
+                for i in range(n):
+                    if request_method == input_filter.methods[i]:
+                        method_allowed = True
+                        break
+                
+                if not method_allowed:
                     return Response(status=405, response="Method Not Allowed")
 
                 if request.is_json:
@@ -310,11 +329,13 @@ cdef class InputFilter:
             dict result = {}
             list field_names = list(self.fields.keys())
             str field
+            object value
 
         for i in range(n):
             field = field_names[i]
-            if field in self.data:
-                result[field] = self.data[field]
+            value = self.data.get(field)
+            if value is not None:
+                result[field] = value
         return result
 
     cpdef dict[str, Any] get_unfiltered_data(self):

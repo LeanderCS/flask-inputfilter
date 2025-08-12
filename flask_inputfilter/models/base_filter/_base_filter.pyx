@@ -1,4 +1,6 @@
 # cython: language=c++
+# cython: boundscheck=False
+# cython: wraparound=False
 
 cdef class BaseFilter:
     """

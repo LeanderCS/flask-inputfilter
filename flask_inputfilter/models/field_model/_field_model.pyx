@@ -1,5 +1,7 @@
 # cython: language=c++
-# cython: freelist=256
+# cython: freelist=512
+# cython: boundscheck=False
+# cython: wraparound=False
 
 import cython
 from typing import Any
@@ -7,6 +9,7 @@ from typing import Any
 from flask_inputfilter.models.cimports cimport BaseFilter, BaseValidator, ExternalApiConfig
 
 cdef list EMPTY_LIST = []
+cdef tuple EMPTY_TUPLE = ()
 
 
 @cython.final
@@ -37,8 +40,8 @@ cdef class FieldModel:
         self.required = required
         self._default = default
         self.fallback = fallback
-        self.filters = filters if filters is not None else EMPTY_LIST
-        self.validators = validators if validators is not None else EMPTY_LIST
-        self.steps = steps if steps is not None else EMPTY_LIST
+        self.filters = EMPTY_LIST if filters is None or len(filters) == 0 else filters
+        self.validators = EMPTY_LIST if validators is None or len(validators) == 0 else validators
+        self.steps = EMPTY_LIST if steps is None or len(steps) == 0 else steps
         self.external_api = external_api
         self.copy = copy

@@ -1,4 +1,7 @@
 # cython: language=c++
+# cython: boundscheck=False
+# cython: wraparound=False
+# cython: cdivision=True
 
 from typing import Any
 
@@ -10,6 +13,7 @@ from flask_inputfilter.models.cimports cimport BaseFilter, BaseValidator, FieldM
 
 # Compile-time constants for performance thresholds
 DEF LARGE_DATASET_THRESHOLD = 10
+DEF SMALL_DICT_THRESHOLD = 5
 
 
 cdef class DataMixin:
@@ -35,19 +39,22 @@ cdef class DataMixin:
         if not data and fields:
             return True
 
-        cdef set field_set
+        cdef:
+            set field_set
+            Py_ssize_t field_count = len(fields)
+            Py_ssize_t data_count = len(data)
 
-        # Use set operations for faster lookup when there are many fields
-        if len(fields) > LARGE_DATASET_THRESHOLD:
+        if field_count > LARGE_DATASET_THRESHOLD and data_count > SMALL_DICT_THRESHOLD:
             field_set = set(fields.keys())
             for field_name in data.keys():
                 if field_name not in field_set:
                     return True
-        else:
-            # Use direct dict lookup for smaller field counts
+        elif data_count < field_count:
             for field_name in data.keys():
                 if field_name not in fields:
                     return True
+        else:
+            return bool(set(data.keys()) - set(fields.keys()))
 
         return False
 
@@ -72,19 +79,27 @@ cdef class DataMixin:
         """
         cdef:
             dict[str, Any] filtered_data = {}
-            Py_ssize_t i, n = len(data) if data else 0
-            list keys = list(data.keys()) if n > 0 else []
-            list values = list(data.values()) if n > 0 else []
+            Py_ssize_t i, n = len(data) if data is not None else 0
+            list keys
+            list values
             str field_name
             object field_value
+            FieldModel field_info
+
+        if n == 0:
+            return filtered_data
+
+        keys = list(data.keys())
+        values = list(data.values())
 
         for i in range(n):
             field_name = keys[i]
             field_value = values[i]
-            
-            if field_name in fields:
+
+            field_info = fields.get(field_name)
+            if field_info is not None:
                 field_value = ValidationMixin.apply_filters(
-                    fields[field_name].filters,
+                    field_info.filters,
                     global_filters,
                     field_value,
                 )
@@ -125,8 +140,8 @@ cdef class DataMixin:
             fields, data, global_filters, global_validators
         )
 
-        # Check conditions if present and no errors yet
-        if conditions and not errors:
+        # Check conditions only if present and no errors yet
+        if conditions is not None and len(conditions) > 0 and not errors:
             try:
                 ValidationMixin.check_conditions(conditions, validated_data)
             except ValidationError as e:
@@ -150,13 +165,18 @@ cdef class DataMixin:
         cdef:
             Py_ssize_t i, n
             dict source_inputs = source_filter.get_inputs()
-            list keys = list(source_inputs.keys()) if source_inputs else []
-            list new_fields = list(source_inputs.values()) if source_inputs else []
+            list keys
+            list new_fields
+        
+        if source_inputs:
+            keys = list(source_inputs.keys())
+            new_fields = list(source_inputs.values())
+            n = len(keys)
 
-        # Merge fields efficiently
-        n = len(keys)
-        for i in range(n):
-            target_filter.fields[keys[i]] = new_fields[i]
+            for i in range(n):
+                target_filter.fields[keys[i]] = new_fields[i]
+        else:
+            n = 0
         
         # Merge conditions
         target_filter.conditions.extend(source_filter.conditions)
@@ -183,13 +203,19 @@ cdef class DataMixin:
         - **target_list** (*list*): The list to merge into.
         - **source_list** (*list*): The list to merge from.
         """
-        cdef dict existing_type_map
-        
+        cdef:
+            dict existing_type_map = {}
+            Py_ssize_t i, n = len(target_list)
+            object component
+            type component_type
+
+        for i in range(n):
+            existing_type_map[type(target_list[i])] = i
+
         for component in source_list:
-            existing_type_map = {
-                type(v): i for i, v in enumerate(target_list)
-            }
-            if type(component) in existing_type_map:
-                target_list[existing_type_map[type(component)]] = component
+            component_type = type(component)
+            if component_type in existing_type_map:
+                target_list[existing_type_map[component_type]] = component
             else:
-                target_list.append(component) 
+                target_list.append(component)
+                existing_type_map[component_type] = len(target_list) - 1
