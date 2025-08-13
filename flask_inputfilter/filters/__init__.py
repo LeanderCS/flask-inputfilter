@@ -46,6 +46,8 @@ __all__ = [
     "BaseFilter",
     "BlacklistFilter",
     "LazyFilterChain",
+    "PhoneNumberNormalizeFilter",
+    "SanitizeHtmlFilter",
     "StringRemoveEmojisFilter",
     "StringSlugifyFilter",
     "StringTrimFilter",
@@ -73,7 +75,4 @@ __all__ = [
     "TruncateFilter",
     "WhitelistFilter",
     "WhitespaceCollapseFilter",
-    # New filters
-    "PhoneNumberNormalizeFilter",
-    "SanitizeHtmlFilter",
 ]

@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-"""Password strength validator for security requirements."""
-
-from typing import Any, List, Optional
+from typing import Any, ClassVar, List, Optional
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.models import BaseValidator
@@ -12,38 +10,54 @@ class PasswordStrengthValidator(BaseValidator):
     """
     Validates password strength based on configurable security requirements.
 
-    This comprehensive password validator checks against multiple security criteria
-    including length requirements, character type diversity, common password lists,
-    keyboard patterns, sequential characters, and entropy calculations.
+    This comprehensive password validator checks against multiple security
+    criteria including length requirements, character type diversity, common
+    password lists, keyboard patterns, sequential characters, and entropy
+    calculations.
 
     **Parameters:**
 
     - **min_length** (*int*): Minimum password length. Default is 8.
     - **max_length** (*int*): Maximum password length. Default is 128.
-    - **require_uppercase** (*bool*): Whether to require uppercase letters. Default is True.
-    - **require_lowercase** (*bool*): Whether to require lowercase letters. Default is True.
-    - **require_digits** (*bool*): Whether to require digits. Default is True.
-    - **require_special** (*bool*): Whether to require special characters. Default is True.
-    - **min_uppercase** (*int*): Minimum number of uppercase letters. Default is 1.
-    - **min_lowercase** (*int*): Minimum number of lowercase letters. Default is 1.
+    - **require_uppercase** (*bool*): Whether to require uppercase letters.
+      Default is True.
+    - **require_lowercase** (*bool*): Whether to require lowercase letters.
+      Default is True.
+    - **require_digits** (*bool*): Whether to require digits. Default is
+      True.
+    - **require_special** (*bool*): Whether to require special characters.
+      Default is True.
+    - **min_uppercase** (*int*): Minimum number of uppercase letters. Default
+      is 1.
+    - **min_lowercase** (*int*): Minimum number of lowercase letters. Default
+      is 1.
     - **min_digits** (*int*): Minimum number of digits. Default is 1.
-    - **min_special** (*int*): Minimum number of special characters. Default is 1.
+    - **min_special** (*int*): Minimum number of special characters. Default
+      is 1.
     - **special_chars** (*str*): String of allowed special characters.
       Default is '!@#$%^&*()_+-=[]{}|;:,.<>?'.
-    - **check_common** (*bool*): Whether to check against common passwords. Default is True.
-    - **check_patterns** (*bool*): Whether to check for keyboard patterns. Default is True.
-    - **check_dictionary** (*bool*): Whether to check against dictionary words. Default is False.
-    - **check_user_info** (*bool*): Whether to check for user information in password. Default is True.
-    - **user_info_fields** (*Optional[List[str]]*): Fields to check from user data.
-      Default is ['username', 'email', 'name'].
-    - **disallow_repeating** (*int*): Maximum allowed consecutive repeating characters. Default is 3.
-    - **disallow_sequential** (*int*): Maximum allowed consecutive sequential characters. Default is 3.
-    - **require_entropy** (*Optional[float]*): Minimum required entropy in bits. Default is None.
+    - **check_common** (*bool*): Whether to check against common passwords.
+      Default is True.
+    - **check_patterns** (*bool*): Whether to check for keyboard patterns.
+      Default is True.
+    - **check_dictionary** (*bool*): Whether to check against dictionary words.
+      Default is False.
+    - **check_user_info** (*bool*): Whether to check for user information in
+      password. Default is True.
+    - **user_info_fields** (*Optional[List[str]]*): Fields to check from user
+      data. Default is ['username', 'email', 'name'].
+    - **disallow_repeating** (*int*): Maximum allowed consecutive repeating
+      characters. Default is 3.
+    - **disallow_sequential** (*int*): Maximum allowed consecutive sequential
+      characters. Default is 3.
+    - **require_entropy** (*Optional[float]*): Minimum required entropy in
+      bits. Default is None.
 
     **Expected Behavior:**
 
     - Validates password length is within min/max bounds
-    - Checks for required character types (uppercase, lowercase, digits, special)
+    - Checks for required character types (uppercase, lowercase, digits,
+      special)
     - Detects and rejects common passwords from built-in list
     - Identifies keyboard patterns (qwerty, 12345, etc.)
     - Prevents excessive character repetition (aaa, 111)
@@ -86,8 +100,9 @@ class PasswordStrengthValidator(BaseValidator):
 
     **Entropy Calculation:**
 
-    When ``require_entropy`` is set, the validator calculates password entropy using:
-    entropy = length × log₂(charset_size)
+    When ``require_entropy`` is set, the validator calculates password
+    entropy using:
+    entropy = length * log₂(charset_size)
 
     Where charset_size includes:
     - 26 for lowercase letters
@@ -103,7 +118,7 @@ class PasswordStrengthValidator(BaseValidator):
     - Real-world password strength also depends on unpredictability
     """
 
-    COMMON_PASSWORDS = {
+    COMMON_PASSWORDS: ClassVar = {
         "123456",
         "password",
         "123456789",
@@ -181,7 +196,7 @@ class PasswordStrengthValidator(BaseValidator):
         "shadow",
     }
 
-    KEYBOARD_PATTERNS = [
+    KEYBOARD_PATTERNS: ClassVar = [
         "qwerty",
         "qwertz",
         "azerty",
@@ -302,12 +317,14 @@ class PasswordStrengthValidator(BaseValidator):
 
         if self.require_uppercase and uppercase_count < self.min_uppercase:
             raise ValidationError(
-                f"Password must contain at least {self.min_uppercase} uppercase letter(s)"
+                f"Password must contain at least {self.min_uppercase} "
+                f"uppercase letter(s)"
             )
 
         if self.require_lowercase and lowercase_count < self.min_lowercase:
             raise ValidationError(
-                f"Password must contain at least {self.min_lowercase} lowercase letter(s)"
+                f"Password must contain at least {self.min_lowercase} "
+                f"lowercase letter(s)"
             )
 
         if self.require_digits and digit_count < self.min_digits:
@@ -317,29 +334,31 @@ class PasswordStrengthValidator(BaseValidator):
 
         if self.require_special and special_count < self.min_special:
             raise ValidationError(
-                f"Password must contain at least {self.min_special} special character(s)"
+                f"Password must contain at least {self.min_special} special "
+                f"character(s)"
             )
 
-        if self.check_common:
-            if value.lower() in self.COMMON_PASSWORDS:
-                raise ValidationError(
-                    "This password is too common. Please choose a stronger password."
-                )
+        if self.check_common and value.lower() in self.COMMON_PASSWORDS:
+            raise ValidationError(
+                "This password is too common. Please choose a stronger "
+                "password."
+            )
 
         if self.check_patterns:
             lower_pwd = value.lower()
             for pattern in self.KEYBOARD_PATTERNS:
                 if pattern in lower_pwd or pattern[::-1] in lower_pwd:
                     raise ValidationError(
-                        "Password contains keyboard patterns. Please choose a more random password."
+                        "Password contains keyboard patterns. Please choose "
+                        "a more random password."
                     )
 
         if self.disallow_repeating:
             for i in range(len(value) - self.disallow_repeating + 1):
                 if len(set(value[i : i + self.disallow_repeating])) == 1:
                     raise ValidationError(
-                        f"Password contains more than {self.disallow_repeating - 1} "
-                        f"repeating characters"
+                        f"Password contains more than "
+                        f"{self.disallow_repeating - 1} repeating characters"
                     )
 
         if self.disallow_sequential:
@@ -370,8 +389,8 @@ class PasswordStrengthValidator(BaseValidator):
 
             if is_ascending or is_descending:
                 raise ValidationError(
-                    f"Password contains more than {self.disallow_sequential - 1} "
-                    f"sequential characters"
+                    f"Password contains more than "
+                    f"{self.disallow_sequential - 1} sequential characters"
                 )
 
     def _calculate_entropy(self, password: str) -> float:

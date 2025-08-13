@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Mutually exclusive fields condition."""
-
 from typing import Any, Dict, List, Optional
 
 from flask_inputfilter.models import BaseCondition
@@ -103,9 +101,10 @@ class MutuallyExclusiveCondition(BaseCondition):
                 )
 
         if len(present_groups) > 1:
+            groups_list = "; ".join(present_groups)
             return (
                 f"Fields are mutually exclusive. "
-                f"Only one group can be present, but found: {'; '.join(present_groups)}"
+                f"Only one group can be present, but found: {groups_list}"
             )
 
         if len(present_groups) == 0 and self.require_one:

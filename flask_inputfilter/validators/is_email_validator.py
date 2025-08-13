@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-"""Email validator for comprehensive email address validation."""
-
 import re
-from typing import Any
+from typing import Any, ClassVar
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.models import BaseValidator
@@ -27,8 +25,10 @@ class IsEmailValidator(BaseValidator):
       domain typos (e.g., gmial.com -> gmail.com). Default is True.
     - **allow_smtputf8** (*bool*): Whether to allow international characters
       in email addresses. Default is True.
-    - **allow_empty** (*bool*): Whether to allow empty values. Default is False.
-    - **timeout** (*int*): Timeout in seconds for DNS/SMTP checks. Default is 10.
+    - **allow_empty** (*bool*): Whether to allow empty values. Default is
+      False.
+    - **timeout** (*int*): Timeout in seconds for DNS/SMTP checks. Default
+      is 10.
 
     **Expected Behavior:**
 
@@ -54,7 +54,8 @@ class IsEmailValidator(BaseValidator):
 
     **Common Typos Detected:**
 
-    The validator can detect and suggest corrections for common email domain typos:
+    The validator can detect and suggest corrections for common email
+    domain typos:
 
     - gmial.com → gmail.com
     - yahooo.com → yahoo.com
@@ -67,13 +68,13 @@ class IsEmailValidator(BaseValidator):
     these checks will be skipped silently.
     """
 
-    EMAIL_REGEX = re.compile(
+    EMAIL_REGEX: ClassVar = re.compile(
         r"^[a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]+@[a-zA-Z0-9]"
         r"(?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?"
         r"(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
     )
 
-    COMMON_TYPOS = {
+    COMMON_TYPOS: ClassVar = {
         "gmial.com": "gmail.com",
         "gmai.com": "gmail.com",
         "yahooo.com": "yahoo.com",
@@ -145,17 +146,15 @@ class IsEmailValidator(BaseValidator):
                 f"'{domain}' appears to be a typo."
             )
 
-        if self.check_dns:
-            if not self._verify_dns(domain):
-                raise ValidationError(
-                    f"Domain '{domain}' does not have valid MX records"
-                )
+        if self.check_dns and not self._verify_dns(domain):
+            raise ValidationError(
+                f"Domain '{domain}' does not have valid MX records"
+            )
 
-        if self.check_smtp:
-            if not self._verify_smtp(value, domain):
-                raise ValidationError(
-                    f"Email address '{value}' could not be verified via SMTP"
-                )
+        if self.check_smtp and not self._verify_smtp(value, domain):
+            raise ValidationError(
+                f"Email address '{value}' could not be verified via SMTP"
+            )
 
     def _verify_dns(self, domain: str) -> bool:
         """

@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-"""Credit card validator with Luhn algorithm and card type detection."""
-
 import re
-from typing import Any, List, Optional
+from typing import Any, ClassVar, List, Optional
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.models import BaseValidator
@@ -17,7 +15,7 @@ class CreditCardValidator(BaseValidator):
     algorithm and can optionally validate specific card types.
     """
 
-    CARD_TYPES = {
+    CARD_TYPES: ClassVar = {
         "visa": {
             "pattern": r"^4[0-9]{12}(?:[0-9]{3})?$",
             "lengths": [13, 16, 19],
@@ -72,7 +70,8 @@ class CreditCardValidator(BaseValidator):
         Initialize the credit card validator.
 
         Args:
-            accepted_types: List of accepted card types (visa, mastercard, etc.)
+            accepted_types: List of accepted card types (visa, mastercard,
+                etc.)
             require_type: Whether to require the card to match a known type
             allow_test_numbers: Whether to allow known test card numbers
             validate_expiry: Whether to validate expiry date (if provided)
@@ -117,7 +116,8 @@ class CreditCardValidator(BaseValidator):
 
         if len(cleaned) < 13 or len(cleaned) > 19:
             raise ValidationError(
-                f"Credit card number must be between 13 and 19 digits, got {len(cleaned)}"
+                f"Credit card number must be between 13 and 19 digits, "
+                f"got {len(cleaned)}"
             )
 
         if not self.allow_test_numbers and cleaned in self.test_numbers:
@@ -133,15 +133,18 @@ class CreditCardValidator(BaseValidator):
         if self.require_type and card_type is None:
             raise ValidationError("Credit card type could not be determined")
 
-        if self.accepted_types and card_type:
-            if card_type not in self.accepted_types:
-                display_name = self.CARD_TYPES[card_type]["display"]
-                accepted = ", ".join(
-                    self.CARD_TYPES[t]["display"] for t in self.accepted_types
-                )
-                raise ValidationError(
-                    f"{display_name} cards are not accepted. Accepted types: {accepted}"
-                )
+        if (
+            self.accepted_types
+            and card_type
+            and card_type not in self.accepted_types
+        ):
+            display_name = self.CARD_TYPES[card_type]["display"]
+            accepted = ", ".join(
+                self.CARD_TYPES[t]["display"] for t in self.accepted_types
+            )
+            raise ValidationError(
+                f"{display_name} cards are not accepted. Accepted types: {accepted}"
+            )
 
     def _luhn_check(self, number: str) -> bool:
         """
@@ -178,9 +181,11 @@ class CreditCardValidator(BaseValidator):
             Card type string or None if not detected
         """
         for card_type, info in self.CARD_TYPES.items():
-            if re.match(info["pattern"], number):
-                if len(number) in info["lengths"]:
-                    return card_type
+            if (
+                re.match(info["pattern"], number)
+                and len(number) in info["lengths"]
+            ):
+                return card_type
 
         return None
 

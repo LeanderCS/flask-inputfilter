@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """IP address validator for IPv4 and IPv6 addresses."""
+
+from __future__ import annotations
 
 import ipaddress
 from typing import Any, Optional
@@ -81,11 +81,10 @@ class IsIpAddressValidator(BaseValidator):
         except ValueError as e:
             raise ValidationError(f"Invalid IP address: {e!s}")
 
-        if self.version is not None:
-            if ip.version != self.version:
-                raise ValidationError(
-                    f"IP version {ip.version} not allowed, expected IPv{self.version}"
-                )
+        if self.version is not None and ip.version != self.version:
+            raise ValidationError(
+                f"IP version {ip.version} not allowed, expected IPv{self.version}"
+            )
 
         if isinstance(ip, (ipaddress.IPv4Network, ipaddress.IPv6Network)):
             self._validate_network(ip)
@@ -113,12 +112,14 @@ class IsIpAddressValidator(BaseValidator):
         if not self.allow_reserved and ip.is_reserved:
             raise ValidationError(f"Reserved addresses are not allowed: {ip}")
 
-        if isinstance(ip, ipaddress.IPv6Address):
-            if not self.allow_ipv6_mapped:
-                if ip.ipv4_mapped:
-                    raise ValidationError(
-                        f"IPv6-mapped IPv4 addresses are not allowed: {ip}"
-                    )
+        if (
+            isinstance(ip, ipaddress.IPv6Address)
+            and not self.allow_ipv6_mapped
+            and ip.ipv4_mapped
+        ):
+            raise ValidationError(
+                f"IPv6-mapped IPv4 addresses are not allowed: {ip}"
+            )
 
     def _validate_network(self, network: ipaddress.ip_network) -> None:
         """Validate a network address."""
@@ -126,7 +127,7 @@ class IsIpAddressValidator(BaseValidator):
 
         if network.num_addresses == 1:
             self._validate_address(
-                list(network.hosts())[0]
+                next(iter(network.hosts()))
                 if network.hosts()
                 else network.network_address
             )

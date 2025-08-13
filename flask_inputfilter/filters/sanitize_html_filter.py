@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-"""HTML sanitization filter for XSS protection."""
-
 import html
 import re
 from html.parser import HTMLParser
-from typing import Any, Dict, List, Optional
+from typing import Any, ClassVar, Dict, List, Optional
 
 from flask_inputfilter.models import BaseFilter
 
@@ -18,7 +16,7 @@ class SanitizeHtmlFilter(BaseFilter):
     attributes while preserving safe formatting.
     """
 
-    DEFAULT_ALLOWED_TAGS = {
+    DEFAULT_ALLOWED_TAGS: ClassVar = {
         "a",
         "abbr",
         "b",
@@ -62,7 +60,7 @@ class SanitizeHtmlFilter(BaseFilter):
         "figcaption",
     }
 
-    DEFAULT_ALLOWED_ATTRIBUTES = {
+    DEFAULT_ALLOWED_ATTRIBUTES: ClassVar = {
         "a": ["href", "title", "target", "rel"],
         "abbr": ["title"],
         "blockquote": ["cite"],
@@ -78,7 +76,7 @@ class SanitizeHtmlFilter(BaseFilter):
         "th": ["colspan", "rowspan"],
     }
 
-    DANGEROUS_PROTOCOLS = {
+    DANGEROUS_PROTOCOLS: ClassVar = {
         "javascript:",
         "data:",
         "vbscript:",
@@ -87,7 +85,7 @@ class SanitizeHtmlFilter(BaseFilter):
         "chrome:",
     }
 
-    EVENT_HANDLERS = {
+    EVENT_HANDLERS: ClassVar = {
         "onabort",
         "onblur",
         "onchange",
@@ -232,9 +230,7 @@ class SanitizeHtmlFilter(BaseFilter):
         parser.feed(value)
         result = parser.get_result()
 
-        result = self._additional_xss_protection(result)
-
-        return result
+        return self._additional_xss_protection(result)
 
     def _additional_xss_protection(self, html: str) -> str:
         """Apply additional XSS protection measures."""
@@ -251,14 +247,12 @@ class SanitizeHtmlFilter(BaseFilter):
         html = re.sub(
             r"<(\s*)script", "&lt;\\1script", html, flags=re.IGNORECASE
         )
-        html = re.sub(
+        return re.sub(
             r"<(\s*)/(\s*)script",
             "&lt;\\1/\\2script",
             html,
             flags=re.IGNORECASE,
         )
-
-        return html
 
 
 class HTMLSanitizerParser(HTMLParser):

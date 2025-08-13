@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-"""Phone number normalization filter for international formats."""
-
 import re
-from typing import Any
+from typing import Any, ClassVar
 
 from flask_inputfilter.models import BaseFilter
 
@@ -16,7 +14,7 @@ class PhoneNumberNormalizeFilter(BaseFilter):
     can handle international and domestic numbers.
     """
 
-    COUNTRY_CODES = {
+    COUNTRY_CODES: ClassVar = {
         "US": {"code": "1", "length": 10, "format": "NPA-NXX-XXXX"},
         "CA": {"code": "1", "length": 10, "format": "NPA-NXX-XXXX"},
         "GB": {"code": "44", "length": 10, "format": "XXXX-XXXXXX"},
@@ -51,8 +49,9 @@ class PhoneNumberNormalizeFilter(BaseFilter):
         Initialize the phone number normalizer.
 
         Args:
-            default_country: Default country code for numbers without country prefix
-            format: Output format ('E164', 'INTERNATIONAL', 'NATIONAL', 'RFC3966')
+            default_country: Default country code without country prefix
+            format: Output format ('E164', 'INTERNATIONAL', 'NATIONAL',
+                'RFC3966')
             remove_extension: Whether to remove extensions
             allow_alpha: Whether to allow alpha characters (1-800-FLOWERS)
             strict: Whether to enforce strict validation
@@ -127,9 +126,7 @@ class PhoneNumberNormalizeFilter(BaseFilter):
         cleaned = re.sub(r"^0+(?=[1-9])", "", cleaned)
 
         cleaned = re.sub(r"^\+", "", cleaned)
-        cleaned = re.sub(r"^00", "", cleaned)
-
-        return cleaned
+        return re.sub(r"^00", "", cleaned)
 
     def _convert_alpha_to_digits(self, number: str) -> str:
         """Convert alpha characters to digits (for vanity numbers)."""
@@ -191,7 +188,7 @@ class PhoneNumberNormalizeFilter(BaseFilter):
 
     def _extract_country_code(self, number: str) -> tuple:
         """Extract country code from phone number."""
-        for country, info in self.COUNTRY_CODES.items():
+        for _country, info in self.COUNTRY_CODES.items():
             code = info["code"]
             if number.startswith(code):
                 remaining = number[len(code) :]
@@ -214,10 +211,12 @@ class PhoneNumberNormalizeFilter(BaseFilter):
         if country_code:
             if country_code == "1":
                 if len(national) == 10:
-                    return f"+{country_code} {national[:3]}-{national[3:6]}-{national[6:]}"
-            elif country_code == "44":
-                if len(national) == 10:
-                    return f"+{country_code} {national[:4]} {national[4:]}"
+                    return (
+                        f"+{country_code} {national[:3]}-"
+                        f"{national[3:6]}-{national[6:]}"
+                    )
+            elif country_code == "44" and len(national) == 10:
+                return f"+{country_code} {national[:4]} {national[4:]}"
 
             return f"+{country_code} {national}"
 
@@ -228,9 +227,8 @@ class PhoneNumberNormalizeFilter(BaseFilter):
         if country == "US" or country == "CA":
             if len(national) == 10:
                 return f"({national[:3]}) {national[3:6]}-{national[6:]}"
-        elif country == "GB":
-            if len(national) == 10:
-                return f"{national[:4]} {national[4:]}"
+        elif country == "GB" and len(national) == 10:
+            return f"{national[:4]} {national[4:]}"
 
         return national
 
@@ -238,7 +236,10 @@ class PhoneNumberNormalizeFilter(BaseFilter):
         """Format as RFC3966 (tel:+1-234-567-8900)."""
         if country_code:
             if country_code == "1" and len(national) == 10:
-                return f"tel:+{country_code}-{national[:3]}-{national[3:6]}-{national[6:]}"
+                return (
+                    f"tel:+{country_code}-{national[:3]}-"
+                    f"{national[3:6]}-{national[6:]}"
+                )
             return f"tel:+{country_code}-{national}"
 
         return f"tel:{national}"

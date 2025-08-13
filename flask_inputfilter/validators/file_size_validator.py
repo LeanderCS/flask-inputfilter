@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-"""File size validator for upload size limits."""
-
-import os
-from typing import Any, Optional, Union
+from pathlib import Path
+from typing import Any, ClassVar, Optional, Union
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.models import BaseValidator
@@ -17,7 +15,7 @@ class FileSizeValidator(BaseValidator):
     for file upload validation.
     """
 
-    SIZE_UNITS = {
+    SIZE_UNITS: ClassVar = {
         "B": 1,
         "KB": 1024,
         "MB": 1024 * 1024,
@@ -74,26 +72,23 @@ class FileSizeValidator(BaseValidator):
         if size == 0 and not self.allow_empty:
             raise ValidationError("Empty files are not allowed")
 
-        if self.exact_size is not None:
-            if size != self.exact_size:
-                raise ValidationError(
-                    f"File size must be exactly {self._format_size(self.exact_size)}, "
-                    f"got {self._format_size(size)}"
-                )
+        if self.exact_size is not None and size != self.exact_size:
+            raise ValidationError(
+                f"File size must be exactly {self._format_size(self.exact_size)}, "
+                f"got {self._format_size(size)}"
+            )
 
-        if self.min_size is not None:
-            if size < self.min_size:
-                raise ValidationError(
-                    f"File size must be at least {self._format_size(self.min_size)}, "
-                    f"got {self._format_size(size)}"
-                )
+        if self.min_size is not None and size < self.min_size:
+            raise ValidationError(
+                f"File size must be at least {self._format_size(self.min_size)}, "
+                f"got {self._format_size(size)}"
+            )
 
-        if self.max_size is not None:
-            if size > self.max_size:
-                raise ValidationError(
-                    f"File size must not exceed {self._format_size(self.max_size)}, "
-                    f"got {self._format_size(size)}"
-                )
+        if self.max_size is not None and size > self.max_size:
+            raise ValidationError(
+                f"File size must not exceed {self._format_size(self.max_size)}, "
+                f"got {self._format_size(size)}"
+            )
 
     def _get_file_size(self, value: Any) -> int:
         """
@@ -115,11 +110,11 @@ class FileSizeValidator(BaseValidator):
             return value
 
         if isinstance(value, str):
-            if os.path.isfile(value):
-                return os.path.getsize(value)
+            if Path(value).is_file():
+                return Path(value).stat().st_size
             try:
                 return self._parse_size(value)
-            except:
+            except (ValueError, TypeError):
                 raise ValidationError(f"File not found: {value}")
 
         if isinstance(value, dict):
@@ -134,9 +129,11 @@ class FileSizeValidator(BaseValidator):
         if hasattr(value, "size"):
             return int(value.size)
 
-        if hasattr(value, "content_length"):
-            if value.content_length is not None:
-                return int(value.content_length)
+        if (
+            hasattr(value, "content_length")
+            and value.content_length is not None
+        ):
+            return int(value.content_length)
 
         if hasattr(value, "read") and hasattr(value, "seek"):
             try:
@@ -145,7 +142,7 @@ class FileSizeValidator(BaseValidator):
                 size = value.tell()
                 value.seek(current)
                 return size
-            except:
+            except OSError:
                 pass
 
         if isinstance(value, (bytes, bytearray)):

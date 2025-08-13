@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-"""IBAN (International Bank Account Number) validator."""
-
 import re
-from typing import Any, List, Optional
+from typing import Any, ClassVar, List, Optional
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.models import BaseValidator
@@ -17,7 +15,7 @@ class IbanValidator(BaseValidator):
     to the IBAN standard (ISO 13616).
     """
 
-    IBAN_LENGTHS = {
+    IBAN_LENGTHS: ClassVar = {
         "AD": 24,
         "AE": 23,
         "AL": 28,
@@ -103,9 +101,11 @@ class IbanValidator(BaseValidator):
         Initialize the IBAN validator.
 
         Args:
-            allowed_countries: List of allowed country codes (e.g., ['DE', 'FR'])
+            allowed_countries: List of allowed country codes
+              (e.g., ['DE', 'FR'])
             format_output: Whether to format the IBAN in groups of 4
-            check_bank_code: Whether to validate bank code (requires additional data)
+            check_bank_code: Whether to validate bank code
+              (requires additional data)
             allow_spaces: Whether to allow spaces in input
         """
         self.allowed_countries = (
@@ -139,19 +139,22 @@ class IbanValidator(BaseValidator):
 
         if not re.match(r"^[A-Z]{2}[0-9]{2}[A-Z0-9]+$", iban):
             raise ValidationError(
-                "Invalid IBAN format. Must start with 2 letters (country code) "
-                "followed by 2 digits (check digits) and alphanumeric characters"
+                "Invalid IBAN format. Must start with 2 letters "
+                "(country code) followed by 2 digits (check digits) "
+                "and alphanumeric characters"
             )
 
         country_code = iban[:2]
 
-        if self.allowed_countries:
-            if country_code not in self.allowed_countries:
-                allowed = ", ".join(self.allowed_countries)
-                raise ValidationError(
-                    f"Country code {country_code} not allowed. "
-                    f"Allowed countries: {allowed}"
-                )
+        if (
+            self.allowed_countries
+            and country_code not in self.allowed_countries
+        ):
+            allowed = ", ".join(self.allowed_countries)
+            raise ValidationError(
+                f"Country code {country_code} not allowed. "
+                f"Allowed countries: {allowed}"
+            )
 
         if country_code in self.IBAN_LENGTHS:
             expected_length = self.IBAN_LENGTHS[country_code]
@@ -166,7 +169,7 @@ class IbanValidator(BaseValidator):
                     "Invalid IBAN length. Must be between 15 and 34 characters"
                 )
 
-        if not self._validate_check_digits(iban):
+        if not IbanValidator._validate_check_digits(iban):
             raise ValidationError("Invalid IBAN check digits")
 
         self._validate_country_specific(country_code, iban)
@@ -184,11 +187,10 @@ class IbanValidator(BaseValidator):
         if self.allow_spaces:
             iban = re.sub(r"[\s\-]", "", iban)
 
-        iban = iban.upper()
+        return iban.upper()
 
-        return iban
-
-    def _validate_check_digits(self, iban: str) -> bool:
+    @staticmethod
+    def _validate_check_digits(iban: str) -> bool:
         """
         Validate IBAN check digits using mod-97 algorithm.
 

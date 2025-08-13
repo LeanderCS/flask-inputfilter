@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""At least one field required condition."""
-
 from typing import Any, Dict, List, Optional
 
 from flask_inputfilter.models import BaseCondition
@@ -57,13 +55,19 @@ class AtLeastOneRequiredCondition(BaseCondition):
 
         for field in self.fields:
             if field in data and data[field] is not None:
-                if self.check_empty and isinstance(data[field], str):
-                    if data[field].strip() == "":
-                        continue
+                if (
+                    self.check_empty
+                    and isinstance(data[field], str)
+                    and data[field].strip() == ""
+                ):
+                    continue
 
-                if self.check_empty and isinstance(data[field], (list, dict)):
-                    if len(data[field]) == 0:
-                        continue
+                if (
+                    self.check_empty
+                    and isinstance(data[field], (list, dict))
+                    and len(data[field]) == 0
+                ):
+                    continue
 
                 present_count += 1
 
@@ -104,11 +108,13 @@ class AtLeastOneRequiredCondition(BaseCondition):
                 missing_fields.append(field)
 
         if self.min_required == 1:
+            fields_list = ", ".join(self.fields)
             return (
-                f"At least one of the following fields is required: {', '.join(self.fields)}. "
+                f"At least one of the following fields is required: {fields_list}. "
                 f"None were provided or all were empty."
             )
+        fields_list = ", ".join(self.fields)
         return (
-            f"At least {self.min_required} of the following fields are required: "
-            f"{', '.join(self.fields)}. Only {len(present_fields)} provided."
+            f"At least {self.min_required} of the following fields "
+            f"are required: {fields_list}. Only {len(present_fields)} provided."
         )
