@@ -42,7 +42,7 @@ class IsVerticalImageValidator(BaseValidator):
 
     __slots__ = ("error_message",)
 
-    def __init__(self, error_message: Optional[str] = None):
+    def __init__(self, error_message: Optional[str] = None) -> None:
         self.error_message = (
             error_message or "The image is not vertically oriented."
         )

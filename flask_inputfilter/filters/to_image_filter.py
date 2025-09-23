@@ -51,7 +51,7 @@ class ToImageFilter(BaseFilter):
             # Try to decode as base64
             try:
                 return Image.open(io.BytesIO(base64.b64decode(value)))
-            except Exception:
+            except (ValueError, OSError, base64.binascii.Error):
                 pass
 
         # Try to open as raw bytes

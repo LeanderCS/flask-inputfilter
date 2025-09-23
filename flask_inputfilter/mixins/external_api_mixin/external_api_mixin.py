@@ -83,7 +83,7 @@ class ExternalApiMixin:
         request_data["method"] = config.method
 
         try:
-            response = requests.request(**request_data)
+            response = requests.request(timeout=30, **request_data)
             result = response.json()
         except requests.exceptions.RequestException:
             if fallback is None:

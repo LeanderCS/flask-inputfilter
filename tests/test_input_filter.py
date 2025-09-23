@@ -859,7 +859,7 @@ class TestInputFilter(unittest.TestCase):
         self.assertTrue(validated_data["is_valid"])
         expected_url = "https://api.example.com/validate_user/test_user"
         mock_request.assert_called_with(
-            headers={}, method="GET", url=expected_url, params={}
+            headers={}, method="GET", url=expected_url, params={}, timeout=30
         )
 
         # API returns invalid result
@@ -904,6 +904,7 @@ class TestInputFilter(unittest.TestCase):
             method="GET",
             url=expected_url,
             params={"hash": "1234", "id": 123},
+            timeout=30,
         )
 
         mock_response.status_code = 500
