@@ -79,7 +79,7 @@ cdef class ExternalApiMixin:
         requestData["method"] = config.method
 
         try:
-            response = requests.request(**requestData)
+            response = requests.request(timeout=30, **requestData)
             result = response.json()
         except requests.exceptions.RequestException:
             if fallback is None:

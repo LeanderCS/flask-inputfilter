@@ -70,7 +70,7 @@ class ToBase64ImageFilter(BaseFilter):
             try:
                 Image.open(io.BytesIO(base64.b64decode(value))).verify()
                 return value
-            except Exception:
+            except (ValueError, OSError, base64.binascii.Error):
                 pass
 
         # Try to open as raw bytes

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "flask_inputfilter"
-version = "0.6.2"
+version = "0.6.3"
 description = "A library to easily filter and validate input data in Flask applications"
 readme = "README.md"
 keywords = [
@@ -125,6 +125,16 @@ select = [
     "TCH",    # flake8-type-checking
     "PTH",    # flake8-use-pathlib
     "RUF",    # Ruff-specific rules
+    "S",      # flake8-bandit (Security)
+    "BLE",    # flake8-blind-except
+    "ANN",    # flake8-annotations
+    "ARG",    # flake8-unused-arguments
+    "ERA",    # eradicate
+    "PERF",   # Perflint
+    "FURB",   # refurb
+    "TRY",    # tryceratops
+    "SLF",    # flake8-self
+    "A",      # flake8-builtins
 ]
 fixable = ["ALL"]
 unfixable = []
@@ -136,9 +146,33 @@ ignore = [
     "UP006",  # Use `list` instead of `List` (Python 3.9+)
     "UP007",  # Use `X | Y` for unions (Python 3.10+)
     "UP035",  # Import from collections.abc (Python 3.9+)
+    "ANN101", # Missing type annotation for self
+    "ANN102", # Missing type annotation for cls
+    "ANN401", # Dynamically typed expressions (Any) - OK for flexible library
+    "TRY003", # Long exception messages (ok for Libraries)
+    "TRY300", # Consider moving to else block - not always applicable
+    "TRY301", # Abstract raise to inner function - not needed for simple cases
+    "PERF203", # try-except in loop - acceptable for validation patterns
+    "A001", # Variable shadowing builtin - OK in specific contexts (e.g. copyright)
+    "A002", # Variable shadowing builtin
 ]
 pyupgrade = [
     true
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+    "S101",    # Assert usage ist OK in Tests
+    "ANN",     # Type annotations optional in Tests
+    "ARG",     # Unused arguments OK in Test fixtures
+]
+"examples/*" = [
+    "ANN201",  # Missing return type annotation in examples
+    "ANN204",  # Missing return type annotation for __init__ in examples
+    "S201",    # debug=True is OK in examples
+]
+"docs/*" = [
+    "A001",    # Variable shadowing builtin (copyright) is OK in docs
 ]
 
 [tool.ruff.lint.isort]

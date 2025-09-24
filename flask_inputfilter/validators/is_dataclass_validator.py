@@ -113,7 +113,7 @@ class IsDataclassValidator(BaseValidator):
                 )
             )
 
-    def _format_error(self, error_type: str, **kwargs) -> str:
+    def _format_error(self, error_type: str, **kwargs: Any) -> str:
         """Format error message using template or custom message."""
         if self.error_message:
             return self.error_message

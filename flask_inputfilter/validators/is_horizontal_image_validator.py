@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import binascii
 import io
+from typing import Any, Optional
 
 from PIL import Image
 from PIL.Image import Image as ImageType
@@ -41,10 +42,10 @@ class IsHorizontalImageValidator(BaseValidator):
 
     __slots__ = ("error_message",)
 
-    def __init__(self, error_message=None):
+    def __init__(self, error_message: Optional[str] = None) -> None:
         self.error_message = error_message
 
-    def validate(self, value):
+    def validate(self, value: Any) -> None:
         if not isinstance(value, (str, ImageType)):
             raise ValidationError(
                 "The value is not an image or its base 64 representation."

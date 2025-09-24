@@ -3,6 +3,18 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.6.3] - 2025-09-24
+--------------------
+
+Added
+^^^^^
+- Added default timeout of 30s for external api requests.
+
+Changed
+^^^^^^^
+- Switched to more strict exception types for image filter.
+
+
 [0.6.2] - 2025-07-03
 --------------------
 

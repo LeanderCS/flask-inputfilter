@@ -104,7 +104,7 @@ class InputFilter:
             """
 
             def wrapper(
-                *args, **kwargs
+                *args: Any, **kwargs: Any
             ) -> Union[Response, tuple[Any, dict[str, Any]]]:
                 """
                 Wrapper function to handle input validation and error handling
