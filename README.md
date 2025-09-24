@@ -32,7 +32,7 @@ It is designed to be straightforward to use and flexible, allowing you to create
 To use the `InputFilter` class, create a new class that inherits from it and define the
 fields you want to validate and filter.
 
-There are many filters and validators available, but you can also create your [own](https://leandercs.github.io/flask-inputfilter/guides/create_own.html).
+There are many filters and validators available, but you can also create your [own](https://leandercs.github.io/flask-inputfilter/guides/create_own_components.html).
 
 
 ## Installation
