@@ -1,4 +1,8 @@
 # cython: language=c++
+# cython: boundscheck=False
+# cython: wraparound=False
+# cython: cdivision=True
+# cython: nonecheck=False
 
 from typing import Any
 
@@ -23,4 +27,4 @@ cdef class BaseCondition:
         Raises:
             NotImplementedError: If the method is not implemented by subclasses.
         """
-        raise NotImplementedError("Subclasses must implement the check method") 
+        raise NotImplementedError("Subclasses must implement the check method") from None

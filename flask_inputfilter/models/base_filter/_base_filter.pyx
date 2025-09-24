@@ -1,4 +1,9 @@
 # cython: language=c++
+# cython: boundscheck=False
+# cython: wraparound=False
+# cython: cdivision=True
+# cython: nonecheck=False
+
 
 cdef class BaseFilter:
     """
@@ -20,4 +25,4 @@ cdef class BaseFilter:
         Raises:
             NotImplementedError: If the method is not implemented by subclasses.
         """
-        raise NotImplementedError("Subclasses must implement the apply method")
+        raise NotImplementedError("Subclasses must implement the apply method") from None

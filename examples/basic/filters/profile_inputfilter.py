@@ -23,24 +23,13 @@ class Address:
 
 
 class ProfileInputFilter(InputFilter):
-
     user: User = field(
-        required=True,
-        validators=[
-            IsDataclassValidator(dataclass_type=User)
-        ]
+        required=True, validators=[IsDataclassValidator(dataclass_type=User)]
     )
 
     address: Address = field(
         required=True,
-        validators=[
-            IsDataclassValidator(dataclass_type=Address)
-        ]
+        validators=[IsDataclassValidator(dataclass_type=Address)],
     )
 
-    phone: str = field(
-        required=False,
-        validators=[
-            IsStringValidator()
-        ]
-    )
+    phone: str = field(required=False, validators=[IsStringValidator()])

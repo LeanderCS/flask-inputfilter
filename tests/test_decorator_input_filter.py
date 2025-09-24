@@ -4,7 +4,7 @@ from unittest.mock import Mock, patch
 
 from flask import Flask, g, jsonify
 from flask_inputfilter import InputFilter
-from flask_inputfilter.decorators import field
+from flask_inputfilter.declarative import field
 from flask_inputfilter.conditions import ExactlyOneOfCondition
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.filters import (
@@ -439,11 +439,24 @@ class TestDecoratorInputFilter(unittest.TestCase):
         validated_data = filter_instance.validate_data({})
         self.assertEqual(len(validated_data), 100)
 
+    def test_field_conflict_decorator_and_add(self):
+        """Test conflict when same field is defined with decorator and
+        add()."""
+
+        class ConflictInputFilter(InputFilter):
+            id: int = field(required=True, filters=[ToIntegerFilter()])
+
+        filter_instance = ConflictInputFilter()
+
+        with self.assertRaises(ValueError) as context:
+            filter_instance.add('id', required=False, validators=[IsStringValidator()])
+
+        self.assertEqual(str(context.exception), "Field 'id' already exists.")
+
     def test_complex_nested_validation(self):
         """Test complex validation scenarios with mixed APIs."""
 
         class ComplexInputFilter(InputFilter):
-            # Decorator fields
             username: str = field(
                 required=True,
                 filters=[StringTrimFilter(), ToLowerFilter()],

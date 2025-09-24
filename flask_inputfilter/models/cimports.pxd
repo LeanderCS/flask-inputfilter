@@ -6,8 +6,6 @@ from .field_model._field_model cimport FieldModel
 
 from .._input_filter cimport InputFilter
 
-from cpython.object cimport PyObject
-
 ctypedef object Any
 ctypedef object Optional
 ctypedef object Union

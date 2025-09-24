@@ -2,7 +2,7 @@ import unittest
 
 from flask import Flask, g, jsonify
 from flask_inputfilter import InputFilter
-from flask_inputfilter.decorators import field
+from flask_inputfilter.declarative import field
 from flask_inputfilter.conditions import ExactlyOneOfCondition
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.filters import StringTrimFilter, ToLowerFilter, ToUpperFilter

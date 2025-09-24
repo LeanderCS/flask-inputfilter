@@ -43,8 +43,8 @@ cdef class InputFilter:
         bint required=*,
         object default=*,
         object fallback=*,
-        list filters=*,
-        list validators=*,
+        list[BaseFilter] filters=*,
+        list[BaseValidator] validators=*,
         list steps=*,
         ExternalApiConfig external_api=*,
         str copy=*,
@@ -74,3 +74,5 @@ cdef class InputFilter:
     cpdef object serialize(self)
     cpdef void add_global_validator(self, BaseValidator validator)
     cpdef list[BaseValidator] get_global_validators(self)
+    cdef void _set_methods(self, list methods)
+    cdef void _register_decorator_components(self)

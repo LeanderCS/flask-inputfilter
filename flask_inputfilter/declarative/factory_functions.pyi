@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional, Union
 
-from .field_descriptor import FieldDescriptor
-
 if TYPE_CHECKING:
     from flask_inputfilter.models import (
         BaseFilter,
@@ -11,6 +9,7 @@ if TYPE_CHECKING:
         ExternalApiConfig,
     )
 
+from .field_descriptor import FieldDescriptor
 
 def field(
     required: bool = False,
@@ -63,13 +62,3 @@ def field(
             name: str = field(required=True, validators=[IsStringValidator()])
             age: int = field(required=True, default=18)
     """
-    return FieldDescriptor(
-        required=required,
-        default=default,
-        fallback=fallback,
-        filters=filters,
-        validators=validators,
-        steps=steps,
-        external_api=external_api,
-        copy=copy,
-    )

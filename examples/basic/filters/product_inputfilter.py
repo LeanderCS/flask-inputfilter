@@ -22,28 +22,18 @@ class Tags(Enum):
 
 
 class ProductInputFilter(InputFilter):
-
-    name: str = field(
-        required=True,
-        validators=[
-            IsStringValidator()
-        ]
-    )
+    name: str = field(required=True, validators=[IsStringValidator()])
 
     price: float = field(
         required=True,
-        filters=[
-            ToFloatFilter()
-        ],
-        validators=[
-            IsFloatValidator()
-        ]
+        filters=[ToFloatFilter()],
+        validators=[IsFloatValidator()],
     )
 
     tags: list = field(
         required=False,
         validators=[
             IsArrayValidator(),
-            ArrayElementValidator(InEnumValidator(Tags))
-        ]
+            ArrayElementValidator(InEnumValidator(Tags)),
+        ],
     )

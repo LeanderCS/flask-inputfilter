@@ -1,16 +1,10 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING, Any, Optional, Union
-
-if TYPE_CHECKING:
-    from flask_inputfilter.models import (
-        BaseFilter,
-        BaseValidator,
-        ExternalApiConfig,
-    )
+# cython: language_level=3
+# cython: boundscheck=False
+# cython: wraparound=False
+# cython: cdivision=True
 
 
-class FieldDescriptor:
+cdef class FieldDescriptor:
     """
     Descriptor class for declarative field definition using the field()
     decorator.
@@ -24,32 +18,27 @@ class FieldDescriptor:
     - **default** (*Any*): Default value if field is missing.
     - **fallback** (*Any*): Fallback value if validation fails.
     - **filters** (*Optional[list[BaseFilter]]*): List of filters to apply.
-    - **validators** (*Optional[list[BaseValidator]]*): List of validators
-      to apply.
-    - **steps** (*Optional[list[Union[BaseFilter, BaseValidator]]]*): List of
-      combined filters and validators.
-    - **external_api** (*Optional[ExternalApiConfig]*): External API
-      configuration.
-    - **copy** (*Optional[str]*): Field to copy value from if this field
-      is missing.
+    - **validators** (*Optional[list[BaseValidator]]*): List of validators to apply.
+    - **steps** (*Optional[list[Union[BaseFilter, BaseValidator]]]*): List of combined filters and validators.
+    - **external_api** (*Optional[ExternalApiConfig]*): External API configuration.
+    - **copy** (*Optional[str]*): Field to copy value from if this field is missing.
 
     **Expected Behavior:**
 
-    Automatically registers field configuration during class creation and
-    provides
+    Automatically registers field configuration during class creation and provides
     attribute access to validated field values.
     """
 
-    def __init__(
+    def __cinit__(
         self,
-        required: bool = False,
-        default: Any = None,
-        fallback: Any = None,
-        filters: Optional[list[BaseFilter]] = None,
-        validators: Optional[list[BaseValidator]] = None,
-        steps: Optional[list[Union[BaseFilter, BaseValidator]]] = None,
-        external_api: Optional[ExternalApiConfig] = None,
-        copy: Optional[str] = None,
+        bint required = False,
+        object default = None,
+        object fallback = None,
+        list filters = None,
+        list validators = None,
+        list steps = None,
+        object external_api = None,
+        str copy = None,
     ) -> None:
         """
         Initialize a field descriptor.
@@ -64,26 +53,34 @@ class FieldDescriptor:
           the field value.
         - **validators** (*Optional[list[BaseValidator]]*): The validators to
           apply to the field value.
-        - **steps** (*Optional[list[Union[BaseFilter, BaseValidator]]]*):
-          Allows
+        - **steps** (*Optional[list[Union[BaseFilter, BaseValidator]]]*): Allows
           to apply multiple filters and validators in a specific order.
-        - **external_api** (*Optional[ExternalApiConfig]*): Configuration
-          for an
+        - **external_api** (*Optional[ExternalApiConfig]*): Configuration for an
           external API call.
         - **copy** (*Optional[str]*): The name of the field to copy the value
           from.
         """
         self.required = required
-        self.default = default
+        self._default = default
         self.fallback = fallback
-        self.filters = filters or []
-        self.validators = validators or []
-        self.steps = steps or []
+        self.filters = filters if filters is not None else []
+        self.validators = validators if validators is not None else []
+        self.steps = steps if steps is not None else []
         self.external_api = external_api
         self.copy = copy
-        self.name: Optional[str] = None
+        self.name = None
 
-    def __set_name__(self, owner: type, name: str) -> None:
+    @property
+    def default(self):
+        """Get the default value."""
+        return self._default
+
+    @default.setter
+    def default(self, value):
+        """Set the default value."""
+        self._default = value
+
+    cpdef void __set_name__(self, object owner, str name):
         """
         Called when the descriptor is assigned to a class attribute.
 
@@ -94,7 +91,7 @@ class FieldDescriptor:
         """
         self.name = name
 
-    def __get__(self, obj: Any, objtype: Optional[type] = None) -> Any:
+    def __get__(self, object obj, object objtype) -> object:
         """
         Get the field value from the validated data.
 
@@ -107,15 +104,22 @@ class FieldDescriptor:
 
         The validated field value or None if not validated yet.
         """
+        cdef dict validated_data
+        cdef object field_value
+
         if obj is None:
             return self
 
-        if hasattr(obj, "validated_data") and self.name:
-            return obj.validated_data.get(self.name)
+        if self.name is not None:
+            validated_data = getattr(obj, "validated_data", None)
+            if validated_data is not None:
+                field_value = validated_data.get(self.name)
+                if field_value is not None:
+                    return field_value
 
         return None
 
-    def __set__(self, obj: Any, value: Any) -> None:
+    def __set__(self, object obj, object value) -> None:
         """
         Set the field value in the raw data.
 
@@ -124,8 +128,12 @@ class FieldDescriptor:
         - **obj** (*Any*): The InputFilter instance.
         - **value** (*Any*): The value to set.
         """
-        if self.name and hasattr(obj, "data"):
-            obj.data[self.name] = value
+        cdef dict data
+
+        if self.name is not None:
+            data = getattr(obj, "data", None)
+            if data is not None:
+                data[self.name] = value
 
     def __repr__(self) -> str:
         """String representation of the field descriptor."""

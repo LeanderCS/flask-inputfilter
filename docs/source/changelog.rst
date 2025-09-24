@@ -3,6 +3,49 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+
+[0.7.0] - 2025-09-25
+--------------------
+
+Added
+^^^^^
+- Added that fields, conditons, global filters and global validators can be
+  added as decorator and do not require a self.add, self.add_condition,
+  self.add_global_filter or self.add_global_validator call in the __init__.
+
+  **Before**:
+    .. code-block:: python
+
+        class UpdateZipcodeInputFilter(InputFilter):
+            def __init__(self):
+                super().__init__()
+                self.add(
+                    'id',
+                    required=True,
+                    filters=[ToIntegerFilter(), ToNullFilter()],
+                    validators=[
+                        IsIntegerValidator()
+                    ]
+                )
+
+  **After**:
+    .. code-block:: python
+
+        class UpdateZipcodeInputFilter(InputFilter):
+            id: int = field(
+                required=True,
+                filters=[ToIntegerFilter(), ToNullFilter()],
+                validators=[
+                    IsIntegerValidator()
+                ]
+            )
+
+  The Change is fully backward compatible, but the new way is more readable
+  and maintainable.
+
+  You can also mix both ways inside a single InputFilter.
+
+
 [0.6.3] - 2025-09-24
 --------------------
 

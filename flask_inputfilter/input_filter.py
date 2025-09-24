@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 from flask import Response, g, request
 
+from flask_inputfilter.declarative import FieldDescriptor
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.mixins import DataMixin
 from flask_inputfilter.models import BaseFilter, ExternalApiConfig, FieldModel
@@ -212,8 +213,6 @@ class InputFilter:
 
     def _register_decorator_components(self) -> None:
         """Register decorator-based components from the current class only."""
-        from flask_inputfilter.declarative import FieldDescriptor
-
         cls = self.__class__
 
         for attr_name in dir(cls):
@@ -235,24 +234,15 @@ class InputFilter:
 
         if hasattr(cls, "_conditions"):
             conditions = cls._conditions
-            if isinstance(conditions, list):
-                self.conditions.extend(conditions)
-            else:
-                self.conditions.append(conditions)
+            self.conditions.extend(conditions)
 
         if hasattr(cls, "_global_validators"):
             validators = cls._global_validators
-            if isinstance(validators, list):
-                self.global_validators.extend(validators)
-            else:
-                self.global_validators.append(validators)
+            self.global_validators.extend(validators)
 
         if hasattr(cls, "_global_filters"):
             filters = cls._global_filters
-            if isinstance(filters, list):
-                self.global_filters.extend(filters)
-            else:
-                self.global_filters.append(filters)
+            self.global_filters.extend(filters)
 
         if hasattr(cls, "_model"):
             self.model_class = cls._model
