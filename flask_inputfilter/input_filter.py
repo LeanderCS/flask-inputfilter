@@ -57,6 +57,8 @@ class InputFilter:
         self.errors: dict[str, str] = {}
         self.model_class: Optional[Type[T]] = None
 
+        self._register_decorator_components()
+
     def is_valid(self) -> bool:
         """
         Checks if the object's state or its attributes meet certain conditions
@@ -207,6 +209,53 @@ class InputFilter:
             condition (BaseCondition): The condition to add.
         """
         self.conditions.append(condition)
+
+    def _register_decorator_components(self) -> None:
+        """Register decorator-based components from the current class only."""
+        from flask_inputfilter.declarative import FieldDescriptor
+
+        cls = self.__class__
+
+        for attr_name in dir(cls):
+            if attr_name.startswith("_"):
+                continue
+            if hasattr(cls, attr_name):
+                attr_value = getattr(cls, attr_name)
+                if isinstance(attr_value, FieldDescriptor):
+                    self.fields[attr_name] = FieldModel(
+                        attr_value.required,
+                        attr_value.default,
+                        attr_value.fallback,
+                        attr_value.filters,
+                        attr_value.validators,
+                        attr_value.steps,
+                        attr_value.external_api,
+                        attr_value.copy,
+                    )
+
+        if hasattr(cls, "_conditions"):
+            conditions = cls._conditions
+            if isinstance(conditions, list):
+                self.conditions.extend(conditions)
+            else:
+                self.conditions.append(conditions)
+
+        if hasattr(cls, "_global_validators"):
+            validators = cls._global_validators
+            if isinstance(validators, list):
+                self.global_validators.extend(validators)
+            else:
+                self.global_validators.append(validators)
+
+        if hasattr(cls, "_global_filters"):
+            filters = cls._global_filters
+            if isinstance(filters, list):
+                self.global_filters.extend(filters)
+            else:
+                self.global_filters.append(filters)
+
+        if hasattr(cls, "_model"):
+            self.model_class = cls._model
 
     def get_conditions(self) -> list[BaseCondition]:
         """

@@ -68,46 +68,42 @@ A more detailed guide can be found [in the docs](https://leandercs.github.io/fla
 
 ```python
 from flask_inputfilter import InputFilter
+from flask_inputfilter.declarative import field, _conditions
 from flask_inputfilter.conditions import ExactlyOneOfCondition
 from flask_inputfilter.enums import RegexEnum
 from flask_inputfilter.filters import StringTrimFilter, ToIntegerFilter, ToNullFilter
 from flask_inputfilter.validators import IsIntegerValidator, IsStringValidator, RegexValidator
 
 class UpdateZipcodeInputFilter(InputFilter):
-    def __init__(self):
-        super().__init__()
+    
+    id: int = field(
+        required=True,
+        filters=[ToIntegerFilter(), ToNullFilter()],
+        validators=[
+            IsIntegerValidator()
+        ]
+    )
 
-        self.add(
-            'id',
-            required=True,
-            filters=[ToIntegerFilter(), ToNullFilter()],
-            validators=[
-                IsIntegerValidator()
-            ]
-        )
+    zipcode: str = field(
+        filters=[StringTrimFilter()],
+        validators=[
+            RegexValidator(
+                RegexEnum.POSTAL_CODE.value,
+                'The zipcode is not in the correct format.'
+            )
+        ]
+    )
+    
+    city: str = field(
+        filters=[StringTrimFilter()],
+        validators=[
+            IsStringValidator()
+        ]
+    )
 
-        self.add(
-            'zipcode',
-            filters=[StringTrimFilter()],
-            validators=[
-                RegexValidator(
-                    RegexEnum.POSTAL_CODE.value,
-                    'The zipcode is not in the correct format.'
-                )
-            ]
-        )
-
-        self.add(
-            'city',
-            filters=[StringTrimFilter()],
-            validators=[
-                IsStringValidator()
-            ]
-        )
-
-        self.add_condition(
-            ExactlyOneOfCondition(['zipcode', 'city'])
-        )
+    _conditions(
+        ExactlyOneOfCondition(['zipcode', 'city'])
+    )
 ```
 
 
