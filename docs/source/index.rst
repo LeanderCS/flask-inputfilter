@@ -4,6 +4,17 @@ flask-inputfilter documentation
 Overview
 --------
 
+Flask-InputFilter is a comprehensive input validation and filtering library for Flask applications. It provides a declarative way to define validation rules, data transformation filters, and business logic conditions for your API endpoints.
+
+Key Features:
+- **Declarative syntax**: Define validation rules using Python type hints and decorators
+- **Comprehensive filtering**: Transform input data with built-in or custom filters
+- **Rich validation**: Validate data with extensive built-in validators or create your own
+- **Business conditions**: Enforce complex inter-field relationships and business rules
+- **External API integration**: Fetch and validate data from external services
+- **Model deserialization**: Convert validated data into custom model objects
+- **Frontend integration**: Share validation logic between backend and frontend
+
 ..  toctree::
     :maxdepth: 1
 
@@ -12,6 +23,25 @@ Overview
     changelog
     contributing
     development
+
+Getting Started
+---------------
+
+Core Concepts
+~~~~~~~~~~~~~
+
+Before diving into code examples, let's understand the three main components:
+
+**Filters**: Transform input data to a desired format (e.g., trim strings, convert to integers)
+**Validators**: Ensure data meets specific criteria (e.g., is a valid email, within a range)
+**Conditions**: Enforce relationships between multiple fields (e.g., exactly one field must be present)
+
+Basic Workflow
+~~~~~~~~~~~~~~
+
+1. **Define**: Create an InputFilter class with field definitions
+2. **Apply**: Use as a decorator or call validation methods directly
+3. **Access**: Retrieve validated and filtered data from `g.validated_data`
 
 Available functions:
 --------------------
@@ -50,18 +80,27 @@ fields you want to validate and filter.
 
 There are numerous filters and validators available, but you can also create your :doc:`own <guides/create_own_components>`.
 
-Definition
-^^^^^^^^^^
+Step 1: Define Your InputFilter
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
+    from flask_inputfilter import InputFilter
+    from flask_inputfilter.declarative import field
+    from flask_inputfilter.conditions import ExactlyOneOfCondition
+    from flask_inputfilter.enums import RegexEnum
+    from flask_inputfilter.filters import StringTrimFilter, ToIntegerFilter, ToNullFilter
+    from flask_inputfilter.validators import IsIntegerValidator, IsStringValidator, RegexValidator
+
     class UpdateZipcodeInputFilter(InputFilter):
+        # Required integer field with filtering and validation
         id: int = field(
             required=True,
             filters=[ToIntegerFilter(), ToNullFilter()],
             validators=[IsIntegerValidator()]
         )
 
+        # Optional string field with regex validation
         zipcode: str = field(
             filters=[StringTrimFilter()],
             validators=[
@@ -72,33 +111,68 @@ Definition
             ]
         )
 
+        # Optional string field
         city: str = field(
             filters=[StringTrimFilter()],
             validators=[IsStringValidator()]
         )
 
+        # Business rule: either zipcode OR city must be provided, but not both
         _conditions = [ExactlyOneOfCondition(['zipcode', 'city'])]
 
-Usage
-^^^^^
+Step 2: Use in Your Flask Route
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To use the `InputFilter` class, call the `validate` method on the class instance.
-After calling `validate`, the validated data will be available in `g.validated_data`.
-If the data is invalid, a 400 response with an error message will be returned.
+The most common way is to use the `@validate()` decorator:
 
 .. code-block:: python
 
-    from flask import Flask, g
-    from your-path import UpdateZipcodeInputFilter
+    from flask import Flask, g, jsonify
 
     app = Flask(__name__)
 
     @app.route('/update-zipcode', methods=['POST'])
     @UpdateZipcodeInputFilter.validate()
-    def updateZipcode():
+    def update_zipcode():
+        # Access validated and filtered data
         data = g.validated_data
 
-        # Do something with validated data
-        id = data.get('id')
-        zipcode = data.get('zipcode')
-        city = data.get('city')
+        # All data is guaranteed to be valid at this point
+        user_id = data.get('id')        # Always an integer
+        zipcode = data.get('zipcode')   # Trimmed string or None
+        city = data.get('city')         # Trimmed string or None
+
+        # Your business logic here
+        return jsonify({"success": True, "user_id": user_id})
+
+Step 3: Handle Validation Errors
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If validation fails, flask-inputfilter automatically returns a 400 response with error details:
+
+.. code-block:: json
+
+    {
+        "id": "This field is required.",
+        "zipcode": "The zipcode is not in the correct format.",
+        "_condition": "Exactly one of the following fields must be present: zipcode, city"
+    }
+
+Alternative: Manual Validation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+You can also validate data manually without using the decorator:
+
+.. code-block:: python
+
+    @app.route('/manual-validation', methods=['POST'])
+    def manual_validation():
+        input_filter = UpdateZipcodeInputFilter()
+        input_filter.set_data(request.get_json())
+
+        if input_filter.is_valid():
+            validated_data = input_filter.get_data()
+            return jsonify({"success": True, "data": validated_data})
+        else:
+            errors = input_filter.get_errors()
+            return jsonify({"success": False, "errors": errors}), 400

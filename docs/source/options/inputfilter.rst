@@ -12,9 +12,8 @@ Overview
 Configuration
 -------------
 
-The ``add`` method supports several options:
+The ``field`` decorator supports several options:
 
-- `Name`_
 - `Required`_
 - `Filters`_
 - `Validators`_
@@ -23,12 +22,6 @@ The ``add`` method supports several options:
 - `Steps`_
 - `ExternalApi`_
 - `Copy`_
-
-Name
-~~~~
-
-The ``name`` option specifies the name of the field.
-This is the key that will be used to access the field value in the validated data.
 
 Required
 ~~~~~~~~
@@ -92,6 +85,115 @@ Examples
 --------
 
 Least config
+~~~~~~~~~~~~
 
+Here's a minimal example with just basic field definitions:
+
+.. code-block:: python
+
+    from flask_inputfilter import InputFilter
+    from flask_inputfilter.declarative import field
+
+    class SimpleInputFilter(InputFilter):
+        name: str = field()
+        age: int = field()
+        email: str = field()
 
 Full config
+~~~~~~~~~~~
+
+Here's a comprehensive example using all available field options:
+
+.. code-block:: python
+
+    from flask_inputfilter import InputFilter
+    from flask_inputfilter.declarative import field
+    from flask_inputfilter.conditions import ExactlyOneOfCondition
+    from flask_inputfilter.filters import StringTrimFilter, ToIntegerFilter
+    from flask_inputfilter.validators import IsIntegerValidator, RegexValidator
+    from flask_inputfilter.enums import RegexEnum
+
+    class AdvancedInputFilter(InputFilter):
+        # Required field with filters and validators
+        user_id: int = field(
+            required=True,
+            filters=[ToIntegerFilter()],
+            validators=[IsIntegerValidator()],
+            fallback=0
+        )
+
+        # Optional field with default value
+        username: str = field(
+            required=False,
+            default="anonymous",
+            filters=[StringTrimFilter()],
+            validators=[RegexValidator(r'^[a-zA-Z0-9_]+$', 'Username must be alphanumeric')]
+        )
+
+        # Field with external API integration
+        profile_data: dict = field(
+            external_api={
+                "url": "https://api.example.com/profile/{{user_id}}",
+                "method": "GET",
+                "data_key": "profile"
+            },
+            fallback={}
+        )
+
+        # Field with copy from another field
+        display_name: str = field(
+            copy="username",
+            filters=[StringTrimFilter()]
+        )
+
+        # Field with multiple validation steps
+        score: int = field(
+            steps=[
+                {
+                    "filters": [ToIntegerFilter()],
+                    "validators": [IsIntegerValidator()]
+                }
+            ]
+        )
+
+        # Conditions to enforce business rules
+        _conditions = [
+            ExactlyOneOfCondition(['username', 'profile_data'])
+        ]
+
+Usage Examples
+~~~~~~~~~~~~~~
+
+Basic usage with Flask route:
+
+.. code-block:: python
+
+    from flask import Flask, g, jsonify
+
+    app = Flask(__name__)
+
+    @app.route('/user', methods=['POST'])
+    @AdvancedInputFilter.validate()
+    def create_user():
+        data = g.validated_data
+
+        # All data is now validated and filtered
+        user_id = data.get('user_id')
+        username = data.get('username')
+        profile_data = data.get('profile_data')
+
+        return jsonify({"success": True, "user_id": user_id})
+
+Manual validation without decorator:
+
+.. code-block:: python
+
+    def process_data(raw_data):
+        input_filter = AdvancedInputFilter()
+        input_filter.set_data(raw_data)
+
+        if input_filter.is_valid():
+            validated_data = input_filter.get_data()
+            return {"success": True, "data": validated_data}
+        else:
+            return {"success": False, "errors": input_filter.get_errors()}
