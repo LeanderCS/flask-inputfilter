@@ -31,69 +31,23 @@ from ..codegen import JsonSchemaCodegen
     help="Output file path (- for stdout)",
 )
 @click.option(
-    "--base-class",
-    "base_class",
-    default="InputFilter",
-    help="Base class name for the generated class",
-)
-@click.option(
-    "--base-module",
-    "base_module",
-    default="flask_inputfilter",
-    help="Module to import base class from",
-)
-@click.option(
-    "--field-import",
-    "import_field_from",
-    help="Module to import 'field' function from (e.g., flask_inputfilter.declarative)",
-)
-@click.option(
-    "--field-name",
-    "field_name",
-    default="field",
-    help="Name of the field builder function",
-)
-@click.option(
     "--strict", is_flag=True, help="Fail if schema properties cannot be mapped"
 )
-@click.option(
-    "--docstring/--no-docstring",
-    default=True,
-    help="Include schema title and description as docstring",
-)
-@click.option(
-    "--template",
-    "template_path",
-    type=click.Path(exists=True, dir_okay=False),
-    default=str(
-        Path(__file__).parent.parent / "templates" / "inputfilter.py.j2"
-    ),
-    help="Path to Jinja2 template file",
-)
-def generate(
+def generate_inputfilter_command(
     schema_path,
     class_name,
     out_path,
-    base_class,
-    base_module,
-    import_field_from,
-    field_name,
     strict,
-    docstring,
-    template_path,
 ) -> None:
     """Generate an InputFilter class from a JSON Schema file."""
     try:
         src = JsonSchemaCodegen.generate_from_file(
             schema_path=schema_path,
             class_name=class_name,
-            template_path=template_path,
-            base_class=base_class,
-            base_module=base_module,
-            import_field_from=import_field_from,
-            field_name=field_name,
+            template_path=str(Path(__file__).parent.parent / "templates" / "inputfilter.py.j2"),
+            base_class="InputFilter",
+            base_module="flask_inputfilter",
             strict=strict,
-            docstring=docstring,
         )
 
         if out_path == "-":

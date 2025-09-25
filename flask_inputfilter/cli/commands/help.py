@@ -54,7 +54,6 @@ def _show_general_help() -> None:
 
     click.echo("For detailed help on a specific command:")
     click.echo("  fif help <command>")
-    click.echo("  fif <command> --help")
     click.echo()
 
     click.echo("Documentation: https://leandercs.github.io/flask-inputfilter")

@@ -17,7 +17,7 @@ class JsonSchemaCodegen:
     def validate_schema(schema: Dict[str, Any]) -> None:
         """Validate the JSON schema using jsonschema library."""
         try:
-            jsonschema.Draft202012Validator.check_schema(schema)
+            jsonschema.Draft202012Validator.check_schema(schema) # was zur hölle ist Draft202012Validator nutzte da einen richtigen
         except jsonschema.SchemaError as e:
             raise ValueError(f"Invalid JSON Schema: {e}")
 
@@ -25,12 +25,7 @@ class JsonSchemaCodegen:
     def build_context(
         schema: Dict[str, Any],
         class_name: str,
-        base_class: str = "InputFilter",
-        base_module: str = "flask_inputfilter",
-        import_field_from: Union[str, None] = None,
-        field_name: str = "field",
         strict: bool = False,
-        docstring: bool = True,
     ) -> Dict[str, Any]:
         """Build template context from JSON schema."""
         mapper = TypeMapper()
@@ -38,7 +33,6 @@ class JsonSchemaCodegen:
         if strict:
             JsonSchemaCodegen.validate_schema(schema)
 
-        required_fields = set(schema.get("required", []))
         properties: Dict[str, Any] = schema.get("properties", {})
 
         if not properties and strict:
@@ -48,26 +42,19 @@ class JsonSchemaCodegen:
 
         fields = []
         for name, spec in properties.items():
-            field_def = mapper.map_field(name, spec, required_fields)
+            field_def = mapper.map_field(name, spec)
             fields.append(field_def)
 
-        global_validators = mapper.get_global_validators(schema)
         imports = mapper.get_imports()
 
         return {
-            "base_module": base_module,
-            "base_class": base_class,
             "class_name": class_name,
             "schema_title": schema.get("title", ""),
             "schema_description": schema.get("description", ""),
-            "docstring": docstring,
-            "import_field_from": import_field_from,
-            "field_name": field_name,
             "import_filters": imports["filters"],
             "import_validators": imports["validators"],
             "import_enums": imports["enums"],
             "fields": fields,
-            "global_validators": global_validators,
         }
 
     @staticmethod

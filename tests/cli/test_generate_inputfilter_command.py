@@ -15,7 +15,6 @@ def test_cli_generate_inputfilter_comprehensive() -> None:
         '--schema', str(schema_path),
         '--class', 'TestInputFilter',
         '--out', '-',
-        '--docstring'
     ], capture_output=True, text=True)
 
     assert result.returncode == 0, f"Command failed: {result.stderr}"
@@ -79,14 +78,10 @@ def test_cli_generate_inputfilter_with_all_options() -> None:
         '--schema', str(schema_path),
         '--class', 'CustomInputFilter',
         '--out', '-',
-        '--base-class', 'InputFilter',
-        '--base-module', 'flask_inputfilter',
         '--field-name', 'field',
         '--strict',
-        '--docstring'
     ], capture_output=True, text=True)
 
     assert result.returncode == 0
     assert 'class CustomInputFilter' in result.stdout
     assert 'from flask_inputfilter import InputFilter' in result.stdout
-    assert 'Test User Schema' in result.stdout  # Schema title as docstring

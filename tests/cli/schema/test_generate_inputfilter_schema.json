@@ -6,14 +6,13 @@
   "properties": {
     "string_field": {
       "type": "string",
-      "description": "Basic string field",
-      "minLength": 1,
-      "maxLength": 100
+      "description": "Basic string field"
     },
     "email_field": {
       "type": "string",
       "format": "email",
-      "description": "Email format field"
+      "description": "Email format field",
+      "error": "Please enter a valid email address"
     },
     "uri_field": {
       "type": "string",
@@ -28,18 +27,16 @@
     "pattern_field": {
       "type": "string",
       "pattern": "^[A-Z]{2,3}-\\d{4}$",
-      "description": "String with regex pattern"
+      "description": "String with regex pattern",
+      "error": "Format must be like ABC-1234"
     },
     "integer_field": {
       "type": "integer",
-      "minimum": 0,
-      "maximum": 1000,
-      "description": "Integer with min/max constraints"
+      "description": "Integer with min/max constraints",
+      "error": "Value must be between 0 and 1000"
     },
     "number_field": {
       "type": "number",
-      "minimum": 0.0,
-      "maximum": 100.0,
       "description": "Float number with constraints"
     },
     "boolean_field": {
@@ -61,11 +58,8 @@
     "array_integers": {
       "type": "array",
       "items": {
-        "type": "integer",
-        "minimum": 1
+        "type": "integer"
       },
-      "minItems": 1,
-      "maxItems": 10,
       "description": "Array of integers with constraints"
     },
     "nested_object": {
@@ -73,6 +67,7 @@
       "properties": {
         "sub_string": {
           "type": "string",
+          "required": "true",
           "description": "String in nested object"
         },
         "sub_number": {
@@ -80,29 +75,23 @@
           "description": "Number in nested object"
         }
       },
-      "required": ["sub_string"],
       "description": "Nested object field"
     },
     "optional_string": {
       "type": "string",
+      "required": "true",
       "description": "Optional string field"
     },
     "default_value_field": {
       "type": "string",
+      "required": "true",
       "default": "default_value",
       "description": "String field with default value"
     },
     "nullable_field": {
       "type": ["string", "null"],
+      "required": "true",
       "description": "Field that can be string or null"
     }
-  },
-  "required": [
-    "string_field",
-    "email_field",
-    "integer_field",
-    "boolean_field",
-    "enum_field",
-    "nested_object"
-  ]
+  }
 }

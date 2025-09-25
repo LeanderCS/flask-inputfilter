@@ -12,9 +12,9 @@ To use the CLI features, install Flask InputFilter with the ``cli`` extra::
 
 This installs the following additional dependencies:
 
-- ``click>=8.0`` - Command-line interface framework
-- ``jinja2>=3.0`` - Template engine for code generation
-- ``jsonschema>=4.0`` - JSON Schema validation library
+- ``click`` - Command-line interface framework
+- ``jinja2`` - Template engine for code generation
+- ``jsonschema`` - JSON Schema validation library
 
 Quick Start
 -----------
@@ -55,12 +55,12 @@ Given this JSON Schema (``user_schema.json``):
         },
         "age": {
           "type": "integer",
+          "required": "false",
           "description": "User's age",
           "minimum": 18,
           "maximum": 120
         }
       },
-      "required": ["name", "email"],
       "additionalProperties": false
     }
 
@@ -79,8 +79,7 @@ The CLI generates this Python code:
 
 
     class UserInputFilter(InputFilter):
-        """User
-        User registration data"""
+        """User registration data"""
 
         # User's full name
         name = field(required=True, filters=[StringTrimFilter()], validators=[IsStringValidator(), LengthValidator(min_length=2, max_length=100)])
@@ -96,7 +95,7 @@ The CLI generates this Python code:
 Command Reference
 -----------------
 
-generate
+generate:inputfilter
 ~~~~~~~~
 
 Generate InputFilter classes from JSON Schema files.
@@ -105,7 +104,7 @@ Generate InputFilter classes from JSON Schema files.
 
 .. code-block:: bash
 
-    fif generate [OPTIONS]
+    fif generate:inputfilter [OPTIONS]
 
 **Required Options:**
 
@@ -120,26 +119,8 @@ Generate InputFilter classes from JSON Schema files.
 ``--out PATH``
     Output file path. Use ``-`` for stdout (default)
 
-``--base-class NAME``
-    Base class name (default: ``InputFilter``)
-
-``--base-module MODULE``
-    Module to import base class from (default: ``flask_inputfilter``)
-
-``--field-import MODULE``
-    Module to import the ``field`` function from
-
-``--field-name NAME``
-    Name of the field builder function (default: ``field``)
-
 ``--strict``
     Fail if schema properties cannot be mapped to validators
-
-``--docstring/--no-docstring``
-    Include schema title and description as class docstring (default: enabled)
-
-``--template PATH``
-    Path to custom Jinja2 template file
 
 **Examples:**
 
@@ -154,10 +135,6 @@ Save to file::
 Use strict validation::
 
     fif generate --schema user.json --class UserInputFilter --strict
-
-Custom base class::
-
-    fif generate --schema user.json --class UserInputFilter --base-class CustomFilter --base-module myapp.base
 
 help
 ~~~~
@@ -195,7 +172,6 @@ Help for specific command::
 - **Practical examples**: Shows common usage patterns
 - **Command discovery**: Lists all available commands with brief descriptions
 - **Error handling**: Provides helpful feedback for unknown commands
-- **Multiple access methods**: Works alongside standard ``--help`` flags
 
 The help system is designed to be both comprehensive for new users and quick for experienced users who need specific command details.
 
@@ -297,88 +273,13 @@ Generated InputFilter classes work seamlessly with Flask routes:
         # Create user in database...
         return jsonify({'status': 'created'})
 
-Advanced Usage
---------------
-
-Custom Templates
-~~~~~~~~~~~~~~~~
-
-You can provide your own Jinja2 template for code generation:
-
-.. code-block:: bash
-
-    fif generate --schema user.json --class UserFilter --template my_template.j2
-
-The template receives these context variables:
-
-- ``base_module``, ``base_class`` - Import information
-- ``class_name`` - Generated class name
-- ``schema_title``, ``schema_description`` - From JSON Schema
-- ``fields`` - List of field definitions with validators and filters
-- ``import_filters``, ``import_validators``, ``import_enums`` - Required imports
-- ``global_validators`` - Schema-level validators
-
-CI/CD Integration
-~~~~~~~~~~~~~~~~~
-
-The CLI is ideal for automated code generation in CI/CD pipelines:
-
-.. code-block:: yaml
-
-    # GitHub Actions example
-    - name: Generate InputFilter classes
-      run: |
-        for schema in schemas/*.json; do
-          class_name=$(basename "$schema" .json | sed 's/.*/\u&/')InputFilter
-          fif generate --schema "$schema" --class "$class_name" --out "src/filters/"
-        done
-
-Working with OpenAPI Specifications
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-While the CLI currently supports JSON Schema directly, you can extract schemas from OpenAPI specifications:
-
-.. code-block:: bash
-
-    # Extract user schema from OpenAPI spec
-    yq eval '.components.schemas.User' openapi.yaml > user_schema.json
-
-    # Generate InputFilter
-    fif generate --schema user_schema.json --class UserInputFilter
-
-Best Practices
---------------
-
-Schema Organization
-~~~~~~~~~~~~~~~~~~~
-
-- Keep JSON schemas in a dedicated directory (e.g., ``schemas/``)
-- Use descriptive filenames that match your model names
-- Include meaningful ``title`` and ``description`` fields
-- Set ``additionalProperties: false`` for strict validation
-
-Code Generation
-~~~~~~~~~~~~~~~
-
-- Use consistent naming conventions for generated classes (e.g., ``ModelNameInputFilter``)
-- Generate filters into a dedicated module (e.g., ``filters/`` or ``validation/``)
-- Consider using ``--strict`` mode in CI/CD to catch schema issues early
-- Version control both schemas and generated code for traceability
-
-Error Handling
-~~~~~~~~~~~~~~
-
-- Use descriptive error messages in your schemas
-- Test generated validators with valid and invalid data
-- Consider custom error messages for business-specific validation rules
-
 Troubleshooting
 ---------------
 
 Common Issues
 ~~~~~~~~~~~~~
 
-**"No such command 'generate'"**
+**"No such command 'generate:inputfilter'"**
 
 Ensure you installed with the CLI extra::
 
@@ -403,7 +304,7 @@ Getting Help
 
 For command-specific help::
 
-    fif --help
-    fif generate --help
+    fif help
+    fif help generate
 
 For issues and feature requests, visit the `GitHub repository <https://github.com/LeanderCS/flask-inputfilter/issues>`_.
