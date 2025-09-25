@@ -1,0 +1,108 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Complete Test Schema",
+  "description": "Comprehensive test schema covering all supported JSON Schema types for CLI testing",
+  "type": "object",
+  "properties": {
+    "string_field": {
+      "type": "string",
+      "description": "Basic string field",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "email_field": {
+      "type": "string",
+      "format": "email",
+      "description": "Email format field"
+    },
+    "uri_field": {
+      "type": "string",
+      "format": "uri",
+      "description": "URI format field"
+    },
+    "date_field": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date-time format field"
+    },
+    "pattern_field": {
+      "type": "string",
+      "pattern": "^[A-Z]{2,3}-\\d{4}$",
+      "description": "String with regex pattern"
+    },
+    "integer_field": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000,
+      "description": "Integer with min/max constraints"
+    },
+    "number_field": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 100.0,
+      "description": "Float number with constraints"
+    },
+    "boolean_field": {
+      "type": "boolean",
+      "description": "Boolean field"
+    },
+    "enum_field": {
+      "type": "string",
+      "enum": ["active", "inactive", "pending"],
+      "description": "String enum field"
+    },
+    "array_strings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of strings"
+    },
+    "array_integers": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "minItems": 1,
+      "maxItems": 10,
+      "description": "Array of integers with constraints"
+    },
+    "nested_object": {
+      "type": "object",
+      "properties": {
+        "sub_string": {
+          "type": "string",
+          "description": "String in nested object"
+        },
+        "sub_number": {
+          "type": "number",
+          "description": "Number in nested object"
+        }
+      },
+      "required": ["sub_string"],
+      "description": "Nested object field"
+    },
+    "optional_string": {
+      "type": "string",
+      "description": "Optional string field"
+    },
+    "default_value_field": {
+      "type": "string",
+      "default": "default_value",
+      "description": "String field with default value"
+    },
+    "nullable_field": {
+      "type": ["string", "null"],
+      "description": "Field that can be string or null"
+    }
+  },
+  "required": [
+    "string_field",
+    "email_field",
+    "integer_field",
+    "boolean_field",
+    "enum_field",
+    "nested_object"
+  ]
+}

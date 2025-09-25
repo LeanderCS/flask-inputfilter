@@ -11,4 +11,5 @@ Guides
     testing_debugging
     create_own_components
     frontend_validation
+    cli
     compile

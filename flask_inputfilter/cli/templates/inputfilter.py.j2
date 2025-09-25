@@ -1,0 +1,42 @@
+from {{ base_module }} import {{ base_class }}
+{% if import_field_from -%}
+from {{ import_field_from }} import {{ field_name }}
+{%- else -%}
+from flask_inputfilter.declarative import {{ field_name }}
+{%- endif %}
+
+{% if import_filters %}
+from flask_inputfilter.filters import {{ import_filters|join(", ") }}
+{% endif %}
+{% if import_validators %}
+from flask_inputfilter.validators import {{ import_validators|join(", ") }}
+{% endif %}
+{% if import_enums %}
+from flask_inputfilter.enums import {{ import_enums|join(", ") }}
+{% endif %}
+
+
+class {{ class_name }}({{ base_class }}):
+{% if docstring and (schema_title or schema_description) %}
+    """{{ schema_title }}{% if schema_title and schema_description %}
+
+    {% endif %}{{ schema_description }}"""
+{% endif %}
+{% for f in fields %}
+{% if f.description %}
+    # {{ f.description }}
+{% endif %}
+    {{ f.attr }} = {{ field_name }}(
+        {%- if f.required -%}required=True, {%- endif -%}
+        {%- if f.default is not none -%}default={{ f.default|python_json }}, {%- endif -%}
+        {%- if f.filters -%}filters=[{{ f.filters|join(", ") }}], {%- endif -%}
+        {%- if f.validators -%}validators=[{{ f.validators|join(", ") }}]{%- endif -%}
+    )
+{% if not loop.last %}
+
+{% endif %}
+{% endfor %}
+{% if global_validators %}
+
+    _global_validators = [{{ global_validators|join(", ") }}]
+{% endif %}

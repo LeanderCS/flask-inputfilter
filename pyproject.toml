@@ -45,18 +45,32 @@ dev = [
     "sphinx-autobuild",
     "sphinx_design",
     "sphinx_rtd_theme",
-    "ruff"
+    "ruff",
+    "click>=8.0",
+    "jinja2>=3.0",
+    "jsonschema>=4.0"
 ]
 optional = [
     "pillow>=8.0.0",
     "requests>=2.22.0",
     "cython>=3.0; python_version <= '3.12'",
     "cython>=3.0.12; python_version >= '3.13'",
+    "click>=8.0",
+    "jinja2>=3.0",
+    "jsonschema>=4.0"
 ]
 compile = [
     "cython>=3.0; python_version <= '3.12'",
     "cython>=3.0.12; python_version >= '3.13'",
 ]
+cli = [
+    "click>=8.0",
+    "jinja2>=3.0",
+    "jsonschema>=4.0"
+]
+
+[project.scripts]
+fif = "flask_inputfilter.cli.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/LeanderCS/flask-inputfilter"
