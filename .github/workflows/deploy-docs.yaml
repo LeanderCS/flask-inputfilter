@@ -16,9 +16,9 @@ jobs:
     environment: github-pages
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v6
         with:
           python-version: 3.11
 
@@ -29,7 +29,7 @@ jobs:
         run: sphinx-build -b html docs/source/ _build
 
       - name: Upload artifacts
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: _build
           name: github-pages
