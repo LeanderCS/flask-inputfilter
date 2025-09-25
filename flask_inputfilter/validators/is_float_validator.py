@@ -24,12 +24,9 @@ class IsFloatValidator(BaseValidator):
     .. code-block:: python
 
         class MeasurementInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('temperature', validators=[
-                    IsFloatValidator()
-                ])
+            temperature: float = field(validators=[
+                IsFloatValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

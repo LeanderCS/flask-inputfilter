@@ -31,12 +31,9 @@ class FloatPrecisionValidator(BaseValidator):
     .. code-block:: python
 
         class PriceInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('price', validators=[
-                    FloatPrecisionValidator(precision=5, scale=2)
-                ])
+            price: float = field(validators=[
+                FloatPrecisionValidator(precision=5, scale=2)
+            ])
     """
 
     __slots__ = ("error_message", "precision", "scale")

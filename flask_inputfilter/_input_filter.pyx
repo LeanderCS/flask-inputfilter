@@ -24,7 +24,7 @@ from flask_inputfilter.models.cimports cimport BaseCondition, BaseFilter, BaseVa
 
 from libcpp.vector cimport vector
 from libcpp.string cimport string
-from libcpp cimport bool as cbool
+
 from libcpp.algorithm cimport find
 
 cdef dict _INTERNED_STRINGS = {

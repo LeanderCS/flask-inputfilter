@@ -27,11 +27,9 @@ class IsHexadecimalValidator(BaseValidator):
     .. code-block:: python
 
         class HexInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('hex_value', validators=[
-                    IsHexadecimalValidator()
-                ])
+            hex_value: str = field(validators=[
+                IsHexadecimalValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

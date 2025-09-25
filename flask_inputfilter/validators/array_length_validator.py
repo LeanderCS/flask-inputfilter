@@ -29,12 +29,9 @@ class ArrayLengthValidator(BaseValidator):
     .. code-block:: python
 
         class ListInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('items', validators=[
-                    ArrayLengthValidator(min_length=1, max_length=5)
-                ])
+            items: list = field(validators=[
+                ArrayLengthValidator(min_length=1, max_length=5)
+            ])
     """
 
     __slots__ = ("error_message", "max_length", "min_length")

@@ -28,17 +28,11 @@ class RequiredIfCondition(BaseCondition):
     .. code-block:: python
 
         class ConditionalRequiredFilter(InputFilter):
+            status: str = field()
+            activation_date: str = field()
+
             def __init__(self):
                 super().__init__()
-
-                self.add(
-                    'status'
-                )
-
-                self.add(
-                    'activation_date'
-                )
-
                 self.add_condition(
                     RequiredIfCondition(
                         condition_field='status',

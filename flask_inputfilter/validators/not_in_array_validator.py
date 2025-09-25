@@ -30,11 +30,9 @@ class NotInArrayValidator(BaseValidator):
     .. code-block:: python
 
         class UsernameInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('username', validators=[
-                    NotInArrayValidator(haystack=["admin", "root"])
-                ])
+            username: str = field(validators=[
+                NotInArrayValidator(haystack=["admin", "root"])
+            ])
     """
 
     __slots__ = ("error_message", "haystack", "strict")

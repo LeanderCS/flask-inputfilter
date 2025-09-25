@@ -13,6 +13,16 @@ Added
   added as decorator and do not require a self.add, self.add_condition,
   self.add_global_filter or self.add_global_validator call in the __init__.
 
+  ``self.add`` => ``field``
+
+  ``self.add_condition`` => ``_conditions``
+
+  ``self.add_global_filter`` => ``_global_filters``
+
+  ``self.add_global_validator`` => ``_global_validators``
+
+  ``self.add_model`` => ``_model``
+
   **Before**:
     .. code-block:: python
 
@@ -28,6 +38,14 @@ Added
                     ]
                 )
 
+                self.add_condition(ExactlyOneOfCondition(['zipcode', 'city']))
+
+                self.add_global_filter(StringTrimFilter())
+
+                self.add_global_validator(IsStringValidator())
+
+                self.set_model(UserModel)
+
   **After**:
     .. code-block:: python
 
@@ -35,10 +53,16 @@ Added
             id: int = field(
                 required=True,
                 filters=[ToIntegerFilter(), ToNullFilter()],
-                validators=[
-                    IsIntegerValidator()
-                ]
+                validators=[IsIntegerValidator()]
             )
+
+            _conditions = [ExactlyOneOfCondition(['zipcode', 'city'])]
+
+            _global_filters = [StringTrimFilter()]
+
+            _global_validators = [IsStringValidator()]
+
+            _model = UserModel
 
   The Change is fully backward compatible, but the new way is more readable
   and maintainable.

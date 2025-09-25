@@ -32,12 +32,9 @@ class XorValidator(BaseValidator):
     .. code-block:: python
 
         class XorInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('value', validators=[
-                    XorValidator([IsIntegerValidator(), IsStringValidator()])
-                ])
+            value: int | string = field(validators=[
+                XorValidator([IsIntegerValidator(), IsStringValidator()])
+            ])
     """
 
     __slots__ = ("error_message", "validators")

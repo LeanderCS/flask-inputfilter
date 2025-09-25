@@ -23,12 +23,9 @@ class TruncateFilter(BaseFilter):
     .. code-block:: python
 
         class DescriptionFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('description', filters=[
-                    TruncateFilter(max_length=100)
-                ])
+            description: str = field(filters=[
+                TruncateFilter(max_length=100)
+            ])
     """
 
     __slots__ = ("max_length",)

@@ -37,12 +37,9 @@ class InEnumValidator(BaseValidator):
             BLUE = "blue"
 
         class ColorInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('color', validators=[
-                    InEnumValidator(enum_class=ColorEnum)
-                ])
+            color: str = field(
+                validators=[InEnumValidator(enum_class=ColorEnum)]
+            )
     """
 
     __slots__ = ("enum_class", "error_message")

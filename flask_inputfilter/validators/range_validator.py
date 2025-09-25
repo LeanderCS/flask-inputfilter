@@ -28,11 +28,9 @@ class RangeValidator(BaseValidator):
     .. code-block:: python
 
         class ScoreInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('score', validators=[
-                    RangeValidator(min_value=0, max_value=100)
-                ])
+            score: float = field(validators=[
+                RangeValidator(min_value=0, max_value=100)
+            ])
     """
 
     __slots__ = ("error_message", "max_value", "min_value")

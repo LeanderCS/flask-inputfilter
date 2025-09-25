@@ -19,12 +19,9 @@ class ToUpperFilter(BaseFilter):
     .. code-block:: python
 
         class CodeFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('code', filters=[
-                    ToUpperFilter()
-                ])
+            code: str = field(filters=[
+                ToUpperFilter()
+            ])
     """
 
     __slots__ = ()

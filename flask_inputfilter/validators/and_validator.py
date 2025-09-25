@@ -30,15 +30,12 @@ class AndValidator(BaseValidator):
     .. code-block:: python
 
         class AndInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('value', validators=[
-                    AndValidator([
-                        IsIntegerValidator(),
-                        RangeValidator(min_value=0, max_value=100)
-                    ])
+            value: int = field(validators=[
+                AndValidator([
+                    IsIntegerValidator(),
+                    RangeValidator(min_value=0, max_value=100)
                 ])
+            ])
     """
 
     __slots__ = ("error_message", "validators")

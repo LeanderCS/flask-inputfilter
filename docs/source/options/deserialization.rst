@@ -33,10 +33,10 @@ into an instance of the model class, if there is a model class set.
 
 
     class UserInputFilter(InputFilter):
-        def __init__(self):
-            super().__init__()
+        username: str = field()
+        email: str = field()
 
-            self.set_model(User)
+        _model = User
 
 Examples
 --------
@@ -57,10 +57,9 @@ You can also use deserialization in your Flask routes:
 
 
     class MyInputFilter(InputFilter):
-        def __init__(self):
-            super().__init__(methods=["GET"])
-            self.add("username")
-            self.set_model(User)
+        username: str = field()
+
+        _model = User
 
 
     app = Flask(__name__)
@@ -88,10 +87,9 @@ You can also use deserialization outside of Flask routes:
 
 
     class MyInputFilter(InputFilter):
-        def __init__(self):
-            super().__init__(methods=["GET"])
-            self.add("username")
-            self.set_model(User)
+        username: str = field()
+
+        _model = User
 
     app = Flask(__name__)
 

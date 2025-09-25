@@ -19,12 +19,9 @@ class ToLowerFilter(BaseFilter):
     .. code-block:: python
 
         class UsernameFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('username', filters=[
-                    ToLowerFilter()
-                ])
+            username: str = field(filters=[
+                ToLowerFilter()
+            ])
     """
 
     __slots__ = ()

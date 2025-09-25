@@ -24,22 +24,14 @@ class OneOfCondition(BaseCondition):
     .. code-block:: python
 
         class OneFieldRequiredFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
+            email: str = field()
+            phone: str = field()
 
-                self.add(
-                    'email'
+            _conditions = [
+                OneOfCondition(
+                    fields=['email', 'phone']
                 )
-
-                self.add(
-                    'phone'
-                )
-
-                self.add_condition(
-                    OneOfCondition(
-                        fields=['email', 'phone']
-                    )
-                )
+            ]
     """
 
     __slots__ = ("fields",)

@@ -33,15 +33,12 @@ class DateRangeValidator(BaseValidator):
     .. code-block:: python
 
         class BookingInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('booking_date', validators=[
-                    DateRangeValidator(
-                        min_date="2023-01-01",
-                        max_date="2023-01-31"
-                    )
-                ])
+            booking_date: str = field(validators=[
+                DateRangeValidator(
+                    min_date="2023-01-01",
+                    max_date="2023-01-31"
+                )
+            ])
     """
 
     __slots__ = ("error_message", "max_date", "min_date")

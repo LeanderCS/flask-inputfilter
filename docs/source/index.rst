@@ -56,40 +56,28 @@ Definition
 .. code-block:: python
 
     class UpdateZipcodeInputFilter(InputFilter):
-        def __init__(self):
-            super().__init__()
+        id: int = field(
+            required=True,
+            filters=[ToIntegerFilter(), ToNullFilter()],
+            validators=[IsIntegerValidator()]
+        )
 
-            self.add(
-                'id',
-                required=True,
-                filters=[ToIntegerFilter(), ToNullFilter()],
-                validators=[
-                    IsIntegerValidator()
-                ]
-            )
+        zipcode: str = field(
+            filters=[StringTrimFilter()],
+            validators=[
+                RegexValidator(
+                    RegexEnum.POSTAL_CODE.value,
+                    'The zipcode is not in the correct format.'
+                )
+            ]
+        )
 
-            self.add(
-                'zipcode',
-                filters=[StringTrimFilter()],
-                validators=[
-                    RegexValidator(
-                        RegexEnum.POSTAL_CODE.value,
-                        'The zipcode is not in the correct format.'
-                    )
-                ]
-            )
+        city: str = field(
+            filters=[StringTrimFilter()],
+            validators=[IsStringValidator()]
+        )
 
-            self.add(
-                'city',
-                filters=[StringTrimFilter()],
-                validators=[
-                    IsStringValidator()
-                ]
-            )
-
-            self.add_condition(
-                ExactlyOneOfCondition(['zipcode', 'city'])
-            )
+        _conditions = [ExactlyOneOfCondition(['zipcode', 'city'])]
 
 Usage
 ^^^^^

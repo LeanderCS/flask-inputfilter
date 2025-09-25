@@ -68,7 +68,7 @@ A more detailed guide can be found [in the docs](https://leandercs.github.io/fla
 
 ```python
 from flask_inputfilter import InputFilter
-from flask_inputfilter.declarative import field, _conditions
+from flask_inputfilter.declarative import field
 from flask_inputfilter.conditions import ExactlyOneOfCondition
 from flask_inputfilter.enums import RegexEnum
 from flask_inputfilter.filters import StringTrimFilter, ToIntegerFilter, ToNullFilter
@@ -101,9 +101,9 @@ class UpdateZipcodeInputFilter(InputFilter):
         ]
     )
 
-    _conditions(
+    _conditions = [
         ExactlyOneOfCondition(['zipcode', 'city'])
-    )
+    ]
 ```
 
 

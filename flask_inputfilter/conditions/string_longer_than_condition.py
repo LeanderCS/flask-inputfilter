@@ -23,23 +23,15 @@ class StringLongerThanCondition(BaseCondition):
     .. code-block:: python
 
         class StringLengthFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
+            description: str = field()
+            summary: str = field()
 
-                self.add(
-                    'description'
+            _conditions = [
+                StringLongerThanCondition(
+                    longer_field='description',
+                    shorter_field='summary'
                 )
-
-                self.add(
-                    'summary'
-                )
-
-                self.add_condition(
-                    StringLongerThanCondition(
-                        longer_field='description',
-                        shorter_field='summary'
-                    )
-                )
+            ]
     """
 
     __slots__ = ("longer_field", "shorter_field")

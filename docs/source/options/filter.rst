@@ -6,7 +6,7 @@ Filter
 Overview
 --------
 
-Filters can be added into the ``add`` method for a specific field or as a global filter for all fields in ``add_global_filter``.
+Filters can be added to specific fields using the decorator syntax or as global filters using ``_global_filters``.
 
 The global filters will be executed before the specific field filtering.
 
@@ -16,22 +16,17 @@ Example
 .. code-block:: python
 
     class TestInputFilter(InputFilter):
-        def __init__(self):
-            super().__init__()
+        username: str = field(
+            required=True,
+            filters=[StringTrimFilter()]
+        )
 
-            self.add(
-                'username',
-                required=True,
-                filters=[StringTrimFilter()]
-            )
+        name: str = field(
+            required=True,
+            filters=[StringTrimFilter()]
+        )
 
-            self.add(
-                'name',
-                required=True,
-                filters=[StringTrimFilter()]
-            )
-
-            self.add_global_filter(ToLowerFilter())
+        _global_filters = [ToLowerFilter()]
 
 Available Filters
 -----------------

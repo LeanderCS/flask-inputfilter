@@ -26,11 +26,9 @@ class IsJsonValidator(BaseValidator):
     .. code-block:: python
 
         class JsonInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('json_data', validators=[
-                    IsJsonValidator()
-                ])
+            json_data: str = field(validators=[
+                IsJsonValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

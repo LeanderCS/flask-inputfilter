@@ -33,12 +33,9 @@ class DateAfterValidator(BaseValidator):
     .. code-block:: python
 
         class EventInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('event_date', validators=[
-                    DateAfterValidator(reference_date="2023-01-01")
-                ])
+            event_date: str = field(validators=[
+                DateAfterValidator(reference_date="2023-01-01")
+            ])
     """
 
     __slots__ = ("error_message", "reference_date")

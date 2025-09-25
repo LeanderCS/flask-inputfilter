@@ -32,12 +32,14 @@ class OrValidator(BaseValidator):
     .. code-block:: python
 
         class OrInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('value', validators=[
-                    OrValidator([IsIntegerValidator(), IsStringValidator()])
-                ])
+            value: str = field(
+                validators=[
+                    OrValidator([
+                        IsIntegerValidator(),
+                        IsStringValidator()
+                    ])
+                ]
+            )
     """
 
     __slots__ = ("error_message", "validators")

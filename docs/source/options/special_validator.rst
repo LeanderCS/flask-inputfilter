@@ -13,12 +13,9 @@ Example
 .. code-block:: python
 
     class NotIntegerInputFilter(InputFilter):
-        def __init__(self):
-            super().__init__()
-
-            self.add('value', validators=[
-                NotValidator(validator=IsIntegerValidator())
-            ])
+        value: str = field(
+            validators=[NotValidator(validator=IsIntegerValidator())]
+        )
 
 Available Special Validators
 ----------------------------

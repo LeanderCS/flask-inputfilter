@@ -19,12 +19,9 @@ class ToBooleanFilter(BaseFilter):
     .. code-block:: python
 
         class ActiveFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('active', filters=[
-                    ToBooleanFilter()
-                ])
+            active: bool = field(filters=[
+                ToBooleanFilter()
+            ])
     """
 
     __slots__ = ()

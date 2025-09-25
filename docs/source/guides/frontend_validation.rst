@@ -18,28 +18,21 @@ Example implementation
     app = Flask(__name__)
 
     class UpdateZipcodeInputFilter(InputFilter):
-        def __init__(self):
-            super().__init__()
+        id: int = field(
+            required=True,
+            filters=[ToIntegerFilter(), ToNullFilter()],
+            validators=[IsIntegerValidator()]
+        )
 
-            self.add(
-                'id',
-                required=True,
-                filters=[ToIntegerFilter(), ToNullFilter()],
-                validators=[
-                    IsIntegerValidator()
-                ]
-            )
-
-            self.add(
-                'zipcode',
-                filters=[StringTrimFilter()],
-                validators=[
-                    RegexValidator(
-                        pattern=RegexEnum.POSTAL_CODE.value,
-                        error_message='The zipcode is not in the correct format.'
-                    )
-                ]
-            )
+        zipcode: str = field(
+            filters=[StringTrimFilter()],
+            validators=[
+                RegexValidator(
+                    pattern=RegexEnum.POSTAL_CODE.value,
+                    error_message='The zipcode is not in the correct format.'
+                )
+            ]
+        )
 
     @app.route('/form-update-zipcode', methods=['POST'])
     @UpdateZipcodeInputFilter.validate()

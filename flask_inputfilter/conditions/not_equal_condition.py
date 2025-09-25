@@ -24,18 +24,10 @@ class NotEqualCondition(BaseCondition):
     .. code-block:: python
 
         class DifferenceFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
+            field1: str = field()
+            field2: str = field()
 
-                self.add(
-                    'field1'
-                )
-
-                self.add(
-                    'field2'
-                )
-
-                self.add_condition(NotEqualCondition('field1', 'field2'))
+            _conditions = [NotEqualCondition('field1', 'field2')]
     """
 
     __slots__ = ("first_field", "second_field")

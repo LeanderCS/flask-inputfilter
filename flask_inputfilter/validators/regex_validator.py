@@ -29,11 +29,9 @@ class RegexValidator(BaseValidator):
     .. code-block:: python
 
         class EmailInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('email', validators=[
-                    RegexValidator(pattern=r'[a-cA-C]+')
-                ])
+            email: str = field(validators=[
+                RegexValidator(pattern=r'[a-cA-C]+')
+            ])
     """
 
     __slots__ = ("error_message", "pattern")

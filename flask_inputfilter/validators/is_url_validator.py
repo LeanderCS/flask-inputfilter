@@ -29,11 +29,9 @@ class IsUrlValidator(BaseValidator):
     .. code-block:: python
 
         class UrlInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('website', validators=[
-                    IsUrlValidator()
-                ])
+            website: str = field(validators=[
+                IsUrlValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

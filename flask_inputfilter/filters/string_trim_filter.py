@@ -19,12 +19,9 @@ class StringTrimFilter(BaseFilter):
     .. code-block:: python
 
         class UserFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('username', filters=[
-                    StringTrimFilter()
-                ])
+            username: str = field(filters=[
+                StringTrimFilter()
+            ])
     """
 
     __slots__ = ()

@@ -29,12 +29,9 @@ class NotValidator(BaseValidator):
     .. code-block:: python
 
         class NotIntegerInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('value', validators=[
-                    NotValidator(validator=IsIntegerValidator())
-                ])
+            value: Any = field(validators=[
+                NotValidator(validator=IsIntegerValidator())
+            ])
     """
 
     __slots__ = ("error_message", "validator")

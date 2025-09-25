@@ -36,11 +36,9 @@ class LengthValidator(BaseValidator):
     .. code-block:: python
 
         class TextLengthInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('username', validators=[
-                    LengthValidator(min_length=3, max_length=15)
-                ])
+            username: str = field(validators=[
+                LengthValidator(min_length=3, max_length=15)
+            ])
     """
 
     __slots__ = ("error_message", "max_length", "min_length")

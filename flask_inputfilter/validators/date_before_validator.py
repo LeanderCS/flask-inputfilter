@@ -32,12 +32,9 @@ class DateBeforeValidator(BaseValidator):
     .. code-block:: python
 
         class RegistrationInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('birth_date', validators=[
-                    DateBeforeValidator(reference_date="2005-01-01")
-                ])
+            birth_date: str = field(validators=[
+                DateBeforeValidator(reference_date="2005-01-01")
+            ])
     """
 
     __slots__ = ("error_message", "reference_date")

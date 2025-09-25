@@ -31,19 +31,13 @@ class CustomCondition(BaseCondition):
             return data.get('age', 0) >= 18
 
         class CustomFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
+            age: int = field(validators=[IsIntegerValidator()])
 
-                self.add(
-                    'age',
-                    validators=[IsIntegerValidator()]
+            _conditions = [
+                CustomCondition(
+                    condition=my_custom_condition
                 )
-
-                self.add_condition(
-                    CustomCondition(
-                        condition=my_custom_condition
-                    )
-                )
+            ]
     """
 
     __slots__ = ("condition",)
