@@ -39,24 +39,18 @@ class ArrayElementValidator(BaseValidator):
         from my_filters import UserInputFilter
 
         class UsersInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('users', validators=[
-                    ArrayElementValidator(element_filter=UserInputFilter())
-                ])
+            users: list = field(validators=[
+                ArrayElementValidator(element_filter=UserInputFilter())
+            ])
 
     Additionally, you can use a validator directly on your elements:
 
     .. code-block:: python
 
         class TagInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('tags', validators=[
-                    ArrayElementValidator(element_filter=IsStringValidator())
-                ])
+            tags: list[str] = field(validators=[
+                ArrayElementValidator(element_filter=IsStringValidator())
+            ])
     """
 
     __slots__ = ("element_filter", "error_message")

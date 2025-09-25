@@ -1,13 +1,22 @@
+from dataclasses import dataclass
+
 from flask_inputfilter import InputFilter
+from flask_inputfilter.declarative import field
 from flask_inputfilter.validators import IsIntegerValidator, IsStringValidator
 
 
+@dataclass
+class User:
+    name: str
+    age: int
+    email: str
+
+
 class UserInputFilter(InputFilter):
-    def __init__(self):
-        super().__init__()
+    _model = User
 
-        self.add("name", required=True, validators=[IsStringValidator()])
+    name: str = field(required=True, validators=[IsStringValidator()])
 
-        self.add("age", required=True, validators=[IsIntegerValidator()])
+    age: int = field(required=True, validators=[IsIntegerValidator()])
 
-        self.add("email", required=True, validators=[IsStringValidator()])
+    email: str = field(required=True, validators=[IsStringValidator()])

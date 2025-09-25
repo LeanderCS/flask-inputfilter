@@ -32,12 +32,9 @@ class IsBase64ImageValidator(BaseValidator):
     .. code-block:: python
 
         class AvatarInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('avatar', validators=[
-                    IsBase64ImageValidator()
-                ])
+            avatar: str = field(validators=[
+                IsBase64ImageValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

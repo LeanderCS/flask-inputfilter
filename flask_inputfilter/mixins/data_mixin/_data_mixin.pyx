@@ -1,15 +1,16 @@
 # cython: language=c++
+# cython: boundscheck=False
+# cython: wraparound=False
+# cython: cdivision=True
+# cython: nonecheck=False
 
 from typing import Any
 
 from flask_inputfilter.exceptions import ValidationError
-
 from flask_inputfilter.mixins.cimports cimport ValidationMixin
-
 from flask_inputfilter.models.cimports cimport BaseFilter, BaseValidator, FieldModel, BaseCondition, InputFilter
 
-# Compile-time constants for performance thresholds
-DEF LARGE_DATASET_THRESHOLD = 10
+DEF LARGE_DATASET_THRESHOLD = 100
 
 
 cdef class DataMixin:
@@ -153,21 +154,17 @@ cdef class DataMixin:
             list keys = list(source_inputs.keys()) if source_inputs else []
             list new_fields = list(source_inputs.values()) if source_inputs else []
 
-        # Merge fields efficiently
         n = len(keys)
         for i in range(n):
             target_filter.fields[keys[i]] = new_fields[i]
-        
-        # Merge conditions
+
         target_filter.conditions.extend(source_filter.conditions)
 
-        # Merge global filters (avoid duplicates by type)
         DataMixin._merge_component_list(
             target_filter.global_filters, 
             source_filter.global_filters
         )
 
-        # Merge global validators (avoid duplicates by type)
         DataMixin._merge_component_list(
             target_filter.global_validators, 
             source_filter.global_validators

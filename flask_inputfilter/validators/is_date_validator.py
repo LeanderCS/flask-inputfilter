@@ -25,12 +25,9 @@ class IsDateValidator(BaseValidator):
     .. code-block:: python
 
         class DateInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('event_date', validators=[
-                    IsDateValidator()
-                ])
+            event_date: date = field(validators=[
+                IsDateValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

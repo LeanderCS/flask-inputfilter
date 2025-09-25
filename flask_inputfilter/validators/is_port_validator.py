@@ -27,11 +27,9 @@ class IsPortValidator(BaseValidator):
     .. code-block:: python
 
         class PortInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('port', validators=[
-                    IsPortValidator()
-                ])
+            port: int = field(validators=[
+                IsPortValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

@@ -7,7 +7,7 @@ They ensure that the input data meets the required conditions before further pro
 Overview
 --------
 
-Validators can be added into the ``add`` method for a specific field or as a global validator for all fields in ``add_global_validator``.
+Validators can be added to specific fields using the decorator syntax or as global validators using ``_global_validators``.
 
 The global validation will be executed before the specific field validation.
 
@@ -17,21 +17,14 @@ Example
 .. code-block:: python
 
     class UpdatePointsInputFilter(InputFilter):
-        def __init__(self):
-            super().__init__()
+        id: int = field(required=True)
 
-            self.add(
-                'id',
-                required=True
-            )
+        points: int = field(
+            required=True,
+            validators=[RangeValidator(min_value=0, max_value=10)]
+        )
 
-            self.add(
-                'points',
-                required=True,
-                validators=[RangeValidator(min_value=0, max_value=10)]
-            )
-
-            self.add_global_validator(IsIntegerValidator())
+        _global_validators = [IsIntegerValidator()]
 
 Available Validators
 --------------------

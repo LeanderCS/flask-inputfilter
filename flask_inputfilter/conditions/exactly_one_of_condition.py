@@ -23,18 +23,10 @@ class ExactlyOneOfCondition(BaseCondition):
     .. code-block:: python
 
         class OneFieldFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
+            email: str = field()
+            phone: str = field()
 
-                self.add(
-                    'email'
-                )
-
-                self.add(
-                    'phone'
-                )
-
-                self.add_condition(ExactlyOneOfCondition(['email', 'phone']))
+            _conditions = [ExactlyOneOfCondition(['email', 'phone'])]
     """
 
     __slots__ = ("fields",)

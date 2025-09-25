@@ -31,12 +31,9 @@ class IsFutureDateValidator(BaseValidator):
     .. code-block:: python
 
         class AppointmentInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('appointment_date', validators=[
-                    IsFutureDateValidator()
-                ])
+            appointment_date: str = field(validators=[
+                IsFutureDateValidator()
+            ])
     """
 
     __slots__ = ("error_message", "tz")

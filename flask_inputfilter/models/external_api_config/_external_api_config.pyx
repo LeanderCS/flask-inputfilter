@@ -1,5 +1,9 @@
 # cython: language=c++
 # cython: freelist=256
+# cython: boundscheck=False
+# cython: wraparound=False
+# cython: cdivision=True
+# cython: nonecheck=False
 
 import cython
 from typing import Any

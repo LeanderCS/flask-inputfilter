@@ -4,7 +4,7 @@ Copy functionality
 Overview
 --------
 
-The copy functionality is configured via the ``copy`` parameter in the ``add`` method.
+The copy functionality is configured via the ``copy`` parameter in the ``field`` function.
 This parameter accepts a string with the name the value should be copied from.
 
 .. note::
@@ -20,21 +20,14 @@ Basic Copy Integration
 .. code-block:: python
 
     class MyInputFilter(InputFilter):
-        def __init__(self):
-            super().__init__()
+        username: str = field(
+            validators=[IsStringValidator()]
+        )
 
-            self.add(
-                "username",
-                validator=[
-                    IsStringValidator()
-                ]
-            )
-
-            self.add(
-                "escapedUsername",
-                copy="username"
-                filters=[StringSlugifyFilter()]
-            )
+        escapedUsername: str = field(
+            copy="username",
+            filters=[StringSlugifyFilter()]
+        )
 
     # Example usage
     # Body: {"username": "Very Important User"}
@@ -53,30 +46,22 @@ The coping can also be used as a chain.
 .. code-block:: python
 
     class MyInputFilter(InputFilter):
-        def __init__(self):
-            super().__init__()
+        username: str = field()
 
-            self.add(
-                "username"
-            )
+        escapedUsername: str = field(
+            copy="username",
+            filters=[StringSlugifyFilter()]
+        )
 
-            self.add(
-                "escapedUsername",
-                copy="username"
-                filters=[StringSlugifyFilter()]
-            )
+        upperEscapedUsername: str = field(
+            copy="escapedUsername",
+            filters=[ToUpperFilter()]
+        )
 
-            self.add(
-                "upperEscapedUsername",
-                copy="escapedUsername"
-                filters=[ToUpperFilter()]
-            )
-
-            self.add(
-                "lowerEscapedUsername",
-                copy="escapedUsername"
-                filters=[ToLowerFilter()]
-            )
+        lowerEscapedUsername: str = field(
+            copy="escapedUsername",
+            filters=[ToLowerFilter()]
+        )
 
     # Example usage
     # Body: {"username": "Very Important User"}

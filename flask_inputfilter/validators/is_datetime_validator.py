@@ -25,12 +25,9 @@ class IsDateTimeValidator(BaseValidator):
     .. code-block:: python
 
         class TimestampInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('timestamp', validators=[
-                    IsDateTimeValidator()
-                ])
+            timestamp: datetime = field(validators=[
+                IsDateTimeValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

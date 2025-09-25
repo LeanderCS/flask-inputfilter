@@ -23,25 +23,20 @@ class IntegerBiggerThanCondition(BaseCondition):
     .. code-block:: python
 
         class NumberComparisonFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
+            field_should_be_bigger: int = field(
+                validators=[IsIntegerValidator()]
+            )
 
-                self.add(
-                    'field_should_be_bigger',
-                    validators=[IsIntegerValidator()]
-                )
+            field_should_be_smaller: int = field(
+                validators=[IsIntegerValidator()]
+            )
 
-                self.add(
-                    'field_should_be_smaller',
-                    validators=[IsIntegerValidator()]
+            _conditions = [
+                IntegerBiggerThanCondition(
+                    bigger_field='field_should_be_bigger',
+                    smaller_field='field_should_be_smaller'
                 )
-
-                self.add_condition(
-                    IntegerBiggerThanCondition(
-                        bigger_field='field_should_be_bigger',
-                        smaller_field='field_should_be_smaller'
-                    )
-                )
+            ]
     """
 
     __slots__ = ("bigger_field", "smaller_field")

@@ -26,11 +26,9 @@ class IsUUIDValidator(BaseValidator):
     .. code-block:: python
 
         class UUIDInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('uuid', validators=[
-                    IsUUIDValidator()
-                ])
+            uuid: str = field(validators=[
+                IsUUIDValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

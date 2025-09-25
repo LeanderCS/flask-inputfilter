@@ -18,7 +18,7 @@ This feature allows dynamic data retrieval based on user inputs, such as validat
 Configuration
 -------------
 
-The external API functionality is configured via the ``external_api`` parameter in the ``add`` method. This parameter accepts a dictionary with the following structure:
+The external API functionality is configured via the ``external_api`` parameter in the ``field`` function. This parameter accepts a dictionary with the following structure:
 
 Fields of `ExternalApiConfig`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -54,22 +54,16 @@ Basic External API Integration
 .. code-block:: python
 
     class MyInputFilter(InputFilter):
-        def __init__(self):
-            super().__init__()
+        user_id: int = field(required=True)
 
-            self.add(
-                "user_id", required=True
-            )
-
-            self.add(
-                "is_active",
-                required=True,
-                external_api={
-                    "url": "https://api.example.com/users/{{user_id}}/status",
-                    "method": "GET",
-                    "data_key": "is_active",
-                },
-            )
+        is_active: bool = field(
+            required=True,
+            external_api={
+                "url": "https://api.example.com/users/{{user_id}}/status",
+                "method": "GET",
+                "data_key": "is_active",
+            }
+        )
 
     # Example usage
     # Body: {"user_id": 123}
@@ -85,15 +79,14 @@ Using Query Parameters
 
 .. code-block:: python
 
-    self.add(
-        "is_valid",
+    is_valid: bool = field(
         required=True,
         external_api={
             "url": "https://api.example.com/validate",
             "method": "GET",
             "params": {"user": "{{user_id}}", "hash": "{{hash}}"},
             "data_key": "is_valid",
-        },
+        }
     )
 
 This configuration sends the ``user_id`` and ``hash`` as query parameters, replacing the placeholders with validated data.
@@ -103,15 +96,14 @@ Handling Fallback Values
 
 .. code-block:: python
 
-    self.add(
-        "user_info",
+    user_info: dict = field(
         required=True,
         fallback={"name": "unknown", "age": 0},
         external_api={
             "url": "https://api.example.com/user/{{user_id}}",
             "method": "GET",
             "data_key": "user",
-        },
+        }
     )
 
 Error Handling

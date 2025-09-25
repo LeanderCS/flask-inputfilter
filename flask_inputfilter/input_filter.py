@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 from flask import Response, g, request
 
+from flask_inputfilter.declarative import FieldDescriptor
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.mixins import DataMixin
 from flask_inputfilter.models import BaseFilter, ExternalApiConfig, FieldModel
@@ -56,6 +57,8 @@ class InputFilter:
         self.validated_data: dict[str, Any] = {}
         self.errors: dict[str, str] = {}
         self.model_class: Optional[Type[T]] = None
+
+        self._register_decorator_components()
 
     def is_valid(self) -> bool:
         """
@@ -207,6 +210,42 @@ class InputFilter:
             condition (BaseCondition): The condition to add.
         """
         self.conditions.append(condition)
+
+    def _register_decorator_components(self) -> None:
+        """Register decorator-based components from the current class only."""
+        cls = self.__class__
+
+        for attr_name in dir(cls):
+            if attr_name.startswith("_"):
+                continue
+            if hasattr(cls, attr_name):
+                attr_value = getattr(cls, attr_name)
+                if isinstance(attr_value, FieldDescriptor):
+                    self.fields[attr_name] = FieldModel(
+                        attr_value.required,
+                        attr_value.default,
+                        attr_value.fallback,
+                        attr_value.filters,
+                        attr_value.validators,
+                        attr_value.steps,
+                        attr_value.external_api,
+                        attr_value.copy,
+                    )
+
+        if hasattr(cls, "_conditions"):
+            conditions = cls._conditions
+            self.conditions.extend(conditions)
+
+        if hasattr(cls, "_global_validators"):
+            validators = cls._global_validators
+            self.global_validators.extend(validators)
+
+        if hasattr(cls, "_global_filters"):
+            filters = cls._global_filters
+            self.global_filters.extend(filters)
+
+        if hasattr(cls, "_model"):
+            self.model_class = cls._model
 
     def get_conditions(self) -> list[BaseCondition]:
         """

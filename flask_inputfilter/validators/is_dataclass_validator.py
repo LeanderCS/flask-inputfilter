@@ -64,12 +64,9 @@ class IsDataclassValidator(BaseValidator):
             name: str
 
         class UserInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('user', validators=[
-                    IsDataclassValidator(dataclass_type=User)
-                ])
+            user: dict = field(validators=[
+                IsDataclassValidator(dataclass_type=User)
+            ])
     """
 
     __slots__ = ("dataclass_type", "error_message")

@@ -1,4 +1,9 @@
 # cython: language=c++
+# cython: boundscheck=False
+# cython: wraparound=False
+# cython: cdivision=True
+# cython: nonecheck=False
+
 
 cdef class BaseValidator:
     """
@@ -18,4 +23,4 @@ cdef class BaseValidator:
             ValidationError: If the value is invalid.
             NotImplementedError: If the method is not implemented by subclasses.
         """
-        raise NotImplementedError("Subclasses must implement the validate method") 
+        raise NotImplementedError("Subclasses must implement the validate method") from None

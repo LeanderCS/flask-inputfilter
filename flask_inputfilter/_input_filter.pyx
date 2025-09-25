@@ -1,4 +1,13 @@
 # cython: language=c++
+# cython: boundscheck=False
+# cython: wraparound=False
+# cython: cdivision=True
+# cython: overflowcheck=False
+# cython: initializedcheck=False
+# cython: nonecheck=False
+# cython: optimize.use_switch=True
+# cython: optimize.unpack_method_calls=True
+# cython: infer_types=True
 
 import json
 import logging
@@ -9,11 +18,14 @@ from flask import Response, g, request
 
 from flask_inputfilter.exceptions import ValidationError
 
+from flask_inputfilter.declarative.cimports cimport FieldDescriptor
 from flask_inputfilter.mixins.cimports cimport DataMixin
 from flask_inputfilter.models.cimports cimport BaseCondition, BaseFilter, BaseValidator, ExternalApiConfig, FieldModel
 
 from libcpp.vector cimport vector
 from libcpp.string cimport string
+
+from libcpp.algorithm cimport find
 
 cdef dict _INTERNED_STRINGS = {
     "_condition": sys.intern("_condition"),
@@ -45,7 +57,8 @@ cdef class InputFilter:
     """
 
     def __cinit__(self) -> None:
-        self.methods = make_default_methods()
+        cdef vector[string] default_methods = make_default_methods()
+        self.methods = default_methods
         self.fields = {}
         self.conditions = []
         self.global_filters = []
@@ -57,8 +70,22 @@ cdef class InputFilter:
 
     def __init__(self, methods: Optional[list[str]] = None) -> None:
         if methods is not None:
-            self.methods.clear()
-            [self.methods.push_back(method.encode()) for method in methods]
+            self._set_methods(methods)
+
+        self._register_decorator_components()
+
+    cdef void _set_methods(self, list methods):
+        """Efficiently set HTTP methods using C++ vector operations."""
+        cdef str method
+        cdef bytes encoded_method
+        cdef Py_ssize_t n = len(methods)
+
+        self.methods.clear()
+        self.methods.reserve(n)
+
+        for method in methods:
+            encoded_method = method.encode('utf-8')
+            self.methods.push_back(string(encoded_method))
 
     cpdef bint is_valid(self):
         """
@@ -122,8 +149,14 @@ cdef class InputFilter:
                 """
 
                 cdef InputFilter input_filter = cls()
-                cdef string request_method = request.method.encode()
-                if not any(request_method == method for method in input_filter.methods):
+                cdef bytes request_method_bytes = request.method.encode('utf-8')
+                cdef string request_method = string(request_method_bytes)
+                cdef vector[string].iterator method_it = find(
+                    input_filter.methods.begin(),
+                    input_filter.methods.end(),
+                    request_method
+                )
+                if method_it == input_filter.methods.end():
                     return Response(status=405, response="Method Not Allowed")
 
                 if request.is_json:
@@ -205,6 +238,48 @@ cdef class InputFilter:
             condition (BaseCondition): The condition to add.
         """
         self.conditions.append(condition)
+
+    cdef void _register_decorator_components(self):
+        """Register decorator-based components from the current class only."""
+        cdef object cls, attr_value, conditions, validators, filters
+        cdef str attr_name
+        cdef list dir_attrs
+        cdef FieldDescriptor field_desc
+
+        cls = self.__class__
+        dir_attrs = dir(cls)
+
+        for attr_name in dir_attrs:
+            if (<bytes>attr_name.encode('utf-8')).startswith(b"_"):
+                continue
+
+            attr_value = getattr(cls, attr_name, None)
+            if attr_value is not None and isinstance(attr_value, FieldDescriptor):
+                field_desc = <FieldDescriptor>attr_value
+                self.fields[attr_name] = FieldModel(
+                    field_desc.required,
+                    field_desc._default,
+                    field_desc.fallback,
+                    field_desc.filters,
+                    field_desc.validators,
+                    field_desc.steps,
+                    field_desc.external_api,
+                    field_desc.copy,
+                )
+
+        conditions = getattr(cls, "_conditions", None)
+        if conditions is not None:
+            self.conditions.extend(conditions)
+
+        validators = getattr(cls, "_global_validators", None)
+        if validators is not None:
+            self.global_validators.extend(validators)
+
+        filters = getattr(cls, "_global_filters", None)
+        if filters is not None:
+            self.global_filters.extend(filters)
+
+        self.model_class = getattr(cls, "_model", self.model_class)
 
     cpdef list get_conditions(self):
         """
@@ -307,14 +382,19 @@ cdef class InputFilter:
 
         cdef:
             Py_ssize_t i, n = len(self.fields)
-            dict result = {}
+            dict result
             list field_names = list(self.fields.keys())
             str field
+            object field_value
+
+        # Pre-allocate dictionary size for better performance
+        result = {}
 
         for i in range(n):
             field = field_names[i]
-            if field in self.data:
-                result[field] = self.data[field]
+            field_value = self.data.get(field)
+            if field_value is not None:
+                result[field] = field_value
         return result
 
     cpdef dict[str, Any] get_unfiltered_data(self):

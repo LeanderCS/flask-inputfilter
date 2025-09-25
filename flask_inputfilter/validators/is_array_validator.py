@@ -24,12 +24,9 @@ class IsArrayValidator(BaseValidator):
     .. code-block:: python
 
         class ListInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('items', validators=[
-                    IsArrayValidator()
-                ])
+            items: list = field(validators=[
+                IsArrayValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

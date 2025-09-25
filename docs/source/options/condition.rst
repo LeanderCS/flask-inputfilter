@@ -6,7 +6,7 @@ Condition
 Overview
 --------
 
-Conditions are added using the ``add_condition`` method. They evaluate the combined input data, ensuring that inter-field dependencies and relationships (such as equality, ordering, or presence) meet predefined rules.
+Conditions are added using the ``_conditions`` class attribute. They evaluate the combined input data, ensuring that inter-field dependencies and relationships (such as equality, ordering, or presence) meet predefined rules.
 
 Example
 -------
@@ -14,24 +14,17 @@ Example
 .. code-block:: python
 
     class TestInputFilter(InputFilter):
-        def __init__(self):
-            super().__init__()
+        username: str = field(
+            filters=[StringTrimFilter()],
+            validators=[IsStringValidator()]
+        )
 
-            self.add(
-                'username',
-                filters=[StringTrimFilter()],
-                validators=[IsStringValidator()]
-            )
+        name: str = field(
+            filters=[StringTrimFilter()],
+            validators=[IsStringValidator()]
+        )
 
-            self.add(
-                'name',
-                filters=[StringTrimFilter()],
-                validators=[IsStringValidator()]
-            )
-
-            self.add_condition(
-                OneOfCondition(['id', 'name'])
-            )
+        _conditions = [OneOfCondition(['id', 'name'])]
 
 Available Conditions
 --------------------

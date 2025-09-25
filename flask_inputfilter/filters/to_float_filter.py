@@ -19,12 +19,9 @@ class ToFloatFilter(BaseFilter):
     .. code-block:: python
 
         class PriceFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('price', filters=[
-                    ToFloatFilter()
-                ])
+            price: float = field(filters=[
+                ToFloatFilter()
+            ])
     """
 
     __slots__ = ()

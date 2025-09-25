@@ -27,11 +27,9 @@ class IsHtmlValidator(BaseValidator):
     .. code-block:: python
 
         class HtmlInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('html_content', validators=[
-                    IsHtmlValidator()
-                ])
+            html_content: str = field(validators=[
+                IsHtmlValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

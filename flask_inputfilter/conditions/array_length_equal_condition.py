@@ -25,25 +25,15 @@ class ArrayLengthEqualCondition(BaseCondition):
     .. code-block:: python
 
         class ArrayLengthFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
+            list1: list = field(validators=[IsArrayValidator()])
+            list2: list = field(validators=[IsArrayValidator()])
 
-                self.add(
-                    'list1',
-                    validators=[IsArrayValidator()]
+            _conditions = [
+                ArrayLengthEqualCondition(
+                    first_array_field='list1',
+                    second_array_field='list2'
                 )
-
-                self.add(
-                    'list2',
-                    validators=[IsArrayValidator()]
-                )
-
-                self.add_condition(
-                    ArrayLengthEqualCondition(
-                        first_array_field='list1',
-                        second_array_field='list2'
-                    )
-                )
+            ]
     """
 
     __slots__ = ("first_array_field", "second_array_field")

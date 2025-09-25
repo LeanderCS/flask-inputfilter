@@ -24,11 +24,9 @@ class IsIntegerValidator(BaseValidator):
     .. code-block:: python
 
         class NumberInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('number', validators=[
-                    IsIntegerValidator()
-                ])
+            number: int = field(validators=[
+                IsIntegerValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

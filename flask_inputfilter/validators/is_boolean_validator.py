@@ -24,12 +24,9 @@ class IsBooleanValidator(BaseValidator):
     .. code-block:: python
 
         class FlagInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('is_active', validators=[
-                    IsBooleanValidator()
-                ])
+            is_active: bool = field(validators=[
+                IsBooleanValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

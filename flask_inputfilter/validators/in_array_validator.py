@@ -30,12 +30,9 @@ class InArrayValidator(BaseValidator):
     .. code-block:: python
 
         class StatusInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('status', validators=[
-                    InArrayValidator(haystack=["active", "inactive"])
-                ])
+            status: str = field(validators=[
+                InArrayValidator(haystack=["active", "inactive"])
+            ])
     """
 
     __slots__ = ("error_message", "haystack", "strict")

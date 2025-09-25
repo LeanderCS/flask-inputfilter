@@ -24,11 +24,9 @@ class IsStringValidator(BaseValidator):
     .. code-block:: python
 
         class TextInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('text', validators=[
-                    IsStringValidator()
-                ])
+            text: str = field(validators=[
+                IsStringValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

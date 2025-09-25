@@ -33,15 +33,12 @@ class CustomJsonValidator(BaseValidator):
     .. code-block:: python
 
         class JsonInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('data', validators=[
-                    CustomJsonValidator(
-                        required_fields=['id', 'name'],
-                        schema={'id': int, 'name': str}
-                    )
-                ])
+            data: dict = field(validators=[
+                CustomJsonValidator(
+                    required_fields=['id', 'name'],
+                    schema={'id': int, 'name': str}
+                )
+            ])
     """
 
     __slots__ = ("error_message", "required_fields", "schema")

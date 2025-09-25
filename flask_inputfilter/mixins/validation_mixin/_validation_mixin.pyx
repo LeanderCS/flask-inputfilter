@@ -1,4 +1,8 @@
 # cython: language=c++
+# cython: boundscheck=False
+# cython: wraparound=False
+# cython: cdivision=True
+# cython: nonecheck=False
 
 import cython
 from typing import Any

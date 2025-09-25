@@ -26,12 +26,9 @@ class BlacklistFilter(BaseFilter):
     .. code-block:: python
 
         class CommentFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('comment', filters=[
-                    BlacklistFilter(blacklist=["badword1", "badword2"])
-                ])
+            comment: str = field(filters=[
+                BlacklistFilter(blacklist=["badword1", "badword2"])
+            ])
     """
 
     __slots__ = ("blacklist",)

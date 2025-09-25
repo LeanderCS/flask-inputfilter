@@ -28,12 +28,9 @@ class WhitelistFilter(BaseFilter):
     .. code-block:: python
 
         class RolesFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('roles', filters=[
-                    WhitelistFilter(whitelist=["admin", "user"])
-                ])
+            roles: list = field(filters=[
+                WhitelistFilter(whitelist=["admin", "user"])
+            ])
     """
 
     __slots__ = ("whitelist",)
