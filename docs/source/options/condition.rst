@@ -6,7 +6,7 @@ Condition
 Overview
 --------
 
-Conditions are added using the ``_conditions`` class attribute. They evaluate the combined input data, ensuring that inter-field dependencies and relationships (such as equality, ordering, or presence) meet predefined rules.
+Conditions are added using the ``condition()`` declarative. They evaluate the combined input data, ensuring that inter-field dependencies and relationships (such as equality, ordering, or presence) meet predefined rules.
 
 Example
 -------
@@ -24,7 +24,7 @@ Example
             validators=[IsStringValidator()]
         )
 
-        _conditions = [OneOfCondition(['id', 'name'])]
+        condition(OneOfCondition(['id', 'name']))
 
 Available Conditions
 --------------------

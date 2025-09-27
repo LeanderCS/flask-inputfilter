@@ -26,12 +26,12 @@ class StringLongerThanCondition(BaseCondition):
             description: str = field()
             summary: str = field()
 
-            _conditions = [
+            condition(
                 StringLongerThanCondition(
                     longer_field='description',
                     shorter_field='summary'
                 )
-            ]
+            )
     """
 
     __slots__ = ("longer_field", "shorter_field")

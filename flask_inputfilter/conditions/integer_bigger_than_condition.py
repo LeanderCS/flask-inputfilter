@@ -31,12 +31,12 @@ class IntegerBiggerThanCondition(BaseCondition):
                 validators=[IsIntegerValidator()]
             )
 
-            _conditions = [
+            condition(
                 IntegerBiggerThanCondition(
                     bigger_field='field_should_be_bigger',
                     smaller_field='field_should_be_smaller'
                 )
-            ]
+            )
     """
 
     __slots__ = ("bigger_field", "smaller_field")

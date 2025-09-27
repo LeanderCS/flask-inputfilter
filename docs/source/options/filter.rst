@@ -6,7 +6,7 @@ Filter
 Overview
 --------
 
-Filters can be added to specific fields using the decorator syntax or as global filters using ``_global_filters``.
+Filters can be added to specific fields using the decorator syntax or as global filters using ``global_filter()``.
 
 The global filters will be executed before the specific field filtering.
 
@@ -26,7 +26,7 @@ Example
             filters=[StringTrimFilter()]
         )
 
-        _global_filters = [ToLowerFilter()]
+        global_filter(ToLowerFilter())
 
 Available Filters
 -----------------

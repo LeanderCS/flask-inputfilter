@@ -9,6 +9,8 @@
 # cython: optimize.unpack_method_calls=True
 # cython: infer_types=True
 
+import dataclasses
+import inspect
 import json
 import logging
 import sys
@@ -228,7 +230,7 @@ cdef class InputFilter:
             raise ValidationError(errors)
 
         self.validated_data = validated_data
-        return self.serialize()
+        return self._serialize()
 
     cpdef void add_condition(self, BaseCondition condition):
         """
@@ -240,44 +242,64 @@ cdef class InputFilter:
         self.conditions.append(condition)
 
     cdef void _register_decorator_components(self):
-        """Register decorator-based components from the current class only."""
-        cdef object cls, attr_value, conditions, validators, filters
+        """Register decorator-based components from the current class and
+        inheritance chain."""
+        cdef object cls, attr_value, conditions, validators, filters, base_cls
         cdef str attr_name
         cdef list dir_attrs
         cdef FieldDescriptor field_desc
+        cdef set added_conditions, added_global_validators, added_global_filters
+        cdef object condition_id, validator_id, filter_id
+        cdef object condition, validator, filter_instance
 
         cls = self.__class__
         dir_attrs = dir(cls)
 
         for attr_name in dir_attrs:
-            if (<bytes>attr_name.encode('utf-8')).startswith(b"_"):
+            if attr_name.startswith("_"):
                 continue
+            if hasattr(cls, attr_name):
+                attr_value = getattr(cls, attr_name)
+                if isinstance(attr_value, FieldDescriptor):
+                    self.fields[attr_name] = FieldModel(
+                        attr_value.required,
+                        attr_value.default,
+                        attr_value.fallback,
+                        attr_value.filters,
+                        attr_value.validators,
+                        attr_value.steps,
+                        attr_value.external_api,
+                        attr_value.copy,
+                    )
 
-            attr_value = getattr(cls, attr_name, None)
-            if attr_value is not None and isinstance(attr_value, FieldDescriptor):
-                field_desc = <FieldDescriptor>attr_value
-                self.fields[attr_name] = FieldModel(
-                    field_desc.required,
-                    field_desc._default,
-                    field_desc.fallback,
-                    field_desc.filters,
-                    field_desc.validators,
-                    field_desc.steps,
-                    field_desc.external_api,
-                    field_desc.copy,
-                )
+        added_conditions = set()
+        added_global_validators = set()
+        added_global_filters = set()
 
-        conditions = getattr(cls, "_conditions", None)
-        if conditions is not None:
-            self.conditions.extend(conditions)
+        for base_cls in reversed(cls.__mro__):
+            conditions = getattr(base_cls, "_conditions", None)
+            if conditions is not None:
+                for condition in conditions:
+                    condition_id = id(condition)
+                    if condition_id not in added_conditions:
+                        self.conditions.append(condition)
+                        added_conditions.add(condition_id)
 
-        validators = getattr(cls, "_global_validators", None)
-        if validators is not None:
-            self.global_validators.extend(validators)
+            validators = getattr(base_cls, "_global_validators", None)
+            if validators is not None:
+                for validator in validators:
+                    validator_id = id(validator)
+                    if validator_id not in added_global_validators:
+                        self.global_validators.append(validator)
+                        added_global_validators.add(validator_id)
 
-        filters = getattr(cls, "_global_filters", None)
-        if filters is not None:
-            self.global_filters.extend(filters)
+            filters = getattr(base_cls, "_global_filters", None)
+            if filters is not None:
+                for filter_instance in filters:
+                    filter_id = id(filter_instance)
+                    if filter_id not in added_global_filters:
+                        self.global_filters.append(filter_instance)
+                        added_global_filters.add(filter_id)
 
         self.model_class = getattr(cls, "_model", self.model_class)
 
@@ -719,7 +741,7 @@ cdef class InputFilter:
         """
         self.model_class = model_class
 
-    cpdef object serialize(self):
+    cdef object _serialize(self):
         """
         Serialize the validated data. If a model class is set,
         returns an instance of that class, otherwise returns the
@@ -731,7 +753,26 @@ cdef class InputFilter:
         if self.model_class is None:
             return self.validated_data
 
-        return self.model_class(**self.validated_data)
+        try:
+            return self.model_class(**self.validated_data)
+        except TypeError:
+            pass
+
+        cdef set field_names = set()
+
+        if dataclasses.is_dataclass(self.model_class):
+            field_names = {f.name for f in dataclasses.fields(self.model_class)}
+        elif hasattr(self.model_class, '__fields__'):
+            field_names = set(self.model_class.__fields__.keys())
+        elif hasattr(self.model_class, '__annotations__'):
+            field_names = set(self.model_class.__annotations__.keys())
+        else:
+            sig = inspect.signature(self.model_class.__init__)
+            field_names = set(sig.parameters.keys()) - {'self'}
+
+        cdef dict filtered_data = {k: v for k, v in self.validated_data.items() if k in field_names}
+
+        return self.model_class(**filtered_data)
 
     cpdef void add_global_validator(self, BaseValidator validator):
         """

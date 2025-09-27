@@ -1131,33 +1131,6 @@ class TestInputFilter(unittest.TestCase):
         )
         self.assertEqual(validated_data["escapedUsername"], "test-user")
 
-    def test_serialize_and_set_model(self) -> None:
-        """Test that InputFilter.serialize() serializes the validated data."""
-
-        class User:
-            def __init__(self, username: str):
-                self.username = username
-
-        @dataclass
-        class User2:
-            username: str
-
-        self.inputFilter.add("username")
-        self.inputFilter.set_data({"username": "test user"})
-
-        self.inputFilter.is_valid()
-
-        self.inputFilter.set_model(User)
-        self.assertEqual(self.inputFilter.serialize().username, "test user")
-
-        self.inputFilter.set_model(None)
-        self.assertEqual(
-            self.inputFilter.serialize(), {"username": "test user"}
-        )
-
-        self.inputFilter.set_model(User2)
-        self.assertEqual(self.inputFilter.serialize().username, "test user")
-
     def test_model_class_serialisation(self) -> None:
         """Test that the model class is serialized correctly."""
 

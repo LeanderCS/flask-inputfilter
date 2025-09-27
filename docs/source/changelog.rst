@@ -4,6 +4,53 @@ Changelog
 All notable changes to this project will be documented in this file.
 
 
+[0.7.2] - 2025-09-28
+--------------------
+
+Changed
+^^^^^^^
+- Changed the way how to use the new decorator ``_condition``, ``_global_filter``, ``_global_validator`` and ``_model``.
+  They should no longer be assigned to a variable, but should be set with the corresponding declarative method.
+
+  ``_condition = [Example()]`` => ``condition(Example())``
+
+  ``_global_filter = [Example()]`` => ``global_filter(Example())``
+
+  ``_global_validator = [Example()]`` => ``global_validator(Example())``
+
+  ``_model = Example`` => ``model(Example)``
+
+  The previous way is still supported, but is not recommended because it is not streightforward and could lead to confusion.
+  The new methods also support multiple calls and also mass assignment.
+
+  Both of the following examples are valid and have the same effect:
+
+  .. code-block:: python
+
+        class ExampleInputFilter(InputFilter):
+            field1: str = field()
+            field2: str = field()
+            condition(ExactlyOneOfCondition(['field1', 'field2']))
+
+            field3: str = field()
+            field4: str = field()
+            condition(AtLeastOneOfCondition(['field3', 'field4']))
+
+
+  .. code-block:: python
+
+        class ExampleInputFilter(InputFilter):
+            field1: str = field()
+            field2: str = field()
+            field3: str = field()
+            field4: str = field()
+
+            condition(
+                ExactlyOneOfCondition(['field1', 'field2']),
+                AtLeastOneOfCondition(['field3', 'field4'])
+            )
+
+
 [0.7.1] - 2025-09-27
 --------------------
 
@@ -24,13 +71,13 @@ Added
 
   ``self.add`` => ``field``
 
-  ``self.add_condition`` => ``_conditions``
+  ``self.add_condition`` => ``condition``
 
-  ``self.add_global_filter`` => ``_global_filters``
+  ``self.add_global_filter`` => ``global_filter``
 
-  ``self.add_global_validator`` => ``_global_validators``
+  ``self.add_global_validator`` => ``global_validator``
 
-  ``self.add_model`` => ``_model``
+  ``self.add_model`` => ``model``
 
   **Before**:
     .. code-block:: python
@@ -65,13 +112,13 @@ Added
                 validators=[IsIntegerValidator()]
             )
 
-            _conditions = [ExactlyOneOfCondition(['zipcode', 'city'])]
+            condition(ExactlyOneOfCondition(['zipcode', 'city']))
 
-            _global_filters = [StringTrimFilter()]
+            global_filter(StringTrimFilter())
 
-            _global_validators = [IsStringValidator()]
+            global_validator(IsStringValidator())
 
-            _model = UserModel
+            model(UserModel)
 
   The Change is fully backward compatible, but the new way is more readable
   and maintainable.

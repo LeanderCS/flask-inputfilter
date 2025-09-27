@@ -28,12 +28,12 @@ class ArrayLengthEqualCondition(BaseCondition):
             list1: list = field(validators=[IsArrayValidator()])
             list2: list = field(validators=[IsArrayValidator()])
 
-            _conditions = [
+            condition(
                 ArrayLengthEqualCondition(
                     first_array_field='list1',
                     second_array_field='list2'
                 )
-            ]
+            )
     """
 
     __slots__ = ("first_array_field", "second_array_field")

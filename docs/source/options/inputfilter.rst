@@ -4,94 +4,235 @@ InputFilter
 Overview
 --------
 
+The ``InputFilter`` class is the core component of flask-inputfilter that provides data validation,
+filtering, and serialization capabilities for Flask applications. It supports two different approaches
+for defining input filters.
+
 .. autoclass:: flask_inputfilter.input_filter.InputFilter
    :members:
    :undoc-members:
    :show-inheritance:
 
-Configuration
--------------
+Defining InputFilters
+---------------------
 
-The ``add`` method supports several options:
+The declarative API uses Python decorators to define fields, conditions, and global filters/validators
+directly in the class definition.
 
-- `Name`_
-- `Required`_
-- `Filters`_
-- `Validators`_
-- `Default`_
-- `Fallback`_
-- `Steps`_
-- `ExternalApi`_
-- `Copy`_
+.. code-block:: python
 
-Name
-~~~~
+    from flask_inputfilter import InputFilter
+    from flask_inputfilter.declarative import field, condition, global_filter, global_validator
+    from flask_inputfilter.filters import StringTrimFilter
+    from flask_inputfilter.validators import IsStringValidator, LengthValidator
+    from flask_inputfilter.conditions import EqualCondition
 
-The ``name`` option specifies the name of the field.
-This is the key that will be used to access the field value in the validated data.
+    class UserRegistrationFilter(InputFilter):
+        # Field definitions
+        username = field(
+            required=True,
+            filters=[StringTrimFilter()],
+            validators=[IsStringValidator(), LengthValidator(min_length=3, max_length=20)]
+        )
 
-Required
-~~~~~~~~
+        email = field(
+            required=True,
+            validators=[IsStringValidator()]
+        )
 
-The ``required`` option specifies whether the field must be included in the input data.
-If the field is missing, a ``ValidationError`` will be raised with an appropriate error message.
+        password = field(required=True)
+        password_confirmation = field(required=True)
 
-Filters
-~~~~~~~
+        # Global filters applied to all fields
+        global_filter(StringTrimFilter())
 
-The ``filters`` option allows you to specify one or more filters to apply to the field value.
-Filters are applied in the order they are defined.
+        # Global validators applied to all fields
+        global_validator(IsStringValidator())
 
-For more information view the :doc:`Filter <filter>` documentation.
+        # Conditions for cross-field validation
+        condition(EqualCondition('password', 'password_confirmation'))
 
-Validators
+For detailed information about the declarative API, see:
+
+- :doc:`Declarative API Overview <declarative_api>`
+- :doc:`Field Decorator <field_decorator>`
+- :doc:`Global Decorators <global_decorators>`
+
+Usage
+-----
+
+Using the Validate Decorator
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The most common way to use InputFilter is as a decorator on Flask routes:
+
+.. code-block:: python
+
+    from flask import Flask, g
+
+    app = Flask(__name__)
+
+    @app.route('/register', methods=['POST'])
+    @UserRegistrationFilter.validate()
+    def register():
+        # Access validated data
+        data = g.validated_data
+
+        username = data['username']
+        email = data['email']
+
+        # Your registration logic here
+        return {'message': 'User registered successfully'}
+
+Manual Validation
+~~~~~~~~~~~~~~~~~
+
+You can also validate data manually:
+
+.. code-block:: python
+
+    filter_instance = UserRegistrationFilter()
+
+    filter_instance.set_data({
+        'username': 'john_doe',
+        'email': 'john@example.com',
+        'password': 'secret123',
+        'password_confirmation': 'secret123'
+    })
+
+    if not filter_instance.is_valid():
+        print("Wrong credentials")
+        return
+
+    print(f"Welcome {filter_instance.get_value('username')}!")
+
+Model Serialization
+~~~~~~~~~~~~~~~~~~~
+
+InputFilter can automatically serialize validated data to model instances:
+
+.. code-block:: python
+
+    from dataclasses import dataclass
+    from flask_inputfilter.declarative import model
+
+    @dataclass
+    class User:
+        username: str
+        email: str
+
+    class UserFilter(InputFilter):
+        username = field(required=True, validators=[IsStringValidator()])
+        email = field(required=True, validators=[IsStringValidator()])
+
+        # Associate with model
+        model(User)
+
+    filter_instance = UserFilter()
+    filter_instance.set_data({
+        'username': 'john_doe',
+        'email': 'john@example.com'
+    })
+
+    if filter_instance.is_valid():
+        # Access validated data and create model instance
+        user_instance = User(
+            username=filter_instance.get_value('username'),
+            email=filter_instance.get_value('email')
+        )
+
+        # user_instance is now a User object
+        assert isinstance(user_instance, User)
+        assert user_instance.username == 'john_doe'
+
+Key Methods
+-----------
+
+validate()
 ~~~~~~~~~~
 
-The ``validators`` option allows you to specify one or more validators to apply to the field value.
-Validators are applied in the order they are defined.
+Class method that returns a decorator for Flask routes. Automatically validates request data
+and stores the result in ``g.validated_data``.
 
-For more information view the :doc:`Validator <validator>` documentation.
+.. code-block:: python
 
-Default
-~~~~~~~
+    @app.route('/api/users', methods=['POST'])
+    @UserFilter.validate()
+    def create_user():
+        data = g.validated_data
+        # Use validated data
 
-The ``default`` option allows you to specify a default value to use if the field is not
-present in the input data.
+set_data(data)
+~~~~~~~~~~~~~~
 
-Fallback
-~~~~~~~~
+Instance method that sets the input data to be validated.
 
-The ``fallback`` option specifies a value to use if validation fails or required data
-is missing. Note that if the field is optional and absent, ``fallback`` will not apply;
-use ``default`` in such cases.
+.. code-block:: python
 
-Steps
-~~~~~
+    filter_instance = UserFilter()
+    filter_instance.set_data({'username': 'john'})
 
-The ``steps`` option allows you to specify a list of different filters and validator to apply to the field value.
-It respects the order of the list.
+is_valid()
+~~~~~~~~~~
 
-ExternalApi
-~~~~~~~~~~~
+Instance method that validates the current data and returns ``True`` if valid, ``False`` otherwise.
 
-The ``external_api`` option allows you to specify an external API to call for the field value.
-The API call is made when the field is validated, and the response is used as the field value.
+.. code-block:: python
 
-For more information view the :doc:`ExternalApi <external_api>` documentation.
+    if filter_instance.is_valid():
+        # Data is valid, proceed with processing
+        username = filter_instance.get_value('username')
 
-Copy
-~~~~
+get_value(field_name)
+~~~~~~~~~~~~~~~~~~~~~
 
-The ``copy`` option allows you to copy the value of another field.
-The copied value can be filtered and validated, due to the coping being executed first.
+Instance method that returns the validated value for a specific field.
 
-For more information view the :doc:`Copy <copy>` documentation.
+.. code-block:: python
 
+    username = filter_instance.get_value('username')
+    email = filter_instance.get_value('email')
 
-Examples
---------
+Error Handling
+--------------
 
-Least config
+Flask-inputfilter provides error information when validation fails. You can access validation errors
+through the filter instance:
 
+.. code-block:: python
 
-Full config
+    filter_instance = UserFilter()
+    filter_instance.set_data({'username': ''})  # Empty username
+
+    if not filter_instance.is_valid():
+        errors = filter_instance.get_errors()
+        # errors = {'username': 'This field is required'}
+
+When using the decorator, validation errors automatically return a 400 response with
+the error details in JSON format.
+
+Best Practices
+--------------
+
+1. **Organize Complex Filters**: Break down complex filters into base classes using inheritance
+2. **Model Integration**: Use model serialization for type-safe data handling
+3. **Global Components**: Use global filters/validators for common processing (e.g., trimming strings)
+
+.. code-block:: python
+
+    class BaseFilter(InputFilter):
+        # Common global filters and validators
+        global_filter(StringTrimFilter())
+        global_validator(IsStringValidator())
+
+    class UserFilter(BaseFilter):
+        username = field(
+            required=True,
+            validators=[
+                LengthValidator(
+                    min_length=3,
+                    max_length=20,
+                    message="Username must be between 3 and 20 characters"
+                )
+            ]
+        )

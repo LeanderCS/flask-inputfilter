@@ -7,7 +7,7 @@ They ensure that the input data meets the required conditions before further pro
 Overview
 --------
 
-Validators can be added to specific fields using the decorator syntax or as global validators using ``_global_validators``.
+Validators can be added to specific fields using the decorator syntax or as global validators using ``global_validator()``.
 
 The global validation will be executed before the specific field validation.
 
@@ -24,7 +24,7 @@ Example
             validators=[RangeValidator(min_value=0, max_value=10)]
         )
 
-        _global_validators = [IsIntegerValidator()]
+        global_validator(IsIntegerValidator())
 
 Available Validators
 --------------------

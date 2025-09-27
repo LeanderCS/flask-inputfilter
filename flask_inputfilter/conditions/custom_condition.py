@@ -33,11 +33,11 @@ class CustomCondition(BaseCondition):
         class CustomFilter(InputFilter):
             age: int = field(validators=[IsIntegerValidator()])
 
-            _conditions = [
+            _condition(
                 CustomCondition(
                     condition=my_custom_condition
                 )
-            ]
+            )
     """
 
     __slots__ = ("condition",)

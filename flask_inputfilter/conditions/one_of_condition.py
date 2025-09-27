@@ -27,11 +27,11 @@ class OneOfCondition(BaseCondition):
             email: str = field()
             phone: str = field()
 
-            _conditions = [
+            condition(
                 OneOfCondition(
                     fields=['email', 'phone']
                 )
-            ]
+            )
     """
 
     __slots__ = ("fields",)
