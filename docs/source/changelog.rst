@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 Added
 ^^^^^
 - Added comprehensive ``py.typed`` file for PEP 561 compliance, improving type checking support for mypy and other static type checkers.
+- Added ``AGENTS.md`` to document how to use this library for various ai agents.
 
 
 [0.7.0] - 2025-09-25
