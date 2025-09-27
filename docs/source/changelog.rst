@@ -4,6 +4,14 @@ Changelog
 All notable changes to this project will be documented in this file.
 
 
+[0.7.1] - 2025-09-27
+--------------------
+
+Added
+^^^^^
+- Added comprehensive ``py.typed`` file for PEP 561 compliance, improving type checking support for mypy and other static type checkers.
+
+
 [0.7.0] - 2025-09-25
 --------------------
 
