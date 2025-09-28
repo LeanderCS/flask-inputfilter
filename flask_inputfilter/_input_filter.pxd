@@ -1,4 +1,5 @@
 # cython: language=c++
+
 from typing import Any
 
 from flask_inputfilter.models.cimports cimport BaseCondition, BaseFilter, BaseValidator, ExternalApiConfig, FieldModel
@@ -71,8 +72,8 @@ cdef class InputFilter:
     cpdef void clear(self)
     cpdef void merge(self, InputFilter other)
     cpdef void set_model(self, object model_class)
-    cpdef object serialize(self)
     cpdef void add_global_validator(self, BaseValidator validator)
     cpdef list[BaseValidator] get_global_validators(self)
+    cdef object _serialize(self)
     cdef void _set_methods(self, list methods)
     cdef void _register_decorator_components(self)

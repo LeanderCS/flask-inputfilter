@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from flask_inputfilter import InputFilter
 from flask_inputfilter.conditions import EqualCondition
-from flask_inputfilter.declarative import field
+from flask_inputfilter.declarative import condition, field
 from flask_inputfilter.enums import RegexEnum
 from flask_inputfilter.filters import (
     StringTrimFilter,
@@ -45,4 +45,4 @@ class RegistrationInputFilter(InputFilter):
         validators=[IsBooleanValidator()],
     )
 
-    _conditions = [EqualCondition("password", "password_confirmation")]
+    condition(EqualCondition("password", "password_confirmation"))

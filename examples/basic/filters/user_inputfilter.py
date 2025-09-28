@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from flask_inputfilter import InputFilter
-from flask_inputfilter.declarative import field
+from flask_inputfilter.declarative import field, model
 from flask_inputfilter.validators import IsIntegerValidator, IsStringValidator
 
 
@@ -13,7 +13,7 @@ class User:
 
 
 class UserInputFilter(InputFilter):
-    _model = User
+    model(User)
 
     name: str = field(required=True, validators=[IsStringValidator()])
 

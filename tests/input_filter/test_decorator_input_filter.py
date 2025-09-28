@@ -4,7 +4,7 @@ from unittest.mock import Mock, patch
 
 from flask import Flask, g, jsonify
 from flask_inputfilter import InputFilter
-from flask_inputfilter.declarative import field
+from flask_inputfilter.declarative import condition, field, global_filter, global_validator
 from flask_inputfilter.conditions import ExactlyOneOfCondition
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.filters import (
@@ -125,7 +125,7 @@ class TestDecoratorInputFilter(unittest.TestCase):
             field1: str = field()
             field2: str = field()
 
-            _global_validators = [IsStringValidator()]
+            global_validator(IsStringValidator())
 
         filter_instance = TestInputFilter()
 
@@ -151,7 +151,7 @@ class TestDecoratorInputFilter(unittest.TestCase):
             field1: str = field()
             field2: str = field()
 
-            _global_filters = [ToUpperFilter()]
+            global_filter(ToUpperFilter())
 
         filter_instance = TestInputFilter()
 
@@ -170,7 +170,7 @@ class TestDecoratorInputFilter(unittest.TestCase):
             phone: str = field()
             email: str = field()
 
-            _conditions = [ExactlyOneOfCondition(['phone', 'email'])]
+            condition(ExactlyOneOfCondition(['phone', 'email']))
 
         filter_instance = TestInputFilter()
 
@@ -190,11 +190,11 @@ class TestDecoratorInputFilter(unittest.TestCase):
 
         class BaseInputFilter(InputFilter):
             name: str = field(required=True)
-            _global_filters = [StringTrimFilter()]
+            global_filter(StringTrimFilter())
 
         class ExtendedInputFilter(BaseInputFilter):
             age: int = field(required=True, validators=[IsIntegerValidator()])
-            _global_validators = [IsStringValidator()]
+            global_validator(IsStringValidator())
 
         filter_instance = ExtendedInputFilter()
 
@@ -420,12 +420,9 @@ class TestDecoratorInputFilter(unittest.TestCase):
         self.assertEqual(validated_data['username'], 'testuser')
         self.assertTrue(validated_data['is_valid'])
 
-    # Performance and Edge Cases
-
     def test_large_number_of_decorator_fields(self):
         """Test performance with many decorator fields."""
 
-        # Create a class with many fields programmatically
         class_dict = {}
         for i in range(100):
             class_dict[f'field_{i}'] = field(default=f'value_{i}')
@@ -468,20 +465,15 @@ class TestDecoratorInputFilter(unittest.TestCase):
                 validators=[IsIntegerValidator()]
             )
 
-            # Global components
-            _global_filters = [StringTrimFilter()]
-            _conditions = [
-                # Custom condition example would go here if needed
-            ]
+            global_filter(StringTrimFilter())
 
             def __init__(self):
                 super().__init__()
-                # Classic API additions
+
                 self.add('email', required=False, validators=[IsStringValidator()])
 
         filter_instance = ComplexInputFilter()
 
-        # Test successful complex validation
         validated_data = filter_instance.validate_data({
             'username': '  TestUser  ',
             'age': '25',

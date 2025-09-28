@@ -9,30 +9,32 @@ from flask_inputfilter.models import BaseValidator
 T = TypeVar("T")
 
 
-# TODO: Replace with typing.get_origin when Python 3.7 support is dropped.
-def get_origin(tp: Any) -> Optional[Type[Any]]:
-    """
-    Get the unsubscripted version of a type.
+# Compatibility functions for Python 3.7 support
+try:
+    from typing import get_args, get_origin
+except ImportError:
+    # Fallback implementations for Python 3.7
+    def get_origin(tp: Any) -> Optional[Type[Any]]:
+        """
+        Get the unsubscripted version of a type.
 
-    This supports typing types like list, dict, etc. and their
-    typing_extensions equivalents.
-    """
-    if isinstance(tp, _GenericAlias):
-        return tp.__origin__
-    return None
+        This supports typing types like list, dict, etc. and their
+        typing_extensions equivalents.
+        """
+        if isinstance(tp, _GenericAlias):
+            return tp.__origin__
+        return None
 
+    def get_args(tp: Any) -> tuple[Any, ...]:
+        """
+        Get type arguments with all substitutions performed.
 
-# TODO: Replace with typing.get_args when Python 3.7 support is dropped.
-def get_args(tp: Any) -> tuple[Any, ...]:
-    """
-    Get type arguments with all substitutions performed.
-
-    For unions, basic types, and special typing forms, returns the type
-    arguments. For example, for list[int] returns (int,).
-    """
-    if isinstance(tp, _GenericAlias):
-        return tp.__args__
-    return ()
+        For unions, basic types, and special typing forms, returns the type
+        arguments. For example, for list[int] returns (int,).
+        """
+        if isinstance(tp, _GenericAlias):
+            return tp.__args__
+        return ()
 
 
 class IsDataclassValidator(BaseValidator):

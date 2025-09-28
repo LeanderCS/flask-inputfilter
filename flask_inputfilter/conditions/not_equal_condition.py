@@ -27,7 +27,7 @@ class NotEqualCondition(BaseCondition):
             field1: str = field()
             field2: str = field()
 
-            _conditions = [NotEqualCondition('field1', 'field2')]
+            condition(NotEqualCondition('field1', 'field2'))
     """
 
     __slots__ = ("first_field", "second_field")

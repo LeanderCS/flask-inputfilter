@@ -22,7 +22,8 @@ poetry add flask-inputfilter
 Create validation schemas by inheriting from `InputFilter`:
 
 ```python
-from flask_inputfilter import InputFilter, field
+from flask_inputfilter import InputFilter
+from flask_inputfilter.declarative import field, global_filter
 from flask_inputfilter.filters import ToIntegerFilter, StringTrimFilter
 from flask_inputfilter.validators import IsIntegerValidator, LengthValidator
 
@@ -41,8 +42,7 @@ class UserInputFilter(InputFilter):
     )
 
     # Global filters/validators apply to all fields
-    _global_filters = [StringTrimFilter()]
-    _global_validators = []
+    global_filter(StringTrimFilter())
 ```
 
 ### 2. Usage in Flask Routes

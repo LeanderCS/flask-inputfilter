@@ -2,7 +2,7 @@ import unittest
 
 from flask import Flask, g, jsonify
 from flask_inputfilter import InputFilter
-from flask_inputfilter.declarative import field
+from flask_inputfilter.declarative import condition, field, global_filter, global_validator
 from flask_inputfilter.conditions import ExactlyOneOfCondition
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.filters import StringTrimFilter, ToLowerFilter, ToUpperFilter
@@ -62,8 +62,8 @@ class TestMixedAPI(unittest.TestCase):
             field2: str = field()
 
             # Decorator-based global components
-            _global_filters = [StringTrimFilter()]
-            _global_validators = [IsStringValidator()]
+            global_filter(StringTrimFilter())
+            global_validator(IsStringValidator())
 
             def __init__(self):
                 super().__init__()
@@ -94,8 +94,7 @@ class TestMixedAPI(unittest.TestCase):
             email: str = field()
             address: str = field()
 
-            # Decorator-based condition
-            _conditions = [ExactlyOneOfCondition(['phone', 'email'])]
+            condition(ExactlyOneOfCondition(['phone', 'email']))
 
             def __init__(self):
                 super().__init__()
@@ -191,7 +190,7 @@ class TestMixedAPI(unittest.TestCase):
         class BaseInputFilter(InputFilter):
             # Base decorator field
             name: str = field(required=True)
-            _global_filters = [StringTrimFilter()]
+            global_filter(StringTrimFilter())
 
             def __init__(self):
                 super().__init__()
@@ -271,7 +270,7 @@ class TestMixedAPI(unittest.TestCase):
             profile_type: str = field(required=True)
 
             # Global components via decorator
-            _global_filters = [StringTrimFilter()]
+            global_filter(StringTrimFilter())
 
             def __init__(self):
                 super().__init__()
@@ -525,7 +524,7 @@ class TestMixedAPI(unittest.TestCase):
             )
 
             _model = ComplexModel
-            _global_filters = [StringTrimFilter()]
+            global_filter(StringTrimFilter())
 
             def __init__(self):
                 super().__init__()

@@ -26,7 +26,7 @@ class ExactlyOneOfCondition(BaseCondition):
             email: str = field()
             phone: str = field()
 
-            _conditions = [ExactlyOneOfCondition(['email', 'phone'])]
+            condition(ExactlyOneOfCondition(['email', 'phone']))
     """
 
     __slots__ = ("fields",)

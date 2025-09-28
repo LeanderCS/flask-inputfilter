@@ -77,7 +77,7 @@ Definition
             validators=[IsStringValidator()]
         )
 
-        _conditions = [ExactlyOneOfCondition(['zipcode', 'city'])]
+        condition(ExactlyOneOfCondition(['zipcode', 'city']))
 
 Usage
 ^^^^^

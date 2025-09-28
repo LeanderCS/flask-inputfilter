@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import dataclasses
+import inspect
 import json
 import logging
 import sys
@@ -200,7 +202,7 @@ class InputFilter:
             raise ValidationError(errors)
 
         self.validated_data = validated_data
-        return self.serialize()
+        return self._serialize()
 
     def add_condition(self, condition: BaseCondition) -> None:
         """
@@ -212,10 +214,12 @@ class InputFilter:
         self.conditions.append(condition)
 
     def _register_decorator_components(self) -> None:
-        """Register decorator-based components from the current class only."""
+        """Register decorator-based components from the current class and
+        inheritance chain."""
         cls = self.__class__
+        dir_attrs = dir(cls)
 
-        for attr_name in dir(cls):
+        for attr_name in dir_attrs:
             if attr_name.startswith("_"):
                 continue
             if hasattr(cls, attr_name):
@@ -232,17 +236,34 @@ class InputFilter:
                         attr_value.copy,
                     )
 
-        if hasattr(cls, "_conditions"):
-            conditions = cls._conditions
-            self.conditions.extend(conditions)
+        added_conditions = set()
+        added_global_validators = set()
+        added_global_filters = set()
 
-        if hasattr(cls, "_global_validators"):
-            validators = cls._global_validators
-            self.global_validators.extend(validators)
+        for base_cls in reversed(cls.__mro__):
+            conditions = getattr(base_cls, "_conditions", None)
+            if conditions is not None:
+                for condition in conditions:
+                    condition_id = id(condition)
+                    if condition_id not in added_conditions:
+                        self.conditions.append(condition)
+                        added_conditions.add(condition_id)
 
-        if hasattr(cls, "_global_filters"):
-            filters = cls._global_filters
-            self.global_filters.extend(filters)
+            validators = getattr(base_cls, "_global_validators", None)
+            if validators is not None:
+                for validator in validators:
+                    validator_id = id(validator)
+                    if validator_id not in added_global_validators:
+                        self.global_validators.append(validator)
+                        added_global_validators.add(validator_id)
+
+            filters = getattr(base_cls, "_global_filters", None)
+            if filters is not None:
+                for filter_instance in filters:
+                    filter_id = id(filter_instance)
+                    if filter_id not in added_global_filters:
+                        self.global_filters.append(filter_instance)
+                        added_global_filters.add(filter_id)
 
         if hasattr(cls, "_model"):
             self.model_class = cls._model
@@ -683,7 +704,7 @@ class InputFilter:
         """
         self.model_class = model_class
 
-    def serialize(self) -> Union[dict[str, Any], T]:
+    def _serialize(self) -> Union[dict[str, Any], T]:
         """
         Serialize the validated data. If a model class is set, returns an
         instance of that class, otherwise returns the raw validated data.
@@ -694,7 +715,28 @@ class InputFilter:
         if self.model_class is None:
             return self.validated_data
 
-        return self.model_class(**self.validated_data)
+        try:
+            return self.model_class(**self.validated_data)
+        except TypeError:
+            pass
+
+        if dataclasses.is_dataclass(self.model_class):
+            field_names = {
+                f.name for f in dataclasses.fields(self.model_class)
+            }
+        elif hasattr(self.model_class, "__fields__"):
+            field_names = set(self.model_class.__fields__.keys())
+        elif hasattr(self.model_class, "__annotations__"):
+            field_names = set(self.model_class.__annotations__.keys())
+        else:
+            sig = inspect.signature(self.model_class.__init__)
+            field_names = set(sig.parameters.keys()) - {"self"}
+
+        filtered_data = {
+            k: v for k, v in self.validated_data.items() if k in field_names
+        }
+
+        return self.model_class(**filtered_data)
 
     def add_global_validator(self, validator: BaseValidator) -> None:
         """
