@@ -20,12 +20,9 @@ class ToNullFilter(BaseFilter):
     .. code-block:: python
 
         class MiddleNameFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('middle_name', filters=[
-                    ToNullFilter()
-                ])
+            middle_name = field(filters=[
+                ToNullFilter()
+            ])
     """
 
     __slots__ = ()

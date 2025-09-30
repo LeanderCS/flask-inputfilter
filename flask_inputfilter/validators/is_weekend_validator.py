@@ -27,11 +27,9 @@ class IsWeekendValidator(BaseValidator):
     .. code-block:: python
 
         class WeekendInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('date', validators=[
-                    IsWeekendValidator()
-                ])
+            date = field(validators=[
+                IsWeekendValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

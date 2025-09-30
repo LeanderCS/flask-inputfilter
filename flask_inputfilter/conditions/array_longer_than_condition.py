@@ -24,25 +24,20 @@ class ArrayLongerThanCondition(BaseCondition):
     .. code-block:: python
 
         class ArrayComparisonFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
+            list1 = field(
+                validators=[IsArrayValidator()]
+            )
 
-                self.add(
-                    'list1',
-                    validators=[IsArrayValidator()]
-                )
+            list2 = field(
+                validators=[IsArrayValidator()]
+            )
 
-                self.add(
-                    'list2',
-                    validators=[IsArrayValidator()]
+            condition(
+                ArrayLongerThanCondition(
+                    longer_field='list1',
+                    shorter_field='list2'
                 )
-
-                self.add_condition(
-                    ArrayLongerThanCondition(
-                        longer_field='list1',
-                        shorter_field='list2'
-                    )
-                )
+            )
     """
 
     __slots__ = ("longer_field", "shorter_field")

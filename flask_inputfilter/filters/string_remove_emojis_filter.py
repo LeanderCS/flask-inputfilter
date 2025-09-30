@@ -31,12 +31,9 @@ class StringRemoveEmojisFilter(BaseFilter):
     .. code-block:: python
 
         class CommentFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('comment', filters=[
-                    StringRemoveEmojisFilter()
-                ])
+            comment = field(filters=[
+                StringRemoveEmojisFilter()
+            ])
     """
 
     __slots__ = ()

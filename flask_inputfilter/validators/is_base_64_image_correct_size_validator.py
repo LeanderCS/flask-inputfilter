@@ -32,15 +32,12 @@ class IsBase64ImageCorrectSizeValidator(BaseValidator):
     .. code-block:: python
 
         class ImageInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('image', validators=[
-                    IsBase64ImageCorrectSizeValidator(
-                        min_size=1024,
-                        max_size=2 * 1024 * 1024
-                    )
-                ])
+            image = field(validators=[
+                IsBase64ImageCorrectSizeValidator(
+                    min_size=1024,
+                    max_size=2 * 1024 * 1024
+                )
+            ])
     """
 
     __slots__ = ("error_message", "max_size", "min_size")

@@ -22,12 +22,9 @@ class StringSlugifyFilter(BaseFilter):
     .. code-block:: python
 
         class PostFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('title', filters=[
-                    StringSlugifyFilter()
-                ])
+            title = field(filters=[
+                StringSlugifyFilter()
+            ])
     """
 
     __slots__ = ()

@@ -21,12 +21,9 @@ class ToAlphaNumericFilter(BaseFilter):
     .. code-block:: python
 
         class CodeFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('code', filters=[
-                    ToAlphaNumericFilter()
-                ])
+            code = field(filters=[
+                ToAlphaNumericFilter()
+            ])
     """
 
     __slots__ = ()

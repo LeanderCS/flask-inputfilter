@@ -33,11 +33,9 @@ class IsVerticalImageValidator(BaseValidator):
     .. code-block:: python
 
         class VerticalImageInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('image', validators=[
-                    IsVerticalImageValidator()
-                ])
+            image = field(validators=[
+                IsVerticalImageValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

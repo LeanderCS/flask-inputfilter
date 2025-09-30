@@ -23,23 +23,16 @@ class ExactlyOneOfMatchesCondition(BaseCondition):
     .. code-block:: python
 
         class OneMatchFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
+            option1 = field()
 
-                self.add(
-                    'option1'
-                )
+            option2 = field()
 
-                self.add(
-                    'option2'
+            condition(
+                ExactlyOneOfMatchesCondition(
+                    fields=['option1', 'option2'],
+                    value='yes'
                 )
-
-                self.add_condition(
-                    ExactlyOneOfMatchesCondition(
-                        fields=['option1', 'option2'],
-                        value='yes'
-                    )
-                )
+            )
     """
 
     __slots__ = ("fields", "value")

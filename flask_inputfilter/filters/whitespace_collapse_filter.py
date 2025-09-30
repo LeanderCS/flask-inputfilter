@@ -21,12 +21,9 @@ class WhitespaceCollapseFilter(BaseFilter):
     .. code-block:: python
 
         class AddressFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('address', filters=[
-                    WhitespaceCollapseFilter()
-                ])
+            address = field(filters=[
+                WhitespaceCollapseFilter()
+            ])
     """
 
     __slots__ = ()

@@ -38,12 +38,9 @@ class Base64ImageDownscaleFilter(BaseFilter):
     .. code-block:: python
 
         class ImageFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('profile_pic', filters=[
-                    Base64ImageDownscaleFilter(size=1024*1024)
-                ])
+            profile_pic = field(filters=[
+                Base64ImageDownscaleFilter(size=1024*1024)
+            ])
     """
 
     __slots__ = ("height", "proportionally", "width")

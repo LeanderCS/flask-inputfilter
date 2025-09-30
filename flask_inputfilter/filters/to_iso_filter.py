@@ -20,12 +20,9 @@ class ToIsoFilter(BaseFilter):
     .. code-block:: python
 
         class TimestampIsoFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('timestamp', filters=[
-                    ToIsoFilter()
-                ])
+            timestamp = field(filters=[
+                ToIsoFilter()
+            ])
     """
 
     __slots__ = ()

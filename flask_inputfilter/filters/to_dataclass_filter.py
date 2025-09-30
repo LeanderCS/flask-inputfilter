@@ -26,12 +26,9 @@ class ToDataclassFilter(BaseFilter):
         from my_dataclasses import MyDataClass
 
         class DataFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('data', filters=[
-                    ToDataclassFilter(MyDataClass)
-                ])
+            data = field(filters=[
+                ToDataclassFilter(MyDataClass)
+            ])
     """
 
     __slots__ = ("dataclass_type",)

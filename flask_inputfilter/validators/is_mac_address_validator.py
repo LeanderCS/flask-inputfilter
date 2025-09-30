@@ -32,11 +32,9 @@ class IsMacAddressValidator(BaseValidator):
     .. code-block:: python
 
         class NetworkInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('mac_address', validators=[
-                    IsMacAddressValidator()
-                ])
+            mac_address = field(validators=[
+                IsMacAddressValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

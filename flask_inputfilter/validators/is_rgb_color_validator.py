@@ -31,11 +31,9 @@ class IsRgbColorValidator(BaseValidator):
     .. code-block:: python
 
         class ColorInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('color', validators=[
-                    IsRgbColorValidator()
-                ])
+            color = field(validators=[
+                IsRgbColorValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

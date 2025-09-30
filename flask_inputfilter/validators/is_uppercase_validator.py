@@ -27,11 +27,9 @@ class IsUppercaseValidator(BaseValidator):
     .. code-block:: python
 
         class UppercaseInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('code', validators=[
-                    IsUppercaseValidator()
-                ])
+            code = field(validators=[
+                IsUppercaseValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

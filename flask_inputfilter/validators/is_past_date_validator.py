@@ -31,11 +31,9 @@ class IsPastDateValidator(BaseValidator):
     .. code-block:: python
 
         class HistoryInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('past_date', validators=[
-                    IsPastDateValidator()
-                ])
+            past_date = field(validators=[
+                IsPastDateValidator()
+            ])
     """
 
     __slots__ = ("error_message", "tz")

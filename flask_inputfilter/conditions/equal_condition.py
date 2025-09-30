@@ -24,17 +24,16 @@ class EqualCondition(BaseCondition):
     .. code-block:: python
 
         class EqualFieldsFilter(InputFilter):
-            password: str = field()
-            confirm_password: str = field()
+            password = field()
 
-            def __init__(self):
-                super().__init__()
-                self.add_condition(
-                    EqualCondition(
-                        first_field='password',
-                        second_field='confirm_password'
-                    )
+            confirm_password = field()
+
+            condition(
+                EqualCondition(
+                    first_field='password',
+                    second_field='confirm_password'
                 )
+            )
     """
 
     __slots__ = ("first_field", "second_field")

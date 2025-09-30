@@ -30,11 +30,9 @@ class IsInstanceValidator(BaseValidator):
             pass
 
         class InstanceInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('object', validators=[
-                    IsInstanceValidator(classType=MyClass)
-                ])
+            object = field(validators=[
+                IsInstanceValidator(class_type=MyClass)
+            ])
     """
 
     __slots__ = ("class_type", "error_message")

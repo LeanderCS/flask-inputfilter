@@ -35,12 +35,9 @@ class IsImageValidator(BaseValidator):
     .. code-block:: python
 
         class ImageInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('image', validators=[
-                    IsImageValidator()
-                ])
+            image = field(validators=[
+                IsImageValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

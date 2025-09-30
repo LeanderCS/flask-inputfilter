@@ -25,27 +25,18 @@ class NOfCondition(BaseCondition):
     .. code-block:: python
 
         class MinimumFieldsFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
+            field1 = field()
 
-                self.add(
-                    'field1'
-                )
+            field2 = field()
 
-                self.add(
-                    'field2'
-                )
+            field3 = field()
 
-                self.add(
-                    'field3'
+            condition(
+                NOfCondition(
+                    fields=['field1', 'field2', 'field3'],
+                    n=2
                 )
-
-                self.add_condition(
-                    NOfCondition(
-                        fields=['field1', 'field2', 'field3'],
-                        n=2
-                    )
-                )
+            )
     """
 
     __slots__ = ("fields", "n")

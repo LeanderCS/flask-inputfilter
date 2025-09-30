@@ -28,12 +28,9 @@ class ToNormalizedUnicodeFilter(BaseFilter):
     .. code-block:: python
 
         class TextFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('text', filters=[
-                    ToNormalizedUnicodeFilter(form="NFKC")
-                ])
+            text = field(filters=[
+                ToNormalizedUnicodeFilter(form=UnicodeFormEnum.NFKC)
+            ])
     """
 
     __slots__ = ("form",)

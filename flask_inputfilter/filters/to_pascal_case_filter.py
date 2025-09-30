@@ -21,12 +21,9 @@ class ToPascalCaseFilter(BaseFilter):
     .. code-block:: python
 
         class ClassNameFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('class_name', filters=[
-                    ToPascalCaseFilter()
-                ])
+            class_name = field(filters=[
+                ToPascalCaseFilter()
+            ])
     """
 
     __slots__ = ()

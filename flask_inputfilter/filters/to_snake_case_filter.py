@@ -22,12 +22,9 @@ class ToSnakeCaseFilter(BaseFilter):
     .. code-block:: python
 
         class VariableFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('variableName', filters=[
-                    ToSnakeCaseFilter()
-                ])
+            variableName = field(filters=[
+                ToSnakeCaseFilter()
+            ])
     """
 
     __slots__ = ()

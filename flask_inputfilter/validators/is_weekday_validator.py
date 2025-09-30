@@ -27,11 +27,9 @@ class IsWeekdayValidator(BaseValidator):
     .. code-block:: python
 
         class WorkdayInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('date', validators=[
-                    IsWeekdayValidator()
-                ])
+            date = field(validators=[
+                IsWeekdayValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

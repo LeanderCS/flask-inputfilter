@@ -38,12 +38,9 @@ class Base64ImageResizeFilter(BaseFilter):
     .. code-block:: python
 
         class AvatarFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('avatar', filters=[
-                    Base64ImageResizeFilter(max_size=4*1024*1024)
-                ])
+            avatar = field(filters=[
+                Base64ImageResizeFilter(max_size=4*1024*1024)
+            ])
     """
 
     __slots__ = (

@@ -34,11 +34,9 @@ class IsTypedDictValidator(BaseValidator):
             age: int
 
         class PersonInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('person', validators=[
-                    IsTypedDictValidator(typed_dict_type=PersonDict)
-                ])
+            person = field(validators=[
+                IsTypedDictValidator(typed_dict_type=PersonDict)
+            ])
     """
 
     __slots__ = (

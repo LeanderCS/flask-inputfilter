@@ -27,23 +27,16 @@ class TemporalOrderCondition(BaseCondition):
     .. code-block:: python
 
         class DateOrderFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
+            start_date = field()
 
-                self.add(
-                    'start_date'
-                )
+            end_date = field()
 
-                self.add(
-                    'end_date'
+            condition(
+                TemporalOrderCondition(
+                    smaller_date_field='start_date',
+                    larger_date_field='end_date'
                 )
-
-                self.add_condition(
-                    TemporalOrderCondition(
-                        smaller_date_field='start_date',
-                        larger_date_field='end_date'
-                    )
-                )
+            )
     """
 
     __slots__ = ("larger_date_field", "smaller_date_field")

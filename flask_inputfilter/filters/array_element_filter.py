@@ -25,12 +25,9 @@ class ArrayElementFilter(BaseFilter):
     .. code-block:: python
 
         class TagInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('tags', validators=[
-                    ArrayElementValidator(element_filter=IsStringValidator())
-                ])
+            tags = field(filters=[
+                ArrayElementFilter(element_filter=StringTrimFilter())
+            ])
     """
 
     __slots__ = ("element_filter",)

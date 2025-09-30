@@ -33,11 +33,9 @@ class IsHorizontalImageValidator(BaseValidator):
     .. code-block:: python
 
         class HorizontalImageInputFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-                self.add('image', validators=[
-                    IsHorizontalImageValidator()
-                ])
+            image = field(validators=[
+                IsHorizontalImageValidator()
+            ])
     """
 
     __slots__ = ("error_message",)

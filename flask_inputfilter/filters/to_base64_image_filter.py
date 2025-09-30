@@ -36,12 +36,9 @@ class ToBase64ImageFilter(BaseFilter):
     .. code-block:: python
 
         class ImageFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('image', filters=[
-                    ToBase64ImageFilter(format=ImageFormatEnum.JPEG)
-                ])
+            image = field(filters=[
+                ToBase64ImageFilter(format=ImageFormatEnum.JPEG)
+            ])
     """
 
     __slots__ = ("format", "quality")

@@ -25,27 +25,18 @@ class ExactlyNOfCondition(BaseCondition):
     .. code-block:: python
 
         class ExactFieldsFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
+            field1 = field()
 
-                self.add(
-                    'field1'
-                )
+            field2 = field()
 
-                self.add(
-                    'field2'
-                )
+            field3 = field()
 
-                self.add(
-                    'field3'
+            condition(
+                ExactlyNOfCondition(
+                    fields=['field1', 'field2', 'field3'],
+                    n=2
                 )
-
-                self.add_condition(
-                    ExactlyNOfCondition(
-                        fields=['field1', 'field2', 'field3'],
-                        n=2
-                    )
-                )
+            )
     """
 
     __slots__ = ("fields", "n")

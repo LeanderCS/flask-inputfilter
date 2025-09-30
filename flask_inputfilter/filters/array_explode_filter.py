@@ -24,12 +24,9 @@ class ArrayExplodeFilter(BaseFilter):
     .. code-block:: python
 
         class TagFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('tags', filters=[
-                    ArrayExplodeFilter(delimiter=";")
-                ])
+            tags = field(filters=[
+                ArrayExplodeFilter(delimiter=";")
+            ])
     """
 
     __slots__ = ("delimiter",)

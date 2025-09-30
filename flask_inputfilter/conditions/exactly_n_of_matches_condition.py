@@ -25,24 +25,17 @@ class ExactlyNOfMatchesCondition(BaseCondition):
     .. code-block:: python
 
         class MatchFieldsFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
+            field1 = field()
 
-                self.add(
-                    'field1'
-                )
+            field2 = field()
 
-                self.add(
-                    'field2'
+            condition(
+                ExactlyNOfMatchesCondition(
+                    fields=['field1', 'field2'],
+                    n=1,
+                    value='expected_value'
                 )
-
-                self.add_condition(
-                    ExactlyNOfMatchesCondition(
-                        fields=['field1', 'field2'],
-                        n=1,
-                        value='expected_value'
-                    )
-                )
+            )
     """
 
     __slots__ = ("fields", "n", "value")

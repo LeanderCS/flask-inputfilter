@@ -33,7 +33,7 @@ class CustomCondition(BaseCondition):
         class CustomFilter(InputFilter):
             age: int = field(validators=[IsIntegerValidator()])
 
-            _condition(
+            condition(
                 CustomCondition(
                     condition=my_custom_condition
                 )

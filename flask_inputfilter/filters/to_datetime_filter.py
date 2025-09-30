@@ -24,12 +24,9 @@ class ToDateTimeFilter(BaseFilter):
     .. code-block:: python
 
         class TimestampFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('timestamp', filters=[
-                    ToDateTimeFilter()
-                ])
+            timestamp = field(filters=[
+                ToDateTimeFilter()
+            ])
     """
 
     __slots__ = ()

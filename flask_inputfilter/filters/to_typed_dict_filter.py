@@ -24,12 +24,9 @@ class ToTypedDictFilter(BaseFilter):
     .. code-block:: python
 
         class ConfigFilter(InputFilter):
-            def __init__(self):
-                super().__init__()
-
-                self.add('config', filters=[
-                    ToTypedDictFilter(MyTypedDict)
-                ])
+            config = field(filters=[
+                ToTypedDictFilter(MyTypedDict)
+            ])
     """
 
     __slots__ = ("typed_dict",)
