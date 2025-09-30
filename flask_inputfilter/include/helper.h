@@ -18,6 +18,102 @@ inline std::vector<std::string> make_default_methods() {
     };
 }
 
+class HttpMethodSet {
+private:
+    std::unordered_set<std::string> methods;
+
+public:
+    HttpMethodSet() = default;
+
+    HttpMethodSet(const HttpMethodSet& other) : methods(other.methods) {}
+
+    HttpMethodSet(HttpMethodSet&& other) noexcept : methods(std::move(other.methods)) {}
+
+    HttpMethodSet& operator=(const HttpMethodSet& other) {
+        if (this != &other) {
+            methods = other.methods;
+        }
+        return *this;
+    }
+
+    HttpMethodSet& operator=(HttpMethodSet&& other) noexcept {
+        if (this != &other) {
+            methods = std::move(other.methods);
+        }
+        return *this;
+    }
+
+    explicit HttpMethodSet(const std::vector<std::string>& method_list) {
+        methods.reserve(method_list.size());
+        for (const auto& method : method_list) {
+            methods.insert(method);
+        }
+    }
+
+    bool contains(const std::string& method) const {
+        return methods.find(method) != methods.end();
+    }
+
+    void add(const std::string& method) {
+        methods.insert(method);
+    }
+
+    void clear() {
+        methods.clear();
+    }
+
+    size_t size() const {
+        return methods.size();
+    }
+
+    void from_vector(const std::vector<std::string>& method_list) {
+        clear();
+        methods.reserve(method_list.size());
+        for (const auto& method : method_list) {
+            methods.insert(method);
+        }
+    }
+};
+
+class StringConstants {
+private:
+    std::unordered_map<std::string, const char*> constants;
+    static StringConstants& get_instance() {
+        static StringConstants instance;
+        return instance;
+    }
+
+    StringConstants() {
+        constants["_condition"] = "_condition";
+        constants["_error"] = "_error";
+        constants["copy"] = "copy";
+        constants["default"] = "default";
+        constants["DELETE"] = "DELETE";
+        constants["external_api"] = "external_api";
+        constants["fallback"] = "fallback";
+        constants["filters"] = "filters";
+        constants["GET"] = "GET";
+        constants["PATCH"] = "PATCH";
+        constants["POST"] = "POST";
+        constants["PUT"] = "PUT";
+        constants["required"] = "required";
+        constants["steps"] = "steps";
+        constants["validators"] = "validators";
+    }
+
+public:
+    static const char* get(const std::string& key) {
+        auto& instance = get_instance();
+        auto it = instance.constants.find(key);
+        return (it != instance.constants.end()) ? it->second : nullptr;
+    }
+
+    static bool has(const std::string& key) {
+        auto& instance = get_instance();
+        return instance.constants.find(key) != instance.constants.end();
+    }
+};
+
 namespace string_ops {
     inline bool fast_startswith(const std::string& str, const std::string& prefix) {
         return str.size() >= prefix.size() &&

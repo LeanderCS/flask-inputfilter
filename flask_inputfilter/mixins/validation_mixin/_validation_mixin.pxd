@@ -18,7 +18,7 @@ cdef class ValidationMixin:
     cdef void check_conditions(list[BaseCondition] conditions, dict[str, Any] validated_data) except *
 
     @staticmethod
-    cdef object check_for_required(str field_name, FieldModel field_info, object value)
+    cdef inline object check_for_required(str field_name, FieldModel field_info, object value)
 
     @staticmethod
     cdef tuple validate_fields(
@@ -29,4 +29,4 @@ cdef class ValidationMixin:
     )
 
     @staticmethod
-    cdef object get_field_value(str field_name, FieldModel field_info, dict[str, Any] data, dict[str, Any] validated_data) 
+    cdef inline object get_field_value(str field_name, FieldModel field_info, dict[str, Any] data, dict[str, Any] validated_data) 

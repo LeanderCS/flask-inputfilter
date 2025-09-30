@@ -42,18 +42,18 @@ cdef class ValidationMixin:
             return None
 
         cdef:
-            Py_ssize_t i, n
+            Py_ssize_t i
             BaseFilter current_filter
 
-        n = len(filters1) if filters1 else 0
-        for i in range(n):
-            current_filter = filters1[i]
-            value = current_filter.apply(value)
+        if filters1:
+            for i in range(len(filters1)):
+                current_filter = filters1[i]
+                value = current_filter.apply(value)
 
-        n = len(filters2) if filters2 else 0
-        for i in range(n):
-            current_filter = filters2[i]
-            value = current_filter.apply(value)
+        if filters2:
+            for i in range(len(filters2)):
+                current_filter = filters2[i]
+                value = current_filter.apply(value)
 
         return value
 
@@ -95,12 +95,15 @@ cdef class ValidationMixin:
         if value is None:
             return None
 
+        if not steps:
+            return value
+
         cdef:
-            Py_ssize_t i, n = len(steps) if steps else 0
+            Py_ssize_t i
             object current_step
 
         try:
-            for i in range(n):
+            for i in range(len(steps)):
                 current_step = steps[i]
                 if isinstance(current_step, BaseFilter):
                     value = current_step.apply(value)
@@ -132,11 +135,14 @@ cdef class ValidationMixin:
         - **validated_data** (*dict[str, Any]*):
           The validated data to check against the conditions.
         """
+        if not conditions:
+            return
+
         cdef:
-            Py_ssize_t i, n = len(conditions) if conditions else 0
+            Py_ssize_t i
             object current_condition
 
-        for i in range(n):
+        for i in range(len(conditions)):
             current_condition = conditions[i]
             if not current_condition.check(validated_data):
                 raise ValidationError(
@@ -215,19 +221,19 @@ cdef class ValidationMixin:
             return None
 
         cdef:
-            Py_ssize_t i, n
+            Py_ssize_t i
             BaseValidator current_validator
 
         try:
-            n = len(validators1) if validators1 else 0
-            for i in range(n):
-                current_validator = validators1[i]
-                current_validator.validate(value)
+            if validators1:
+                for i in range(len(validators1)):
+                    current_validator = validators1[i]
+                    current_validator.validate(value)
 
-            n = len(validators2) if validators2 else 0
-            for i in range(n):
-                current_validator = validators2[i]
-                current_validator.validate(value)
+            if validators2:
+                for i in range(len(validators2)):
+                    current_validator = validators2[i]
+                    current_validator.validate(value)
         except ValidationError:
             if fallback is None:
                 raise
@@ -269,16 +275,20 @@ cdef class ValidationMixin:
         cdef:
             dict[str, Any] validated_data = {}
             dict[str, str] errors = {}
-            Py_ssize_t i, n = len(fields) if fields else 0
-
-        cdef:
-            list field_names = list(fields.keys()) if n > 0 else []
-            list field_infos = list(fields.values()) if n > 0 else []
+            Py_ssize_t i
+            list field_names
+            list field_infos
             str field_name
             FieldModel field_info
             object value
 
-        for i in range(n):
+        if not fields:
+            return validated_data, errors
+
+        field_names = list(fields.keys())
+        field_infos = list(fields.values())
+
+        for i in range(len(fields)):
             field_name = field_names[i]
             field_info = field_infos[i]
 

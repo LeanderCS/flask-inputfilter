@@ -10,6 +10,10 @@ from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.mixins.cimports cimport ValidationMixin
 from flask_inputfilter.models.cimports cimport BaseFilter, BaseValidator, FieldModel, BaseCondition, InputFilter
 
+from libcpp.vector cimport vector
+from libcpp.string cimport string
+from libcpp.algorithm cimport find
+
 DEF LARGE_DATASET_THRESHOLD = 100
 
 
@@ -36,19 +40,9 @@ cdef class DataMixin:
         if not data and fields:
             return True
 
-        cdef set field_set
-
-        # Use set operations for faster lookup when there are many fields
-        if len(fields) > LARGE_DATASET_THRESHOLD:
-            field_set = set(fields.keys())
-            for field_name in data.keys():
-                if field_name not in field_set:
-                    return True
-        else:
-            # Use direct dict lookup for smaller field counts
-            for field_name in data.keys():
-                if field_name not in fields:
-                    return True
+        for field_name in data.keys():
+            if field_name not in fields:
+                return True
 
         return False
 
@@ -73,13 +67,19 @@ cdef class DataMixin:
         """
         cdef:
             dict[str, Any] filtered_data = {}
-            Py_ssize_t i, n = len(data) if data else 0
-            list keys = list(data.keys()) if n > 0 else []
-            list values = list(data.values()) if n > 0 else []
+            Py_ssize_t i
+            list keys
+            list values
             str field_name
             object field_value
 
-        for i in range(n):
+        if not data:
+            return filtered_data
+
+        keys = list(data.keys())
+        values = list(data.values())
+
+        for i in range(len(data)):
             field_name = keys[i]
             field_value = values[i]
             
@@ -153,6 +153,8 @@ cdef class DataMixin:
             dict source_inputs = source_filter.get_inputs()
             list keys = list(source_inputs.keys()) if source_inputs else []
             list new_fields = list(source_inputs.values()) if source_inputs else []
+            str method
+            bytes encoded_method
 
         n = len(keys)
         for i in range(n):
@@ -161,12 +163,12 @@ cdef class DataMixin:
         target_filter.conditions.extend(source_filter.conditions)
 
         DataMixin._merge_component_list(
-            target_filter.global_filters, 
+            target_filter.global_filters,
             source_filter.global_filters
         )
 
         DataMixin._merge_component_list(
-            target_filter.global_validators, 
+            target_filter.global_validators,
             source_filter.global_validators
         )
 

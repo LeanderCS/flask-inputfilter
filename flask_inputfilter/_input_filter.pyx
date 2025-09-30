@@ -29,6 +29,15 @@ from libcpp.string cimport string
 
 from libcpp.algorithm cimport find
 
+cdef extern from "helper.h":
+    vector[string] make_default_methods()
+
+    cdef cppclass StringConstants:
+        @staticmethod
+        const char* get(const string& key) nogil
+        @staticmethod
+        bint has(const string& key) nogil
+
 cdef dict _INTERNED_STRINGS = {
     "_condition": sys.intern("_condition"),
     "_error": sys.intern("_error"),
@@ -46,9 +55,6 @@ cdef dict _INTERNED_STRINGS = {
     "steps": sys.intern("steps"),
     "validators": sys.intern("validators"),
 }
-
-cdef extern from "helper.h":
-    vector[string] make_default_methods()
 
 T = TypeVar("T")
 
@@ -403,16 +409,13 @@ cdef class InputFilter:
             return {}
 
         cdef:
-            Py_ssize_t i, n = len(self.fields)
-            dict result
+            Py_ssize_t i
+            dict result = {}
             list field_names = list(self.fields.keys())
             str field
             object field_value
 
-        # Pre-allocate dictionary size for better performance
-        result = {}
-
-        for i in range(n):
+        for i in range(len(self.fields)):
             field = field_names[i]
             field_value = self.data.get(field)
             if field_value is not None:
