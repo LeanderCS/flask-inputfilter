@@ -86,3 +86,83 @@ jobs:
           set -u # Exit immediately if a variable is not defined.
 
           docker run --rm flask-inputfilter-cython pytest
+
+  benchmark-pure:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-flask-inputfilter-pure-benchmark-${{ hashFiles('env_configs/pure.Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-flask-inputfilter-pure-
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: image=moby/buildkit:latest
+
+      - name: Build flask-inputfilter-pure image with cache
+        run: |
+          docker buildx build \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
+            -t flask-inputfilter-pure -f env_configs/pure.Dockerfile . --load
+
+      - name: Run benchmarks in Docker (Pure Python)
+        run: |
+          set -x # Print commands and their arguments as they are executed.
+          set -e # Exit immediately if a command exits with a non-zero status.
+          set -u # Exit immediately if a variable is not defined.
+
+          docker run --rm -v $(pwd)/.benchmarks:/app/.benchmarks flask-inputfilter-pure pytest tests/benchmarks/ --benchmark-only --benchmark-json=.benchmarks/pure-benchmark.json
+
+      - name: Upload benchmark results (Pure Python)
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results-pure
+          path: .benchmarks/pure-benchmark.json
+
+  benchmark-cython:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-flask-inputfilter-cython-benchmark-${{ hashFiles('env_configs/cython.Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-docker-flask-inputfilter-cython-
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: image=moby/buildkit:latest
+
+      - name: Build flask-inputfilter-cython image with cache
+        run: |
+          docker buildx build \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
+            -t flask-inputfilter-cython -f env_configs/cython.Dockerfile . --load
+
+      - name: Run benchmarks in Docker (Cython)
+        run: |
+          set -x # Print commands and their arguments as they are executed.
+          set -e # Exit immediately if a command exits with a non-zero status.
+          set -u # Exit immediately if a variable is not defined.
+
+          docker run --rm -v $(pwd)/.benchmarks:/app/.benchmarks flask-inputfilter-cython pytest tests/benchmarks/ --benchmark-only --benchmark-json=.benchmarks/cython-benchmark.json
+
+      - name: Upload benchmark results (Cython)
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results-cython
+          path: .benchmarks/cython-benchmark.json
