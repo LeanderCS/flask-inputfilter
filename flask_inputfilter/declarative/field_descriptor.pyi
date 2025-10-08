@@ -48,6 +48,7 @@ class FieldDescriptor:
     external_api: Optional[ExternalApiConfig]
     copy: Optional[str]
     name: Optional[str]
+    computed: Optional[Any]
 
     def __init__(
         self,
@@ -59,6 +60,7 @@ class FieldDescriptor:
         steps: Optional[list[Union[BaseFilter, BaseValidator]]] = None,
         external_api: Optional[ExternalApiConfig] = None,
         copy: Optional[str] = None,
+        computed: Optional[Any] = None,
     ) -> None: ...
     def __set_name__(self, owner: type, name: str) -> None: ...
     def __get__(self, obj: Any, objtype: Optional[type] = None) -> Any: ...

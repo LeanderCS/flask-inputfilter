@@ -260,20 +260,23 @@ cdef class InputFilter:
         inheritance chain."""
         cdef object cls, attr_value, conditions, validators, filters, base_cls
         cdef str attr_name
-        cdef list dir_attrs
-        cdef FieldDescriptor field_desc
         cdef set added_conditions, added_global_validators, added_global_filters
         cdef object condition_id, validator_id, filter_id
         cdef object condition, validator, filter_instance
 
         cls = self.__class__
-        dir_attrs = dir(cls)
+        added_conditions = set()
+        added_global_validators = set()
+        added_global_filters = set()
 
-        for attr_name in dir_attrs:
-            if attr_name.startswith("_"):
+        for base_cls in reversed(cls.__mro__):
+            if base_cls is object:
                 continue
-            if hasattr(cls, attr_name):
-                attr_value = getattr(cls, attr_name)
+
+            for attr_name, attr_value in base_cls.__dict__.items():
+                if attr_name.startswith("_"):
+                    continue
+
                 if isinstance(attr_value, FieldDescriptor):
                     self.fields[attr_name] = FieldModel(
                         attr_value.required,
@@ -284,13 +287,9 @@ cdef class InputFilter:
                         attr_value.steps,
                         attr_value.external_api,
                         attr_value.copy,
+                        attr_value.computed,
                     )
 
-        added_conditions = set()
-        added_global_validators = set()
-        added_global_filters = set()
-
-        for base_cls in reversed(cls.__mro__):
             conditions = getattr(base_cls, "_conditions", None)
             if conditions is not None:
                 for condition in conditions:
@@ -564,6 +563,7 @@ cdef class InputFilter:
             steps or [],
             external_api,
             copy,
+            None,  # computed (not supported in deprecated add method)
         )
 
     cpdef bint has(self, str field_name):
@@ -689,6 +689,7 @@ cdef class InputFilter:
             steps or [],
             external_api,
             copy,
+            None,  # computed (not supported in deprecated add method)
         )
 
     cpdef void add_global_filter(self, BaseFilter filter):

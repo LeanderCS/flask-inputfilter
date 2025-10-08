@@ -11,3 +11,4 @@ cdef class FieldModel:
         list steps
         ExternalApiConfig external_api
         str copy
+        object computed

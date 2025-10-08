@@ -42,7 +42,8 @@ cdef class FieldModel:
         list[BaseValidator] validators=None,
         list steps=None,
         ExternalApiConfig external_api=None,
-        str copy=None
+        str copy=None,
+        object computed=None
     ) -> None:
         self.required = required
         self._default = default
@@ -65,3 +66,4 @@ cdef class FieldModel:
 
         self.external_api = external_api
         self.copy = copy
+        self.computed = computed

@@ -4,6 +4,18 @@ Changelog
 All notable changes to this project will be documented in this file.
 
 
+[0.7.4] - 2025-10-08
+--------------------
+
+Added
+^^^^^
+- **Computed Fields**: New feature to define read-only fields that are
+  automatically calculated from other fields. Use the ``computed``
+  parameter in ``field()`` to provide a callable that receives the current
+  data dictionary and returns the computed value.
+  See :doc:`Computed Fields documentation <options/field_decorator>` for more details.
+
+
 [0.7.3] - 2025-10-08
 --------------------
 

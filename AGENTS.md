@@ -87,6 +87,33 @@ def create_user():
 - **Logic**: `OneOfCondition`, `NOfCondition`, `ExactlyNOfCondition`
 - **Comparison**: `EqualCondition`, `NotEqualCondition`
 
+### Computed Fields
+Define read-only fields that are automatically calculated from other fields:
+
+```python
+class OrderInputFilter(InputFilter):
+    quantity: int = field(required=True)
+    price: float = field(required=True)
+
+    # Computed field - automatically calculated
+    total: float = field(
+        computed=lambda data: data['quantity'] * data['price']
+    )
+
+# Usage:
+result = OrderInputFilter().validate_data({"quantity": 5, "price": 10.0})
+# → {"quantity": 5, "price": 10.0, "total": 50.0}
+```
+
+**Computed Field Characteristics:**
+- Read-only (input values are ignored)
+- Evaluated during validation with access to previously processed fields
+- Non-blocking (errors set field to `None` and log warning)
+- Can use lambda or named functions
+- Can depend on other computed fields (order matters)
+- Works with filters, validators, copy, defaults, and fallbacks on dependencies
+- Useful for: totals, full names, derived booleans, calculations
+
 ## Project Structure
 
 ```

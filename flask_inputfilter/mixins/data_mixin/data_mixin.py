@@ -100,12 +100,10 @@ class DataMixin:
         """
         from flask_inputfilter.mixins import ValidationMixin
 
-        # Validate fields
         validated_data, errors = ValidationMixin.validate_fields(
             fields, data, global_filters, global_validators
         )
 
-        # Check conditions if present and no errors yet
         if conditions and not errors:
             try:
                 ValidationMixin.check_conditions(conditions, validated_data)

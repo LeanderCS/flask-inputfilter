@@ -293,7 +293,6 @@ cdef class ValidationMixin:
             field_info = field_infos[i]
 
             try:
-                # Get initial value
                 value = ValidationMixin.get_field_value(
                     field_name,
                     field_info,
@@ -301,14 +300,12 @@ cdef class ValidationMixin:
                     validated_data
                 )
 
-                # Apply filters
                 value = ValidationMixin.apply_filters(
                     field_info.filters,
                     global_filters,
                     value
                 )
 
-                # Apply validators
                 value = ValidationMixin.validate_field(
                     field_info.validators,
                     global_validators,
@@ -316,14 +313,12 @@ cdef class ValidationMixin:
                     value
                 )
 
-                # Apply steps
                 value = ValidationMixin.apply_steps(
                     field_info.steps,
                     field_info.fallback,
                     value
                 )
 
-                # Handle required fields and defaults
                 value = ValidationMixin.check_for_required(
                     field_name,
                     field_info,
@@ -364,13 +359,17 @@ cdef class ValidationMixin:
           copied from another field, fetched from an external API, or directly
           from the original data dictionary.
         """
+        if field_info.computed:
+            try:
+                return field_info.computed(validated_data)
+            except Exception:
+                return None
         if field_info.copy:
             return validated_data.get(field_info.copy)
-        elif field_info.external_api:
+        if field_info.external_api:
             return ExternalApiMixin.call_external_api(
                 field_info.external_api,
                 field_info.fallback,
                 validated_data
             )
-        else:
-            return data.get(field_name) 
+        return data.get(field_name)

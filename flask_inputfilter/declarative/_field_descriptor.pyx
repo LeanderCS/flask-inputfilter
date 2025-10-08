@@ -39,6 +39,7 @@ cdef class FieldDescriptor:
         list steps = None,
         object external_api = None,
         str copy = None,
+        object computed = None,
     ) -> None:
         """
         Initialize a field descriptor.
@@ -59,6 +60,8 @@ cdef class FieldDescriptor:
           external API call.
         - **copy** (*Optional[str]*): The name of the field to copy the value
           from.
+        - **computed** (*Optional[Callable[[dict[str, Any]], Any]]*): A callable
+          that computes the field value from validated data.
         """
         self.required = required
         self._default = default
@@ -68,6 +71,7 @@ cdef class FieldDescriptor:
         self.steps = steps if steps is not None else []
         self.external_api = external_api
         self.copy = copy
+        self.computed = computed
         self.name = None
 
     @property

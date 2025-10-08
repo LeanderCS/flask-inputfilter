@@ -225,13 +225,19 @@ class InputFilter:
         """Register decorator-based components from the current class and
         inheritance chain."""
         cls = self.__class__
-        dir_attrs = dir(cls)
 
-        for attr_name in dir_attrs:
-            if attr_name.startswith("_"):
+        added_conditions = set()
+        added_global_validators = set()
+        added_global_filters = set()
+
+        for base_cls in reversed(cls.__mro__):
+            if base_cls is object:
                 continue
-            if hasattr(cls, attr_name):
-                attr_value = getattr(cls, attr_name)
+
+            for attr_name, attr_value in base_cls.__dict__.items():
+                if attr_name.startswith("_"):
+                    continue
+
                 if isinstance(attr_value, FieldDescriptor):
                     self.fields[attr_name] = FieldModel(
                         attr_value.required,
@@ -242,13 +248,9 @@ class InputFilter:
                         attr_value.steps,
                         attr_value.external_api,
                         attr_value.copy,
+                        attr_value.computed,
                     )
 
-        added_conditions = set()
-        added_global_validators = set()
-        added_global_filters = set()
-
-        for base_cls in reversed(cls.__mro__):
             conditions = getattr(base_cls, "_conditions", None)
             if conditions is not None:
                 for condition in conditions:

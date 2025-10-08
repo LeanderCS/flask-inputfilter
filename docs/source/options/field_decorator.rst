@@ -333,6 +333,51 @@ independently.
 
 For detailed information, see :doc:`Copy <copy>`.
 
+computed
+~~~~~~~~
+
+**Type**: ``Callable[[dict[str, Any]], Any]``
+**Default**: ``None``
+
+Define a read-only field that is automatically calculated from other fields.
+The provided callable receives the current data dictionary and should return the
+computed value.
+
+Computed fields are:
+
+- **Read-only**: Input values are ignored
+- **Non-blocking**: Errors let the field stay on ``None`` and log a warning
+- Evaluated **during validation**: Have access to all previously processed fields
+
+.. code-block:: python
+
+    class OrderInputFilter(InputFilter):
+        quantity: int = field(required=True)
+        price: float = field(required=True)
+
+        # Computed field using lambda
+        total: float = field(
+            computed=lambda data: data['quantity'] * data['price']
+        )
+
+.. code-block:: python
+
+    # Using named function for complex calculations
+    def calculate_tax(data):
+        subtotal = data.get('subtotal', 0)
+        tax_rate = data.get('tax_rate', 0.19)
+        return subtotal * tax_rate
+
+    class InvoiceInputFilter(InputFilter):
+        subtotal: float = field(required=True)
+        tax_rate: float = field(default=0.19)
+
+        tax: float = field(computed=calculate_tax)
+        total: float = field(
+            required=True,
+            computed=lambda data: data['subtotal'] + data.get('tax', 0)
+        )
+
 Advanced Field Patterns
 -----------------------
 

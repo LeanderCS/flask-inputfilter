@@ -4,6 +4,7 @@ from unittest.mock import Mock, patch
 
 from flask import Flask, g, jsonify, request
 from flask_inputfilter import InputFilter
+from flask_inputfilter.declarative import field
 from flask_inputfilter.models import BaseCondition
 from flask_inputfilter.conditions import ExactlyOneOfCondition
 from flask_inputfilter.exceptions import ValidationError
@@ -868,6 +869,41 @@ class TestInputFilter(unittest.TestCase):
             self.inputFilter.validate_data({"name": "invalid_user"})
 
     @patch("requests.request")
+    def test_external_api_declarative(self, mock_request: Mock) -> None:
+        """Test that external API calls work."""
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {"is_valid": True}
+        mock_request.return_value = mock_response
+
+        class MyInputFilter(InputFilter):
+            # Add a field where the external API receives its value
+            name = field(default="test_user")
+
+            # Add a field with external API configuration
+            is_valid = field(
+                external_api=ExternalApiConfig(
+                    url="https://api.example.com/validate_user/{{name}}",
+                    method="GET",
+                    data_key="is_valid",
+                ),
+            )
+
+        # API returns valid result
+        validated_data = MyInputFilter().validate_data({})
+
+        self.assertTrue(validated_data["is_valid"])
+        expected_url = "https://api.example.com/validate_user/test_user"
+        mock_request.assert_called_with(
+            headers={}, method="GET", url=expected_url, params={}, timeout=30
+        )
+
+        # API returns invalid result
+        mock_response.status_code = 500
+        with self.assertRaises(ValidationError):
+            MyInputFilter().validate_data({"name": "invalid_user"})
+
+    @patch("requests.request")
     def test_external_api_params(self, mock_request: Mock) -> None:
         """Test that external API calls work."""
 
@@ -1127,6 +1163,21 @@ class TestInputFilter(unittest.TestCase):
         )
 
         validated_data = self.inputFilter.validate_data(
+            {"username": "test user"}
+        )
+        self.assertEqual(validated_data["escapedUsername"], "test-user")
+
+    def test_copy_declarative(self) -> None:
+        """Test that copy copies the value of the field to the current
+        field."""
+        class MyInputFilter(InputFilter):
+            username = field()
+
+            escapedUsername = field(
+                copy="username", filters=[StringSlugifyFilter()]
+            )
+
+        validated_data = MyInputFilter().validate_data(
             {"username": "test user"}
         )
         self.assertEqual(validated_data["escapedUsername"], "test-user")

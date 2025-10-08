@@ -12,6 +12,7 @@ cdef class FieldDescriptor:
         list steps
         ExternalApiConfig external_api
         str copy
+        object computed
     cdef public:
         str name
 

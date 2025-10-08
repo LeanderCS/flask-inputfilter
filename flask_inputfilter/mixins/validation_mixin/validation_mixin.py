@@ -214,17 +214,14 @@ class ValidationMixin:
 
         for field_name, field_info in fields.items():
             try:
-                # Get initial value
                 value = ValidationMixin.get_field_value(
                     field_name, field_info, data, validated_data
                 )
 
-                # Apply filters
                 value = ValidationMixin.apply_filters(
                     field_info.filters, global_filters, value
                 )
 
-                # Apply validators
                 value = ValidationMixin.validate_field(
                     field_info.validators,
                     global_validators,
@@ -232,12 +229,10 @@ class ValidationMixin:
                     value,
                 )
 
-                # Apply steps
                 value = ValidationMixin.apply_steps(
                     field_info.steps, field_info.fallback, value
                 )
 
-                # Handle required fields and defaults
                 value = ValidationMixin.check_for_required(
                     field_name, field_info, value
                 )
@@ -276,6 +271,11 @@ class ValidationMixin:
           copied from another field, fetched from an external API, or directly
           from the original data dictionary.
         """
+        if field_info.computed:
+            try:
+                return field_info.computed(validated_data)
+            except Exception:  # noqa: BLE001
+                return None
         if field_info.copy:
             return validated_data.get(field_info.copy)
         if field_info.external_api:

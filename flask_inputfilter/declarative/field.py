@@ -22,6 +22,7 @@ def field(
     steps: Optional[list[Union[BaseFilter, BaseValidator]]] = None,
     external_api: Optional[ExternalApiConfig] = None,
     copy: Optional[str] = None,
+    computed: Optional[Any] = None,
 ) -> FieldDescriptor:
     """
     Create a field descriptor for declarative field definition.
@@ -47,6 +48,9 @@ def field(
       external API call. Default: None.
     - **copy** (*Optional[str]*): The name of the field to copy the value
       from. Default: None.
+    - **computed** (*Optional[Callable[[dict[str, Any]], Any]]*): A callable
+      that computes the field value from validated data.
+      Default: None.
 
     **Returns:**
 
@@ -73,4 +77,5 @@ def field(
         steps=steps,
         external_api=external_api,
         copy=copy,
+        computed=computed,
     )

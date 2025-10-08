@@ -32,6 +32,8 @@ class FieldDescriptor:
       configuration.
     - **copy** (*Optional[str]*): Field to copy value from if this field
       is missing.
+    - **computed** (*Optional[Callable[[dict[str, Any]], Any]]*): A callable
+      that computes the field value from validated data.
 
     **Expected Behavior:**
 
@@ -50,6 +52,7 @@ class FieldDescriptor:
         steps: Optional[list[Union[BaseFilter, BaseValidator]]] = None,
         external_api: Optional[ExternalApiConfig] = None,
         copy: Optional[str] = None,
+        computed: Optional[Any] = None,
     ) -> None:
         """
         Initialize a field descriptor.
@@ -72,6 +75,8 @@ class FieldDescriptor:
           external API call.
         - **copy** (*Optional[str]*): The name of the field to copy the value
           from.
+        - **computed** (*Optional[Callable[[dict[str, Any]], Any]]*): A
+          callable that computes the field value from validated data.
         """
         self.required = required
         self.default = default
@@ -81,6 +86,7 @@ class FieldDescriptor:
         self.steps = steps or []
         self.external_api = external_api
         self.copy = copy
+        self.computed = computed
         self.name: Optional[str] = None
 
     def __set_name__(self, owner: type, name: str) -> None:
@@ -135,6 +141,10 @@ class FieldDescriptor:
             f"required={self.required}, "
             f"default={self.default!r}, "
             f"filters={len(self.filters)}, "
-            f"validators={len(self.validators)}"
+            f"validators={len(self.validators)}, "
+            f"steps={len(self.steps)}, "
+            f"external_api={self.external_api!r}, "
+            f"copy={self.copy!r}, "
+            f"computed={self.computed!r}, "
             f")"
         )
