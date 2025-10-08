@@ -4,7 +4,6 @@ set -e
 
 safe_remove() {
     if [ -e "$1" ]; then
-        echo "  Removing: $1"
         rm -rf "$1"
     fi
 }
