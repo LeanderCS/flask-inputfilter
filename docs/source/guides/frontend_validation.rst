@@ -28,7 +28,7 @@ Example implementation
             filters=[StringTrimFilter()],
             validators=[
                 RegexValidator(
-                    pattern=RegexEnum.POSTAL_CODE.value,
+                    pattern=RegexEnum.POSTAL_CODE,
                     error_message='The zipcode is not in the correct format.'
                 )
             ]

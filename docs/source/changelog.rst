@@ -11,6 +11,8 @@ Changed
 ^^^^^^^
 - Added deprecated warnings to old methods to ``add``, ``add_condition``, ``add_global_filter`` and
   ``add_global_validator`` to prepare for a later removal.
+- Allowed to pass an instance on ``RegexEnum`` to ``RegexValidator`` directly, without needing to
+  converting it to an string.
 
 
 [0.7.2] - 2025-09-28

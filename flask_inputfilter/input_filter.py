@@ -5,8 +5,8 @@ import inspect
 import json
 import logging
 import sys
-from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 import warnings
+from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 from flask import Response, g, request
 

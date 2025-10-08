@@ -88,7 +88,7 @@ class UpdateZipcodeInputFilter(InputFilter):
         filters=[StringTrimFilter()],
         validators=[
             RegexValidator(
-                RegexEnum.POSTAL_CODE.value,
+                RegexEnum.POSTAL_CODE,
                 'The zipcode is not in the correct format.'
             )
         ]

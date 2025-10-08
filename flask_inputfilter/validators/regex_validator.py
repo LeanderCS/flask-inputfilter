@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import re
-from typing import Optional
+from typing import Optional, Union
 
+from flask_inputfilter.enums import RegexEnum
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.models import BaseValidator
 
@@ -14,8 +15,8 @@ class RegexValidator(BaseValidator):
 
     **Parameters:**
 
-    - **pattern** (*str*): The regular expression pattern the
-      input must match.
+    - **pattern** (*str | RegexEnum*): The regular expression pattern or
+      value of RegexEnum the input must match.
     - **error_message** (*Optional[str]*): Custom error message if
       the input does not match the pattern.
 
@@ -38,10 +39,12 @@ class RegexValidator(BaseValidator):
 
     def __init__(
         self,
-        pattern: str,
+        pattern: Union[str, RegexEnum],
         error_message: Optional[str] = None,
     ) -> None:
-        self.pattern = pattern
+        self.pattern = (
+            pattern.value if isinstance(pattern, RegexEnum) else pattern
+        )
         self.error_message = error_message
 
     def validate(self, value: str) -> None:

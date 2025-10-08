@@ -22,6 +22,22 @@ class TestRegexValidator(BaseValidatorTest):
         with self.assertRaises(ValidationError):
             self.input_filter.validate_data({"email": "invalid_email"})
 
+    def test_valid_regex_using_enum(self):
+        self.input_filter.add(
+            "email", validators=[RegexValidator(RegexEnum.EMAIL)]
+        )
+        validated_data = self.input_filter.validate_data(
+            {"email": "alice@example.com"}
+        )
+        self.assertEqual(validated_data["email"], "alice@example.com")
+
+    def test_invalid_regex_using_enum(self):
+        self.input_filter.add(
+            "email", validators=[RegexValidator(RegexEnum.EMAIL)]
+        )
+        with self.assertRaises(ValidationError):
+            self.input_filter.validate_data({"email": "invalid_email"})
+
     def test_custom_error_message(self):
         self.input_filter.add(
             "email",
