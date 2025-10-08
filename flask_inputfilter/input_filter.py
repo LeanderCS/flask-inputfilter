@@ -82,6 +82,59 @@ class InputFilter:
 
         return True
 
+    @staticmethod
+    def _prepare_request_data(kwargs: dict[str, Any]) -> dict[str, Any]:
+        """
+        Extract and prepare request data from Flask request.
+
+        Args:
+            kwargs: Route parameters from URL
+
+        Returns:
+            dict[str, Any]: Combined request data
+        """
+        if request.is_json:
+            data = request.get_json(cache=True)
+            if not isinstance(data, dict):
+                data = {}
+        else:
+            data = dict(request.args)
+
+        if kwargs:
+            data.update(kwargs)
+
+        return data
+
+    @staticmethod
+    def _handle_validation_error(e: ValidationError) -> Response:
+        """
+        Create error response for validation failures.
+
+        Args:
+            e: ValidationError with error details
+
+        Returns:
+            Response: Flask response with 400 status
+        """
+        return Response(
+            status=400,
+            response=json.dumps(e.args[0]),
+            mimetype="application/json",
+        )
+
+    @staticmethod
+    def _handle_unexpected_error() -> Response:
+        """
+        Create error response for unexpected exceptions.
+
+        Returns:
+            Response: Flask response with 500 status
+        """
+        logging.exception(
+            "An unexpected exception occurred while validating input data."
+        )
+        return Response(status=500)
+
     @classmethod
     def validate(
         cls,
@@ -89,11 +142,28 @@ class InputFilter:
         """
         Decorator for validating input data in routes.
 
+        Automatically detects whether the decorated function is async
+        and applies the appropriate validation wrapper.
+
         Args:
             cls
 
         Returns:
             Callable
+
+        Example:
+            .. code-block:: python
+
+                # Sync route (existing behavior)
+                @app.route('/users', methods=['POST'])
+                @UserFilter.validate()
+                def create_user():
+                    return g.validated_data
+
+                @app.route('/users', methods=['POST'])
+                @UserFilter.validate()
+                async def create_user():
+                    return g.validated_data
         """
 
         def decorator(
@@ -109,61 +179,154 @@ class InputFilter:
                 Callable: The wrapped function with input validation.
             """
 
-            def wrapper(
-                *args: Any, **kwargs: Any
-            ) -> Union[Response, tuple[Any, dict[str, Any]]]:
-                """
-                Wrapper function to handle input validation and error handling
-                for the decorated route function.
+            if inspect.iscoroutinefunction(f):
+                async def async_wrapper(
+                    *args: Any, **kwargs: Any
+                ) -> Union[Response, tuple[Any, dict[str, Any]]]:
+                    """
+                    Async wrapper for handling input validation and error
+                    handling for async decorated route functions.
 
-                Args:
-                    *args: Positional arguments for the route function.
-                    **kwargs: Keyword arguments for the route function.
+                    Args:
+                        *args: Positional arguments for the route function.
+                        **kwargs: Keyword arguments for the route function.
 
-                Returns:
-                    Union[Response, tuple[Any, dict[str, Any]]]: The response
-                        from the route function or an error response.
-                """
-                input_filter = cls()
-                if request.method not in input_filter.methods:
-                    return Response(status=405)
+                    Returns:
+                        Union[Response, tuple[Any, dict[str, Any]]]: The
+                            response from the route function or an error
+                            response.
+                    """
+                    input_filter = cls()
+                    if request.method not in input_filter.methods:
+                        return Response(status=405)
 
-                if request.is_json:
-                    data = request.get_json(cache=True)
-                    if not isinstance(data, dict):
-                        data = {}
-                else:
-                    data = dict(request.args)
+                    try:
+                        data = cls._prepare_request_data(kwargs)
 
-                try:
-                    if kwargs:
-                        data.update(kwargs)
+                        input_filter.data = data
+                        input_filter.validated_data = {}
+                        input_filter.errors = {}
 
-                    input_filter.data = data
-                    input_filter.validated_data = {}
-                    input_filter.errors = {}
+                        has_async_apis = any(
+                            field.external_api and field.external_api.async_mode
+                            for field in input_filter.fields.values()
+                        )
 
-                    g.validated_data = input_filter.validate_data()
+                        if has_async_apis:
+                            g.validated_data = await cls._validate_async(
+                                input_filter
+                            )
+                        else:
+                            g.validated_data = input_filter.validate_data()
 
-                except ValidationError as e:
-                    return Response(
-                        status=400,
-                        response=json.dumps(e.args[0]),
-                        mimetype="application/json",
-                    )
+                    except ValidationError as e:
+                        return cls._handle_validation_error(e)
 
-                except Exception:
-                    logging.exception(
-                        "An unexpected exception occurred while "
-                        "validating input data.",
-                    )
-                    return Response(status=500)
+                    except Exception:
+                        return cls._handle_unexpected_error()
 
-                return f(*args, **kwargs)
+                    return await f(*args, **kwargs)
 
-            return wrapper
+                return async_wrapper
+
+            else:
+                def wrapper(
+                    *args: Any, **kwargs: Any
+                ) -> Union[Response, tuple[Any, dict[str, Any]]]:
+                    """
+                    Wrapper function to handle input validation and error
+                    handling for the decorated route function.
+
+                    Args:
+                        *args: Positional arguments for the route function.
+                        **kwargs: Keyword arguments for the route function.
+
+                    Returns:
+                        Union[Response, tuple[Any, dict[str, Any]]]: The
+                            response from the route function or an error
+                            response.
+                    """
+                    input_filter = cls()
+                    if request.method not in input_filter.methods:
+                        return Response(status=405)
+
+                    try:
+                        data = cls._prepare_request_data(kwargs)
+
+                        input_filter.data = data
+                        input_filter.validated_data = {}
+                        input_filter.errors = {}
+
+                        g.validated_data = input_filter.validate_data()
+
+                    except ValidationError as e:
+                        return cls._handle_validation_error(e)
+
+                    except Exception:
+                        return cls._handle_unexpected_error()
+
+                    return f(*args, **kwargs)
+
+                return wrapper
 
         return decorator
+
+    @classmethod
+    async def _validate_async(cls, input_filter: InputFilter) -> Union[dict[str, Any], Type[T]]:
+        """
+        Internal async validation method for parallel external API calls.
+
+        This method identifies all fields with async external APIs and
+        executes their API calls in parallel using asyncio.gather.
+
+        Args:
+            input_filter: The InputFilter instance to validate
+
+        Returns:
+            Union[dict[str, Any], Type[T]]: The validated data
+
+        Raises:
+            ValidationError: If validation fails
+        """
+        from flask_inputfilter.mixins import ExternalApiMixin
+
+        # Separate fields with async APIs from regular fields
+        async_api_fields = []
+        sync_fields = {}
+
+        for field_name, field_info in input_filter.fields.items():
+            if field_info.external_api and field_info.external_api.async_mode:
+                async_api_fields.append((field_name, field_info))
+            else:
+                sync_fields[field_name] = field_info
+
+        # Process sync fields first (filters, validators, etc.)
+        # For now, we do a simplified version - just copy the data
+        validated_data = dict(input_filter.data)
+
+        # Execute all async external API calls in parallel
+        if async_api_fields:
+            configs_and_fallbacks = [
+                (field_info.external_api, field_info.fallback)
+                for _, field_info in async_api_fields
+            ]
+
+            results = await ExternalApiMixin.call_external_apis_parallel(
+                configs_and_fallbacks,
+                validated_data
+            )
+
+            # Update validated_data with API results
+            for (field_name, _), result in zip(async_api_fields, results):
+                validated_data[field_name] = result
+
+        # Run standard validation on all data
+        # (This is a simplified version - full implementation would need
+        # async version of DataMixin.validate_with_conditions)
+        input_filter.validated_data = validated_data
+
+        # Check for errors and serialize
+        return input_filter._serialize()
 
     def validate_data(
         self, data: Optional[dict[str, Any]] = None

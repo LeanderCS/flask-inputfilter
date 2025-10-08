@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "flask_inputfilter"
-version = "0.7.3"
+version = "0.8.0"
 description = "A library to easily filter and validate input data in Flask applications"
 readme = "README.md"
 keywords = [
@@ -52,10 +52,14 @@ optional = [
     "requests>=2.22.0",
     "cython>=3.0; python_version <= '3.12'",
     "cython>=3.0.12; python_version >= '3.13'",
+    "httpx>=0.24.0",
 ]
 compile = [
     "cython>=3.0; python_version <= '3.12'",
     "cython>=3.0.12; python_version >= '3.13'",
+]
+async = [
+    "httpx>=0.24.0",
 ]
 
 [project.urls]

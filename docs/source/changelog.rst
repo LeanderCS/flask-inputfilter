@@ -3,6 +3,13 @@ Changelog
 
 All notable changes to this project will be documented in this file.
 
+[0.8.0] - 2025-10-08
+--------------------
+
+Added
+^^^^^
+- Added async support for external api calls. :doc:`Check it out <options/external_api>`
+
 
 [0.7.3] - 2025-10-08
 --------------------

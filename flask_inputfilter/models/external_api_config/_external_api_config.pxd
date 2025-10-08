@@ -9,3 +9,7 @@ cdef class ExternalApiConfig:
         str data_key
         str api_key
         dict[str, str] headers
+        bint async_mode
+        int timeout
+        int retry_count
+        double retry_delay

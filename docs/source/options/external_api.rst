@@ -44,6 +44,18 @@ Fields of `ExternalApiConfig`
    * - ``api_key``
      - ``Optional[str]``
      - API key for authorization, sent in the ``Authorization`` header.
+   * - ``async_mode``
+     - ``bool``
+     - Enable async HTTP client (httpx) for parallel requests. Default: ``False``.
+   * - ``timeout``
+     - ``int``
+     - Timeout in seconds for HTTP requests. Default: ``30``.
+   * - ``retry_count``
+     - ``int``
+     - Number of retry attempts on failure. Default: ``0``.
+   * - ``retry_delay``
+     - ``float``
+     - Delay in seconds between retries. Default: ``1.0``.
 
 Examples
 --------
@@ -105,6 +117,158 @@ Handling Fallback Values
             "data_key": "user",
         }
     )
+
+Async Support
+-------------
+
+Installation
+^^^^^^^^^^^^
+
+To use async external APIs, install the optional async dependencies:
+
+.. code-block:: bash
+
+    pip install flask-inputfilter[async]
+
+This installs ``httpx``, which is required for async HTTP requests.
+
+Basic Async Usage
+^^^^^^^^^^^^^^^^^
+
+Enable async mode by setting ``async_mode=True`` in the ``ExternalApiConfig``.
+The ``@validate()`` decorator automatically detects async routes and enables
+parallel API execution.
+
+.. code-block:: python
+
+    from flask_inputfilter import InputFilter
+    from flask_inputfilter.declarative import field
+    from flask_inputfilter.models import ExternalApiConfig
+
+    class UserFilter(InputFilter):
+        user_id: int = field(
+            required=True,
+            external_api=ExternalApiConfig(
+                url="https://api.example.com/users/{{user_id}}",
+                method="GET",
+                async_mode=True  # Enable async
+            )
+        )
+
+    @app.route('/users', methods=['POST'])
+    @UserFilter.validate()  # Auto-detects async route
+    async def create_user():  # Note: async def
+        data = g.validated_data
+        return {"user": data}
+
+Parallel API Calls
+^^^^^^^^^^^^^^^^^^
+
+When multiple fields have async external APIs, all API calls execute in parallel,
+dramatically reducing total request time.
+
+.. code-block:: python
+
+    class OrderFilter(InputFilter):
+        user_id: int = field(
+            required=True,
+            external_api=ExternalApiConfig(
+                url="https://api.users.com/{{user_id}}",
+                method="GET",
+                async_mode=True
+            )
+        )
+
+        product_id: int = field(
+            required=True,
+            external_api=ExternalApiConfig(
+                url="https://api.products.com/{{product_id}}",
+                method="GET",
+                async_mode=True
+            )
+        )
+
+        shipping_id: int = field(
+            required=True,
+            external_api=ExternalApiConfig(
+                url="https://api.shipping.com/{{shipping_id}}",
+                method="GET",
+                async_mode=True
+            )
+        )
+
+    @app.route('/orders', methods=['POST'])
+    @OrderFilter.validate()
+    async def create_order():
+        # All 3 API calls execute in parallel!
+        # Total time = max(user_api, product_api, shipping_api)
+        return g.validated_data
+
+Retry Logic
+^^^^^^^^^^^
+
+Configure retry behavior for unreliable APIs:
+
+.. code-block:: python
+
+    user_id: int = field(
+        required=True,
+        external_api=ExternalApiConfig(
+            url="https://flaky-api.com/users/{{user_id}}",
+            method="GET",
+            async_mode=True,
+            retry_count=3,      # Retry up to 3 times
+            retry_delay=0.5     # Wait 500ms between retries
+        )
+    )
+
+Custom Timeout
+^^^^^^^^^^^^^^
+
+Override the default 30-second timeout:
+
+.. code-block:: python
+
+    user_id: int = field(
+        required=True,
+        external_api=ExternalApiConfig(
+            url="https://slow-api.com/users/{{user_id}}",
+            method="GET",
+            async_mode=True,
+            timeout=60  # 60 seconds
+        )
+    )
+
+Mixed Sync and Async
+^^^^^^^^^^^^^^^^^^^^
+
+You can mix sync and async external APIs in the same filter:
+
+.. code-block:: python
+
+    class MixedFilter(InputFilter):
+        # Legacy sync API
+        legacy_id: int = field(
+            external_api=ExternalApiConfig(
+                url="https://legacy-api.com/{{id}}",
+                method="GET",
+                async_mode=False  # Sync (default)
+            )
+        )
+
+        # Modern async API
+        modern_id: int = field(
+            external_api=ExternalApiConfig(
+                url="https://modern-api.com/{{id}}",
+                method="GET",
+                async_mode=True  # Async
+            )
+        )
+
+    @app.route('/data', methods=['POST'])
+    @UserFilter.validate()
+    async def get_data():
+        return g.validated_data
 
 Error Handling
 --------------

@@ -18,6 +18,14 @@ class ExternalApiConfig:
     - **data_key** (*Optional[str]*): The key in the response JSON to use
     - **api_key** (*Optional[str]*): The API key to use.
     - **headers** (*Optional[dict[str, str]]*): The headers to send to the API.
+    - **async_mode** (*bool*): Whether to use async HTTP client (httpx).
+      Default: False.
+    - **timeout** (*int*): Timeout in seconds for the HTTP request.
+      Default: 30.
+    - **retry_count** (*int*): Number of retry attempts on failure.
+      Default: 0.
+    - **retry_delay** (*float*): Delay in seconds between retries.
+      Default: 1.0.
     """
 
     url: str
@@ -26,3 +34,7 @@ class ExternalApiConfig:
     data_key: Optional[str] = None
     api_key: Optional[str] = None
     headers: Optional[dict[str, str]] = None
+    async_mode: bool = False
+    timeout: int = 30
+    retry_count: int = 0
+    retry_delay: float = 1.0
