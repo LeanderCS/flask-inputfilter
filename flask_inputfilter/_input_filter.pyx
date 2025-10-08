@@ -15,6 +15,7 @@ import json
 import logging
 import sys
 from typing import Any, Optional, Type, TypeVar, Union
+import warnings
 
 from flask import Response, g, request
 
@@ -245,6 +246,13 @@ cdef class InputFilter:
         Args:
             condition (BaseCondition): The condition to add.
         """
+        warnings.warn(
+            "Using 'add_condition' is deprecated, use 'condition()' "
+            "instead. https://leandercs.github.io/flask-inputfilter"
+            "/options/declarative_api.html",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self.conditions.append(condition)
 
     cdef void _register_decorator_components(self):
@@ -537,6 +545,13 @@ cdef class InputFilter:
             copy (Optional[str]): The name of the field to copy the value 
                 from.
         """
+        warnings.warn(
+            "Using 'add' is deprecated, use 'field()' "
+            "instead. https://leandercs.github.io/flask-inputfilter"
+            "/options/declarative_api.html",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         if name in self.fields:
             raise ValueError(f"Field '{name}' already exists.")
 
@@ -683,6 +698,13 @@ cdef class InputFilter:
         Args:
             filter: The filter to add.
         """
+        warnings.warn(
+            "Using 'add_global_filter' is deprecated, use 'global_filter()' "
+            "instead. https://leandercs.github.io/flask-inputfilter"
+            "/options/declarative_api.html",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self.global_filters.append(filter)
 
     cpdef list[BaseFilter] get_global_filters(self):
@@ -784,6 +806,13 @@ cdef class InputFilter:
         Args:
             validator (BaseValidator): The validator to add.
         """
+        warnings.warn(
+            "Using 'add_global_validator' is deprecated, use "
+            "'global_validator()' instead. https://leandercs.github.io"
+            "/flask-inputfilter/options/declarative_api.html",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self.global_validators.append(validator)
 
     cpdef list[BaseValidator] get_global_validators(self):

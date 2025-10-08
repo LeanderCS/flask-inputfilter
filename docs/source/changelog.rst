@@ -4,12 +4,21 @@ Changelog
 All notable changes to this project will be documented in this file.
 
 
+[0.7.3] - 2025-10-08
+--------------------
+
+Changed
+^^^^^^^
+- Added deprecated warnings to old methods to ``add``, ``add_condition``, ``add_global_filter`` and
+  ``add_global_validator`` to prepare for a later removal.
+
+
 [0.7.2] - 2025-09-28
 --------------------
 
 Changed
 ^^^^^^^
-- Changed the way how to use the new decorator ``_condition``, ``_global_filter``, ``_global_validator`` and ``_model``.
+- Changed the way how to use the new declarative ``_condition``, ``_global_filter``, ``_global_validator`` and ``_model``.
   They should no longer be assigned to a variable, but should be set with the corresponding declarative method.
 
   ``_condition = [Example()]`` => ``condition(Example())``
@@ -20,7 +29,7 @@ Changed
 
   ``_model = Example`` => ``model(Example)``
 
-  The previous way is still supported, but is not recommended because it is not streightforward and could lead to confusion.
+  The previous way is still supported, but is not recommended because it is not straightforward and could lead to confusion.
   The new methods also support multiple calls and also mass assignment.
 
   Both of the following examples are valid and have the same effect:
@@ -56,7 +65,8 @@ Changed
 
 Added
 ^^^^^
-- Added comprehensive ``py.typed`` file for PEP 561 compliance, improving type checking support for mypy and other static type checkers.
+- Added comprehensive ``py.typed`` file for PEP 561 compliance, improving type checking support for mypy and
+  other static type checkers.
 - Added ``AGENTS.md`` to document how to use this library for various ai agents.
 
 

@@ -9,3 +9,5 @@ warnings.warn(
     DeprecationWarning,
     stacklevel=2,
 )
+
+from flask_inputfilter.models import BaseCondition
