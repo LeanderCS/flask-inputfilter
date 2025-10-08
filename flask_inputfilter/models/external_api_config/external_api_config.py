@@ -18,6 +18,7 @@ class ExternalApiConfig:
     - **data_key** (*Optional[str]*): The key in the response JSON to use
     - **api_key** (*Optional[str]*): The API key to use.
     - **headers** (*Optional[dict[str, str]]*): The headers to send to the API.
+    - **timeout** (*int*): The timeout in seconds for the API request.
     """
 
     url: str
@@ -26,3 +27,4 @@ class ExternalApiConfig:
     data_key: Optional[str] = None
     api_key: Optional[str] = None
     headers: Optional[dict[str, str]] = None
+    timeout: int = 30

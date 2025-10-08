@@ -82,3 +82,99 @@ class TestRequiredIfCondition(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.input_filter.validate_data({"field5": "any_value"})
+
+    def test_validates_when_trigger_field_is_missing(self) -> None:
+        self.input_filter.add("field1")
+        self.input_filter.add("field2")
+        self.input_filter.add_condition(
+            RequiredIfCondition("field1", "value", "field2")
+        )
+        self.input_filter.validate_data({})
+        self.input_filter.validate_data({"field2": "any_value"})
+
+    def test_validates_when_trigger_field_missing_and_trigger_is_none(
+        self,
+    ) -> None:
+        """When trigger value is None but field is missing, it doesn't
+        trigger."""
+        self.input_filter.add("field1")
+        self.input_filter.add("field2")
+        self.input_filter.add_condition(
+            RequiredIfCondition("field1", None, "field2")
+        )
+        # Field1 is missing (not explicitly None), so it doesn't trigger
+        self.input_filter.validate_data({})
+
+    def test_validates_with_empty_string_trigger_value(self) -> None:
+        self.input_filter.add("field1")
+        self.input_filter.add("field2")
+        self.input_filter.add_condition(
+            RequiredIfCondition("field1", "", "field2")
+        )
+        self.input_filter.validate_data({"field1": "", "field2": "value"})
+
+    def test_invalidates_when_empty_string_trigger_and_required_missing(
+        self,
+    ) -> None:
+        self.input_filter.add("field1")
+        self.input_filter.add("field2")
+        self.input_filter.add_condition(
+            RequiredIfCondition("field1", "", "field2")
+        )
+        with self.assertRaises(ValidationError):
+            self.input_filter.validate_data({"field1": ""})
+
+    def test_validates_with_zero_trigger_value(self) -> None:
+        self.input_filter.add("field1")
+        self.input_filter.add("field2")
+        self.input_filter.add_condition(
+            RequiredIfCondition("field1", 0, "field2")
+        )
+        self.input_filter.validate_data({"field1": 0, "field2": "value"})
+
+    def test_invalidates_when_zero_trigger_and_required_missing(self) -> None:
+        self.input_filter.add("field1")
+        self.input_filter.add("field2")
+        self.input_filter.add_condition(
+            RequiredIfCondition("field1", 0, "field2")
+        )
+        with self.assertRaises(ValidationError):
+            self.input_filter.validate_data({"field1": 0})
+
+    def test_validates_with_false_trigger_value(self) -> None:
+        self.input_filter.add("field1")
+        self.input_filter.add("field2")
+        self.input_filter.add_condition(
+            RequiredIfCondition("field1", False, "field2")
+        )
+        self.input_filter.validate_data({"field1": False, "field2": "value"})
+
+    def test_invalidates_when_false_trigger_and_required_missing(
+        self,
+    ) -> None:
+        self.input_filter.add("field1")
+        self.input_filter.add("field2")
+        self.input_filter.add_condition(
+            RequiredIfCondition("field1", False, "field2")
+        )
+        with self.assertRaises(ValidationError):
+            self.input_filter.validate_data({"field1": False})
+
+    def test_invalidates_when_required_field_has_none_value(self) -> None:
+        """Required field with None value causes validation error."""
+        self.input_filter.add("field1")
+        self.input_filter.add("field2")
+        self.input_filter.add_condition(
+            RequiredIfCondition("field1", "value", "field2")
+        )
+        with self.assertRaises(ValidationError):
+            self.input_filter.validate_data({"field1": "value", "field2": None})
+
+    def test_validates_with_empty_list_as_trigger_value(self) -> None:
+        self.input_filter.add("field1")
+        self.input_filter.add("field2")
+        self.input_filter.add_condition(
+            RequiredIfCondition("field1", [], "field2")
+        )
+        self.input_filter.validate_data({"field1": 1})
+        self.input_filter.validate_data({"field1": [], "field2": "value"})

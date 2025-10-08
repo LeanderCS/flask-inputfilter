@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 from flask_inputfilter.models import BaseFilter
 
@@ -38,7 +38,7 @@ class StringRemoveEmojisFilter(BaseFilter):
 
     __slots__ = ()
 
-    def apply(self, value: Any) -> Union[Optional[str], Any]:
+    def apply(self, value: Any) -> Union[str, Any]:
         if not isinstance(value, str):
             return value
 

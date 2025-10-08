@@ -45,7 +45,7 @@ class NOfCondition(BaseCondition):
         self.fields = fields
         self.n = n
 
-    def check(self, data: Any) -> bool:
+    def check(self, data: dict[str, Any]) -> bool:
         return (
             sum(1 for field in self.fields if data.get(field) is not None)
             >= self.n

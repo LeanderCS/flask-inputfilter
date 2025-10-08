@@ -23,6 +23,7 @@ cdef class ExternalApiConfig:
     - **data_key** (*Optional[str]*): The key in the response JSON to use
     - **api_key** (*Optional[str]*): The API key to use.
     - **headers** (*Optional[dict[str, str]]*): The headers to send to the API.
+    - **timeout** (*int*): The timeout in seconds for the API request.
     """
 
     def __init__(
@@ -32,7 +33,8 @@ cdef class ExternalApiConfig:
         dict[str, Any] params=None,
         str data_key=None,
         str api_key=None,
-        dict[str, str] headers=None
+        dict[str, str] headers=None,
+        int timeout = 30
     ) -> None:
         self.url = url
         self.method = method
@@ -40,3 +42,4 @@ cdef class ExternalApiConfig:
         self.data_key = data_key
         self.api_key = api_key
         self.headers = headers
+        self.timeout = timeout

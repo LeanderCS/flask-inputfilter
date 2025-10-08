@@ -42,5 +42,6 @@ class IsLowercaseValidator(BaseValidator):
     def validate(self, value: Any) -> None:
         if not isinstance(value, str):
             raise ValidationError("Value must be a string.")
+
         if not value.islower():
             raise ValidationError(self.error_message)

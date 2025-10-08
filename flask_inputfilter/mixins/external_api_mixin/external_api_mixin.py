@@ -12,6 +12,8 @@ if TYPE_CHECKING:
 class ExternalApiMixin:
     __slots__ = ()
 
+    _PLACEHOLDER_PATTERN = re.compile(r"{{(.*?)}}")
+
     @staticmethod
     def call_external_api(
         config: ExternalApiConfig,
@@ -83,30 +85,27 @@ class ExternalApiMixin:
         request_data["method"] = config.method
 
         try:
-            response = requests.request(timeout=30, **request_data)
+            response = requests.request(timeout=config.timeout, **request_data)
+            response.raise_for_status()
             result = response.json()
+        except requests.exceptions.HTTPError:
+            if fallback is None:
+                logger.exception("External API HTTP error.")
+                raise ValidationError(
+                    f"External API call failed for field '{data_key}'."
+                )
+            return fallback
         except requests.exceptions.RequestException:
             if fallback is None:
                 logger.exception("External API request failed unexpectedly.")
                 raise ValidationError(
-                    f"External API call failed for field'{data_key}'."
+                    f"External API call failed for field '{data_key}'."
                 )
             return fallback
         except ValueError:
             if fallback is None:
                 logger.exception(
                     "External API response could not be parsed to json."
-                )
-                raise ValidationError(
-                    f"External API call failed for field '{data_key}'."
-                )
-            return fallback
-
-        if response.status_code != 200:
-            if fallback is None:
-                logger.error(
-                    f"External API request failed with status "
-                    f"{response.status_code}: {response.text}"
                 )
                 raise ValidationError(
                     f"External API call failed for field '{data_key}'."
@@ -136,7 +135,7 @@ class ExternalApiMixin:
         - (*str*): The value with all placeholders replaced with
           the corresponding values from validated_data.
         """
-        return re.compile(r"{{(.*?)}}").sub(
+        return ExternalApiMixin._PLACEHOLDER_PATTERN.sub(
             lambda match: str(validated_data.get(match.group(1))),
             value,
         )

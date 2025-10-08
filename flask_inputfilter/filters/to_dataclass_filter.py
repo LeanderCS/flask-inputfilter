@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Type, Union
+from typing import Any, Type
 
 from flask_inputfilter.models import BaseFilter
 
@@ -36,7 +36,7 @@ class ToDataclassFilter(BaseFilter):
     def __init__(self, dataclass_type: Type[dict]) -> None:
         self.dataclass_type = dataclass_type
 
-    def apply(self, value: Any) -> Union[Any]:
+    def apply(self, value: Any) -> Any:
         if not isinstance(value, dict):
             return value
 

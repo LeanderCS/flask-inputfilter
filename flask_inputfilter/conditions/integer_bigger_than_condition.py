@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from flask_inputfilter.models import BaseCondition
 
 
@@ -45,7 +47,7 @@ class IntegerBiggerThanCondition(BaseCondition):
         self.bigger_field = bigger_field
         self.smaller_field = smaller_field
 
-    def check(self, data: dict[str, int]) -> bool:
+    def check(self, data: dict[str, Any]) -> bool:
         if (
             data.get(self.bigger_field) is None
             or data.get(self.smaller_field) is None

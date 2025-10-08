@@ -26,7 +26,7 @@ class ToUpperFilter(BaseFilter):
 
     __slots__ = ()
 
-    def apply(self, value: str) -> Union[str, Any]:
+    def apply(self, value: Any) -> Union[str, Any]:
         if not isinstance(value, str):
             return value
 

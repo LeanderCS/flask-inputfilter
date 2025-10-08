@@ -70,3 +70,80 @@ class TestTemporalOrderCondition(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             self.input_filter.validate_data({"field1": "not a datetime"})
+
+    def test_invalidates_when_both_fields_missing(self) -> None:
+        self.input_filter.add("field1")
+        self.input_filter.add("field2")
+        self.input_filter.add_condition(
+            TemporalOrderCondition("field1", "field2")
+        )
+
+        with self.assertRaises(ValidationError):
+            self.input_filter.validate_data({})
+
+    def test_invalidates_when_first_field_is_none(self) -> None:
+        self.input_filter.add("field1")
+        self.input_filter.add("field2")
+        self.input_filter.add_condition(
+            TemporalOrderCondition("field1", "field2")
+        )
+
+        with self.assertRaises(ValidationError):
+            self.input_filter.validate_data(
+                {"field1": None, "field2": "2021-01-01"}
+            )
+
+    def test_invalidates_when_second_field_is_none(self) -> None:
+        self.input_filter.add("field1")
+        self.input_filter.add("field2")
+        self.input_filter.add_condition(
+            TemporalOrderCondition("field1", "field2")
+        )
+
+        with self.assertRaises(ValidationError):
+            self.input_filter.validate_data(
+                {"field1": "2021-01-01", "field2": None}
+            )
+
+    def test_invalidates_when_both_fields_are_none(self) -> None:
+        self.input_filter.add("field1")
+        self.input_filter.add("field2")
+        self.input_filter.add_condition(
+            TemporalOrderCondition("field1", "field2")
+        )
+
+        with self.assertRaises(ValidationError):
+            self.input_filter.validate_data({"field1": None, "field2": None})
+
+    def test_invalidates_when_dates_are_equal(self) -> None:
+        self.input_filter.add("field1")
+        self.input_filter.add("field2")
+        self.input_filter.add_condition(
+            TemporalOrderCondition("field1", "field2")
+        )
+
+        with self.assertRaises(ValidationError):
+            self.input_filter.validate_data(
+                {"field1": "2021-01-01", "field2": "2021-01-01"}
+            )
+
+    def test_validates_with_date_objects(self) -> None:
+        self.input_filter.add("field1")
+        self.input_filter.add("field2")
+        self.input_filter.add_condition(
+            TemporalOrderCondition("field1", "field2")
+        )
+
+        self.input_filter.validate_data(
+            {"field1": date(2021, 1, 1), "field2": date(2021, 1, 2)}
+        )
+
+    def test_invalidates_with_numeric_values(self) -> None:
+        self.input_filter.add("field1")
+        self.input_filter.add("field2")
+        self.input_filter.add_condition(
+            TemporalOrderCondition("field1", "field2")
+        )
+
+        with self.assertRaises(ValidationError):
+            self.input_filter.validate_data({"field1": 123, "field2": 456})

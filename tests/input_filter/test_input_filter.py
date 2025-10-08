@@ -2,6 +2,7 @@ import unittest
 from dataclasses import dataclass
 from unittest.mock import Mock, patch
 
+import requests
 from flask import Flask, g, jsonify, request
 from flask_inputfilter import InputFilter
 from flask_inputfilter.declarative import field
@@ -865,6 +866,9 @@ class TestInputFilter(unittest.TestCase):
 
         # API returns invalid result
         mock_response.status_code = 500
+        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
+            "500 Server Error"
+        )
         with self.assertRaises(ValidationError):
             self.inputFilter.validate_data({"name": "invalid_user"})
 
@@ -900,6 +904,9 @@ class TestInputFilter(unittest.TestCase):
 
         # API returns invalid result
         mock_response.status_code = 500
+        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
+            "500 Server Error"
+        )
         with self.assertRaises(ValidationError):
             MyInputFilter().validate_data({"name": "invalid_user"})
 
@@ -944,6 +951,9 @@ class TestInputFilter(unittest.TestCase):
         )
 
         mock_response.status_code = 500
+        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
+            "500 Server Error"
+        )
         mock_response.json.return_value = {"is_valid": False}
         with self.assertRaises(ValidationError):
             self.inputFilter.validate_data(
@@ -960,6 +970,9 @@ class TestInputFilter(unittest.TestCase):
     def test_external_api_fallback(self, mock_request: Mock) -> None:
         mock_response = Mock()
         mock_response.status_code = 400
+        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
+            "400 Client Error"
+        )
         mock_response.json.return_value = {"name": True}
         mock_request.return_value = mock_response
 
@@ -1012,6 +1025,9 @@ class TestInputFilter(unittest.TestCase):
     ) -> None:
         mock_response = Mock()
         mock_response.status_code = 400
+        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
+            "400 Client Error"
+        )
         mock_response.json.return_value = {"name": True}
         mock_request.return_value = mock_response
 
@@ -1062,6 +1078,9 @@ class TestInputFilter(unittest.TestCase):
         ValidationError."""
         mock_response = Mock()
         mock_response.status_code = 400
+        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
+            "400 Client Error"
+        )
         mock_response.json.return_value = {}
         mock_request.return_value = mock_response
 

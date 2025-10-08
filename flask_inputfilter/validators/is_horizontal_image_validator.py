@@ -41,7 +41,9 @@ class IsHorizontalImageValidator(BaseValidator):
     __slots__ = ("error_message",)
 
     def __init__(self, error_message: Optional[str] = None) -> None:
-        self.error_message = error_message
+        self.error_message = (
+            error_message or "The image is not horizontally oriented."
+        )
 
     def validate(self, value: Any) -> None:
         if not isinstance(value, (str, ImageType)):
@@ -57,6 +59,4 @@ class IsHorizontalImageValidator(BaseValidator):
                 raise ValidationError
 
         except (ValidationError, binascii.Error, OSError):
-            raise ValidationError(
-                self.error_message or "The image is not horizontally oriented."
-            )
+            raise ValidationError(self.error_message)

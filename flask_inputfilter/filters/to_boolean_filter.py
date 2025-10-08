@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 from flask_inputfilter.models import BaseFilter
 
@@ -26,5 +26,5 @@ class ToBooleanFilter(BaseFilter):
 
     __slots__ = ()
 
-    def apply(self, value: Any) -> Union[Optional[bool], Any]:
+    def apply(self, value: Any) -> Union[bool, Any]:
         return bool(value)

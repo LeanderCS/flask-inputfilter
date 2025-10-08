@@ -35,7 +35,7 @@ class RegexValidator(BaseValidator):
             ])
     """
 
-    __slots__ = ("error_message", "pattern")
+    __slots__ = ("_compiled_pattern", "error_message", "pattern")
 
     def __init__(
         self,
@@ -45,10 +45,11 @@ class RegexValidator(BaseValidator):
         self.pattern = (
             pattern.value if isinstance(pattern, RegexEnum) else pattern
         )
+        self._compiled_pattern = re.compile(self.pattern)
         self.error_message = error_message
 
     def validate(self, value: str) -> None:
-        if not re.match(self.pattern, value):
+        if not self._compiled_pattern.match(value):
             raise ValidationError(
                 self.error_message
                 or f"Value '{value}' does not match the required "
