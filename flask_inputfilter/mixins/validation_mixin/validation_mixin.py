@@ -237,11 +237,54 @@ class ValidationMixin:
                     field_name, field_info, value
                 )
 
+                if field_info.input_filter is not None and value is not None:
+                    value = ValidationMixin.apply_nested_input_filter(
+                        field_name, field_info.input_filter, value
+                    )
+
                 validated_data[field_name] = value
             except ValidationError as e:
                 errors[field_name] = str(e)
 
         return validated_data, errors
+
+    @staticmethod
+    def apply_nested_input_filter(
+        field_name: str,
+        input_filter_class: type,
+        value: Any,
+    ) -> dict[str, Any]:
+        """
+        Apply nested InputFilter validation to a field value.
+
+        **Parameters:**
+
+        - **field_name** (*str*): The name of the field being validated.
+        - **input_filter_class** (*type*): The InputFilter class to
+          use for validation.
+        - **value** (*Any*): The value to validate (must be a dict).
+
+        **Returns:**
+
+        - (*dict[str, Any]*): The validated nested data as a dictionary.
+
+        **Raises:**
+
+        - **ValidationError**: If the value is not a dict or if nested
+          validation fails.
+        """
+        if not isinstance(value, dict):
+            raise ValidationError(
+                f"Field '{field_name}' must be a dict for nested InputFilter "
+                f"validation, got {type(value).__name__}."
+            )
+
+        try:
+            return input_filter_class().validate_data(value)
+        except ValidationError as e:
+            raise ValidationError(
+                f"Nested validation failed for field '{field_name}': {e!s}"
+            ) from e
 
     @staticmethod
     def get_field_value(

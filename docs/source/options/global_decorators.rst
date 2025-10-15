@@ -344,29 +344,3 @@ Combining Global Decorators
 
         # Model association
         model(User)
-
-Hierarchical Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: python
-
-    class BaseUserFilter(InputFilter):
-        # Base global configuration
-        global_filter(StringTrimFilter())
-        global_validator(IsStringValidator())
-
-    class StandardUserFilter(BaseUserFilter):
-        username = field(required=True)
-        email = field(required=True)
-
-        # Additional processing
-        global_validator(NotEmptyValidator())
-
-    class AdminUserFilter(StandardUserFilter):
-        role = field(required=True, default="admin")
-        permissions = field(required=False, default=[])
-
-        # Admin-specific validation
-        global_validator(SecurityValidator())
-        condition(AdminPermissionCondition())
-        # errors will contain both field-level and condition-level errors

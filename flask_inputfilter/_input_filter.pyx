@@ -288,6 +288,7 @@ cdef class InputFilter:
                         attr_value.external_api,
                         attr_value.copy,
                         attr_value.computed,
+                        attr_value.input_filter,
                     )
 
             conditions = getattr(base_cls, "_conditions", None)

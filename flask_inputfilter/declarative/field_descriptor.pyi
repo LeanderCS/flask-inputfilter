@@ -31,6 +31,10 @@ class FieldDescriptor:
       configuration.
     - **copy** (*Optional[str]*): Field to copy value from if this field
       is missing.
+    - **computed** (*Optional[Callable[[dict[str, Any]], Any]]*): A
+      callable that computes the field value from validated data.
+    - **input_filter** (*Optional[type]*): An InputFilter class
+      for nested validation.
 
     **Expected Behavior:**
 
@@ -49,6 +53,7 @@ class FieldDescriptor:
     copy: Optional[str]
     name: Optional[str]
     computed: Optional[Any]
+    input_filter: Optional[type]
 
     def __init__(
         self,
@@ -61,6 +66,7 @@ class FieldDescriptor:
         external_api: Optional[ExternalApiConfig] = None,
         copy: Optional[str] = None,
         computed: Optional[Any] = None,
+        input_filter: Optional[type] = None,
     ) -> None: ...
     def __set_name__(self, owner: type, name: str) -> None: ...
     def __get__(self, obj: Any, objtype: Optional[type] = None) -> Any: ...

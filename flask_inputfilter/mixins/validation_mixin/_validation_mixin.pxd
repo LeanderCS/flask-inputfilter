@@ -29,4 +29,16 @@ cdef class ValidationMixin:
     )
 
     @staticmethod
-    cdef inline object get_field_value(str field_name, FieldModel field_info, dict[str, Any] data, dict[str, Any] validated_data) 
+    cdef dict apply_nested_input_filter(
+        str field_name,
+        object input_filter_class,
+        object value
+    )
+
+    @staticmethod
+    cdef inline object get_field_value(
+        str field_name,
+        FieldModel field_info,
+        dict[str, Any] data,
+        dict[str, Any] validated_data
+    )
