@@ -9,10 +9,12 @@ cdef class FieldDescriptor:
         object fallback
         list[BaseFilter] filters
         list[BaseValidator] validators
-        list steps
+        list[BaseFilter | BaseValidator] steps
         ExternalApiConfig external_api
         str copy
         object computed
+        object input_filter
+
     cdef public:
         str name
 

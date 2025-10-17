@@ -23,6 +23,7 @@ def field(
     external_api: Optional[ExternalApiConfig] = None,
     copy: Optional[str] = None,
     computed: Optional[Any] = None,
+    input_filter: Optional[type] = None,
 ) -> FieldDescriptor:
     """
     Create a field descriptor for declarative field definition.
@@ -51,6 +52,9 @@ def field(
     - **computed** (*Optional[Callable[[dict[str, Any]], Any]]*): A callable
       that computes the field value from validated data.
       Default: None.
+    - **input_filter** (*Optional[type]*): An InputFilter class to use
+      for nested validation. When specified, the field value (must be a dict)
+      will be validated against the nested InputFilter's rules. Default: None.
 
     **Returns:**
 
@@ -78,4 +82,5 @@ def field(
         external_api=external_api,
         copy=copy,
         computed=computed,
+        input_filter=input_filter,
     )

@@ -34,6 +34,8 @@ class FieldDescriptor:
       is missing.
     - **computed** (*Optional[Callable[[dict[str, Any]], Any]]*): A callable
       that computes the field value from validated data.
+    - **input_filter** (*Optional[type]*): An InputFilter class for
+      nested validation.
 
     **Expected Behavior:**
 
@@ -53,31 +55,8 @@ class FieldDescriptor:
         external_api: Optional[ExternalApiConfig] = None,
         copy: Optional[str] = None,
         computed: Optional[Any] = None,
+        input_filter: Optional[type] = None,
     ) -> None:
-        """
-        Initialize a field descriptor.
-
-        **Parameters:**
-
-        - **required** (*bool*): Whether the field is required.
-        - **default** (*Any*): The default value of the field.
-        - **fallback** (*Any*): The fallback value of the field, if
-          validations fail or field is None, although it is required.
-        - **filters** (*Optional[list[BaseFilter]]*): The filters to apply to
-          the field value.
-        - **validators** (*Optional[list[BaseValidator]]*): The validators to
-          apply to the field value.
-        - **steps** (*Optional[list[Union[BaseFilter, BaseValidator]]]*):
-          Allows
-          to apply multiple filters and validators in a specific order.
-        - **external_api** (*Optional[ExternalApiConfig]*): Configuration
-          for an
-          external API call.
-        - **copy** (*Optional[str]*): The name of the field to copy the value
-          from.
-        - **computed** (*Optional[Callable[[dict[str, Any]], Any]]*): A
-          callable that computes the field value from validated data.
-        """
         self.required = required
         self.default = default
         self.fallback = fallback
@@ -87,6 +66,7 @@ class FieldDescriptor:
         self.external_api = external_api
         self.copy = copy
         self.computed = computed
+        self.input_filter = input_filter
         self.name: Optional[str] = None
 
     def __set_name__(self, owner: type, name: str) -> None:
@@ -146,5 +126,6 @@ class FieldDescriptor:
             f"external_api={self.external_api!r}, "
             f"copy={self.copy!r}, "
             f"computed={self.computed!r}, "
+            f"input_filter={self.input_filter!r}"
             f")"
         )

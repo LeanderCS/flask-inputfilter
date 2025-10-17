@@ -3,6 +3,7 @@
 # cython: wraparound=False
 # cython: cdivision=True
 
+from flask_inputfilter.models.cimports cimport BaseFilter, BaseValidator, ExternalApiConfig
 
 cdef class FieldDescriptor:
     """
@@ -18,14 +19,23 @@ cdef class FieldDescriptor:
     - **default** (*Any*): Default value if field is missing.
     - **fallback** (*Any*): Fallback value if validation fails.
     - **filters** (*Optional[list[BaseFilter]]*): List of filters to apply.
-    - **validators** (*Optional[list[BaseValidator]]*): List of validators to apply.
-    - **steps** (*Optional[list[Union[BaseFilter, BaseValidator]]]*): List of combined filters and validators.
-    - **external_api** (*Optional[ExternalApiConfig]*): External API configuration.
-    - **copy** (*Optional[str]*): Field to copy value from if this field is missing.
+    - **validators** (*Optional[list[BaseValidator]]*): List of validators
+      to apply.
+    - **steps** (*Optional[list[Union[BaseFilter, BaseValidator]]]*): List of
+      combined filters and validators.
+    - **external_api** (*Optional[ExternalApiConfig]*): External API
+      configuration.
+    - **copy** (*Optional[str]*): Field to copy value from if this field
+      is missing.
+    - **computed** (*Optional[Callable[[dict[str, Any]], Any]]*): A callable
+      that computes the field value from validated data.
+    - **input_filter** (*Optional[type]*): An InputFilter class for
+      nested validation.
 
     **Expected Behavior:**
 
-    Automatically registers field configuration during class creation and provides
+    Automatically registers field configuration during class creation and
+    provides
     attribute access to validated field values.
     """
 
@@ -34,12 +44,13 @@ cdef class FieldDescriptor:
         bint required = False,
         object default = None,
         object fallback = None,
-        list filters = None,
-        list validators = None,
-        list steps = None,
-        object external_api = None,
+        list[BaseFilter] filters = None,
+        list[BaseValidator] validators = None,
+        list[BaseFilter | BaseValidator] steps = None,
+        ExternalApiConfig external_api = None,
         str copy = None,
         object computed = None,
+        object input_filter = None,
     ) -> None:
         """
         Initialize a field descriptor.
@@ -62,6 +73,8 @@ cdef class FieldDescriptor:
           from.
         - **computed** (*Optional[Callable[[dict[str, Any]], Any]]*): A callable
           that computes the field value from validated data.
+        - **input_filter** (*Optional[type]*): An InputFilter class
+          for nested validation.
         """
         self.required = required
         self._default = default
@@ -72,6 +85,7 @@ cdef class FieldDescriptor:
         self.external_api = external_api
         self.copy = copy
         self.computed = computed
+        self.input_filter = input_filter
         self.name = None
 
     @property
@@ -147,6 +161,11 @@ cdef class FieldDescriptor:
             f"required={self.required}, "
             f"default={self.default!r}, "
             f"filters={len(self.filters)}, "
-            f"validators={len(self.validators)}"
+            f"validators={len(self.validators)}, "
+            f"steps={len(self.steps)}, "
+            f"external_api={self.external_api!r}, "
+            f"copy={self.copy!r}, "
+            f"computed={self.computed!r}, "
+            f"input_filter={self.input_filter!r}"
             f")"
         )

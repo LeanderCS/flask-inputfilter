@@ -26,3 +26,4 @@ class FieldModel:
     external_api: Optional[ExternalApiConfig] = None
     copy: Optional[str] = None
     computed: Optional[Callable[[dict[str, Any]], Any]] = None
+    input_filter: Optional[type] = None

@@ -378,6 +378,58 @@ Computed fields are:
             computed=lambda data: data['subtotal'] + data.get('tax', 0)
         )
 
+input_filter
+~~~~~~~~~~~~
+
+**Type**: ``type``
+**Default**: ``None``
+
+Specify an InputFilter class to use for nested validation. When this parameter is
+provided, the field value must be a dictionary and will be validated against the
+nested InputFilter's rules.
+
+This allows you to compose complex validation structures by nesting InputFilters
+within each other, enabling validation of nested objects and hierarchical data
+structures.
+
+**Key Features:**
+
+- Validates nested dictionary structures
+- Applies all filters and validators from the nested InputFilter
+- Supports multiple levels of nesting
+- Provides clear error messages with field context
+
+.. code-block:: python
+
+    from flask_inputfilter import InputFilter
+    from flask_inputfilter.declarative import field
+    from flask_inputfilter.validators import IsIntegerValidator, IsStringValidator
+
+    class UserInputFilter(InputFilter):
+        id: int = field(required=True, validators=[IsIntegerValidator()])
+        name: str = field(required=True, validators=[IsStringValidator()])
+        email: str = field(required=True, validators=[IsStringValidator()])
+
+    class OrderInputFilter(InputFilter):
+        quantity: int = field(required=True, validators=[IsIntegerValidator()])
+        user: dict = field(required=True, input_filter=UserInputFilter)
+
+**Error Handling:**
+
+If nested validation fails, the error will include context about which field failed:
+
+.. code-block:: python
+
+    # If user.name is missing:
+    # ValidationError: {'user': "Nested validation failed for field 'user': {'name': \"Field 'name' is required.\"}"}
+
+**Important Notes:**
+
+- The field value must be a dictionary, otherwise a validation error is raised
+- If the field is optional (``required=False``) and the value is ``None``, nested validation is skipped
+- All filters and validators from the nested InputFilter are applied
+- The nested InputFilter can also have its own nested fields, allowing unlimited nesting depth
+
 Advanced Field Patterns
 -----------------------
 

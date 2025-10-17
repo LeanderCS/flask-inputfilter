@@ -10,7 +10,7 @@ from typing import Any
 from flask_inputfilter.exceptions import ValidationError
 
 from flask_inputfilter.mixins.cimports cimport ExternalApiMixin
-from flask_inputfilter.models.cimports cimport BaseFilter, BaseValidator, FieldModel
+from flask_inputfilter.models.cimports cimport BaseCondition, BaseFilter, BaseValidator, FieldModel
 
 
 cdef class ValidationMixin:
@@ -325,11 +325,56 @@ cdef class ValidationMixin:
                     value
                 )
 
+                if field_info.input_filter is not None and value is not None:
+                    value = ValidationMixin.apply_nested_input_filter(
+                        field_name,
+                        field_info.input_filter,
+                        value
+                    )
+
                 validated_data[field_name] = value
             except ValidationError as e:
                 errors[field_name] = str(e)
 
         return validated_data, errors
+
+    @staticmethod
+    cdef dict apply_nested_input_filter(
+        str field_name,
+        object input_filter_class,
+        object value
+    ):
+        """
+        Apply nested InputFilter validation to a field value.
+
+        **Parameters:**
+
+        - **field_name** (*str*): The name of the field being validated.
+        - **input_filter_class** (*type*): The InputFilter class to use for
+          validation.
+        - **value** (*Any*): The value to validate (must be a dict).
+
+        **Returns:**
+
+        - (*dict[str, Any]*): The validated nested data as a dictionary.
+
+        **Raises:**
+
+        - **ValidationError**: If the value is not a dict or if nested
+          validation fails.
+        """
+        if not isinstance(value, dict):
+            raise ValidationError(
+                f"Field '{field_name}' must be a dict for nested InputFilter "
+                f"validation, got {type(value).__name__}."
+            )
+
+        try:
+            return input_filter_class().validate_data(value)
+        except ValidationError as e:
+            raise ValidationError(
+                f"Nested validation failed for field '{field_name}': {str(e)}"
+            ) from e
 
     @staticmethod
     cdef inline object get_field_value(

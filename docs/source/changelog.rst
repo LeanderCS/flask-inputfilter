@@ -4,6 +4,19 @@ Changelog
 All notable changes to this project will be documented in this file.
 
 
+[0.7.5] - 2025-10-17
+--------------------
+
+Added
+^^^^^
+- **Nested InputFilter Support**: New feature to validate nested dictionary
+  structures using InputFilters. Use the ``input_filter`` parameter in
+  ``field()`` to specify an InputFilter class for nested validation. This
+  enables composition of complex validation structures with multiple levels
+  of nesting. See :doc:`Field Decorator documentation <options/field_decorator>`
+  for more details.
+
+
 [0.7.4] - 2025-10-08
 --------------------
 

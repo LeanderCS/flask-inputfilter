@@ -43,7 +43,8 @@ cdef class FieldModel:
         list steps=None,
         ExternalApiConfig external_api=None,
         str copy=None,
-        object computed=None
+        object computed=None,
+        object input_filter=None
     ) -> None:
         self.required = required
         self._default = default
@@ -67,3 +68,4 @@ cdef class FieldModel:
         self.external_api = external_api
         self.copy = copy
         self.computed = computed
+        self.input_filter = input_filter
