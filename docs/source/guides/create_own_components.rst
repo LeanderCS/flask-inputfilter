@@ -8,10 +8,6 @@ parameters and return values required to work properly.
 - `Filter`_
 - `Validator`_
 
-Inside each ``__init__`` method you can add everything as you wish,
-due it not being called in the validation process.
-Its definition is optional.
-
 Condition
 ---------
 
