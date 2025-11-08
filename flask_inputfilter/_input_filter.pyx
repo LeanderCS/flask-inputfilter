@@ -55,6 +55,8 @@ cdef dict _INTERNED_STRINGS = {
     "required": sys.intern("required"),
     "steps": sys.intern("steps"),
     "validators": sys.intern("validators"),
+    "HEAD": sys.intern("HEAD"),
+    "OPTIONS": sys.intern("OPTIONS"),
 }
 
 T = TypeVar("T")

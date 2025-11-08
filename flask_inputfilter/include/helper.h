@@ -99,6 +99,8 @@ private:
         constants["required"] = "required";
         constants["steps"] = "steps";
         constants["validators"] = "validators";
+        constants["HEAD"] = "HEAD";
+        constants["OPTIONS"] = "OPTIONS";
     }
 
 public:

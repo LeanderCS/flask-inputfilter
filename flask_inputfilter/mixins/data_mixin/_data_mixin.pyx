@@ -14,7 +14,7 @@ from libcpp.vector cimport vector
 from libcpp.string cimport string
 from libcpp.algorithm cimport find
 
-DEF LARGE_DATASET_THRESHOLD = 100
+cdef int LARGE_DATASET_THRESHOLD = 10
 
 
 cdef class DataMixin:

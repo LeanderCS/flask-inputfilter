@@ -285,6 +285,11 @@ class ValidationMixin:
             raise ValidationError(
                 f"Nested validation failed for field '{field_name}': {e!s}"
             ) from e
+        except Exception as e:
+            raise ValidationError(
+                f"Unexpected error during nested validation for field "
+                f"'{field_name}': {e!s}"
+            ) from e
 
     @staticmethod
     def get_field_value(
