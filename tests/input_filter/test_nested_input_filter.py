@@ -7,7 +7,7 @@ import pytest
 from flask_inputfilter import InputFilter
 from flask_inputfilter.declarative import field
 from flask_inputfilter.exceptions import ValidationError
-from flask_inputfilter.filters import ToIntegerFilter, StringTrimFilter
+from flask_inputfilter.filters import StringTrimFilter, ToIntegerFilter
 from flask_inputfilter.validators import IsIntegerValidator, IsStringValidator
 
 
@@ -37,10 +37,12 @@ class TestNestedInputFilter:
             )
             user = field(required=True, input_filter=UserFilter)
 
-        validated_data = OrderFilter().validate_data({
-            "quantity": "5",
-            "user": {"id": "123", "name": "  John Doe  "},
-        })
+        validated_data = OrderFilter().validate_data(
+            {
+                "quantity": "5",
+                "user": {"id": "123", "name": "  John Doe  "},
+            }
+        )
 
         assert validated_data["quantity"] == 5
         assert validated_data["user"]["id"] == 123
@@ -125,14 +127,16 @@ class TestNestedInputFilter:
             quantity = field(required=True, validators=[IsIntegerValidator()])
             user = field(required=True, input_filter=UserFilter)
 
-        validated_data = OrderFilter().validate_data({
-            "quantity": 10,
-            "user": {
-                "id": 123,
-                "name": "John Doe",
-                "address": {"city": "New York", "zipcode": "10001"},
-            },
-        })
+        validated_data = OrderFilter().validate_data(
+            {
+                "quantity": 10,
+                "user": {
+                    "id": 123,
+                    "name": "John Doe",
+                    "address": {"city": "New York", "zipcode": "10001"},
+                },
+            }
+        )
 
         assert validated_data["quantity"] == 10
         assert validated_data["user"]["id"] == 123
@@ -163,10 +167,12 @@ class TestNestedInputFilter:
             )
             user = field(required=True, input_filter=UserFilter)
 
-        validated_data = OrderFilter().validate_data({
-            "quantity": "15",
-            "user": {"id": "456", "email": "  test@example.com  "},
-        })
+        validated_data = OrderFilter().validate_data(
+            {
+                "quantity": "15",
+                "user": {"id": "456", "email": "  test@example.com  "},
+            }
+        )
 
         assert validated_data["quantity"] == 15
         assert validated_data["user"]["id"] == 456
@@ -186,10 +192,12 @@ class TestNestedInputFilter:
             user: dict = field(required=True, input_filter=UserFilter)
 
         order_filter = OrderFilter()
-        order_filter.validate_data({
-            "quantity": 5,
-            "user": {"id": 123, "name": "John Doe"},
-        })
+        order_filter.validate_data(
+            {
+                "quantity": 5,
+                "user": {"id": 123, "name": "John Doe"},
+            }
+        )
 
         assert order_filter.quantity == 5
         assert order_filter.user["id"] == 123
@@ -206,10 +214,12 @@ class TestNestedInputFilter:
             quantity = field(required=True, validators=[IsIntegerValidator()])
             user = field(required=True, input_filter=UserFilter)
 
-        validated_data = OrderFilter().validate_data({
-            "quantity": 3,
-            "user": {"id": 789},
-        })
+        validated_data = OrderFilter().validate_data(
+            {
+                "quantity": 3,
+                "user": {"id": 789},
+            }
+        )
 
         assert validated_data["quantity"] == 3
         assert validated_data["user"]["id"] == 789
@@ -251,8 +261,10 @@ class TestNestedInputFilter:
         assert order_filter2.is_valid() is False
 
         try:
-            OrderFilter().validate_data({"quantity": 5, "user": {"id": "invalid"}})
-            assert False, "Should have raised ValidationError"
+            OrderFilter().validate_data(
+                {"quantity": 5, "user": {"id": "invalid"}}
+            )
+            raise AssertionError("Should have raised ValidationError")
         except ValidationError as e:
             errors = e.args[0]
             assert "user" in errors
@@ -323,9 +335,11 @@ class TestNestedInputFilter:
         class OrderFilter(InputFilter):
             user = field(required=True, input_filter=UserFilter)
 
-        validated_data = OrderFilter().validate_data({
-            "user": {"id": "invalid_int", "name": "John"},
-        })
+        validated_data = OrderFilter().validate_data(
+            {
+                "user": {"id": "invalid_int", "name": "John"},
+            }
+        )
 
         assert validated_data["user"]["id"] == 999
         assert validated_data["user"]["name"] == "John"
@@ -346,11 +360,13 @@ class TestNestedInputFilter:
             address = field(required=True, input_filter=AddressFilter)
             contact = field(required=True, input_filter=ContactFilter)
 
-        validated_data = UserFilter().validate_data({
-            "name": "John Doe",
-            "address": {"city": "NYC", "zipcode": "10001"},
-            "contact": {"email": "john@example.com", "phone": "555-1234"},
-        })
+        validated_data = UserFilter().validate_data(
+            {
+                "name": "John Doe",
+                "address": {"city": "NYC", "zipcode": "10001"},
+                "contact": {"email": "john@example.com", "phone": "555-1234"},
+            }
+        )
 
         assert validated_data["name"] == "John Doe"
         assert validated_data["address"]["city"] == "NYC"
@@ -362,17 +378,23 @@ class TestNestedInputFilter:
         """Test nested filter with optional fields inside."""
 
         class MetadataFilter(InputFilter):
-            created_by = field(required=False, validators=[IsStringValidator()])
-            updated_by = field(required=False, validators=[IsStringValidator()])
+            created_by = field(
+                required=False, validators=[IsStringValidator()]
+            )
+            updated_by = field(
+                required=False, validators=[IsStringValidator()]
+            )
 
         class OrderFilter(InputFilter):
             quantity = field(required=True, validators=[IsIntegerValidator()])
             metadata = field(required=True, input_filter=MetadataFilter)
 
-        validated_data = OrderFilter().validate_data({
-            "quantity": 5,
-            "metadata": {},
-        })
+        validated_data = OrderFilter().validate_data(
+            {
+                "quantity": 5,
+                "metadata": {},
+            }
+        )
 
         assert validated_data["quantity"] == 5
         assert validated_data["metadata"]["created_by"] is None
@@ -393,9 +415,14 @@ class TestNestedInputFilter:
             user = field(required=True, input_filter=UserFilter)
 
         with pytest.raises(ValidationError) as exc_info:
-            OrderFilter().validate_data({
-                "user": {"id": 123, "address": {"city": "NYC", "zipcode": "invalid"}},
-            })
+            OrderFilter().validate_data(
+                {
+                    "user": {
+                        "id": 123,
+                        "address": {"city": "NYC", "zipcode": "invalid"},
+                    },
+                }
+            )
 
         errors = exc_info.value.args[0]
         assert "user" in errors
@@ -412,14 +439,16 @@ class TestNestedInputFilter:
         class OrderFilter(InputFilter):
             user = field(required=True, input_filter=UserFilter)
 
-        validated_data = OrderFilter().validate_data({
-            "user": {
-                "id": 123,
-                "name": "John",
-                "extra_field": "should be ignored",
-                "another_extra": 999,
-            },
-        })
+        validated_data = OrderFilter().validate_data(
+            {
+                "user": {
+                    "id": 123,
+                    "name": "John",
+                    "extra_field": "should be ignored",
+                    "another_extra": 999,
+                },
+            }
+        )
 
         assert validated_data["user"]["id"] == 123
         assert validated_data["user"]["name"] == "John"
@@ -436,9 +465,11 @@ class TestNestedInputFilter:
         class ConfigFilter(InputFilter):
             settings = field(required=True, input_filter=SettingsFilter)
 
-        validated_data = ConfigFilter().validate_data({
-            "settings": {"enabled": False},
-        })
+        validated_data = ConfigFilter().validate_data(
+            {
+                "settings": {"enabled": False},
+            }
+        )
 
         assert validated_data["settings"]["enabled"] is False
 
@@ -451,9 +482,11 @@ class TestNestedInputFilter:
         class ProductFilter(InputFilter):
             price = field(required=True, input_filter=PriceFilter)
 
-        validated_data = ProductFilter().validate_data({
-            "price": {"amount": 0},
-        })
+        validated_data = ProductFilter().validate_data(
+            {
+                "price": {"amount": 0},
+            }
+        )
 
         assert validated_data["price"]["amount"] == 0
 
@@ -466,9 +499,11 @@ class TestNestedInputFilter:
         class OrderFilter(InputFilter):
             user = field(required=True, input_filter=UserFilter)
 
-        validated_data = OrderFilter().validate_data({
-            "user": {"name": ""},
-        })
+        validated_data = OrderFilter().validate_data(
+            {
+                "user": {"name": ""},
+            }
+        )
 
         assert validated_data["user"]["name"] == ""
 
@@ -482,10 +517,12 @@ class TestNestedInputFilter:
             home_address = field(required=True, input_filter=AddressFilter)
             work_address = field(required=True, input_filter=AddressFilter)
 
-        validated_data = UserFilter().validate_data({
-            "home_address": {"city": "NYC"},
-            "work_address": {"city": "LA"},
-        })
+        validated_data = UserFilter().validate_data(
+            {
+                "home_address": {"city": "NYC"},
+                "work_address": {"city": "LA"},
+            }
+        )
 
         assert validated_data["home_address"]["city"] == "NYC"
         assert validated_data["work_address"]["city"] == "LA"
@@ -504,10 +541,12 @@ class TestNestedInputFilter:
                 computed=lambda data: data.get("total", 0) * 1.1
             )
 
-        validated_data = OrderFilter().validate_data({
-            "user": {"first_name": "John", "last_name": "Doe"},
-            "total": 100,
-        })
+        validated_data = OrderFilter().validate_data(
+            {
+                "user": {"first_name": "John", "last_name": "Doe"},
+                "total": 100,
+            }
+        )
 
         assert validated_data["user"]["first_name"] == "John"
         assert validated_data["user"]["last_name"] == "Doe"
@@ -525,9 +564,15 @@ class TestNestedInputFilter:
         class OrderFilter(InputFilter):
             user = field(required=True, input_filter=UserFilter)
 
-        validated_data = OrderFilter().validate_data({
-            "user": {"id": 123, "name": "John", "email": "john@example.com"},
-        })
+        validated_data = OrderFilter().validate_data(
+            {
+                "user": {
+                    "id": 123,
+                    "name": "John",
+                    "email": "john@example.com",
+                },
+            }
+        )
 
         # All fields should be present
         assert "id" in validated_data["user"]
@@ -544,9 +589,11 @@ class TestNestedInputFilter:
         class OrderFilter(InputFilter):
             user = field(required=True, input_filter=UserFilter)
 
-        validated_data = OrderFilter().validate_data({
-            "user": {"id": 123},
-        })
+        validated_data = OrderFilter().validate_data(
+            {
+                "user": {"id": 123},
+            }
+        )
 
         assert validated_data["user"]["id"] == 123
         assert validated_data["user"]["user_id_copy"] == 123

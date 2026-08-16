@@ -86,18 +86,16 @@ class UpdateZipcodeInputFilter(InputFilter):
         validators=[
             RegexValidator(
                 RegexEnum.POSTAL_CODE,
-                'The zipcode is not in the correct format.'
+                "The zipcode is not in the correct format.",
             )
-        ]
+        ],
     )
 
     city: str = field(
         filters=[StringTrimFilter()], validators=[IsStringValidator()]
     )
 
-    condition(
-        ExactlyOneOfCondition(['zipcode', 'city'])
-    )
+    condition(ExactlyOneOfCondition(["zipcode", "city"]))
 ```
 
 

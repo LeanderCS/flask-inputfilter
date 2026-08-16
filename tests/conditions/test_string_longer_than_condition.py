@@ -66,9 +66,7 @@ class TestStringLongerThanCondition(unittest.TestCase):
             StringLongerThanCondition("field1", "field2")
         )
         # None is treated as "", so "value" > "" passes
-        self.input_filter.validate_data(
-            {"field1": "value", "field2": None}
-        )
+        self.input_filter.validate_data({"field1": "value", "field2": None})
 
     def test_invalidates_when_first_field_is_none(self) -> None:
         """First field None (empty) is not longer than non-empty."""
@@ -117,7 +115,9 @@ class TestStringLongerThanCondition(unittest.TestCase):
             StringLongerThanCondition("field1", "field2")
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validate_data({"field1": "val", "field2": "value"})
+            self.input_filter.validate_data(
+                {"field1": "val", "field2": "value"}
+            )
 
     def test_validates_with_unicode_characters(self) -> None:
         self.input_filter.add("field1")

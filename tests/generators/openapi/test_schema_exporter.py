@@ -163,8 +163,9 @@ class TestSchemaExporterBasics(unittest.TestCase):
 class TestSchemaExporterNested(unittest.TestCase):
     def test_nested_inlined_in_bare_export(self) -> None:
         class AddressInputFilter(InputFilter):
-            zipcode: str = field(required=True,
-                                 validators=[IsStringValidator()])
+            zipcode: str = field(
+                required=True, validators=[IsStringValidator()]
+            )
 
         class UserInputFilter(InputFilter):
             address: dict = field(input_filter=AddressInputFilter)
@@ -333,9 +334,8 @@ class TestSchemaExporterCycles(unittest.TestCase):
         )
 
     def test_self_referential_filter_in_bare_export(self):
-        """Bare export inlines nested filters; a cycle must terminate
-        with an x-circular-ref marker instead of RecursionError
-        (regression)."""
+        """Bare export inlines nested filters; a cycle must terminate with an
+        x-circular-ref marker instead of RecursionError (regression)."""
         TreeNode = self._tree_node_class()  # noqa: N806
         schema = to_openapi_schema(TreeNode)
         self.assertEqual(

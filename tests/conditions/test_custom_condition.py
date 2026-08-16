@@ -31,7 +31,13 @@ class TestCustomCondition(unittest.TestCase):
         input_filter = InputFilter()
         input_filter.add("field")
         input_filter.add_condition(
-            CustomCondition(lambda data: "field" in data and data["field"] and len(data["field"]) > 0)
+            CustomCondition(
+                lambda data: (
+                    "field" in data
+                    and data["field"]
+                    and len(data["field"]) > 0
+                )
+            )
         )
         with self.assertRaises(ValidationError):
             input_filter.validate_data({})
@@ -55,8 +61,9 @@ class TestCustomCondition(unittest.TestCase):
         input_filter.add("country")
         input_filter.add_condition(
             CustomCondition(
-                lambda data: data.get("age", 0) >= 18
-                and data.get("country") == "US"
+                lambda data: (
+                    data.get("age", 0) >= 18 and data.get("country") == "US"
+                )
             )
         )
         input_filter.validate_data({"age": 21, "country": "US"})
@@ -68,8 +75,9 @@ class TestCustomCondition(unittest.TestCase):
         input_filter.add("country")
         input_filter.add_condition(
             CustomCondition(
-                lambda data: data.get("age", 0) >= 18
-                and data.get("country") == "US"
+                lambda data: (
+                    data.get("age", 0) >= 18 and data.get("country") == "US"
+                )
             )
         )
         with self.assertRaises(ValidationError):
@@ -100,12 +108,16 @@ class TestCustomCondition(unittest.TestCase):
             )
         )
         with self.assertRaises(ValidationError):
-            input_filter.validate_data({"field1": "same", "field2": "different"})
+            input_filter.validate_data(
+                {"field1": "same", "field2": "different"}
+            )
 
     def test_validates_with_empty_data_when_allowed(self) -> None:
         """Test that empty data validates if condition allows it."""
         input_filter = InputFilter()
-        input_filter.add_condition(CustomCondition(lambda data: len(data) == 0))
+        input_filter.add_condition(
+            CustomCondition(lambda data: len(data) == 0)
+        )
         input_filter.validate_data({})
 
     def test_invalidates_with_type_check_failure(self) -> None:
@@ -114,8 +126,10 @@ class TestCustomCondition(unittest.TestCase):
         input_filter.add("field")
         input_filter.add_condition(
             CustomCondition(
-                lambda data: isinstance(data.get("field"), str)
-                and len(data["field"]) > 0
+                lambda data: (
+                    isinstance(data.get("field"), str)
+                    and len(data["field"]) > 0
+                )
             )
         )
         with self.assertRaises(ValidationError):

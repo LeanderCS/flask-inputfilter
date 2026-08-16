@@ -58,7 +58,10 @@ class TestSchemaMapper(unittest.TestCase):
         schema = {"type": "integer"}
         field_config = SchemaMapper.map_field("age", schema)
         self.assertTrue(
-            any(f.get("type") == "ToIntegerFilter" for f in field_config["filters"])
+            any(
+                f.get("type") == "ToIntegerFilter"
+                for f in field_config["filters"]
+            )
         )
         self.assertTrue(
             any(
@@ -88,7 +91,10 @@ class TestSchemaMapper(unittest.TestCase):
         schema = {"type": "number"}
         field_config = SchemaMapper.map_field("price", schema)
         self.assertTrue(
-            any(f.get("type") == "ToFloatFilter" for f in field_config["filters"])
+            any(
+                f.get("type") == "ToFloatFilter"
+                for f in field_config["filters"]
+            )
         )
         self.assertTrue(
             any(
@@ -102,7 +108,10 @@ class TestSchemaMapper(unittest.TestCase):
         schema = {"type": "boolean"}
         field_config = SchemaMapper.map_field("active", schema)
         self.assertTrue(
-            any(f.get("type") == "ToBooleanFilter" for f in field_config["filters"])
+            any(
+                f.get("type") == "ToBooleanFilter"
+                for f in field_config["filters"]
+            )
         )
         self.assertTrue(
             any(
@@ -167,10 +176,9 @@ class TestSchemaMapper(unittest.TestCase):
         field_config = SchemaMapper.map_field("name", schema, ["name"])
         self.assertTrue(field_config["required"])
 
-
     def test_date_formats_do_not_emit_string_validator(self):
-        """ToDateFilter converts before validation, so IsStringValidator
-        must not be emitted for date/date-time formats (regression)."""
+        """ToDateFilter converts before validation, so IsStringValidator must
+        not be emitted for date/date-time formats (regression)."""
         for format_type, filter_name, validator_name in (
             ("date", "ToDateFilter", "IsDateValidator"),
             ("date-time", "ToDateTimeFilter", "IsDateTimeValidator"),
@@ -185,7 +193,7 @@ class TestSchemaMapper(unittest.TestCase):
             self.assertIn(filter_name, filter_types)
 
     def test_non_converting_formats_keep_string_validator(self):
-        """uuid/uri/email formats validate strings, so IsStringValidator
+        """Uuid/uri/email formats validate strings, so IsStringValidator
         stays."""
         for format_type in ("uuid", "uri", "email", "unknown-format", None):
             schema = {"type": "string"}

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import dataclasses
+import functools
 import inspect
 import json
 import logging
@@ -111,6 +112,7 @@ class InputFilter:
                 Callable: The wrapped function with input validation.
             """
 
+            @functools.wraps(f)
             def wrapper(
                 *args: Any, **kwargs: Any
             ) -> Union[Response, tuple[Any, dict[str, Any]]]:

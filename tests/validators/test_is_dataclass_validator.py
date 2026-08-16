@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from typing import Optional
 
 from flask_inputfilter.validators import IsDataclassValidator
-
 from tests.validators import BaseValidatorTest
 
 

@@ -15,10 +15,14 @@ class TestComputedFields(unittest.TestCase):
 
         class SimpleComputedFilter(InputFilter):
             x: int = field(
-                required=True, filters=[ToIntegerFilter()], validators=[IsIntegerValidator()]
+                required=True,
+                filters=[ToIntegerFilter()],
+                validators=[IsIntegerValidator()],
             )
             y: int = field(
-                required=True, filters=[ToIntegerFilter()], validators=[IsIntegerValidator()]
+                required=True,
+                filters=[ToIntegerFilter()],
+                validators=[IsIntegerValidator()],
             )
             sum: int = field(computed=lambda data: data["x"] + data["y"])
 
@@ -50,7 +54,9 @@ class TestComputedFields(unittest.TestCase):
         class ComputedWithMissingFilter(InputFilter):
             x: int = field(filters=[ToIntegerFilter()])
             result: int = field(
-                computed=lambda data: data.get("x", 0) * 2 if data.get("x") is not None else 0
+                computed=lambda data: (
+                    data.get("x", 0) * 2 if data.get("x") is not None else 0
+                )
             )
 
         result = ComputedWithMissingFilter().validate_data()
@@ -97,7 +103,9 @@ class TestComputedFields(unittest.TestCase):
             b: int = field(required=True, filters=[ToIntegerFilter()])
             sum: int = field(computed=lambda data: data["a"] + data["b"])
             product: int = field(computed=lambda data: data["a"] * data["b"])
-            difference: int = field(computed=lambda data: data["a"] - data["b"])
+            difference: int = field(
+                computed=lambda data: data["a"] - data["b"]
+            )
 
         result = MultipleComputedFilter().validate_data({"a": 10, "b": 3})
 
@@ -114,8 +122,9 @@ class TestComputedFields(unittest.TestCase):
             field1: int = field(filters=[ToIntegerFilter()])
             field2: int = field(filters=[ToIntegerFilter()])
             total: int = field(
-                computed=lambda data: (data.get("field1") or 0)
-                + (data.get("field2") or 0)
+                computed=lambda data: (
+                    (data.get("field1") or 0) + (data.get("field2") or 0)
+                )
             )
 
             condition(OneOfCondition(["field1", "field2"]))
@@ -151,7 +160,9 @@ class TestComputedFields(unittest.TestCase):
             height: int = field(required=True, filters=[ToIntegerFilter()])
             area: int = field(computed=calculate_area)
 
-        result = NamedFunctionComputedFilter().validate_data({"width": 5, "height": 10})
+        result = NamedFunctionComputedFilter().validate_data(
+            {"width": 5, "height": 10}
+        )
 
         self.assertEqual(result["area"], 50)
 
@@ -201,7 +212,11 @@ class TestComputedFields(unittest.TestCase):
             # Note: This might not work if computed fields are processed in random order
             # In current implementation, field order matters for chaining
             double_sum: int = field(
-                computed=lambda data: data.get("sum_ab", 0) * 2 if data.get("sum_ab") is not None else 0
+                computed=lambda data: (
+                    data.get("sum_ab", 0) * 2
+                    if data.get("sum_ab") is not None
+                    else 0
+                )
             )
 
         result = ChainedComputedFilter().validate_data({"a": 3, "b": 4})
@@ -232,7 +247,9 @@ class TestComputedFields(unittest.TestCase):
 
             model(OrderModel)
 
-        result = OrderWithModelFilter().validate_data({"quantity": 3, "price": 5.5})
+        result = OrderWithModelFilter().validate_data(
+            {"quantity": 3, "price": 5.5}
+        )
 
         # Check that result is a dataclass instance
         self.assertIsInstance(result, OrderModel)
@@ -268,7 +285,9 @@ class TestComputedFields(unittest.TestCase):
                 required=True, filters=[StringTrimFilter(), ToLowerFilter()]
             )
             full_name: str = field(
-                computed=lambda data: f"{data['first_name']} {data['last_name']}"
+                computed=lambda data: (
+                    f"{data['first_name']} {data['last_name']}"
+                )
             )
 
         result = ComputedWithFiltersFilter().validate_data(
@@ -324,7 +343,6 @@ class TestComputedFields(unittest.TestCase):
         """Test computed fields can use data from external_api fields."""
         # This test would require mocking external API calls
         # Skipping for now as it requires more complex setup
-        pass
 
     def test_computed_field_with_copy_and_filters(self) -> None:
         """Test computed fields with both copy and filters."""
@@ -332,9 +350,13 @@ class TestComputedFields(unittest.TestCase):
 
         class ComputedWithCopyAndFiltersFilter(InputFilter):
             original: str = field(required=True)
-            copied_upper: str = field(copy="original", filters=[ToUpperFilter()])
+            copied_upper: str = field(
+                copy="original", filters=[ToUpperFilter()]
+            )
             combined: str = field(
-                computed=lambda data: f"{data['original']}-{data['copied_upper']}"
+                computed=lambda data: (
+                    f"{data['original']}-{data['copied_upper']}"
+                )
             )
 
         result = ComputedWithCopyAndFiltersFilter().validate_data(
@@ -372,7 +394,9 @@ class TestComputedFields(unittest.TestCase):
 
         class ComputedWithOptionalDepsFilter(InputFilter):
             base: int = field(required=True, filters=[ToIntegerFilter()])
-            bonus: int = field(required=False, filters=[ToIntegerFilter()], default=0)
+            bonus: int = field(
+                required=False, filters=[ToIntegerFilter()], default=0
+            )
             total: int = field(
                 computed=lambda data: data["base"] + data["bonus"]
             )
@@ -400,7 +424,9 @@ class TestComputedFields(unittest.TestCase):
                 computed=lambda data: data.get("subtotal", 0) * 0.19
             )
             total: float = field(
-                computed=lambda data: data.get("subtotal", 0) + data.get("tax", 0)
+                computed=lambda data: (
+                    data.get("subtotal", 0) + data.get("tax", 0)
+                )
             )
 
         result = ChainedComputedWithFiltersFilter().validate_data(
@@ -431,7 +457,9 @@ class TestComputedFields(unittest.TestCase):
         self.assertEqual(result1["doubled"], 10)
 
         # Missing value, use fallback
-        result2 = ComputedWithFallbackFilter().validate_data({"value": "no_int"})
+        result2 = ComputedWithFallbackFilter().validate_data(
+            {"value": "no_int"}
+        )
         self.assertEqual(result2["value"], 10)
         self.assertEqual(result2["doubled"], 20)
 

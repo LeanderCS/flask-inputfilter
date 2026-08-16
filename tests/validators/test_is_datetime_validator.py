@@ -1,7 +1,6 @@
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.filters import ToDateTimeFilter
 from flask_inputfilter.validators import IsDateTimeValidator
-
 from tests.validators import BaseValidatorTest
 
 

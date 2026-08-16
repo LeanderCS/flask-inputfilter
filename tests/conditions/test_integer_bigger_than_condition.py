@@ -83,6 +83,4 @@ class TestIntegerBiggerThanCondition(unittest.TestCase):
         self.input_filter.add_condition(
             IntegerBiggerThanCondition("field", "field2")
         )
-        self.input_filter.validate_data(
-            {"field": 1000000, "field2": 999999}
-        )
+        self.input_filter.validate_data({"field": 1000000, "field2": 999999})

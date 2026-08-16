@@ -10,6 +10,7 @@
 # cython: infer_types=True
 
 import dataclasses
+import functools
 import inspect
 import json
 import logging
@@ -144,6 +145,7 @@ cdef class InputFilter:
                 Callable[[Any, Any], Union[Response, tuple[Any, dict[str, Any]]]]: The wrapped function with input validation.
             """
 
+            @functools.wraps(f)
             def wrapper(
                 *args, **kwargs
             ):

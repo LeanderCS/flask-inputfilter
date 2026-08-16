@@ -2,9 +2,10 @@ import base64
 import io
 import unittest
 
+from PIL import Image
+
 from flask_inputfilter import InputFilter
 from flask_inputfilter.filters import Base64ImageDownscaleFilter
-from PIL import Image
 
 
 class TestBase64ImageDownscaleFilter(unittest.TestCase):

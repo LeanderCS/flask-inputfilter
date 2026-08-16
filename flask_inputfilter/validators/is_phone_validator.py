@@ -12,9 +12,9 @@ PHONE_NUMBER_PATTERN = re.compile(RegexEnum.PHONE_NUMBER.value)
 
 class IsPhoneValidator(BaseValidator):
     """
-    Checks if a value is a valid phone number. Accepts international
-    numbers with an optional leading ``+`` as well as common separators
-    such as spaces, hyphens and parentheses.
+    Checks if a value is a valid phone number. Accepts international numbers
+    with an optional leading ``+`` as well as common separators such as spaces,
+    hyphens and parentheses.
 
     **Parameters:**
 

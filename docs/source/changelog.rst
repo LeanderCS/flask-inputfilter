@@ -4,6 +4,30 @@ Changelog
 All notable changes to this project will be documented in this file.
 
 
+[0.8.1] - 2026-08-17
+--------------------
+
+Added
+^^^^^
+- ``flask_inputfilter.__version__`` attribute.
+
+Changed
+^^^^^^^
+- Code cleanup across the codebase: simplified conditionals (e.g. ``if``
+  chains to ``or`` expressions), import sorting and other lint autofixes.
+- Documentation cleanup: added the missing reference entries for
+  ``ToImageFilter``, ``ToBase64ImageFilter`` and ``IsImageValidator``,
+  removed unused ``autodoc_type_aliases`` from the Sphinx configuration and
+  fixed the ``IsUUIDValidator`` name in ``AGENTS.md``.
+
+Fixed
+^^^^^
+- The ``@InputFilter.validate()`` decorator now preserves the route
+  function's name via ``functools.wraps``. Previously two decorated routes
+  in the same app collided with "View function mapping is overwriting an
+  existing endpoint function: wrapper".
+
+
 [0.8.0] - 2026-08-16
 --------------------
 

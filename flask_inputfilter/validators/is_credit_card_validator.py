@@ -12,9 +12,9 @@ CREDIT_CARD_PATTERN = re.compile(RegexEnum.CREDIT_CARD.value)
 
 class IsCreditCardValidator(BaseValidator):
     """
-    Checks if a value is a valid credit card number. Supports the major
-    card schemes (Visa, Mastercard, American Express, Diners Club,
-    Discover and JCB) and verifies the checksum using the Luhn algorithm.
+    Checks if a value is a valid credit card number. Supports the major card
+    schemes (Visa, Mastercard, American Express, Diners Club, Discover and JCB)
+    and verifies the checksum using the Luhn algorithm.
 
     **Parameters:**
 

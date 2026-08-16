@@ -5,10 +5,12 @@ from flask_inputfilter.filters import ToTypedDictFilter
 
 try:
     from typing import TypedDict
+
     TYPEDDICT_AVAILABLE = True
 except ImportError:
     try:
         from typing_extensions import TypedDict
+
         TYPEDDICT_AVAILABLE = True
     except ImportError:
         TYPEDDICT_AVAILABLE = False
@@ -20,6 +22,7 @@ class TestToTypedDictFilter(unittest.TestCase):
 
     def test_converts_dict_to_typed_dict(self) -> None:
         if TYPEDDICT_AVAILABLE:
+
             class Person(TypedDict):
                 name: str
                 age: int
@@ -48,6 +51,7 @@ class TestToTypedDictFilter(unittest.TestCase):
 
     def test_non_dict_input_remains_unchanged(self) -> None:
         if TYPEDDICT_AVAILABLE:
+
             class Person(TypedDict):
                 name: str
                 age: int

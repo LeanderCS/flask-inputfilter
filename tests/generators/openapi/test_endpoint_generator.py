@@ -185,9 +185,7 @@ class TestEndpointCodeGeneration(unittest.TestCase):
         code = self.generator.generate_endpoint_class(
             self._endpoint("/users", "post"), {"UserInputFilter"}
         )
-        self.assertIn(
-            "class CreateUserInputFilter(UserInputFilter):", code
-        )
+        self.assertIn("class CreateUserInputFilter(UserInputFilter):", code)
 
     def test_ref_body_inlined_without_component(self) -> None:
         code = self.generator.generate_endpoint_class(
@@ -229,9 +227,7 @@ class TestGenerateFromOpenapiEndpoints(unittest.TestCase):
 
         # Components come before endpoint classes.
         self.assertIn("class UserInputFilter(InputFilter):", code)
-        self.assertIn(
-            "class CreateUserInputFilter(UserInputFilter):", code
-        )
+        self.assertIn("class CreateUserInputFilter(UserInputFilter):", code)
         self.assertLess(
             code.index("class UserInputFilter"),
             code.index("class CreateUserInputFilter"),

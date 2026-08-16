@@ -100,9 +100,7 @@ class ValidatorFormatter:
         """Format ArrayElementValidator."""
         element_filter = config.get("element_filter", [])
         if isinstance(element_filter, str) and element_filter:
-            return (
-                f"ArrayElementValidator(element_filter={element_filter}())"
-            )
+            return f"ArrayElementValidator(element_filter={element_filter}())"
         if isinstance(element_filter, list) and element_filter:
             element_validators = []
             for elem_val in element_filter:
@@ -118,9 +116,7 @@ class ValidatorFormatter:
                         element_validators.append(f"{elem_type}()")
             if element_validators:
                 joined = ", ".join(element_validators)
-                return (
-                    f"ArrayElementValidator(element_filter=[{joined}])"
-                )
+                return f"ArrayElementValidator(element_filter=[{joined}])"
         return "ArrayElementValidator()"
 
     @staticmethod

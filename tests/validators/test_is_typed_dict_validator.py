@@ -1,20 +1,21 @@
-import unittest
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsTypedDictValidator
-
 from tests.validators import BaseValidatorTest
 
 try:
     from typing import TypedDict
+
     TYPEDDICT_AVAILABLE = True
 except ImportError:
     try:
         from typing_extensions import TypedDict
+
         TYPEDDICT_AVAILABLE = True
     except ImportError:
         TYPEDDICT_AVAILABLE = False
 
 if TYPEDDICT_AVAILABLE:
+
     class User(TypedDict):
         id: int
 else:

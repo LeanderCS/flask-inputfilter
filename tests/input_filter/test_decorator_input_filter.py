@@ -3,9 +3,15 @@ from dataclasses import dataclass
 from unittest.mock import Mock, patch
 
 from flask import Flask, g, jsonify
+
 from flask_inputfilter import InputFilter
-from flask_inputfilter.declarative import condition, field, global_filter, global_validator
 from flask_inputfilter.conditions import ExactlyOneOfCondition
+from flask_inputfilter.declarative import (
+    condition,
+    field,
+    global_filter,
+    global_validator,
+)
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.filters import (
     StringTrimFilter,
@@ -15,7 +21,6 @@ from flask_inputfilter.filters import (
 )
 from flask_inputfilter.models import ExternalApiConfig
 from flask_inputfilter.validators import (
-    InArrayValidator,
     IsIntegerValidator,
     IsStringValidator,
     LengthValidator,
@@ -35,12 +40,12 @@ class TestDecoratorInputFilter(unittest.TestCase):
         filter_instance = TestInputFilter()
 
         # Check that fields were registered
-        self.assertTrue(filter_instance.has('name'))
-        self.assertTrue(filter_instance.has('age'))
+        self.assertTrue(filter_instance.has("name"))
+        self.assertTrue(filter_instance.has("age"))
 
         # Check field properties
-        name_field = filter_instance.get_input('name')
-        age_field = filter_instance.get_input('age')
+        name_field = filter_instance.get_input("name")
+        age_field = filter_instance.get_input("age")
 
         self.assertTrue(name_field.required)
         self.assertFalse(age_field.required)
@@ -54,20 +59,23 @@ class TestDecoratorInputFilter(unittest.TestCase):
             username: str = field(
                 required=True,
                 filters=[StringTrimFilter(), ToLowerFilter()],
-                validators=[IsStringValidator(), LengthValidator(min_length=3, max_length=20)]
+                validators=[
+                    IsStringValidator(),
+                    LengthValidator(min_length=3, max_length=20),
+                ],
             )
 
         filter_instance = TestInputFilter()
 
         # Test successful validation
-        validated_data = filter_instance.validate_data({
-            'username': '  TestUser  '
-        })
-        self.assertEqual(validated_data['username'], 'testuser')
+        validated_data = filter_instance.validate_data(
+            {"username": "  TestUser  "}
+        )
+        self.assertEqual(validated_data["username"], "testuser")
 
         # Test validation failure - too short
         with self.assertRaises(ValidationError):
-            filter_instance.validate_data({'username': 'ab'})
+            filter_instance.validate_data({"username": "ab"})
 
     def test_field_with_all_parameters(self):
         """Test field with all possible parameters."""
@@ -79,18 +87,18 @@ class TestDecoratorInputFilter(unittest.TestCase):
                 fallback=50,
                 filters=[ToIntegerFilter()],
                 validators=[IsIntegerValidator()],
-                copy=None
+                copy=None,
             )
 
         filter_instance = TestInputFilter()
 
         # Test with valid data
-        validated_data = filter_instance.validate_data({'score': '85'})
-        self.assertEqual(validated_data['score'], 85)
+        validated_data = filter_instance.validate_data({"score": "85"})
+        self.assertEqual(validated_data["score"], 85)
 
         # Test with invalid data (should use fallback)
-        validated_data = filter_instance.validate_data({'score': 'invalid'})
-        self.assertEqual(validated_data['score'], 50)
+        validated_data = filter_instance.validate_data({"score": "invalid"})
+        self.assertEqual(validated_data["score"], 50)
 
     def test_mixed_decorator_and_classic_api(self):
         """Test mixing decorator and classic API."""
@@ -102,21 +110,22 @@ class TestDecoratorInputFilter(unittest.TestCase):
             def __init__(self):
                 super().__init__()
                 # Classic API fields
-                self.add('email', required=True, validators=[IsStringValidator()])
+                self.add(
+                    "email", required=True, validators=[IsStringValidator()]
+                )
 
         filter_instance = TestInputFilter()
 
         # Both fields should exist
-        self.assertTrue(filter_instance.has('name'))
-        self.assertTrue(filter_instance.has('email'))
+        self.assertTrue(filter_instance.has("name"))
+        self.assertTrue(filter_instance.has("email"))
 
         # Test validation
-        validated_data = filter_instance.validate_data({
-            'name': 'John Doe',
-            'email': 'john@example.com'
-        })
-        self.assertEqual(validated_data['name'], 'John Doe')
-        self.assertEqual(validated_data['email'], 'john@example.com')
+        validated_data = filter_instance.validate_data(
+            {"name": "John Doe", "email": "john@example.com"}
+        )
+        self.assertEqual(validated_data["name"], "John Doe")
+        self.assertEqual(validated_data["email"], "john@example.com")
 
     def test_global_validators_class_attribute(self):
         """Test global validators via class attribute."""
@@ -130,19 +139,15 @@ class TestDecoratorInputFilter(unittest.TestCase):
         filter_instance = TestInputFilter()
 
         # Should validate successfully with strings
-        validated_data = filter_instance.validate_data({
-            'field1': 'test1',
-            'field2': 'test2'
-        })
-        self.assertEqual(validated_data['field1'], 'test1')
-        self.assertEqual(validated_data['field2'], 'test2')
+        validated_data = filter_instance.validate_data(
+            {"field1": "test1", "field2": "test2"}
+        )
+        self.assertEqual(validated_data["field1"], "test1")
+        self.assertEqual(validated_data["field2"], "test2")
 
         # Should fail with non-string
         with self.assertRaises(ValidationError):
-            filter_instance.validate_data({
-                'field1': 'test1',
-                'field2': 123
-            })
+            filter_instance.validate_data({"field1": "test1", "field2": 123})
 
     def test_global_filters_class_attribute(self):
         """Test global filters via class attribute."""
@@ -156,12 +161,11 @@ class TestDecoratorInputFilter(unittest.TestCase):
         filter_instance = TestInputFilter()
 
         # All fields should be filtered
-        validated_data = filter_instance.validate_data({
-            'field1': 'test1',
-            'field2': 'test2'
-        })
-        self.assertEqual(validated_data['field1'], 'TEST1')
-        self.assertEqual(validated_data['field2'], 'TEST2')
+        validated_data = filter_instance.validate_data(
+            {"field1": "test1", "field2": "test2"}
+        )
+        self.assertEqual(validated_data["field1"], "TEST1")
+        self.assertEqual(validated_data["field2"], "TEST2")
 
     def test_conditions_class_attribute(self):
         """Test conditions via class attribute."""
@@ -170,20 +174,19 @@ class TestDecoratorInputFilter(unittest.TestCase):
             phone: str = field()
             email: str = field()
 
-            condition(ExactlyOneOfCondition(['phone', 'email']))
+            condition(ExactlyOneOfCondition(["phone", "email"]))
 
         filter_instance = TestInputFilter()
 
         # Should work with one field
-        validated_data = filter_instance.validate_data({'phone': '123456789'})
-        self.assertEqual(validated_data['phone'], '123456789')
+        validated_data = filter_instance.validate_data({"phone": "123456789"})
+        self.assertEqual(validated_data["phone"], "123456789")
 
         # Should fail with both fields
         with self.assertRaises(ValidationError):
-            filter_instance.validate_data({
-                'phone': '123456789',
-                'email': 'test@example.com'
-            })
+            filter_instance.validate_data(
+                {"phone": "123456789", "email": "test@example.com"}
+            )
 
     def test_inheritance_with_decorators(self):
         """Test that decorators work with inheritance."""
@@ -199,8 +202,8 @@ class TestDecoratorInputFilter(unittest.TestCase):
         filter_instance = ExtendedInputFilter()
 
         # Should have both fields
-        self.assertTrue(filter_instance.has('name'))
-        self.assertTrue(filter_instance.has('age'))
+        self.assertTrue(filter_instance.has("name"))
+        self.assertTrue(filter_instance.has("age"))
 
         # Should inherit global filters and validators
         self.assertEqual(len(filter_instance.get_global_filters()), 1)
@@ -215,8 +218,8 @@ class TestDecoratorInputFilter(unittest.TestCase):
 
         # Type hints should still be available
         annotations = TestInputFilter.__annotations__
-        self.assertEqual(annotations['name'], str)
-        self.assertEqual(annotations['age'], int)
+        self.assertEqual(annotations["name"], str)
+        self.assertEqual(annotations["age"], int)
 
     def test_field_descriptor_access(self):
         """Test accessing field values through descriptors."""
@@ -230,8 +233,8 @@ class TestDecoratorInputFilter(unittest.TestCase):
         self.assertIsNone(filter_instance.name)
 
         # After validation, should return the validated value
-        filter_instance.validate_data({'name': 'John'})
-        self.assertEqual(filter_instance.name, 'John')
+        filter_instance.validate_data({"name": "John"})
+        self.assertEqual(filter_instance.name, "John")
 
     def test_field_descriptor_setting(self):
         """Test setting field values through descriptors."""
@@ -242,8 +245,8 @@ class TestDecoratorInputFilter(unittest.TestCase):
         filter_instance = TestInputFilter()
 
         # Setting should update raw data
-        filter_instance.name = 'Jane'
-        self.assertEqual(filter_instance.get_raw_value('name'), 'Jane')
+        filter_instance.name = "Jane"
+        self.assertEqual(filter_instance.get_raw_value("name"), "Jane")
 
     # Negative Tests
 
@@ -255,7 +258,7 @@ class TestDecoratorInputFilter(unittest.TestCase):
             name: str = field(required=True, default=None)
 
         filter_instance = TestInputFilter()
-        self.assertTrue(filter_instance.has('name'))
+        self.assertTrue(filter_instance.has("name"))
 
     def test_conflicting_field_names(self):
         """Test handling of field name conflicts between decorator and classic
@@ -267,7 +270,7 @@ class TestDecoratorInputFilter(unittest.TestCase):
             def __init__(self):
                 super().__init__()
                 # This should raise an error due to field conflict
-                self.add('name', required=False)
+                self.add("name", required=False)
 
         # The error should be raised during initialization
         with self.assertRaises(ValueError):
@@ -283,7 +286,7 @@ class TestDecoratorInputFilter(unittest.TestCase):
 
         # Should handle gracefully (metaclass should not crash)
         filter_instance = TestInputFilter()
-        self.assertTrue(filter_instance.has('field1'))
+        self.assertTrue(filter_instance.has("field1"))
 
     def test_metaclass_with_no_decorators(self):
         """Test metaclass behavior with no decorator fields."""
@@ -291,10 +294,10 @@ class TestDecoratorInputFilter(unittest.TestCase):
         class TestInputFilter(InputFilter):
             def __init__(self):
                 super().__init__()
-                self.add('name', required=True)
+                self.add("name", required=True)
 
         filter_instance = TestInputFilter()
-        self.assertTrue(filter_instance.has('name'))
+        self.assertTrue(filter_instance.has("name"))
 
     def test_empty_decorator_class(self):
         """Test InputFilter with no fields at all."""
@@ -319,9 +322,9 @@ class TestDecoratorInputFilter(unittest.TestCase):
         filter_instance = OnlyDecoratorInputFilter()
         self.assertEqual(filter_instance.count(), 2)
 
-        validated_data = filter_instance.validate_data({'name': 'Test'})
-        self.assertEqual(validated_data['name'], 'Test')
-        self.assertEqual(validated_data['age'], 25)
+        validated_data = filter_instance.validate_data({"name": "Test"})
+        self.assertEqual(validated_data["name"], "Test")
+        self.assertEqual(validated_data["age"], 25)
 
     def test_dynamic_field_addition_after_decorator(self):
         """Test adding fields dynamically after decorator initialization."""
@@ -330,19 +333,19 @@ class TestDecoratorInputFilter(unittest.TestCase):
             name: str = field(required=True)
 
             def add_email_if_needed(self):
-                if not self.has('email'):
-                    self.add('email', required=False)
+                if not self.has("email"):
+                    self.add("email", required=False)
 
         filter_instance = TestInputFilter()
 
         # Initially should only have name
-        self.assertTrue(filter_instance.has('name'))
-        self.assertFalse(filter_instance.has('email'))
+        self.assertTrue(filter_instance.has("name"))
+        self.assertFalse(filter_instance.has("email"))
 
         # Add email dynamically
         filter_instance.add_email_if_needed()
 
-        self.assertTrue(filter_instance.has('email'))
+        self.assertTrue(filter_instance.has("email"))
         self.assertEqual(filter_instance.count(), 2)
 
     # Integration Tests
@@ -351,26 +354,26 @@ class TestDecoratorInputFilter(unittest.TestCase):
         """Test Flask route integration with decorator-based fields."""
 
         class TestInputFilter(InputFilter):
-            username: str = field(required=True, validators=[IsStringValidator()])
+            username: str = field(
+                required=True, validators=[IsStringValidator()]
+            )
             age: int = field(default=18, validators=[IsIntegerValidator()])
 
         app = Flask(__name__)
 
-        @app.route('/test', methods=['POST'])
+        @app.route("/test", methods=["POST"])
         @TestInputFilter.validate()
         def test_route():
             return jsonify(g.validated_data)
 
         with app.test_client() as client:
-            response = client.post('/test', json={
-                'username': 'testuser',
-                'age': 25
-            })
+            response = client.post(
+                "/test", json={"username": "testuser", "age": 25}
+            )
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.json, {
-                'username': 'testuser',
-                'age': 25
-            })
+            self.assertEqual(
+                response.json, {"username": "testuser", "age": 25}
+            )
 
     def test_serialization_with_decorator_fields(self):
         """Test model serialization with decorator fields."""
@@ -389,10 +392,10 @@ class TestDecoratorInputFilter(unittest.TestCase):
                 self.set_model(User)
 
         filter_instance = TestInputFilter()
-        result = filter_instance.validate_data({'username': 'testuser'})
+        result = filter_instance.validate_data({"username": "testuser"})
 
         self.assertIsInstance(result, User)
-        self.assertEqual(result.username, 'testuser')
+        self.assertEqual(result.username, "testuser")
         self.assertEqual(result.age, 18)
 
     @patch("requests.request")
@@ -410,24 +413,28 @@ class TestDecoratorInputFilter(unittest.TestCase):
                 external_api=ExternalApiConfig(
                     url="https://api.example.com/validate/{{username}}",
                     method="GET",
-                    data_key="is_valid"
+                    data_key="is_valid",
                 )
             )
 
         filter_instance = TestInputFilter()
-        validated_data = filter_instance.validate_data({'username': 'testuser'})
+        validated_data = filter_instance.validate_data(
+            {"username": "testuser"}
+        )
 
-        self.assertEqual(validated_data['username'], 'testuser')
-        self.assertTrue(validated_data['is_valid'])
+        self.assertEqual(validated_data["username"], "testuser")
+        self.assertTrue(validated_data["is_valid"])
 
     def test_large_number_of_decorator_fields(self):
         """Test performance with many decorator fields."""
 
         class_dict = {}
         for i in range(100):
-            class_dict[f'field_{i}'] = field(default=f'value_{i}')
+            class_dict[f"field_{i}"] = field(default=f"value_{i}")
 
-        LargeInputFilter = type('LargeInputFilter', (InputFilter,), class_dict)
+        LargeInputFilter = type(  # noqa: N806
+            "LargeInputFilter", (InputFilter,), class_dict
+        )
 
         filter_instance = LargeInputFilter()
         self.assertEqual(filter_instance.count(), 100)
@@ -446,7 +453,9 @@ class TestDecoratorInputFilter(unittest.TestCase):
         filter_instance = ConflictInputFilter()
 
         with self.assertRaises(ValueError) as context:
-            filter_instance.add('id', required=False, validators=[IsStringValidator()])
+            filter_instance.add(
+                "id", required=False, validators=[IsStringValidator()]
+            )
 
         self.assertEqual(str(context.exception), "Field 'id' already exists.")
 
@@ -457,12 +466,15 @@ class TestDecoratorInputFilter(unittest.TestCase):
             username: str = field(
                 required=True,
                 filters=[StringTrimFilter(), ToLowerFilter()],
-                validators=[IsStringValidator(), LengthValidator(min_length=3)]
+                validators=[
+                    IsStringValidator(),
+                    LengthValidator(min_length=3),
+                ],
             )
             age: int = field(
                 required=True,
                 filters=[ToIntegerFilter()],
-                validators=[IsIntegerValidator()]
+                validators=[IsIntegerValidator()],
             )
 
             global_filter(StringTrimFilter())
@@ -470,19 +482,23 @@ class TestDecoratorInputFilter(unittest.TestCase):
             def __init__(self):
                 super().__init__()
 
-                self.add('email', required=False, validators=[IsStringValidator()])
+                self.add(
+                    "email", required=False, validators=[IsStringValidator()]
+                )
 
         filter_instance = ComplexInputFilter()
 
-        validated_data = filter_instance.validate_data({
-            'username': '  TestUser  ',
-            'age': '25',
-            'email': 'test@example.com'
-        })
+        validated_data = filter_instance.validate_data(
+            {
+                "username": "  TestUser  ",
+                "age": "25",
+                "email": "test@example.com",
+            }
+        )
 
-        self.assertEqual(validated_data['username'], 'testuser')
-        self.assertEqual(validated_data['age'], 25)
-        self.assertEqual(validated_data['email'], 'test@example.com')
+        self.assertEqual(validated_data["username"], "testuser")
+        self.assertEqual(validated_data["age"], 25)
+        self.assertEqual(validated_data["email"], "test@example.com")
 
     def test_model_assignment_basic(self):
         """Test basic model assignment functionality."""
@@ -505,9 +521,9 @@ class TestDecoratorInputFilter(unittest.TestCase):
         self.assertEqual(filter_instance.model_class, TestModel)
 
         # Test serialization
-        result = filter_instance.validate_data({'name': 'John'})
+        result = filter_instance.validate_data({"name": "John"})
         self.assertIsInstance(result, TestModel)
-        self.assertEqual(result.name, 'John')
+        self.assertEqual(result.name, "John")
         self.assertEqual(result.age, 25)
 
     def test_model_inheritance(self):
@@ -560,18 +576,17 @@ class TestDecoratorInputFilter(unittest.TestCase):
 
             def __init__(self):
                 super().__init__()
-                self.add('email', required=True)
+                self.add("email", required=True)
 
         filter_instance = MixedInputFilter()
         self.assertEqual(filter_instance.model_class, TestModel)
 
-        result = filter_instance.validate_data({
-            'name': 'John',
-            'email': 'john@example.com'
-        })
+        result = filter_instance.validate_data(
+            {"name": "John", "email": "john@example.com"}
+        )
         self.assertIsInstance(result, TestModel)
-        self.assertEqual(result.name, 'John')
-        self.assertEqual(result.email, 'john@example.com')
+        self.assertEqual(result.name, "John")
+        self.assertEqual(result.email, "john@example.com")
 
     def test_model_override_with_set_model(self):
         """Test that set_model() can override model assignment."""
@@ -596,21 +611,48 @@ class TestDecoratorInputFilter(unittest.TestCase):
         filter_instance.set_model(Model2)
         self.assertEqual(filter_instance.model_class, Model2)
 
-        result = filter_instance.validate_data({'name': 'John'})
+        result = filter_instance.validate_data({"name": "John"})
         self.assertIsInstance(result, Model2)
 
     def test_model_none_fallback(self):
         """Test that missing model assignment handles None gracefully."""
+
         class TestInputFilter(InputFilter):
             name: str = field(required=True)
 
         filter_instance = TestInputFilter()
         self.assertIsNone(filter_instance.model_class)
 
-        result = filter_instance.validate_data({'name': 'John'})
+        result = filter_instance.validate_data({"name": "John"})
         self.assertIsInstance(result, dict)
-        self.assertEqual(result['name'], 'John')
+        self.assertEqual(result["name"], "John")
+
+    def test_validate_preserves_route_function_name(self):
+        """Two decorated routes must not collide as endpoint 'wrapper'."""
+
+        class TestInputFilter(InputFilter):
+            name: str = field(required=True)
+
+        app = Flask(__name__)
+
+        @app.route("/first", methods=["POST"])
+        @TestInputFilter.validate()
+        def first():
+            return jsonify(g.validated_data)
+
+        @app.route("/second", methods=["POST"])
+        @TestInputFilter.validate()
+        def second():
+            return jsonify(g.validated_data)
+
+        self.assertEqual(first.__name__, "first")
+        self.assertEqual(second.__name__, "second")
+
+        client = app.test_client()
+        response = client.post("/second", json={"name": "John"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()["name"], "John")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

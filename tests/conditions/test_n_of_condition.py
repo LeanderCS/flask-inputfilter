@@ -67,9 +67,7 @@ class TestNOfCondition(unittest.TestCase):
         """Test that None values don't count as present."""
         self.input_filter.add("field1")
         self.input_filter.add("field2")
-        self.input_filter.add_condition(
-            NOfCondition(["field1", "field2"], 2)
-        )
+        self.input_filter.add_condition(NOfCondition(["field1", "field2"], 2))
         with self.assertRaises(ValidationError):
             self.input_filter.validate_data({"field1": None, "field2": None})
 
@@ -77,36 +75,28 @@ class TestNOfCondition(unittest.TestCase):
         """Test that empty string values DO count as present."""
         self.input_filter.add("field1")
         self.input_filter.add("field2")
-        self.input_filter.add_condition(
-            NOfCondition(["field1", "field2"], 2)
-        )
+        self.input_filter.add_condition(NOfCondition(["field1", "field2"], 2))
         self.input_filter.validate_data({"field1": "", "field2": ""})
 
     def test_validates_with_zero_values(self) -> None:
         """Test that zero values DO count as present."""
         self.input_filter.add("field1")
         self.input_filter.add("field2")
-        self.input_filter.add_condition(
-            NOfCondition(["field1", "field2"], 2)
-        )
+        self.input_filter.add_condition(NOfCondition(["field1", "field2"], 2))
         self.input_filter.validate_data({"field1": 0, "field2": 0})
 
     def test_validates_with_false_values(self) -> None:
         """Test that False values DO count as present."""
         self.input_filter.add("field1")
         self.input_filter.add("field2")
-        self.input_filter.add_condition(
-            NOfCondition(["field1", "field2"], 2)
-        )
+        self.input_filter.add_condition(NOfCondition(["field1", "field2"], 2))
         self.input_filter.validate_data({"field1": False, "field2": False})
 
     def test_validates_n_equals_zero(self) -> None:
         """Test that N=0 always validates."""
         self.input_filter.add("field1")
         self.input_filter.add("field2")
-        self.input_filter.add_condition(
-            NOfCondition(["field1", "field2"], 0)
-        )
+        self.input_filter.add_condition(NOfCondition(["field1", "field2"], 0))
         self.input_filter.validate_data({})
         self.input_filter.validate_data({"field1": "value"})
         self.input_filter.validate_data({"field1": "value", "field2": "value"})

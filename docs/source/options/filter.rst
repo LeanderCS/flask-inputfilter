@@ -40,6 +40,7 @@ Available Filters
 - `StringSlugifyFilter <#flask_inputfilter.filters.StringSlugifyFilter>`_
 - `StringTrimFilter <#flask_inputfilter.filters.StringTrimFilter>`_
 - `ToAlphaNumericFilter <#flask_inputfilter.filters.ToAlphaNumericFilter>`_
+- `ToBase64ImageFilter <#flask_inputfilter.filters.ToBase64ImageFilter>`_
 - `ToBooleanFilter <#flask_inputfilter.filters.ToBooleanFilter>`_
 - `ToCamelCaseFilter <#flask_inputfilter.filters.ToCamelCaseFilter>`_
 - `ToDataclassFilter <#flask_inputfilter.filters.ToDataclassFilter>`_
@@ -48,6 +49,7 @@ Available Filters
 - `ToDigitsFilter <#flask_inputfilter.filters.ToDigitsFilter>`_
 - `ToEnumFilter <#flask_inputfilter.filters.ToEnumFilter>`_
 - `ToFloatFilter <#flask_inputfilter.filters.ToFloatFilter>`_
+- `ToImageFilter <#flask_inputfilter.filters.ToImageFilter>`_
 - `ToIntegerFilter <#flask_inputfilter.filters.ToIntegerFilter>`_
 - `ToIsoFilter <#flask_inputfilter.filters.ToIsoFilter>`_
 - `ToLowerFilter <#flask_inputfilter.filters.ToLowerFilter>`_

@@ -17,7 +17,7 @@ class BaseValidatorTest(unittest.TestCase):
         """Initialize an InputFilter for each test."""
         self.input_filter = InputFilter()
 
-    def assertValidationError(
+    def assertValidationError(  # noqa: N802
         self,
         field_name: str,
         invalid_value: Any,

@@ -44,14 +44,15 @@ class AddressInputFilter(InputFilter):
     zipcode: str = field(
         validators=[
             IsStringValidator(),
-            RegexValidator(pattern='^\\d{5}(-\\d{4})?$'),
+            RegexValidator(pattern="^\\d{5}(-\\d{4})?$"),
         ],
     )
 
     country: str = field(
-        default='DE',
+        default="DE",
         validators=[IsStringValidator()],
     )
+
 
 class UserInputFilter(InputFilter):
     name: str = field(
@@ -66,7 +67,9 @@ class UserInputFilter(InputFilter):
         required=True,
         validators=[
             IsStringValidator(),
-            RegexValidator(pattern='^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$'),
+            RegexValidator(
+                pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$"
+            ),
         ],
     )
 
@@ -95,6 +98,7 @@ class UserInputFilter(InputFilter):
         input_filter=AddressInputFilter,
     )
 
+
 class CategoryInputFilter(InputFilter):
     id: int = field(
         filters=[ToIntegerFilter()],
@@ -104,6 +108,7 @@ class CategoryInputFilter(InputFilter):
     name: str = field(
         validators=[IsStringValidator()],
     )
+
 
 class ProductInputFilter(InputFilter):
     title: str = field(
@@ -136,9 +141,9 @@ class ProductInputFilter(InputFilter):
             IsStringValidator(),
             InArrayValidator(
                 haystack=[
-                    'available',
-                    'unavailable',
-                    'discontinued',
+                    "available",
+                    "unavailable",
+                    "discontinued",
                 ]
             ),
         ],
@@ -155,6 +160,7 @@ class ProductInputFilter(InputFilter):
             ArrayLengthValidator(min_length=1, max_length=10),
         ],
     )
+
 
 class ItemsitemInputFilter(InputFilter):
     product_id: int = field(
@@ -177,6 +183,7 @@ class ItemsitemInputFilter(InputFilter):
             RangeValidator(min_value=0),
         ],
     )
+
 
 class OrderInputFilter(InputFilter):
     user_id: int = field(
@@ -203,16 +210,16 @@ class OrderInputFilter(InputFilter):
     )
 
     status: str = field(
-        default='pending',
+        default="pending",
         validators=[
             IsStringValidator(),
             InArrayValidator(
                 haystack=[
-                    'pending',
-                    'processing',
-                    'shipped',
-                    'delivered',
-                    'cancelled',
+                    "pending",
+                    "processing",
+                    "shipped",
+                    "delivered",
+                    "cancelled",
                 ]
             ),
         ],

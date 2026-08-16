@@ -168,7 +168,9 @@ class TestRequiredIfCondition(unittest.TestCase):
             RequiredIfCondition("field1", "value", "field2")
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validate_data({"field1": "value", "field2": None})
+            self.input_filter.validate_data(
+                {"field1": "value", "field2": None}
+            )
 
     def test_validates_with_empty_list_as_trigger_value(self) -> None:
         self.input_filter.add("field1")

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "flask_inputfilter"
-version = "0.8.0"
+version = "0.8.1"
 description = "A library to easily filter and validate input data in Flask applications"
 readme = "README.md"
 keywords = [
@@ -109,10 +109,6 @@ line-length = 79
 #extend-include = ["*.pyx", "*.pxd"]
 target-version = "py37"
 fix = true
-exclude = [
-    "tests",
-]
-
 [tool.ruff.lint]
 select = [
     "E",      # pycodestyle errors
@@ -154,8 +150,6 @@ ignore = [
     "UP006",  # Use `list` instead of `List` (Python 3.9+)
     "UP007",  # Use `X | Y` for unions (Python 3.10+)
     "UP035",  # Import from collections.abc (Python 3.9+)
-    "ANN101", # Missing type annotation for self
-    "ANN102", # Missing type annotation for cls
     "ANN401", # Dynamically typed expressions (Any) - OK for flexible library
     "TRY003", # Long exception messages (ok for Libraries)
     "TRY300", # Consider moving to else block - not always applicable
@@ -173,6 +167,11 @@ pyupgrade = [
     "S101",    # Assert usage ist OK in Tests
     "ANN",     # Type annotations optional in Tests
     "ARG",     # Unused arguments OK in Test fixtures
+    "E501",    # Long lines OK in Tests (test data)
+    "DTZ",     # Naive datetimes OK in Tests
+    "PTH",     # Plain open()/os.path OK in Tests
+    "SLF001",  # Access to internals OK in Tests
+    "S301",    # pickle OK in Tests
 ]
 "examples/*" = [
     "ANN201",  # Missing return type annotation in examples

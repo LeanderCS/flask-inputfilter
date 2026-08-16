@@ -196,9 +196,7 @@ class CodeGenerator:
             if i > 0 or not has_statements:
                 lines.append("")
             lines.extend(
-                "    " + line
-                for line in field_def.split("\n")
-                if line.strip()
+                "    " + line for line in field_def.split("\n") if line.strip()
             )
 
         return "\n".join(lines)

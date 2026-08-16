@@ -78,7 +78,7 @@ def create_user():
 
 ### Validators (Data Validation)
 - **Type Checking**: `IsStringValidator`, `IsIntegerValidator`, `IsFloatValidator`, `IsBooleanValidator`
-- **Format**: `IsEmailValidator`, `IsUrlValidator`, `IsUuidValidator`, `IsJsonValidator`
+- **Format**: `IsEmailValidator`, `IsUrlValidator`, `IsUUIDValidator`, `IsJsonValidator`
 - **Ranges**: `LengthValidator`, `RangeValidator`, `ArrayLengthValidator`
 - **Dates**: `IsDateValidator`, `DateRangeValidator`, `IsFutureDateValidator`
 - **Images**: `IsImageValidator`, `IsHorizontalImageValidator`, `IsVerticalImageValidator`

@@ -1,7 +1,6 @@
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.filters import Base64ImageDownscaleFilter
 from flask_inputfilter.validators import IsVerticalImageValidator
-
 from tests.validators import BaseValidatorTest
 
 
@@ -34,11 +33,12 @@ class TestIsVerticalImageValidator(BaseValidatorTest):
             ],
             validators=[IsVerticalImageValidator()],
         )
-        with open("tests/data/base64_image.txt") as file:
-            with self.assertRaises(ValidationError):
-                self.input_filter.validate_data(
-                    {"horizontally_image": file.read()}
-                )
+        with open("tests/data/base64_image.txt") as file, self.assertRaises(
+            ValidationError
+        ):
+            self.input_filter.validate_data(
+                {"horizontally_image": file.read()}
+            )
 
     def test_invalid_wrong_type(self):
         self.input_filter.add(

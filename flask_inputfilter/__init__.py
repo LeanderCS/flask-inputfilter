@@ -44,6 +44,14 @@ except ImportError:
         )
         from .input_filter import InputFilter
 
+try:
+    from importlib.metadata import version
+
+    __version__ = version("flask_inputfilter")
+except Exception:  # noqa: BLE001  # pragma: no cover - not installed
+    __version__ = "unknown"
+
 __all__ = [
     "InputFilter",
+    "__version__",
 ]

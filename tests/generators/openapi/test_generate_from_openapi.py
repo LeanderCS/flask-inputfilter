@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 try:
-    import yaml
+    import yaml  # noqa: F401
 
     HAS_YAML = True
 except ImportError:
@@ -202,12 +202,9 @@ components:
         validated = order.validate_data(
             {
                 "user_id": 1,
-                "items": [
-                    {"product_id": 10, "quantity": 2, "price": 9.5}
-                ],
+                "items": [{"product_id": 10, "quantity": 2, "price": 9.5}],
             }
         )
         self.assertEqual(validated["items"][0]["product_id"], 10)
         with self.assertRaises(ValidationError):
             order.validate_data({"user_id": 1, "items": [{}]})
-

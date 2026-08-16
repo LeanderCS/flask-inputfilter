@@ -1,6 +1,5 @@
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsHtmlValidator
-
 from tests.validators import BaseValidatorTest
 
 

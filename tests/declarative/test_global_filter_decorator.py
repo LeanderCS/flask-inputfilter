@@ -1,16 +1,22 @@
+import contextlib
 import unittest
+
 from flask_inputfilter import InputFilter
 from flask_inputfilter.declarative import field, global_filter
-from flask_inputfilter.filters import (
-    StringTrimFilter, ToLowerFilter, ToUpperFilter, ToPascalCaseFilter,
-    ToSnakeCaseFilter, ToIntegerFilter, ToFloatFilter, WhitespaceCollapseFilter
-)
-from flask_inputfilter.validators import IsStringValidator, IsIntegerValidator
 from flask_inputfilter.exceptions import ValidationError
+from flask_inputfilter.filters import (
+    StringTrimFilter,
+    ToIntegerFilter,
+    ToLowerFilter,
+    ToPascalCaseFilter,
+    ToSnakeCaseFilter,
+    ToUpperFilter,
+    WhitespaceCollapseFilter,
+)
+from flask_inputfilter.validators import IsIntegerValidator, IsStringValidator
 
 
 class TestGlobalFilterDecorator(unittest.TestCase):
-
     def test_global_filter_decorator(self):
 
         class TestInputFilter(InputFilter):
@@ -29,11 +35,11 @@ class TestGlobalFilterDecorator(unittest.TestCase):
         self.assertIn(StringTrimFilter, filter_types)
         self.assertIn(ToLowerFilter, filter_types)
 
-        test_data = {'name': '  JOHN  ', 'email': '  TEST@EXAMPLE.COM  '}
+        test_data = {"name": "  JOHN  ", "email": "  TEST@EXAMPLE.COM  "}
         validated_data = filter_instance.validate_data(test_data)
 
-        self.assertEqual(validated_data['name'], 'john')
-        self.assertEqual(validated_data['email'], 'test@example.com')
+        self.assertEqual(validated_data["name"], "john")
+        self.assertEqual(validated_data["email"], "test@example.com")
 
     def test_global_filter_inheritance(self):
 
@@ -56,11 +62,11 @@ class TestGlobalFilterDecorator(unittest.TestCase):
         self.assertIn(StringTrimFilter, filter_types)
         self.assertIn(ToLowerFilter, filter_types)
 
-        test_data = {'name': '  JOHN  ', 'email': '  TEST@EXAMPLE.COM  '}
+        test_data = {"name": "  JOHN  ", "email": "  TEST@EXAMPLE.COM  "}
         validated_data = child_filter.validate_data(test_data)
 
-        self.assertEqual(validated_data['name'], 'john')
-        self.assertEqual(validated_data['email'], 'test@example.com')
+        self.assertEqual(validated_data["name"], "john")
+        self.assertEqual(validated_data["email"], "test@example.com")
 
     def test_ruf012_solved_for_global_filters(self):
 
@@ -75,13 +81,13 @@ class TestGlobalFilterDecorator(unittest.TestCase):
         global_filters = filter_instance.get_global_filters()
         self.assertEqual(len(global_filters), 1)
 
-        test_data = {'name': '  John  ', 'email': '  test@example.com  '}
+        test_data = {"name": "  John  ", "email": "  test@example.com  "}
         validated_data = filter_instance.validate_data(test_data)
 
-        self.assertEqual(validated_data['name'], 'John')
-        self.assertEqual(validated_data['email'], 'test@example.com')
+        self.assertEqual(validated_data["name"], "John")
+        self.assertEqual(validated_data["email"], "test@example.com")
 
-        self.assertTrue(hasattr(ProblematicInputFilter, '_global_filters'))
+        self.assertTrue(hasattr(ProblematicInputFilter, "_global_filters"))
 
     def test_empty_global_filters_behavior(self):
         """Test behavior when no global filters are defined."""
@@ -94,9 +100,9 @@ class TestGlobalFilterDecorator(unittest.TestCase):
         self.assertEqual(len(global_filters), 0)
 
         # Should pass data through unchanged
-        test_data = {'name': '  TEST  '}
+        test_data = {"name": "  TEST  "}
         validated_data = filter_instance.validate_data(test_data)
-        self.assertEqual(validated_data['name'], '  TEST  ')
+        self.assertEqual(validated_data["name"], "  TEST  ")
 
     def test_filter_ordering(self):
         """Test that filters are applied in declaration order."""
@@ -116,10 +122,10 @@ class TestGlobalFilterDecorator(unittest.TestCase):
         self.assertIsInstance(global_filters[0], StringTrimFilter)
         self.assertIsInstance(global_filters[1], ToLowerFilter)
 
-        test_data = {'text': '  HELLO WORLD  '}
+        test_data = {"text": "  HELLO WORLD  "}
         validated_data = filter_instance.validate_data(test_data)
         # Should be trimmed first, then lowercased
-        self.assertEqual(validated_data['text'], 'hello world')
+        self.assertEqual(validated_data["text"], "hello world")
 
         # Test reverse order
         class ReverseOrderFilter(InputFilter):
@@ -130,10 +136,10 @@ class TestGlobalFilterDecorator(unittest.TestCase):
             global_filter(StringTrimFilter())
 
         reverse_filter = ReverseOrderFilter()
-        test_data = {'text': '  HELLO WORLD  '}
+        test_data = {"text": "  HELLO WORLD  "}
         validated_data = reverse_filter.validate_data(test_data)
         # Should be lowercased first, then trimmed
-        self.assertEqual(validated_data['text'], 'hello world')
+        self.assertEqual(validated_data["text"], "hello world")
 
     def test_multiple_inheritance_chains(self):
         """Test filter inheritance with complex hierarchies."""
@@ -162,9 +168,9 @@ class TestGlobalFilterDecorator(unittest.TestCase):
         self.assertGreaterEqual(len(global_filters), 4)
 
         filter_types = [type(f).__name__ for f in global_filters]
-        self.assertIn('StringTrimFilter', filter_types)
-        self.assertIn('ToLowerFilter', filter_types)
-        self.assertIn('WhitespaceCollapseFilter', filter_types)
+        self.assertIn("StringTrimFilter", filter_types)
+        self.assertIn("ToLowerFilter", filter_types)
+        self.assertIn("WhitespaceCollapseFilter", filter_types)
 
     def test_duplicate_filters(self):
         """Test adding the same filter type multiple times."""
@@ -183,8 +189,8 @@ class TestGlobalFilterDecorator(unittest.TestCase):
         self.assertEqual(len(global_filters), 3)
 
         filter_types = [type(f).__name__ for f in global_filters]
-        self.assertEqual(filter_types.count('StringTrimFilter'), 2)
-        self.assertEqual(filter_types.count('ToLowerFilter'), 1)
+        self.assertEqual(filter_types.count("StringTrimFilter"), 2)
+        self.assertEqual(filter_types.count("ToLowerFilter"), 1)
 
     def test_filter_interaction_different_orders(self):
         """Test how different filters interact in different orders."""
@@ -197,9 +203,9 @@ class TestGlobalFilterDecorator(unittest.TestCase):
             global_filter(ToUpperFilter())
 
         filter1 = TrimThenUpperFilter()
-        test_data = {'text': '  hello world  '}
+        test_data = {"text": "  hello world  "}
         result1 = filter1.validate_data(test_data)
-        self.assertEqual(result1['text'], 'HELLO WORLD')
+        self.assertEqual(result1["text"], "HELLO WORLD")
 
         # Test case 2: Upper then Trim
         class UpperThenTrimFilter(InputFilter):
@@ -210,10 +216,10 @@ class TestGlobalFilterDecorator(unittest.TestCase):
 
         filter2 = UpperThenTrimFilter()
         result2 = filter2.validate_data(test_data)
-        self.assertEqual(result2['text'], 'HELLO WORLD')
+        self.assertEqual(result2["text"], "HELLO WORLD")
 
         # Both should give same result in this case
-        self.assertEqual(result1['text'], result2['text'])
+        self.assertEqual(result1["text"], result2["text"])
 
     def test_global_filters_on_non_string_fields(self):
         """Test global filters on numeric and other field types."""
@@ -230,19 +236,21 @@ class TestGlobalFilterDecorator(unittest.TestCase):
         filter_instance = MixedTypeFilter()
 
         test_data = {
-            'name': '  JOHN DOE  ',
-            'age': 25,  # Already integer
-            'score': 95.5
+            "name": "  JOHN DOE  ",
+            "age": 25,  # Already integer
+            "score": 95.5,
         }
 
         validated_data = filter_instance.validate_data(test_data)
 
         # String field should be filtered
-        self.assertEqual(validated_data['name'], 'john doe')
+        self.assertEqual(validated_data["name"], "john doe")
 
         # Numeric fields should not be affected by string filters
-        self.assertEqual(validated_data['age'], 25)  # Integer should remain integer
-        self.assertEqual(validated_data['score'], 95.5)
+        self.assertEqual(
+            validated_data["age"], 25
+        )  # Integer should remain integer
+        self.assertEqual(validated_data["score"], 95.5)
 
     def test_filter_with_conversion_filters(self):
         """Test global filters that convert data types."""
@@ -256,24 +264,18 @@ class TestGlobalFilterDecorator(unittest.TestCase):
 
         filter_instance = ConversionFilter()
 
-        test_data = {
-            'number_str': '  123  ',
-            'float_str': '  45.67  '
-        }
+        test_data = {"number_str": "  123  ", "float_str": "  45.67  "}
 
         validated_data = filter_instance.validate_data(test_data)
 
         # Should trim then try to convert to integer
-        self.assertEqual(validated_data['number_str'], 123)
+        self.assertEqual(validated_data["number_str"], 123)
 
         # Float conversion might fail with ToIntegerFilter
         # This tests error handling
-        try:
+        with contextlib.suppress(ValidationError):
             # ToIntegerFilter should handle this gracefully
-            self.assertIsInstance(validated_data['float_str'], (int, str))
-        except ValidationError:
-            # Expected behavior if conversion fails
-            pass
+            self.assertIsInstance(validated_data["float_str"], (int, str))
 
     def test_whitespace_handling_filters(self):
         """Test filters that handle whitespace in different ways."""
@@ -286,12 +288,12 @@ class TestGlobalFilterDecorator(unittest.TestCase):
 
         filter_instance = WhitespaceFilter()
 
-        test_data = {'text': '  hello    world   test  '}
+        test_data = {"text": "  hello    world   test  "}
         validated_data = filter_instance.validate_data(test_data)
 
         # WhitespaceCollapse first, then trim
         # Result should have single spaces and be trimmed
-        self.assertEqual(validated_data['text'], 'hello world test')
+        self.assertEqual(validated_data["text"], "hello world test")
 
     def test_case_conversion_combinations(self):
         """Test various case conversion filter combinations."""
@@ -305,37 +307,39 @@ class TestGlobalFilterDecorator(unittest.TestCase):
 
         filter_instance = CaseConversionFilter()
 
-        test_data = {'text': '  hello_world_test  '}
+        test_data = {"text": "  hello_world_test  "}
         validated_data = filter_instance.validate_data(test_data)
 
         # Should trim, then lower, then pascal case
         # Exact result depends on filter implementation
-        self.assertIsInstance(validated_data['text'], str)
-        self.assertTrue(len(validated_data['text']) > 0)
+        self.assertIsInstance(validated_data["text"], str)
+        self.assertTrue(len(validated_data["text"]) > 0)
 
     def test_empty_string_handling(self):
         """Test how global filters handle empty strings."""
 
         class EmptyStringFilter(InputFilter):
-            optional_field = field(required=False, validators=[IsStringValidator()])
+            optional_field = field(
+                required=False, validators=[IsStringValidator()]
+            )
 
             global_filter(StringTrimFilter())
             global_filter(ToLowerFilter())
 
         filter_instance = EmptyStringFilter()
 
-        test_data = {'optional_field': ''}
+        test_data = {"optional_field": ""}
         validated_data = filter_instance.validate_data(test_data)
 
         # Empty string should remain empty after filtering
-        self.assertEqual(validated_data['optional_field'], '')
+        self.assertEqual(validated_data["optional_field"], "")
 
         # Test with whitespace only
-        test_data = {'optional_field': '   '}
+        test_data = {"optional_field": "   "}
         validated_data = filter_instance.validate_data(test_data)
 
         # Should be trimmed to empty string
-        self.assertEqual(validated_data['optional_field'], '')
+        self.assertEqual(validated_data["optional_field"], "")
 
     def test_multiple_global_filters_at_once(self):
         """Test registering multiple global filters in a single call."""
@@ -355,13 +359,13 @@ class TestGlobalFilterDecorator(unittest.TestCase):
         self.assertIn(StringTrimFilter, filter_types)
         self.assertIn(ToUpperFilter, filter_types)
 
-        validated_data = filter_instance.validate_data({
-            'name': '  john doe  ', 'description': '  test description  '
-        })
+        validated_data = filter_instance.validate_data(
+            {"name": "  john doe  ", "description": "  test description  "}
+        )
 
-        self.assertEqual(validated_data['name'], 'JOHN DOE')
-        self.assertEqual(validated_data['description'], 'TEST DESCRIPTION')
+        self.assertEqual(validated_data["name"], "JOHN DOE")
+        self.assertEqual(validated_data["description"], "TEST DESCRIPTION")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

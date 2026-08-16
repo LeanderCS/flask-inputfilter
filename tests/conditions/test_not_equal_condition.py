@@ -66,7 +66,7 @@ class TestNotEqualCondition(unittest.TestCase):
         self.input_filter.add_condition(NotEqualCondition("field1", "field2"))
         self.input_filter.validate_data({"field1": 0, "field2": "0"})
         # Note: 0 == False in Python, so this will fail NotEqual
-        # self.input_filter.validate_data({"field1": False, "field2": 0})
+        # self.input_filter.validate_data({"field1": False, "field2": 0})  # noqa: ERA001
         self.input_filter.validate_data({"field1": [], "field2": ""})
 
     def test_invalidates_when_types_are_equal_by_value(self) -> None:

@@ -119,7 +119,9 @@ class TestExactlyNthOfCondition(unittest.TestCase):
             ExactlyNOfCondition(["field1", "field2"], 0)
         )
         with self.assertRaises(ValidationError):
-            self.input_filter.validate_data({"field1": "value", "field2": "value"})
+            self.input_filter.validate_data(
+                {"field1": "value", "field2": "value"}
+            )
 
     def test_validates_with_mixed_field_types(self) -> None:
         """Test that different types of values are counted as present."""

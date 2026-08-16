@@ -67,9 +67,13 @@ class TestEqualCondition(unittest.TestCase):
         self.input_filter.add("field2")
         self.input_filter.add_condition(EqualCondition("field1", "field2"))
         with self.assertRaises(ValidationError):
-            self.input_filter.validate_data({"field1": None, "field2": "value"})
+            self.input_filter.validate_data(
+                {"field1": None, "field2": "value"}
+            )
         with self.assertRaises(ValidationError):
-            self.input_filter.validate_data({"field1": "value", "field2": None})
+            self.input_filter.validate_data(
+                {"field1": "value", "field2": None}
+            )
 
     def test_validates_with_different_types_when_equal(self) -> None:
         """Test that EqualCondition validates different types that are

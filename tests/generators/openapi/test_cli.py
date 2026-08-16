@@ -35,7 +35,7 @@ OPENAPI_SPEC = {
     },
 }
 
-FILTER_MODULE = '''
+FILTER_MODULE = """
 from flask_inputfilter import InputFilter
 from flask_inputfilter.declarative import field
 from flask_inputfilter.validators import IsStringValidator
@@ -43,7 +43,7 @@ from flask_inputfilter.validators import IsStringValidator
 
 class UserInputFilter(InputFilter):
     name: str = field(required=True, validators=[IsStringValidator()])
-'''
+"""
 
 
 class TestGenerateCli(unittest.TestCase):
@@ -62,8 +62,11 @@ class TestGenerateCli(unittest.TestCase):
     def test_generate_single_file(self) -> None:
         output = Path(self.tempdir.name) / "filters.py"
         self._run(
-            "generate", "openapi", str(self.spec_path),
-            "--output", str(output),
+            "generate",
+            "openapi",
+            str(self.spec_path),
+            "--output",
+            str(output),
         )
 
         code = output.read_text()
@@ -72,27 +75,36 @@ class TestGenerateCli(unittest.TestCase):
     def test_generate_with_endpoints(self) -> None:
         output = Path(self.tempdir.name) / "filters.py"
         self._run(
-            "generate", "openapi", str(self.spec_path),
-            "--output", str(output), "--include-endpoints",
+            "generate",
+            "openapi",
+            str(self.spec_path),
+            "--output",
+            str(output),
+            "--include-endpoints",
         )
 
         code = output.read_text()
-        self.assertIn(
-            "class CreateUserInputFilter(UserInputFilter):", code
-        )
+        self.assertIn("class CreateUserInputFilter(UserInputFilter):", code)
 
     def test_endpoints_with_output_dir_rejected(self) -> None:
         with self.assertRaises(SystemExit):
             self._run(
-                "generate", "openapi", str(self.spec_path),
-                "--output-dir", self.tempdir.name, "--include-endpoints",
+                "generate",
+                "openapi",
+                str(self.spec_path),
+                "--output-dir",
+                self.tempdir.name,
+                "--include-endpoints",
             )
 
     def test_generate_output_dir(self) -> None:
         output_dir = Path(self.tempdir.name) / "filters"
         self._run(
-            "generate", "openapi", str(self.spec_path),
-            "--output-dir", str(output_dir),
+            "generate",
+            "openapi",
+            str(self.spec_path),
+            "--output-dir",
+            str(output_dir),
         )
 
         generated = output_dir / "user_filter.py"
@@ -110,9 +122,13 @@ class TestGenerateCli(unittest.TestCase):
         output = Path(self.tempdir.name) / "filters.py"
         with self.assertRaises(SystemExit):
             self._run(
-                "generate", "openapi", str(self.spec_path),
-                "--output", str(output),
-                "--output-dir", self.tempdir.name,
+                "generate",
+                "openapi",
+                str(self.spec_path),
+                "--output",
+                str(output),
+                "--output-dir",
+                self.tempdir.name,
             )
 
 
@@ -135,8 +151,11 @@ class TestExportCli(unittest.TestCase):
     def test_export_single_class(self) -> None:
         output = Path(self.tempdir.name) / "schema.json"
         self._run(
-            "export", "openapi", "my_filters:UserInputFilter",
-            "--output", str(output),
+            "export",
+            "openapi",
+            "my_filters:UserInputFilter",
+            "--output",
+            str(output),
         )
 
         schema = json.loads(output.read_text())
@@ -147,8 +166,12 @@ class TestExportCli(unittest.TestCase):
     def test_export_all(self) -> None:
         output = Path(self.tempdir.name) / "components.json"
         self._run(
-            "export", "openapi", "my_filters", "--all",
-            "--output", str(output),
+            "export",
+            "openapi",
+            "my_filters",
+            "--all",
+            "--output",
+            str(output),
         )
 
         document = json.loads(output.read_text())
@@ -157,8 +180,12 @@ class TestExportCli(unittest.TestCase):
     def test_export_components_flag(self) -> None:
         output = Path(self.tempdir.name) / "schema.json"
         self._run(
-            "export", "openapi", "my_filters:UserInputFilter",
-            "--components", "--output", str(output),
+            "export",
+            "openapi",
+            "my_filters:UserInputFilter",
+            "--components",
+            "--output",
+            str(output),
         )
 
         document = json.loads(output.read_text())
@@ -176,8 +203,13 @@ class TestExportCli(unittest.TestCase):
 
         output = Path(self.tempdir.name) / "schema.yaml"
         self._run(
-            "export", "openapi", "my_filters:UserInputFilter",
-            "--format", "yaml", "--output", str(output),
+            "export",
+            "openapi",
+            "my_filters:UserInputFilter",
+            "--format",
+            "yaml",
+            "--output",
+            str(output),
         )
 
         schema = yaml.safe_load(output.read_text())

@@ -2,7 +2,6 @@ from datetime import date, datetime, timedelta
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import IsFutureDateValidator
-
 from tests.validators import BaseValidatorTest
 
 

@@ -48,7 +48,7 @@ class TestCodeGenerator(unittest.TestCase):
         """Test generating class with required fields."""
         schema = self.openapi_content["components"]["schemas"]["User"]
         code = self.generator.generate_class("User", schema)
-        self.assertIn('required=True', code)
+        self.assertIn("required=True", code)
 
     def test_generate_class_with_validators(self):
         """Test generating class with validators."""
@@ -233,9 +233,7 @@ class TestCodeGenerator(unittest.TestCase):
                         "type": "object",
                         "properties": {
                             "name": {"type": "string"},
-                            "friend": {
-                                "$ref": "#/components/schemas/User"
-                            },
+                            "friend": {"$ref": "#/components/schemas/User"},
                         },
                     }
                 }
@@ -247,7 +245,9 @@ class TestCodeGenerator(unittest.TestCase):
             "User", openapi["components"]["schemas"]["User"]
         )
         self.assertIn("input_filter=UserInputFilter", code)
-        self.assertIn("from __future__ import annotations", generator.generate_imports())
+        self.assertIn(
+            "from __future__ import annotations", generator.generate_imports()
+        )
 
     def test_generated_imports_include_future_annotations(self):
         schema = {
@@ -257,10 +257,7 @@ class TestCodeGenerator(unittest.TestCase):
         code = self.generator.generate_class(
             "User", schema, include_imports=True
         )
-        self.assertTrue(
-            code.startswith("from __future__ import annotations")
-        )
-
+        self.assertTrue(code.startswith("from __future__ import annotations"))
 
     def _exec(self, code):
         namespace = {}
@@ -324,8 +321,7 @@ class TestCodeGenerator(unittest.TestCase):
         self.assertTrue(instance.has("ok_field"))
 
     def test_only_invalid_identifier_properties_still_compiles(self):
-        """A class body with only warning comments needs a pass
-        statement."""
+        """A class body with only warning comments needs a pass statement."""
         schema = {
             "type": "object",
             "properties": {"class": {"type": "string"}},

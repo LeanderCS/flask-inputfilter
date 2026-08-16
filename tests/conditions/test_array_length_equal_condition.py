@@ -75,7 +75,9 @@ class TestArrayLengthEqualCondition(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.input_filter.validate_data({"field1": 123, "field2": [1, 2]})
 
-    def test_invalidates_or_raises_when_second_field_is_not_array(self) -> None:
+    def test_invalidates_or_raises_when_second_field_is_not_array(
+        self,
+    ) -> None:
         """Non-array types cause ValidationError (str has len) or TypeError
         (dict)."""
         # String has len(), so it just fails the condition

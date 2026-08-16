@@ -1,13 +1,12 @@
 import unittest
-from dataclasses import dataclass
 from unittest.mock import Mock, patch
 
 import requests
 from flask import Flask, g, jsonify, request
+
 from flask_inputfilter import InputFilter
-from flask_inputfilter.declarative import field
-from flask_inputfilter.models import BaseCondition
 from flask_inputfilter.conditions import ExactlyOneOfCondition
+from flask_inputfilter.declarative import field
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.filters import (
     StringSlugifyFilter,
@@ -16,7 +15,7 @@ from flask_inputfilter.filters import (
     ToLowerFilter,
     ToUpperFilter,
 )
-from flask_inputfilter.models import ExternalApiConfig
+from flask_inputfilter.models import BaseCondition, ExternalApiConfig
 from flask_inputfilter.validators import (
     InArrayValidator,
     IsIntegerValidator,
@@ -866,8 +865,8 @@ class TestInputFilter(unittest.TestCase):
 
         # API returns invalid result
         mock_response.status_code = 500
-        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
-            "500 Server Error"
+        mock_response.raise_for_status.side_effect = (
+            requests.exceptions.HTTPError("500 Server Error")
         )
         with self.assertRaises(ValidationError):
             self.inputFilter.validate_data({"name": "invalid_user"})
@@ -904,8 +903,8 @@ class TestInputFilter(unittest.TestCase):
 
         # API returns invalid result
         mock_response.status_code = 500
-        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
-            "500 Server Error"
+        mock_response.raise_for_status.side_effect = (
+            requests.exceptions.HTTPError("500 Server Error")
         )
         with self.assertRaises(ValidationError):
             MyInputFilter().validate_data({"name": "invalid_user"})
@@ -951,8 +950,8 @@ class TestInputFilter(unittest.TestCase):
         )
 
         mock_response.status_code = 500
-        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
-            "500 Server Error"
+        mock_response.raise_for_status.side_effect = (
+            requests.exceptions.HTTPError("500 Server Error")
         )
         mock_response.json.return_value = {"is_valid": False}
         with self.assertRaises(ValidationError):
@@ -970,8 +969,8 @@ class TestInputFilter(unittest.TestCase):
     def test_external_api_fallback(self, mock_request: Mock) -> None:
         mock_response = Mock()
         mock_response.status_code = 400
-        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
-            "400 Client Error"
+        mock_response.raise_for_status.side_effect = (
+            requests.exceptions.HTTPError("400 Client Error")
         )
         mock_response.json.return_value = {"name": True}
         mock_request.return_value = mock_response
@@ -1025,8 +1024,8 @@ class TestInputFilter(unittest.TestCase):
     ) -> None:
         mock_response = Mock()
         mock_response.status_code = 400
-        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
-            "400 Client Error"
+        mock_response.raise_for_status.side_effect = (
+            requests.exceptions.HTTPError("400 Client Error")
         )
         mock_response.json.return_value = {"name": True}
         mock_request.return_value = mock_response
@@ -1078,8 +1077,8 @@ class TestInputFilter(unittest.TestCase):
         ValidationError."""
         mock_response = Mock()
         mock_response.status_code = 400
-        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
-            "400 Client Error"
+        mock_response.raise_for_status.side_effect = (
+            requests.exceptions.HTTPError("400 Client Error")
         )
         mock_response.json.return_value = {}
         mock_request.return_value = mock_response
@@ -1189,10 +1188,11 @@ class TestInputFilter(unittest.TestCase):
     def test_copy_declarative(self) -> None:
         """Test that copy copies the value of the field to the current
         field."""
+
         class MyInputFilter(InputFilter):
             username = field()
 
-            escapedUsername = field(
+            escapedUsername = field(  # noqa: N815
                 copy="username", filters=[StringSlugifyFilter()]
             )
 

@@ -1,12 +1,12 @@
 import unittest
 
 from flask_inputfilter.declarative import (
-    field,
     FieldDescriptor,
+    field,
 )
-from flask_inputfilter.filters import StringTrimFilter, ToUpperFilter
+from flask_inputfilter.filters import StringTrimFilter
 from flask_inputfilter.models import ExternalApiConfig
-from flask_inputfilter.validators import IsStringValidator, IsIntegerValidator
+from flask_inputfilter.validators import IsStringValidator
 
 
 class TestFieldDescriptor(unittest.TestCase):
@@ -28,9 +28,7 @@ class TestFieldDescriptor(unittest.TestCase):
         validators = [IsStringValidator()]
 
         descriptor = field(
-            required=True,
-            filters=filters,
-            validators=validators
+            required=True, filters=filters, validators=validators
         )
 
         self.assertEqual(descriptor.filters, filters)
@@ -41,9 +39,7 @@ class TestFieldDescriptor(unittest.TestCase):
         filters = [StringTrimFilter()]
         validators = [IsStringValidator()]
         external_api = ExternalApiConfig(
-            url="https://api.example.com/test",
-            method="GET",
-            data_key="result"
+            url="https://api.example.com/test", method="GET", data_key="result"
         )
 
         descriptor = field(
@@ -53,7 +49,7 @@ class TestFieldDescriptor(unittest.TestCase):
             filters=filters,
             validators=validators,
             external_api=external_api,
-            copy="other_field"
+            copy="other_field",
         )
 
         self.assertTrue(descriptor.required)
@@ -87,12 +83,12 @@ class TestFieldDescriptor(unittest.TestCase):
         descriptor.name = "test_field"
 
         # Mock object with validated_data
-        mock_obj = type('MockObj', (), {
-            'validated_data': {'test_field': 'test_value'}
-        })()
+        mock_obj = type(
+            "MockObj", (), {"validated_data": {"test_field": "test_value"}}
+        )()
 
         result = descriptor.__get__(mock_obj)
-        self.assertEqual(result, 'test_value')
+        self.assertEqual(result, "test_value")
 
     def test_field_descriptor_get_without_validated_data(self):
         """Test descriptor __get__ without validated_data."""
@@ -100,7 +96,7 @@ class TestFieldDescriptor(unittest.TestCase):
         descriptor.name = "test_field"
 
         # Mock object without validated_data
-        mock_obj = type('MockObj', (), {})()
+        mock_obj = type("MockObj", (), {})()
 
         result = descriptor.__get__(mock_obj)
         self.assertIsNone(result)
@@ -111,7 +107,7 @@ class TestFieldDescriptor(unittest.TestCase):
         descriptor.name = "test_field"
 
         # Mock object with data attribute
-        mock_obj = type('MockObj', (), {'data': {}})()
+        mock_obj = type("MockObj", (), {"data": {}})()
 
         # Set value through descriptor
         descriptor.__set__(mock_obj, "test_value")
@@ -124,7 +120,7 @@ class TestFieldDescriptor(unittest.TestCase):
             required=True,
             default="test",
             filters=[StringTrimFilter()],
-            validators=[IsStringValidator()]
+            validators=[IsStringValidator()],
         )
         descriptor.name = "test_field"
 
@@ -135,8 +131,6 @@ class TestFieldDescriptor(unittest.TestCase):
         self.assertIn("required=True", repr_str)
         self.assertIn("filters=1", repr_str)
         self.assertIn("validators=1", repr_str)
-
-
 
 
 class TestFactoryFunctions(unittest.TestCase):
@@ -179,10 +173,12 @@ class TestDescriptorIntegration(unittest.TestCase):
         descriptor2 = field(required=False, default="different")
 
         self.assertTrue(descriptor.required)  # Should still be True
-        self.assertEqual(descriptor.default, "original")  # Should still be original
+        self.assertEqual(
+            descriptor.default, "original"
+        )  # Should still be original
         self.assertFalse(descriptor2.required)
         self.assertEqual(descriptor2.default, "different")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

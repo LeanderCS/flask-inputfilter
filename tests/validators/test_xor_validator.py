@@ -4,7 +4,6 @@ from flask_inputfilter.validators import (
     RangeValidator,
     XorValidator,
 )
-
 from tests.validators import BaseValidatorTest
 
 

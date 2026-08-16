@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 
 try:
-    import yaml
+    import yaml  # noqa: F401
 
     HAS_YAML = True
 except ImportError:
@@ -202,9 +202,7 @@ components:
                     "Node": {
                         "type": "object",
                         "properties": {
-                            "child": {
-                                "$ref": "#/components/schemas/Node"
-                            }
+                            "child": {"$ref": "#/components/schemas/Node"}
                         },
                     }
                 }
@@ -217,4 +215,3 @@ components:
             resolved["properties"]["child"]["properties"]["child"],
             {"type": "object"},
         )
-

@@ -2,7 +2,6 @@ from enum import Enum
 
 from flask_inputfilter.exceptions import ValidationError
 from flask_inputfilter.validators import InEnumValidator
-
 from tests.validators import BaseValidatorTest
 
 
