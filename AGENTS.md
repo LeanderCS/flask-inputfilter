@@ -27,18 +27,19 @@ from flask_inputfilter.declarative import field, global_filter
 from flask_inputfilter.filters import ToIntegerFilter, StringTrimFilter
 from flask_inputfilter.validators import IsIntegerValidator, LengthValidator
 
+
 class UserInputFilter(InputFilter):
     # Modern decorator syntax (recommended)
     name: str = field(
         required=True,
         filters=[StringTrimFilter()],
-        validators=[LengthValidator(min_length=2, max_length=50)]
+        validators=[LengthValidator(min_length=2, max_length=50)],
     )
 
     age: int = field(
         required=True,
         filters=[ToIntegerFilter()],
-        validators=[IsIntegerValidator()]
+        validators=[IsIntegerValidator()],
     )
 
     # Global filters/validators apply to all fields
@@ -52,13 +53,14 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route('/users', methods=['POST'])
+
+@app.route("/users", methods=["POST"])
 def create_user():
     input_filter = UserInputFilter()
     input_filter.set_data(request.get_json())
 
     if not input_filter.is_valid():
-        return jsonify({'errors': input_filter.get_error_messages()}), 400
+        return jsonify({"errors": input_filter.get_error_messages()}), 400
 
     validated_data = input_filter.get_values()
     # Process validated_data...
@@ -97,8 +99,9 @@ class OrderInputFilter(InputFilter):
 
     # Computed field - automatically calculated
     total: float = field(
-        computed=lambda data: data['quantity'] * data['price']
+        computed=lambda data: data["quantity"] * data["price"]
     )
+
 
 # Usage:
 result = OrderInputFilter().validate_data({"quantity": 5, "price": 10.0})
@@ -163,10 +166,12 @@ python -m build
 from flask_inputfilter.models.base_filter import BaseFilter
 from flask_inputfilter.models.base_validator import BaseValidator
 
+
 class CustomFilter(BaseFilter):
     def filter(self, value, context=None):
         # Your transformation logic
         return transformed_value
+
 
 class CustomValidator(BaseValidator):
     def is_valid(self, value, context=None):
@@ -178,12 +183,13 @@ class CustomValidator(BaseValidator):
 ```python
 from flask_inputfilter.models.external_api_config import ExternalApiConfig
 
+
 class UserInputFilter(InputFilter):
     user_id: int = field(
         external_api=ExternalApiConfig(
             url="https://api.example.com/users/{user_id}",
             method="GET",
-            headers={"Authorization": "Bearer token"}
+            headers={"Authorization": "Bearer token"},
         )
     )
 ```
@@ -193,9 +199,9 @@ class UserInputFilter(InputFilter):
 class ComplexInputFilter(InputFilter):
     data: dict = field(
         steps=[
-            {'filters': [ToJsonFilter()]},
-            {'validators': [IsJsonValidator()]},
-            {'filters': [ToDataclassFilter(MyDataclass)]}
+            {"filters": [ToJsonFilter()]},
+            {"validators": [IsJsonValidator()]},
+            {"filters": [ToDataclassFilter(MyDataclass)]},
         ]
     )
 ```
@@ -226,29 +232,39 @@ class ComplexInputFilter(InputFilter):
 
 ### API Endpoint Validation
 ```python
-@app.route('/api/products', methods=['POST'])
+@app.route("/api/products", methods=["POST"])
 def create_product():
     class ProductFilter(InputFilter):
         name: str = field(required=True, validators=[LengthValidator(1, 100)])
-        price: float = field(required=True, filters=[ToFloatFilter()], validators=[RangeValidator(0.01, 10000)])
-        category: str = field(validators=[InArrayValidator(['electronics', 'clothing', 'books'])])
+        price: float = field(
+            required=True,
+            filters=[ToFloatFilter()],
+            validators=[RangeValidator(0.01, 10000)],
+        )
+        category: str = field(
+            validators=[InArrayValidator(["electronics", "clothing", "books"])]
+        )
 
     filter_instance = ProductFilter()
     filter_instance.set_data(request.get_json())
 
     if not filter_instance.is_valid():
-        return jsonify({'errors': filter_instance.get_error_messages()}), 400
+        return jsonify({"errors": filter_instance.get_error_messages()}), 400
 
     return jsonify(filter_instance.get_values())
 ```
 
 ### Form Data Processing
 ```python
-@app.route('/contact', methods=['POST'])
+@app.route("/contact", methods=["POST"])
 def contact_form():
     class ContactFilter(InputFilter):
         email: str = field(required=True, validators=[IsEmailValidator()])
-        message: str = field(required=True, filters=[StringTrimFilter()], validators=[LengthValidator(10, 1000)])
+        message: str = field(
+            required=True,
+            filters=[StringTrimFilter()],
+            validators=[LengthValidator(10, 1000)],
+        )
         subscribe: bool = field(filters=[ToBooleanFilter()])
 
     # Process form data...

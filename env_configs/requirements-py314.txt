@@ -3,4 +3,5 @@ setuptools
 flask
 pillow
 pytest
+pyyaml
 requests

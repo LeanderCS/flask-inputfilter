@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 
 project = "flask-inputfilter"
-copyright = "2025, Leander Cain Slotosch"
+copyright = "2026, Leander Cain Slotosch"
 author = "Leander Cain Slotosch"
 
 extensions = [
@@ -19,11 +19,6 @@ autodoc_default_options = {
 autodoc_member_order = "bysource"
 autodoc_typehints = "description"
 autoclass_content = "both"
-
-autodoc_type_aliases = {
-    "EstimatorPubLike": "EstimatorPubLike",
-    "SamplerPubLike": "SamplerPubLike",
-}
 
 autosummary_generate = True
 autosummary_generate_overwrite = False

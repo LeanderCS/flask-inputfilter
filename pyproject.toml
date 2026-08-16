@@ -31,6 +31,9 @@ classifiers = [
     "Programming Language :: Python :: 3.7",
 ]
 
+[project.scripts]
+flask-inputfilter = "flask_inputfilter.generators.openapi.cli:main"
+
 [project.optional-dependencies]
 dev = [
     "build",
@@ -45,17 +48,22 @@ dev = [
     "sphinx-autobuild",
     "sphinx_design",
     "sphinx_rtd_theme",
-    "ruff"
+    "ruff",
+    "pyyaml>=5.0",
 ]
 optional = [
     "pillow>=8.0.0",
     "requests>=2.22.0",
     "cython>=3.0; python_version <= '3.12'",
     "cython>=3.0.12; python_version >= '3.13'",
+    "pyyaml>=5.0",
 ]
 compile = [
     "cython>=3.0; python_version <= '3.12'",
     "cython>=3.0.12; python_version >= '3.13'",
+]
+generate = [
+    "pyyaml>=5.0",
 ]
 
 [project.urls]

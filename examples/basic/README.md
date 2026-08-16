@@ -1,6 +1,7 @@
 # Flask-InputFilter Example Application
 
-This example demonstrates various use cases of the Flask-InputFilter package, showing how to implement input validation and filtering in a Flask application.
+This example demonstrates various use cases of the Flask-InputFilter package,
+showing how to implement input validation and filtering in a Flask application.
 
 ## Project Structure
 
@@ -15,14 +16,6 @@ example 1/
 ├── test.http                     # HTTP test requests
 └── README.md                     # This file
 ```
-
-## Features Demonstrated
-
-1. Basic filtering with required fields
-2. Nested filtering with complex objects
-3. List filtering with type validation
-4. Using the `@validate()` decorator for automatic validation
-5. Modular filter organization
 
 ## Setup
 
@@ -40,7 +33,8 @@ The server will start on `http://localhost:5000`.
 
 ## Testing the Endpoints
 
-You can use the provided `test.http` file to test the endpoints. This file contains example requests for both successful and error cases.
+You can use the provided `test.http` file to test the endpoints.
+This file contains example requests for both successful and error cases.
 
 ### Available Endpoints
 
@@ -103,7 +97,6 @@ You can use the provided `test.http` file to test the endpoints. This file conta
 ## Key Features
 
 1. **Modular Organization**
-   - Each InputFilter class in its own file
    - Easy to maintain and reuse
    - Clear separation of concerns
 
@@ -112,29 +105,16 @@ You can use the provided `test.http` file to test the endpoints. This file conta
    - Access validated data through Flask's `g.validated_data`
 
 3. **Field Configuration**
-   - Add fields in `__init__` using `self.add()`
+   - Add fields using `field()`
    - Configure required fields and filters
-   - Chain multiple filters for complex transformations
 
-4. **Built-in Filters**
-   - StringTrimFilter: Removes leading/trailing whitespace
-   - ToIntegerFilter: Converts to integer
-   - ToFloatFilter: Converts to float
-   - ToStringFilter: Converts to string
-
-5. **Error Handling**
+4. **Error Handling**
    - Automatic 400 responses for validation errors
    - Detailed error messages in JSON format
 
 ## Best Practices
 
-1. Organize InputFilter classes in separate files
-2. Use `__init__.py` to expose filter classes
-3. Always call `super().__init__()` in your InputFilter classes
-4. Use appropriate filters for data type conversion
-5. Chain filters when multiple transformations are needed
-6. Use the `@validate()` decorator for automatic validation
-7. Access validated data through `g.validated_data`
+1. Chain filters when multiple transformations are needed
 
 ## Error Handling
 

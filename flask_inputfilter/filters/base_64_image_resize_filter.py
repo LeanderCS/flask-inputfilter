@@ -58,7 +58,7 @@ class Base64ImageResizeFilter(BaseFilter):
         preserve_metadata: bool = False,
     ) -> None:
         self.max_size = max_size
-        self.format = format if format else ImageFormatEnum.JPEG
+        self.format = format or ImageFormatEnum.JPEG
         self.preserve_metadata = preserve_metadata
         self.preserve_icc_profile = preserve_icc_profile
 

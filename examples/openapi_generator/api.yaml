@@ -1,0 +1,186 @@
+openapi: 3.0.0
+info:
+  title: Example API
+  version: 1.0.0
+  description: Example OpenAPI specification for flask-inputfilter generator
+
+paths:
+  /users:
+    post:
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Created
+    get:
+      operationId: listUsers
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /users/{id}/orders:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    post:
+      operationId: createOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '201':
+          description: Created
+
+components:
+  schemas:
+    Address:
+      type: object
+      required:
+        - street
+        - city
+      properties:
+        street:
+          type: string
+          minLength: 1
+          maxLength: 100
+        city:
+          type: string
+          minLength: 1
+          maxLength: 50
+        zipcode:
+          type: string
+          pattern: '^\d{5}(-\d{4})?$'
+        country:
+          type: string
+          default: 'DE'
+
+    User:
+      type: object
+      required:
+        - name
+        - email
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 50
+          description: User's full name
+        email:
+          type: string
+          format: email
+          description: User's email address
+        age:
+          type: integer
+          minimum: 18
+          maximum: 120
+          description: User's age
+        active:
+          type: boolean
+          default: true
+          description: Whether the user is active
+        tags:
+          type: array
+          items:
+            type: string
+          description: User tags
+        address:
+          $ref: '#/components/schemas/Address'
+
+    Product:
+      type: object
+      required:
+        - title
+        - price
+        - status
+      properties:
+        title:
+          type: string
+          minLength: 3
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 1000
+        price:
+          type: number
+          minimum: 0
+          format: float
+        status:
+          type: string
+          enum:
+            - available
+            - unavailable
+            - discontinued
+        category:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        images:
+          type: array
+          items:
+            type: string
+            format: uri
+          minItems: 1
+          maxItems: 10
+
+    Order:
+      type: object
+      required:
+        - user_id
+        - items
+      properties:
+        user_id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        items:
+          type: array
+          items:
+            type: object
+            required:
+              - product_id
+            properties:
+              product_id:
+                type: integer
+              quantity:
+                type: integer
+                minimum: 1
+              price:
+                type: number
+                minimum: 0
+          minItems: 1
+        order_date:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+            - pending
+            - processing
+            - shipped
+            - delivered
+            - cancelled
+          default: pending

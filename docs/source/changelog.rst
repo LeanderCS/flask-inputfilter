@@ -4,6 +4,47 @@ Changelog
 All notable changes to this project will be documented in this file.
 
 
+[0.8.0] - 2026-08-16
+--------------------
+
+Added
+^^^^^
+- **OpenAPI Code Generation**: Generate InputFilter classes directly from an
+  OpenAPI 3.0 specification (YAML or JSON). All ``components/schemas`` are
+  translated into declarative InputFilter classes — including nested objects,
+  ``$ref`` references, arrays and constraint mapping (``minLength``/
+  ``maxLength``, ``minimum``/``maximum``, ``pattern``, ``enum``, ``format``
+  such as ``email``, ``date`` or ``uuid``) to the matching filters and
+  validators. Available programmatically via ``generate_from_openapi()`` or
+  through the new ``flask-inputfilter`` CLI:
+  ``flask-inputfilter generate openapi api.yaml --output filters.py``
+  (``--schema`` for a single schema, ``--output-dir`` for one file per
+  schema). See the :doc:`OpenAPI generator guide <guides/openapi_generator>`.
+- **OpenAPI Endpoint Generation**: ``generate_from_openapi`` and the CLI can
+  also generate one InputFilter per endpoint (``--include-endpoints``,
+  ``--endpoints-only``, ``--path``, ``--method``), merging path parameters,
+  query parameters and the JSON request body. A request body referencing a
+  generated schema class is emitted as a subclass of that class.
+- **OpenAPI Schema Export**: The reverse direction — export existing
+  InputFilter classes to OpenAPI 3.0 schemas via ``to_openapi_schema()`` /
+  ``to_openapi_components()`` or
+  ``flask-inputfilter export openapi myapp.filters:UserInputFilter``
+  (``--all`` for every InputFilter of a module, ``--format json|yaml``).
+  Nested InputFilters become ``$ref`` references in components documents,
+  and features without an OpenAPI equivalent (custom validators, computed
+  fields, conditions, ...) degrade gracefully into ``x-`` extension keywords
+  instead of failing. Both directions share one bidirectional type/constraint
+  mapping registry, keeping generated code and exported schemas consistent.
+- **New Validators**: ``IsEmailValidator``, ``IsIpAddressValidator`` (IPv4/IPv6
+  with optional ``version`` restriction), ``IsPhoneValidator``,
+  ``IsCreditCardValidator`` (with Luhn checksum) and ``IsMimeTypeValidator``
+  (with optional ``allowed_types``).
+
+Removed
+^^^^^^^
+- ``BaseValidator``, ``BaseFilter`` and ``BaseCondition`` can now only be accessed through ``flask_inputfilter/models``.
+
+
 [0.7.5] - 2025-10-17
 --------------------
 

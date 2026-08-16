@@ -8,3 +8,4 @@ Guides
     create_own_components
     frontend_validation
     compile
+    openapi_generator

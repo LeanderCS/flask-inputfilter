@@ -2,5 +2,6 @@ cython==3.0
 flask==2.1
 pillow==8.0.0
 pytest
+pyyaml
 requests==2.22.0
 Werkzeug==2.0.3

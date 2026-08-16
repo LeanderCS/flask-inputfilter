@@ -52,9 +52,9 @@ class Base64ImageDownscaleFilter(BaseFilter):
         height: Optional[int] = None,
         proportionally: bool = True,
     ) -> None:
-        size = size if size else 1024 * 1024
-        self.width = int(width if width else size**0.5)
-        self.height = int(height if height else size**0.5)
+        size = size or 1024 * 1024
+        self.width = int(width or size**0.5)
+        self.height = int(height or size**0.5)
         self.proportionally = proportionally
 
     def apply(self, value: Any) -> Any:

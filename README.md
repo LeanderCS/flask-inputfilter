@@ -62,17 +62,23 @@ from flask_inputfilter import InputFilter
 from flask_inputfilter.declarative import condition, field
 from flask_inputfilter.conditions import ExactlyOneOfCondition
 from flask_inputfilter.enums import RegexEnum
-from flask_inputfilter.filters import StringTrimFilter, ToIntegerFilter, ToNullFilter
-from flask_inputfilter.validators import IsIntegerValidator, IsStringValidator, RegexValidator
+from flask_inputfilter.filters import (
+    StringTrimFilter,
+    ToIntegerFilter,
+    ToNullFilter,
+)
+from flask_inputfilter.validators import (
+    IsIntegerValidator,
+    IsStringValidator,
+    RegexValidator,
+)
+
 
 class UpdateZipcodeInputFilter(InputFilter):
-    
     id: int = field(
         required=True,
         filters=[ToIntegerFilter(), ToNullFilter()],
-        validators=[
-            IsIntegerValidator()
-        ]
+        validators=[IsIntegerValidator()],
     )
 
     zipcode: str = field(
@@ -84,12 +90,9 @@ class UpdateZipcodeInputFilter(InputFilter):
             )
         ]
     )
-    
+
     city: str = field(
-        filters=[StringTrimFilter()],
-        validators=[
-            IsStringValidator()
-        ]
+        filters=[StringTrimFilter()], validators=[IsStringValidator()]
     )
 
     condition(
@@ -120,6 +123,27 @@ def updateZipcode():
     zipcode = data.get('zipcode')
     city = data.get('city')
 ```
+
+
+## Generate InputFilters from an OpenAPI spec
+
+If you already have an OpenAPI 3.0 specification, you can generate the matching
+InputFilter classes instead of writing them by hand:
+
+```bash
+flask-inputfilter generate openapi api.yaml --output filters.py
+```
+
+Or programmatically:
+
+```python
+from flask_inputfilter.generators.openapi import generate_from_openapi
+
+code = generate_from_openapi(openapi_file="api.yaml")
+```
+
+See the [OpenAPI generator guide](https://leandercs.github.io/flask-inputfilter/guides/openapi_generator.html)
+for all options.
 
 
 ## See also

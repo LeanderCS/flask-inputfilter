@@ -16,9 +16,11 @@ from .is_base_64_image_correct_size_validator import (
 )
 from .is_base_64_image_validator import IsBase64ImageValidator
 from .is_boolean_validator import IsBooleanValidator
+from .is_credit_card_validator import IsCreditCardValidator
 from .is_dataclass_validator import IsDataclassValidator
 from .is_date_validator import IsDateValidator
 from .is_datetime_validator import IsDateTimeValidator
+from .is_email_validator import IsEmailValidator
 from .is_float_validator import IsFloatValidator
 from .is_future_date_validator import IsFutureDateValidator
 from .is_hexadecimal_validator import IsHexadecimalValidator
@@ -27,10 +29,13 @@ from .is_html_validator import IsHtmlValidator
 from .is_image_validator import IsImageValidator
 from .is_instance_validator import IsInstanceValidator
 from .is_integer_validator import IsIntegerValidator
+from .is_ip_address_validator import IsIpAddressValidator
 from .is_json_validator import IsJsonValidator
 from .is_lowercase_validator import IsLowercaseValidator
 from .is_mac_address_validator import IsMacAddressValidator
+from .is_mime_type_validator import IsMimeTypeValidator
 from .is_past_date_validator import IsPastDateValidator
+from .is_phone_validator import IsPhoneValidator
 from .is_port_validator import IsPortValidator
 from .is_rgb_color_validator import IsRgbColorValidator
 from .is_string_validator import IsStringValidator
@@ -65,9 +70,11 @@ __all__ = [
     "IsBase64ImageCorrectSizeValidator",
     "IsBase64ImageValidator",
     "IsBooleanValidator",
+    "IsCreditCardValidator",
     "IsDataclassValidator",
     "IsDateTimeValidator",
     "IsDateValidator",
+    "IsEmailValidator",
     "IsFloatValidator",
     "IsFutureDateValidator",
     "IsHexadecimalValidator",
@@ -76,10 +83,13 @@ __all__ = [
     "IsImageValidator",
     "IsInstanceValidator",
     "IsIntegerValidator",
+    "IsIpAddressValidator",
     "IsJsonValidator",
     "IsLowercaseValidator",
     "IsMacAddressValidator",
+    "IsMimeTypeValidator",
     "IsPastDateValidator",
+    "IsPhoneValidator",
     "IsPortValidator",
     "IsRgbColorValidator",
     "IsStringValidator",

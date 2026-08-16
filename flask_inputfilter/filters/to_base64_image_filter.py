@@ -48,7 +48,7 @@ class ToBase64ImageFilter(BaseFilter):
         format: Optional[ImageFormatEnum] = None,
         quality: int = 85,
     ) -> None:
-        self.format = format if format else ImageFormatEnum.PNG
+        self.format = format or ImageFormatEnum.PNG
         self.quality = quality
 
     def apply(self, value: Any) -> Any:

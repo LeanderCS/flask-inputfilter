@@ -48,7 +48,7 @@ class ToNormalizedUnicodeFilter(BaseFilter):
             )
             form = UnicodeFormEnum(form)
 
-        self.form = form if form else UnicodeFormEnum.NFC
+        self.form = form or UnicodeFormEnum.NFC
 
     def apply(self, value: Any) -> Union[str, Any]:
         if not isinstance(value, str):
