@@ -9,15 +9,6 @@
 [![](https://static.pepy.tech/badge/flask-inputfilter/month)](https://pypi.org/project/flask-inputfilter/)
 [![](https://static.pepy.tech/badge/flask-inputfilter)](https://pypi.org/project/flask-inputfilter/)
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=LeanderCS_flask-inputfilter&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=LeanderCS_flask-inputfilter)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=LeanderCS_flask-inputfilter&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=LeanderCS_flask-inputfilter)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=LeanderCS_flask-inputfilter&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=LeanderCS_flask-inputfilter)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=LeanderCS_flask-inputfilter&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=LeanderCS_flask-inputfilter)<br/>
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=LeanderCS_flask-inputfilter&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=LeanderCS_flask-inputfilter)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=LeanderCS_flask-inputfilter&metric=bugs)](https://sonarcloud.io/summary/new_code?id=LeanderCS_flask-inputfilter)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=LeanderCS_flask-inputfilter&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=LeanderCS_flask-inputfilter)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=LeanderCS_flask-inputfilter&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=LeanderCS_flask-inputfilter)
-
 
 ## Description
 
